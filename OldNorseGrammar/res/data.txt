@@ -1,0 +1,4 @@
+0001:[VERB.STRNG.3][ROOT="brenna"]
+0002:[NOUN.STRNG.MASC.A][SNG.NOM="úlfr"]
+0003:[NOUN.STRNG.MASC.R][PLR.ACC="menn"][PLR.NOM="menn"][ROOT="mann"][SNG.GEN="manns"]
+0004:[NOUN.STRNG.FEM.R][SNG.NOM="strönd"][ROOT="strand"]

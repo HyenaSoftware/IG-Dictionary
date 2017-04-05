@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OldNorseGrammar.iml" filepath="$PROJECT_DIR$/.idea/modules/OldNorseGrammar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OldNorseGrammar_main.iml" filepath="$PROJECT_DIR$/.idea/modules/OldNorseGrammar_main.iml" group="OldNorseGrammar" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OldNorseGrammar_test.iml" filepath="$PROJECT_DIR$/.idea/modules/OldNorseGrammar_test.iml" group="OldNorseGrammar" />
+    </modules>
+  </component>
+</project>

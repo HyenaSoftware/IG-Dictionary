@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="noun_types">
+        <item>Strong Masc. A-class</item>
+        <item>Strong Masc. I-class</item>
+        <item>Strong Masc. U-class</item>
+        <item>Strong Masc. R-class</item>
+        <item>Strong Fem. A-class</item>
+        <item>Strong Fem. I-class</item>
+        <item>Strong Fem. R-class</item>
+        <item>Strong Neuter</item>
+
+        <item>Weak Masc. A-class</item>
+        <item>Weak Masc. R-class</item>
+        <item>Weak Fem. I-class</item>
+        <item>Weak Fem. U-class</item>
+        <item>Weak Neuter</item>
+    </string-array>
+</resources>

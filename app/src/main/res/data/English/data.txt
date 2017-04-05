@@ -1,0 +1,3 @@
+0001:[burn].VRB.INF;
+0002:[wolf].NOUN;
+0003:[man].NOUN.SNG,[men].NOUN.PLR;

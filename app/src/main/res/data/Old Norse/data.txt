@@ -1,0 +1,3 @@
+0001:VERB,[brenn].STRNG3.PR_STEM;
+0002:NOUN,[úlfr].NOM.SNG;
+0003:NOUN,[mann].SNG.ACC,[menn].PLR.NOM;
