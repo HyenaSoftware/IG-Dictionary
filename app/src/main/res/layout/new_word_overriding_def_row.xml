@@ -62,6 +62,6 @@
     <Spinner android:layout_width="0dp" android:layout_height="match_parent" android:id="@+id/spinner3"
              android:layout_gravity="center"
              android:entries="@array/noun_decl" android:layout_weight="0.3"/>
-    <EditText android:layout_width="0dp" android:layout_height="wrap_content" android:id="@+id/editText"
+    <EditText android:layout_width="0dp" android:layout_height="wrap_content" android:id="@+id/etNewWord.Text"
               android:layout_gravity="right" android:layout_weight="0.5"/>
 </TableRow>

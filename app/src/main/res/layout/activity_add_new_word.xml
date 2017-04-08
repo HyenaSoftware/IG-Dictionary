@@ -8,7 +8,7 @@
         android:paddingRight="6dp"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
-        tools:context="com.example.hyenawarrior.myapplication.AddNewWordActivity" android:focusable="false"
+        tools:context=".new_word.AddNewWordActivity" android:focusable="false"
         android:orientation="vertical" android:background="#555555">
 <!--
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -73,7 +73,7 @@
                         <EditText
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/etText" android:layout_gravity="right" android:layout_weight="0.5"
+                                android:id="@+id/etNewWord.PriText" android:layout_gravity="right" android:layout_weight="0.5"
                         />
                     </TableRow>
                 </TableLayout>
@@ -131,13 +131,13 @@
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:text="úlfr"
-                                android:id="@+id/textView7" android:layout_weight="3.33"/>
+                                android:id="@+id/tvNewWord.Nom.Sg" android:layout_weight="3.33"/>
                         <TextView
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:text="úlfar"
-                                android:id="@+id/textView8" android:layout_weight="3.33"/>
+                                android:id="@+id/tvNewWord.Nom.Pl" android:layout_weight="3.33"/>
                     </TableRow>
                     <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="10">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
@@ -145,10 +145,10 @@
                                   android:id="@+id/textView" android:layout_weight="3.33"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                   android:textAppearance="?android:attr/textAppearanceMedium" android:text="úlf"
-                                  android:id="@+id/textView3" android:layout_weight="3.33"/>
+                                  android:id="@+id/tvNewWord.Acc.Sg" android:layout_weight="3.33"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                   android:textAppearance="?android:attr/textAppearanceMedium" android:text="úlfa"
-                                  android:id="@+id/textView4" android:layout_weight="3.33"/>
+                                  android:id="@+id/tvNewWord.Acc.Pl" android:layout_weight="3.33"/>
                     </TableRow>
                     <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="10">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
@@ -156,10 +156,10 @@
                                   android:id="@+id/textView9" android:layout_weight="3.33"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                   android:textAppearance="?android:attr/textAppearanceMedium" android:text="úlfi"
-                                  android:id="@+id/textView10" android:layout_weight="3.33"/>
+                                  android:id="@+id/tvNewWord.Dat.Sg" android:layout_weight="3.33"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                   android:textAppearance="?android:attr/textAppearanceMedium" android:text="úlfum"
-                                  android:id="@+id/textView11" android:layout_weight="3.33"/>
+                                  android:id="@+id/tvNewWord.Dat.Pl" android:layout_weight="3.33"/>
                     </TableRow>
                     <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="10">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
@@ -167,10 +167,10 @@
                                   android:id="@+id/textView12" android:layout_weight="3.33"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                   android:textAppearance="?android:attr/textAppearanceMedium" android:text="úlfs"
-                                  android:id="@+id/textView13" android:layout_weight="3.33"/>
+                                  android:id="@+id/tvNewWord.Gen.Sg" android:layout_weight="3.33"/>
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content"
                                   android:textAppearance="?android:attr/textAppearanceMedium" android:text="úlfa"
-                                  android:id="@+id/textView14" android:layout_weight="3.33"/>
+                                  android:id="@+id/tvNewWord.Gen.Pl" android:layout_weight="3.33"/>
                     </TableRow>
                 </TableLayout>
             </LinearLayout>
