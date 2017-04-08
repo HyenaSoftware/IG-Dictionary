@@ -31,11 +31,20 @@ abstract class CustomAdapter[T](val activity: Activity) extends BaseAdapter
 
 	def getView(i: Int, prevView: View, viewGroup: ViewGroup) =
 	{
-		Option(prevView).filter(_ => validity(i)).getOrElse
-		{
-			validity = validity.zipWithIndex.map({ case (e, j) => j==i || e })
-			getNewView(i, viewGroup)
-		}
+		val optView = Option(prevView)
+
+		/*
+		val resView = optView
+			.filter(_ => validity(i))
+			.getOrElse
+			{
+				validity = validity.zipWithIndex.map({ case (e, j) => j==i || e })
+				getNewView(i, viewGroup)
+			}
+		*/
+
+		//resView
+		getNewView(i, viewGroup)
 	}
 
 	def getItem(i: Int): AnyRef = Long.box(i)

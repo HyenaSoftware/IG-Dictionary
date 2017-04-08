@@ -1,15 +1,20 @@
 package com.example.hyenawarrior.myapplication
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget._
-import com.example.hyenawarrior.dictionary.model.{AndroidStorage, DictionaryEntry, Meaning}
-import com.example.hyenawarrior.dictionary.modelview.{DictionaryEntryAdapter, EntryListAdapter}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Database, Language, Word}
+import com.example.hyenawarrior.dictionary.model.{AndroidStorage, DictionaryEntry}
+import com.example.hyenawarrior.dictionary.modelview.DictionaryEntryAdapter
+import com.hyenawarrior.OldNorseGrammar.grammar.{Database, Language}
 import com.hyenawarrior.dictionaryLoader.Storage
 
 
-
+object MainActivity
+{
+	val EXTRA_MESSAGE: String = "abc"
+}
 
 class MainActivity extends AppCompatActivity
 {
@@ -72,6 +77,16 @@ class MainActivity extends AppCompatActivity
 		val sw = findViewById(R.id.searchView).asInstanceOf[SearchView]
 
 		sw setOnQueryTextListener TypeListener
+	}
+
+	def addNewWord(view: View)
+	{
+		val clazz: Class[AddNewWordActivity] = classOf[AddNewWordActivity]
+		val intent = new Intent(this, clazz)
+
+		intent.putExtra(MainActivity.EXTRA_MESSAGE, "data")
+
+		startActivity(intent)
 	}
 
 	override protected def onCreate(savedInstanceState: Bundle)

@@ -7,6 +7,10 @@ import com.example.hyenawarrior.dictionary.model.DictionaryEntry
 import com.example.hyenawarrior.myapplication.R
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, Number}
 
+
+case class MetaData(words: List[String])
+
+
 /**
 	* Created by HyenaWarrior on 2017.04.04..
 	*/
@@ -15,10 +19,10 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 	def getNewView(i: Int, viewGroup: ViewGroup): View =
 	{
 		val view = inflater.inflate(R.layout.dictionary_entry, null)
-		//val rootLayout = view.asInstanceOf[GridLayout]
 
+		// set metadata
 		val item = itemAt(i)
-		view.setTag(item.word.head.strForm)
+		view.setTag(MetaData(item.word.map(_.toString)))
 
 		val tvDesc = view.findViewById(R.id.tvDesc).asInstanceOf[TextView]
 		val dictWordRef = item.dictWord.map(w => s" -> ${w.strForm}").getOrElse("")
@@ -26,14 +30,14 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 
 		tvDesc setText text
 
-		//
+		// set words
 		val wordFormAdapter = new WordFormAdapter(activity)
 		wordFormAdapter resetItems item.word
 
 		val llWordForms = view.findViewById(R.id.llWordForms).asInstanceOf[LinearLayout]
 		extractViewsInto(wordFormAdapter, llWordForms)
 
-		//
+		// set meanings
 		val meaningAdapter = new MeaningAdapter(activity)
 		meaningAdapter resetItems item.meanings
 

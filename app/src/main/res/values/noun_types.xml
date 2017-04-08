@@ -16,4 +16,13 @@
         <item>Weak Fem. U-class</item>
         <item>Weak Neuter</item>
     </string-array>
+    <string-array name="noun_decl">
+        <item>Sg 1st</item>
+        <item>Sg 2nd</item>
+        <item>Sg 3rd</item>
+
+        <item>Pl 1st</item>
+        <item>Pl 2nd</item>
+        <item>Pl 3rd</item>
+    </string-array>
 </resources>
