@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget._
-import com.example.hyenawarrior.dictionary.model.{AndroidStorage, DictionaryEntry}
+import com.example.hyenawarrior.dictionary.model.{AndroidStorage, Database, DictionaryEntry}
 import com.example.hyenawarrior.dictionary.modelview.DictionaryEntryAdapter
 import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivity
 import com.hyenawarrior.OldNorseGrammar.grammar.{Database, Language}
@@ -34,7 +34,7 @@ class MainActivity extends AppCompatActivity
 
 		override def onQueryTextChange(s: String): Boolean =
 		{
-			val meaningsToWords = database.findBy(s)
+			val meaningsToWords = Database.database.findBy(s)
 
 			val list: List[DictionaryEntry] = meaningsToWords.map
 			{
@@ -62,16 +62,9 @@ class MainActivity extends AppCompatActivity
 
 	object Storage extends Storage with AndroidStorage
 
-	val database = load
+
 	lazy val entryListAdapter = new DictionaryEntryAdapter(this) //new EntryListAdapter(this)
 	lazy val listView = findViewById(R.id.listView).asInstanceOf[ListView]
-
-	def load =
-	{
-		val langs = Storage.availableLanguages
-
-		new Database(langs.map(e => Language(e) -> Storage.meanings(e)).toMap)
-	}
 
 	private def installEventHandlers
 	{

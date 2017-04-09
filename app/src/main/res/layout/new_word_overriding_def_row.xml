@@ -59,7 +59,7 @@
                  android:id="@+id/ibRemove" android:src="@android:drawable/ic_delete"
                  android:adjustViewBounds="false" android:contentDescription="Add"
                  android:layout_weight="0.2" android:onClick="onRemoveOverride"/>
-    <Spinner android:layout_width="0dp" android:layout_height="match_parent" android:id="@+id/spinner3"
+    <Spinner android:layout_width="0dp" android:layout_height="match_parent" android:id="@+id/spNounDecl"
              android:layout_gravity="center"
              android:entries="@array/noun_decl" android:layout_weight="0.3"/>
     <EditText android:layout_width="0dp" android:layout_height="wrap_content" android:id="@+id/etNewWord.Text"

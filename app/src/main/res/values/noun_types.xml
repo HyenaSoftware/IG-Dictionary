@@ -17,6 +17,20 @@
         <item>Weak Neuter</item>
     </string-array>
     <string-array name="noun_decl">
+        <item>Sg Nom</item>
+        <item>Sg Acc</item>
+        <item>Sg Dat</item>
+        <item>Sg Gen</item>
+
+        <item>Pl Nom</item>
+        <item>Pl Acc</item>
+        <item>Pl Dat</item>
+        <item>Pl Gen</item>
+    </string-array>
+
+
+
+    <string-array name="verb_decl">
         <item>Sg 1st</item>
         <item>Sg 2nd</item>
         <item>Sg 3rd</item>

@@ -39,7 +39,7 @@
                 <Spinner
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/spinner2"
+                        android:id="@+id/spSelectStemClass"
                         android:entries="@array/noun_types"
                         android:layout_weight="2"/>
             </LinearLayout>
@@ -54,7 +54,7 @@
                     <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" android:weightSum="1"
-                            android:layout_weight="1">
+                            android:layout_weight="1" android:id="@+id/trPrimaryNounForm">
                         <Button
                                 style="?android:attr/buttonStyleSmall"
                                 android:layout_width="0dp"
@@ -67,7 +67,7 @@
                         <Spinner
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:id="@+id/spType" android:layout_gravity="center"
+                                android:id="@+id/spNounDecl" android:layout_gravity="center"
                                 android:entries="@array/noun_decl"
                                 android:layout_weight="0.3"/>
                         <EditText
@@ -103,20 +103,28 @@
                         android:drawableLeft="@android:drawable/ic_menu_save"
                         android:layout_gravity="center"/>
             </GridLayout>
-            <LinearLayout
+            <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/flIndefNouns" android:orientation="vertical" android:paddingTop="6dp"
-                    android:background="#fffde5" android:layout_marginBottom="3dp">
+                    android:background="#fffde5" android:layout_marginBottom="3dp" android:columnCount="2">
                 <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:text="Indefinite nouns"
                         android:id="@+id/textView19" android:textStyle="bold"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="[description]"
+                        android:id="@+id/textView3" android:layout_column="1" android:layout_row="0"
+                        android:layout_gravity="center"/>
                 <TableLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:id="@+id/tlNewNoun">
+                        android:layout_height="wrap_content" android:id="@+id/tlNewNoun" android:layout_column="0"
+                        android:layout_columnSpan="2">
                     <TableRow
                             android:layout_width="match_parent"
                             android:layout_height="match_parent" android:weightSum="10">
@@ -173,7 +181,7 @@
                                   android:id="@+id/tvNewWord.Gen.Pl" android:layout_weight="3.33"/>
                     </TableRow>
                 </TableLayout>
-            </LinearLayout>
+            </GridLayout>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                                   android:id="@+id/llDefNouns" android:orientation="vertical" android:paddingTop="6dp"
                                   android:background="#fffde5" android:layout_marginBottom="3dp">
