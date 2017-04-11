@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="noun_types">
+        <item>Undefined</item>
         <item>Strong Masc. A-class</item>
         <item>Strong Masc. I-class</item>
         <item>Strong Masc. U-class</item>

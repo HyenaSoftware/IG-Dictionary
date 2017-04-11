@@ -1,18 +1,14 @@
 package com.example.hyenawarrior.myapplication.new_word
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.{LayoutInflater, View}
-import android.widget.AdapterView.OnItemSelectedListener
 import android.widget._
-import com.example.hyenawarrior.dictionary.model.Database
-import com.example.hyenawarrior.dictionary.modelview.GrammarHelpers
 import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivity.{INDEFINITE_NOUN_EDIT_TEXTS, NOUN_DECLENSIONS}
 import com.example.hyenawarrior.myapplication.{MainActivity, R}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number, Root, Word}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number}
 
 object AddNewWordActivity
 {
@@ -35,14 +31,16 @@ class AddNewWordActivity extends AppCompatActivity
 {
 	lazy val tlOverrides = findViewById(R.id.tlOverrides).asInstanceOf[TableLayout]
 
-	var selectedNounParameters: (Option[NounStemClassEnum], Map[AnyRef, (Option[(Number, Case)], Option[String])]) = (None, Map())
+	type Override = (Option[(Number, Case)], Option[String])
+	type Parameters = (Option[NounStemClassEnum], Override, Map[AnyRef, Override])
 
+	var selectedNounParameters: Parameters = (None, (None, None), Map())
 
 	protected override def onCreate(savedInstanceState: Bundle)
 	{
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState)
 
-    setContentView(R.layout.activity_add_new_word);
+    setContentView(R.layout.activity_add_new_word)
 
 		//https://developer.android.com/training/basics/firstapp/starting-activity.html
 		// Get the Intent that started this activity and extract the string
@@ -50,41 +48,79 @@ class AddNewWordActivity extends AppCompatActivity
 		val message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE)
 
 		//
-		val trPrimaryNounForm = findViewById(R.id.trPrimaryNounForm)
+		val stemClassSpinnerListener = new SpinnerListener(loadStemClassEnums, onNounStemClassSelected)
+		val spSelectStemClass = findViewById(R.id.spSelectStemClass).asInstanceOf[Spinner]
+		spSelectStemClass.setOnItemSelectedListener(stemClassSpinnerListener)
+
 
 		//
 		val etPriText = findViewById(R.id.etNewWord_PriText).asInstanceOf[EditText]
-		etPriText.addTextChangedListener(makeFormOverrideTextListener(trPrimaryNounForm))
-
-		val spSelectStemClass = findViewById(R.id.spSelectStemClass).asInstanceOf[Spinner]
-		spSelectStemClass.setOnItemSelectedListener(makeSpinnerNounStemClassListener(trPrimaryNounForm))
+		etPriText.addTextChangedListener(new EditTextTypeListener(this, onPrimaryTextChange))
 
 		//
 		val spNounDecl = findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
-		spNounDecl.setOnItemSelectedListener(makeSpinnerNounDeclListener(trPrimaryNounForm))
+		spNounDecl.setOnItemSelectedListener(new SpinnerListener(NOUN_DECLENSIONS, onNounDeclensionSelected))
   }
 
 	def onRemoveOverride(view: View) = view.getTag match
 	{
-		case tableRow: TableRow => tlOverrides.removeView(tableRow)
+		case tableRow: TableRow =>
+			tlOverrides.removeView(tableRow)
+
+			selectedNounParameters = selectedNounParameters match
+			{
+				case (nc, baseDef, map) => (nc, baseDef, map - tableRow)
+			}
+
+			fillNounForms()
+
 		case _ => ()
 	}
 
 	//
 	def makeFormOverrideTextListener(view: View) = new EditTextTypeListener(this, onTextFormOverride(view))
 	def makeSpinnerNounDeclListener(view: View) = new SpinnerListener(NOUN_DECLENSIONS, onNounDeclensionSelected(view))
-	def makeSpinnerNounStemClassListener(view: View) = new SpinnerListener(loadStemClassEnums, onNounStemClassSelected(view))
 
 
-	def loadStemClassEnums: List[NounStemClassEnum] =	getResources
+	def loadStemClassEnums: List[Option[NounStemClassEnum]] =	getResources
 			.getStringArray(R.array.noun_types)
-			.map(NounStemClassEnum.findByName[NounStemClassEnum](_).get)
+			.map(NounStemClassEnum.findByName[NounStemClassEnum])
 		  .toList
 
-
-	def onTextFormOverride(overridingView: View)(str: String)
+	//
+	private def onPrimaryTextChange(str: String): Unit =
 	{
-		val (stemClass, map) = selectedNounParameters
+		val (stemClass, (givenCaseNum, _), map) = selectedNounParameters
+
+		val strFixed = Option(str).filter(s => s.trim.nonEmpty)
+
+		selectedNounParameters = (stemClass, (givenCaseNum, strFixed), map)
+
+		fillNounForms()
+	}
+
+	private def onNounDeclensionSelected(item: (Number, Case)): Unit =
+	{
+		val (stemClass, (_, givenBaseForm), map) = selectedNounParameters
+
+		selectedNounParameters = (stemClass, (Some(item), givenBaseForm), map)
+
+		fillNounForms()
+	}
+
+	private def onNounStemClassSelected(newOptStemClass: Option[NounStemClassEnum])
+	{
+		val (_, givenBaseForm, map) = selectedNounParameters
+
+		selectedNounParameters = (newOptStemClass, givenBaseForm, map)
+
+		fillNounForms()
+	}
+
+	//
+	private def onTextFormOverride(overridingView: View)(str: String)
+	{
+		val (stemClass, givenForm, map) = selectedNounParameters
 
 		val strFixed = Option(str).filter(s => s.trim.nonEmpty)
 
@@ -96,69 +132,72 @@ class AddNewWordActivity extends AppCompatActivity
 			case None => (None, strFixed)
 		}
 
-		selectedNounParameters = (stemClass, map + (overridingView -> newData))
+		selectedNounParameters = (stemClass, givenForm, map + (overridingView -> newData))
 
-		fillNounForms
+		fillNounForms()
 	}
 
-	def onNounStemClassSelected(overridingView: View)(newOptStemClass: Option[NounStemClassEnum]) =
+	private def onNounDeclensionSelected(overridingView: View)(item: (Number, Case)): Unit =
 	{
-		val (_, map) = selectedNounParameters
+		val (stemClass, givenBaseForm, map) = selectedNounParameters
 
-		selectedNounParameters = (newOptStemClass, map)
+		val overrideData = map.get(overridingView)
 
-		fillNounForms
+		val newData = overrideData match
+		{
+			case Some((_, optStr)) => (Some(item), optStr)
+			case None => (Some(item), None)
+		}
+
+		selectedNounParameters = (stemClass, givenBaseForm, map + (overridingView -> newData))
+
+		fillNounForms()
 	}
 
-	def onNounDeclensionSelected(overridingView: View)(item: Option[(Number, Case)]): Unit = item match
+	private def fillNounForms(): Unit = selectedNounParameters match
 	{
-		case Some((num, cs)) =>
-			val (stemClass, map) = selectedNounParameters
-
-			val overrideData = map.get(overridingView)
-
-			val newData = overrideData match
-			{
-				case Some((_, optStr)) => (Some(num, cs), optStr)
-				case None => (Some(num, cs), None)
-			}
-
-			selectedNounParameters = (stemClass, map + (overridingView -> newData))
-
-			fillNounForms
-
-		case None => ()
-	}
-
-	private def fillNounForms = selectedNounParameters match
-	{
-		case (Some(NounStemClassEnum(_, stemClass)), map) =>
-			{
-				val overridingDefs = map.values
-
-				val roots = overridingDefs
-					.filter(e => e._1.nonEmpty && e._2.nonEmpty)
-					.filter(e => stemClass != null) // TODO remove it
-					.flatMap { case (Some(numCase), Some(str)) => stemClass.unapply(str, numCase) }
-				  .toSet
-
-				val words = roots.map(r => r -> NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, -1, nd)).toMap)
-
-				val wordMap = words.headOption.map(_._2).getOrElse(Map())
-
-				setInflectedFormsToUI(wordMap)
-			}
-		case (None, map) => ()
+		case (Some(_), _, _) => fillNounForms(selectedNounParameters)
+		case (None, baseDef @ (Some(_), Some(_)), map) =>
+		NounStemClassEnum.values.foreach(nsc => fillNounForms((Some(nsc), baseDef, map)))
 		case _ => ()
 	}
 
-	private def setInflectedFormsToUI(map: Map[(Number, Case), Word])
+	private def fillNounForms(parameters: Parameters): Unit = parameters match
+	{
+		case (Some(NounStemClassEnum(_, stemClass)), (Some(numCase), Some(str)), map) =>
+			val wordMap = generateFormsFrom(stemClass, (numCase, str), map)
+			setInflectedFormsToUI(wordMap)
+
+		case _ => ()
+	}
+
+	private def generateFormsFrom(stemClass: NounStemClass, baseDef: ((Number, Case), String), map: Map[AnyRef, Override]):	Map[(Number, Case), String] =
+	{
+		val overridingDefs = map.values.flatMap
+		{
+			case (Some(numCase), Some(str)) => Some((numCase, str))
+			case _ => None
+		}.toMap
+
+		val root = baseDef match
+		{
+			case (numCase, str) if stemClass != null => stemClass.unapply(str, numCase)
+		}
+
+		val optWordsOfRoot = root.map(r => NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, -1, nd).strForm).toMap)
+
+		val wordMap = optWordsOfRoot.getOrElse(Map())
+
+		wordMap ++ overridingDefs
+	}
+
+	private def setInflectedFormsToUI(map: Map[(Number, Case), String]): Unit =
 	{
 		INDEFINITE_NOUN_EDIT_TEXTS
 			.foreach
 			{
 				case (id, cs, num) =>
-					val text = map.get(num, cs).map(_.strForm).getOrElse("...")
+					val text = map.get(num, cs).getOrElse("...")
 					val textView = findViewById(id).asInstanceOf[TextView]
 					textView.setText(text)
 			}
