@@ -13,14 +13,12 @@ abstract class CustomAdapter[T](val activity: Activity) extends BaseAdapter
 	protected val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
 
 	private var items: List[T] = List()
-	private var validity: List[Boolean] = List()
 
 	protected def itemAt(i: Int) = items(i)
 
 	def resetItems(items: List[T]): Unit =
 	{
 		this.items = items
-		validity = items.map(x => false)
 	}
 
 	protected def getNewView(i: Int, viewGroup: ViewGroup): View
@@ -31,19 +29,6 @@ abstract class CustomAdapter[T](val activity: Activity) extends BaseAdapter
 
 	def getView(i: Int, prevView: View, viewGroup: ViewGroup) =
 	{
-		val optView = Option(prevView)
-
-		/*
-		val resView = optView
-			.filter(_ => validity(i))
-			.getOrElse
-			{
-				validity = validity.zipWithIndex.map({ case (e, j) => j==i || e })
-				getNewView(i, viewGroup)
-			}
-		*/
-
-		//resView
 		getNewView(i, viewGroup)
 	}
 
