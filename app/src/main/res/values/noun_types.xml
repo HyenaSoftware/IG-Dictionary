@@ -2,6 +2,9 @@
 <resources>
     <string-array name="noun_types">
         <item>Undefined</item>
+        <item>Feminine</item>
+        <item>Masculine</item>
+        <item>Neuter</item>
         <item>Strong Masc. A-class</item>
         <item>Strong Masc. I-class</item>
         <item>Strong Masc. U-class</item>

@@ -8,6 +8,7 @@ import android.widget._
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.NounDeclensionAdapter
 import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivity.{INDEFINITE_NOUN_EDIT_TEXTS, NOUN_DECLENSIONS}
 import com.example.hyenawarrior.myapplication.{MainActivity, R}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number}
 
@@ -33,9 +34,9 @@ class AddNewWordActivity extends AppCompatActivity
 	lazy val tlOverrides = findViewById(R.id.tlOverrides).asInstanceOf[TableLayout]
 
 	type Override = (Option[(Number, Case)], Option[String])
-	type Parameters = (Option[NounStemClassEnum], Override, Map[AnyRef, Override])
+	type Parameters = (List[NounStemClassEnum], Override, Map[AnyRef, Override])
 
-	var selectedNounParameters: Parameters = (None, (None, None), Map())
+	var selectedNounParameters: Parameters = (List(), (None, None), Map())
 
 	lazy val NounDeclensionAdapter = new NounDeclensionAdapter(this)
 
@@ -87,10 +88,17 @@ class AddNewWordActivity extends AppCompatActivity
 	def makeSpinnerNounDeclListener(view: View) = new SpinnerListener(NOUN_DECLENSIONS, onNounDeclensionSelected(view))
 
 
-	def loadStemClassEnums: List[Option[NounStemClassEnum]] =	getResources
-			.getStringArray(R.array.noun_types)
-			.map(NounStemClassEnum.findByName[NounStemClassEnum])
-		  .toList
+	def loadStemClassEnums: List[List[NounStemClassEnum]] =	getResources
+		.getStringArray(R.array.noun_types)
+		.map
+		{
+			case "Undefined" => List()
+			case "Feminine" => List(STRONG_FEMININE_A, STRONG_FEMININE_I, STRONG_FEMININE_R, WEAK_FEMININE_I, WEAK_FEMININE_U)
+			case "Masculine" => List(STRONG_MASCULINE_A, STRONG_MASCULINE_I, STRONG_MASCULINE_R, STRONG_MASCULINE_U, WEAK_MASCULINE_A, WEAK_MASCULINE_R)
+			case "Neuter" => List(STRONG_NEUTER, WEAK_NEUTER_U)
+			case str => NounStemClassEnum.findByName[NounStemClassEnum](str).toList
+		}
+		.toList
 
 	//
 	private def onPrimaryTextChange(str: String): Unit =
@@ -113,11 +121,11 @@ class AddNewWordActivity extends AppCompatActivity
 		fillNounForms()
 	}
 
-	private def onNounStemClassSelected(newOptStemClass: Option[NounStemClassEnum])
+	private def onNounStemClassSelected(newStemClassList: List[NounStemClassEnum])
 	{
 		val (_, givenBaseForm, map) = selectedNounParameters
 
-		selectedNounParameters = (newOptStemClass, givenBaseForm, map)
+		selectedNounParameters = (newStemClassList, givenBaseForm, map)
 
 		fillNounForms()
 	}
@@ -159,17 +167,6 @@ class AddNewWordActivity extends AppCompatActivity
 		fillNounForms()
 	}
 
-	private def fillNounForms(): Unit = selectedNounParameters match
-	{
-		case (Some(nsce), baseDef, map) => fillNounForms((List(nsce), baseDef, map))
-
-		case (None, baseDef @ (Some(_), Some(_)), map) =>
-			val nsces = NounStemClassEnum.values
-			fillNounForms(nsces, baseDef, map)
-
-		case _ => ()
-	}
-
 	private def generateFormsFrom(stemClass: NounStemClass, baseDef: ((Number, Case), String), map: Map[AnyRef, Override]):	Map[(Number, Case), String] =
 	{
 		val overridingDefs = map.values.flatMap
@@ -191,10 +188,12 @@ class AddNewWordActivity extends AppCompatActivity
 		wordMap ++ overridingDefs
 	}
 
-	private def fillNounForms(parameters: (List[NounStemClassEnum], Override, Map[AnyRef, Override])): Unit = parameters match
+	private def fillNounForms(): Unit = selectedNounParameters match
 	{
-		case (nsce, (Some(numCase), Some(str)), map) =>
-			val wordMaps = nsce.map(n => n -> generateFormsFrom(n.nounStemClass, (numCase, str), map))
+		case (maybeEmptyList, (Some(numCase), Some(str)), map) =>
+			val listOfNSCE = if(maybeEmptyList.isEmpty) NounStemClassEnum.values else maybeEmptyList
+
+			val wordMaps = listOfNSCE.map(n => n -> generateFormsFrom(n.nounStemClass, (numCase, str), map))
 			setInflectedFormsToUI(wordMaps)
 
 		case _ => ()
