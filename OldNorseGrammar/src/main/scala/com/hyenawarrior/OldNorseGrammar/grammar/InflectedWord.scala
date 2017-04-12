@@ -49,6 +49,9 @@ object I_Umlaut extends Umlaut
 	override val umlautTransformation = Map(
 		'a' -> 'e',
 		'á' -> 'æ',
+		'o' -> 'ø',
+		'ó' -> 'œ',
+		'ö' -> 'ø',
 		'u' -> 'y',
 		'ú' -> 'ý'
 		//"au" -> "ey"
