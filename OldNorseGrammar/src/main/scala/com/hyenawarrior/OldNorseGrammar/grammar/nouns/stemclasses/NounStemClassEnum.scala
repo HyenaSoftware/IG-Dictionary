@@ -26,10 +26,10 @@ object NounStemClassEnum extends EnumLike[NounStemClassEnum]
 	val STRONG_NEUTER			= NounStemClassEnum("Strong Neuter", null) //StrongStemClassNeuter)
 
 	val WEAK_MASCULINE_A = NounStemClassEnum("Weak Masc. A-class", null) //WeakMasculineA)
-	val WEAK_MASCULINE_R = NounStemClassEnum("Weak Masc. R-class", null) //WeakMasculineR)
+	val WEAK_MASCULINE_R = NounStemClassEnum("Weak Masc. R-class", WeakStemClassMascR)
 
-	val WEAK_FEMININE_I = NounStemClassEnum("Weak Fem. I-class", null) //WeakFeminineI)
-	val WEAK_FEMININE_U = NounStemClassEnum("Weak Fem. U-class", null) //WeakFeminineU)
+	val WEAK_FEMININE_I = NounStemClassEnum("Weak Fem. I-class", WeakStemClassFeminineI)
+	val WEAK_FEMININE_U = NounStemClassEnum("Weak Fem. U-class", WeakStemClassFeminineU)
 
 	val WEAK_NEUTER_U		= NounStemClassEnum("Weak Neuter", null) //WeakNeuterU)
 }
