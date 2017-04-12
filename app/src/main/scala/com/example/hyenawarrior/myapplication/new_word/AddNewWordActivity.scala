@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.{LayoutInflater, View}
 import android.widget._
+import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.NounDeclensionAdapter
 import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivity.{INDEFINITE_NOUN_EDIT_TEXTS, NOUN_DECLENSIONS}
 import com.example.hyenawarrior.myapplication.{MainActivity, R}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
@@ -35,6 +36,10 @@ class AddNewWordActivity extends AppCompatActivity
 	type Parameters = (Option[NounStemClassEnum], Override, Map[AnyRef, Override])
 
 	var selectedNounParameters: Parameters = (None, (None, None), Map())
+
+	lazy val NounDeclensionAdapter = new NounDeclensionAdapter(this)
+
+	lazy val LL_DECL_LIST = findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
 
 	protected override def onCreate(savedInstanceState: Bundle)
 	{
@@ -156,17 +161,11 @@ class AddNewWordActivity extends AppCompatActivity
 
 	private def fillNounForms(): Unit = selectedNounParameters match
 	{
-		case (Some(_), _, _) => fillNounForms(selectedNounParameters)
-		case (None, baseDef @ (Some(_), Some(_)), map) =>
-		NounStemClassEnum.values.foreach(nsc => fillNounForms((Some(nsc), baseDef, map)))
-		case _ => ()
-	}
+		case (Some(nsce), baseDef, map) => fillNounForms((List(nsce), baseDef, map))
 
-	private def fillNounForms(parameters: Parameters): Unit = parameters match
-	{
-		case (Some(NounStemClassEnum(_, stemClass)), (Some(numCase), Some(str)), map) =>
-			val wordMap = generateFormsFrom(stemClass, (numCase, str), map)
-			setInflectedFormsToUI(wordMap)
+		case (None, baseDef @ (Some(_), Some(_)), map) =>
+			val nsces = NounStemClassEnum.values
+			fillNounForms(nsces, baseDef, map)
 
 		case _ => ()
 	}
@@ -182,6 +181,7 @@ class AddNewWordActivity extends AppCompatActivity
 		val root = baseDef match
 		{
 			case (numCase, str) if stemClass != null => stemClass.unapply(str, numCase)
+			case _ => None
 		}
 
 		val optWordsOfRoot = root.map(r => NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, -1, nd).strForm).toMap)
@@ -191,16 +191,24 @@ class AddNewWordActivity extends AppCompatActivity
 		wordMap ++ overridingDefs
 	}
 
-	private def setInflectedFormsToUI(map: Map[(Number, Case), String]): Unit =
+	private def fillNounForms(parameters: (List[NounStemClassEnum], Override, Map[AnyRef, Override])): Unit = parameters match
 	{
-		INDEFINITE_NOUN_EDIT_TEXTS
-			.foreach
-			{
-				case (id, cs, num) =>
-					val text = map.get(num, cs).getOrElse("...")
-					val textView = findViewById(id).asInstanceOf[TextView]
-					textView.setText(text)
-			}
+		case (nsce, (Some(numCase), Some(str)), map) =>
+			val wordMaps = nsce.map(n => n -> generateFormsFrom(n.nounStemClass, (numCase, str), map))
+			setInflectedFormsToUI(wordMaps)
+
+		case _ => ()
+	}
+
+	private def setInflectedFormsToUI(map: List[(NounStemClassEnum, Map[(Number, Case), String])]): Unit =
+	{
+		NounDeclensionAdapter.resetItems(map)
+
+		LL_DECL_LIST.removeAllViews()
+
+		Range(0, NounDeclensionAdapter.getCount)
+			.map(i => NounDeclensionAdapter.getView(i, null, LL_DECL_LIST))
+		  .foreach(v => LL_DECL_LIST.addView(v))
 	}
 
 	//
