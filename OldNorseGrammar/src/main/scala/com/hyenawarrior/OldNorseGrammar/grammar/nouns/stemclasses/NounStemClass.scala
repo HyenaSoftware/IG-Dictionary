@@ -1,7 +1,8 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.WordTransformation
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number, Root, Word, WordTransformation}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number, Root, Word}
 
 /**
 	* Created by HyenaWarrior on 2017.04.09..

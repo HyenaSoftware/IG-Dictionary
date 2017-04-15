@@ -2,7 +2,8 @@ package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.Number._
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, I_Umlaut, Number, U_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number}
 
 /**
 	* Created by HyenaWarrior on 2017.04.09..
