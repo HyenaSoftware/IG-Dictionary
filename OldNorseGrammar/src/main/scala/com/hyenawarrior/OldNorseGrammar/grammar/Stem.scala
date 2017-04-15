@@ -6,6 +6,6 @@ package com.hyenawarrior.OldNorseGrammar.grammar
 
 abstract class Stem(val root: Option[Root])
 {
-	override def toString = root.map(_.toString).getOrElse("Unknown")
+	override def toString: String = root.map(_.toString).getOrElse("Unknown")
 }
 
