@@ -7,7 +7,7 @@ import android.widget.AdapterView.OnItemSelectedListener
 /**
 	* Created by HyenaWarrior on 2017.04.09..
 	*/
-class SpinnerListener[T](entries: List[T], callback: T => Unit) extends OnItemSelectedListener
+class SpinnerListener[T](entries: IndexedSeq[T], callback: T => Unit) extends OnItemSelectedListener
 {
 	override def onNothingSelected(adapterView: AdapterView[_]) = ()
 

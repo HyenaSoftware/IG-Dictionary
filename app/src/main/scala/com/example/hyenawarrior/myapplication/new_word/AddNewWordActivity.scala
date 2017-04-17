@@ -10,6 +10,8 @@ import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivity.{INDEF
 import com.example.hyenawarrior.myapplication.{MainActivity, R}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.VerbStemClassEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.{VerbStemClass, VerbStemClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number}
 
 object AddNewWordActivity
@@ -26,21 +28,33 @@ object AddNewWordActivity
 		, (R.id.tvNewWord_Gen_Pl, Case.GENITIVE,		Number.PLURAL)
 	)
 
-	val NOUN_DECLENSIONS: List[(Number, Case)] = Number.conventionalValues.flatMap(n => Case.values.map(cs => (n, cs)))
+	val NOUN_DECLENSIONS: Vector[(Number, Case)] = Number.conventionalValues.flatMap(n => Case.values.map(cs => (n, cs))).toVector
 }
 
 class AddNewWordActivity extends AppCompatActivity
 {
-	lazy val tlOverrides = findViewById(R.id.tlOverrides).asInstanceOf[TableLayout]
+	outer =>
 
 	type Override = (Option[(Number, Case)], Option[String])
 	type Parameters = (List[NounStemClassEnum], Override, Map[AnyRef, Override])
 
 	var selectedNounParameters: Parameters = (List(), (None, None), Map())
+	var currentPosHelper: AddNewPosHelper = AddNewNullHelper
 
-	lazy val NounDeclensionAdapter = new NounDeclensionAdapter(this)
+	//
+	class LazyPostInit
+	{
+		val tlOverrides = findViewById(R.id.tlOverrides).asInstanceOf[TableLayout]
+		val addNewNounHelper = new AddNewNounHelper(outer)
+		val addNewVerbHelper = new AddNewVerbHelper(outer)
 
-	lazy val LL_DECL_LIST = findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
+		val NounDeclensionAdapter = new NounDeclensionAdapter(outer)
+
+		val POS_TYPES = Vector(addNewNounHelper, addNewVerbHelper, AddNewNullHelper)
+		val LL_DECL_LIST = findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
+	}
+
+	lazy val postInitContext = new LazyPostInit
 
 	protected override def onCreate(savedInstanceState: Bundle)
 	{
@@ -54,10 +68,9 @@ class AddNewWordActivity extends AppCompatActivity
 		val message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE)
 
 		//
-		val stemClassSpinnerListener = new SpinnerListener(loadStemClassEnums, onNounStemClassSelected)
-		val spSelectStemClass = findViewById(R.id.spSelectStemClass).asInstanceOf[Spinner]
-		spSelectStemClass.setOnItemSelectedListener(stemClassSpinnerListener)
-
+		val posTypeSpinnerListener = new SpinnerListener(postInitContext.POS_TYPES, onPosTypeSelected)
+		val spSelectPoS = findViewById(R.id.spSelectPoS).asInstanceOf[Spinner]
+		spSelectPoS.setOnItemSelectedListener(posTypeSpinnerListener)
 
 		//
 		val etPriText = findViewById(R.id.etNewWord_PriText).asInstanceOf[EditText]
@@ -66,12 +79,13 @@ class AddNewWordActivity extends AppCompatActivity
 		//
 		val spNounDecl = findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
 		spNounDecl.setOnItemSelectedListener(new SpinnerListener(NOUN_DECLENSIONS, onNounDeclensionSelected))
+
   }
 
 	def onRemoveOverride(view: View) = view.getTag match
 	{
 		case tableRow: TableRow =>
-			tlOverrides.removeView(tableRow)
+			postInitContext.tlOverrides.removeView(tableRow)
 
 			selectedNounParameters = selectedNounParameters match
 			{
@@ -88,7 +102,7 @@ class AddNewWordActivity extends AppCompatActivity
 	def makeSpinnerNounDeclListener(view: View) = new SpinnerListener(NOUN_DECLENSIONS, onNounDeclensionSelected(view))
 
 
-	def loadStemClassEnums: List[List[NounStemClassEnum]] =	getResources
+	def loadStemClassEnums: Vector[List[NounStemClassEnum]] =	getResources
 		.getStringArray(R.array.noun_types)
 		.map
 		{
@@ -98,7 +112,7 @@ class AddNewWordActivity extends AppCompatActivity
 			case "Neuter" => List(STRONG_NEUTER, WEAK_NEUTER_U)
 			case str => NounStemClassEnum.findByName[NounStemClassEnum](str).toList
 		}
-		.toList
+		.toVector
 
 	//
 	private def onPrimaryTextChange(str: String): Unit =
@@ -129,6 +143,17 @@ class AddNewWordActivity extends AppCompatActivity
 
 		fillNounForms()
 	}
+
+	private def onPosTypeSelected(newPosType: AddNewPosHelper) {
+
+		currentPosHelper.deactivate()
+
+		currentPosHelper = newPosType
+
+		currentPosHelper.activate()
+	}
+
+
 
 	//
 	private def onTextFormOverride(overridingView: View)(str: String)
@@ -201,17 +226,17 @@ class AddNewWordActivity extends AppCompatActivity
 
 	private def setInflectedFormsToUI(map: List[(NounStemClassEnum, Map[(Number, Case), String])]): Unit =
 	{
-		NounDeclensionAdapter.resetItems(map)
+		postInitContext.NounDeclensionAdapter.resetItems(map)
 
-		LL_DECL_LIST.removeAllViews()
+		postInitContext.LL_DECL_LIST.removeAllViews()
 
-		Range(0, NounDeclensionAdapter.getCount)
-			.map(i => NounDeclensionAdapter.getView(i, null, LL_DECL_LIST))
-		  .foreach(v => LL_DECL_LIST.addView(v))
+		Range(0, postInitContext.NounDeclensionAdapter.getCount)
+			.map(i => postInitContext.NounDeclensionAdapter.getView(i, null, postInitContext.LL_DECL_LIST))
+		  .foreach(v => postInitContext.LL_DECL_LIST.addView(v))
 	}
 
 	//
-	def addNewOverride(view: View) = if(tlOverrides.getChildCount < 8)
+	def addNewOverride(view: View) = if(postInitContext.tlOverrides.getChildCount < 8)
 	{
 		val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
 		val rowView = inflater.inflate(R.layout.new_word_overriding_def_row, null)
@@ -228,6 +253,6 @@ class AddNewWordActivity extends AppCompatActivity
 		val spNounDecl = rowView.findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
 		spNounDecl.setOnItemSelectedListener(makeSpinnerNounDeclListener(rowView))
 
-		tlOverrides.addView(rowView)
+		postInitContext.tlOverrides.addView(rowView)
 	}
 }

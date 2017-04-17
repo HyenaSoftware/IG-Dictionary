@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="verb_types">
+        <item>Undefined</item>
+        <item>Strong</item>
+        <item>Weak</item>
+        <item>Irregular</item>
+        <item>Strong 1st class</item>
+        <item>Strong 2nd class</item>
+        <item>Strong 3rd class</item>
+        <item>Strong 4th class</item>
+        <item>Strong 5th class</item>
+        <item>Strong 6th class</item>
+        <item>Strong 7th class</item>
+
+        <item>Weak A-stem</item>
+        <item>Weak J-stem</item>
+        <item>Weak I-stem</item>
+    </string-array>
+    <string-array name="verb_decl">
+        <item>Sg 1st</item>
+        <item>Sg 2nd</item>
+        <item>Sg 3rd</item>
+
+        <item>Pl 1st</item>
+        <item>Pl 2nd</item>
+        <item>Pl 3rd</item>
+    </string-array>
+</resources>

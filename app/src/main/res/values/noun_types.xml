@@ -31,16 +31,4 @@
         <item>Pl Dat</item>
         <item>Pl Gen</item>
     </string-array>
-
-
-
-    <string-array name="verb_decl">
-        <item>Sg 1st</item>
-        <item>Sg 2nd</item>
-        <item>Sg 3rd</item>
-
-        <item>Pl 1st</item>
-        <item>Pl 2nd</item>
-        <item>Pl 3rd</item>
-    </string-array>
 </resources>
