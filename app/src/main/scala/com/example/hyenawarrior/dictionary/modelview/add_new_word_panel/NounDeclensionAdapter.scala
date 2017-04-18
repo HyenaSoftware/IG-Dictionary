@@ -5,13 +5,27 @@ import android.view.{View, ViewGroup}
 import android.widget.TextView
 import com.example.hyenawarrior.dictionary.modelview.CustomAdapter
 import com.example.hyenawarrior.myapplication.R
-import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivity
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number}
 
 /**
 	* Created by HyenaWarrior on 2017.04.12..
 	*/
+object NounDeclensionAdapter
+{
+	val NOUN_EDIT_TEXTS = List(
+		(R.id.tvNewWord_Nom_Sg, Case.NOMINATIVE,	Number.SINGULAR)
+		, (R.id.tvNewWord_Acc_Sg, Case.ACCUSATIVE,	Number.SINGULAR)
+		, (R.id.tvNewWord_Dat_Sg, Case.DATIVE,			Number.SINGULAR)
+		, (R.id.tvNewWord_Gen_Sg, Case.GENITIVE,		Number.SINGULAR)
+
+		, (R.id.tvNewWord_Nom_Pl, Case.NOMINATIVE,	Number.PLURAL)
+		, (R.id.tvNewWord_Acc_Pl, Case.ACCUSATIVE,	Number.PLURAL)
+		, (R.id.tvNewWord_Dat_Pl, Case.DATIVE,			Number.PLURAL)
+		, (R.id.tvNewWord_Gen_Pl, Case.GENITIVE,		Number.PLURAL)
+	)
+}
+
 class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemClassEnum, Map[(Number, Case), String])](activity)
 {
 	override protected def getNewView(i: Int, viewGroup: ViewGroup): View =
@@ -26,7 +40,7 @@ class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemC
 		val tvNounDeclDesc = view.findViewById(R.id.tvNounDeclDesc).asInstanceOf[TextView]
 		tvNounDeclDesc.setText(if (isSingleList)	"" else ncName)
 
-		AddNewWordActivity.INDEFINITE_NOUN_EDIT_TEXTS.foreach
+		NounDeclensionAdapter.NOUN_EDIT_TEXTS.foreach
 		{
 			case (id, cs, num) =>
 				val tvNC = view.findViewById(id).asInstanceOf[TextView]
