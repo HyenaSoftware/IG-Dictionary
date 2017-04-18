@@ -64,7 +64,7 @@ object Syllables {
 		val vowelIndiciesReduced = reduce(vowelIndicies)
 
 		// (1,3), (4,5)
-		val syllableEnds = vowelIndiciesReduced.tail.map(_ - 1) :+ word.length
+		val syllableEnds = vowelIndiciesReduced.drop(1).map(_ - 1) :+ word.length
 
 		val syllables = split(word, 0, syllableEnds)
 
