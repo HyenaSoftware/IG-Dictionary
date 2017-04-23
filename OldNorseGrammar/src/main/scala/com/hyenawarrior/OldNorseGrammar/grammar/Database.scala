@@ -30,12 +30,12 @@ class Database(defs: Map[Language, List[MeaningDefinition]])
 		}
 	}
 
-	implicit object NumFlagProp extends WordFlagProp[Number] {
+	implicit object NumFlagProp extends WordFlagProp[GNumber] {
 
 		def asEnum(flags: Set[WordDescFlags]) = flags.find(_.isInstanceOf[NumFlag]) match {
 
-			case Some(NumFlag.SINGULAR) => Some(Number.SINGULAR)
-			case Some(NumFlag.PLURAL) => Some(Number.PLURAL)
+			case Some(NumFlag.SINGULAR) => Some(GNumber.SINGULAR)
+			case Some(NumFlag.PLURAL) => Some(GNumber.PLURAL)
 			case _ => None
 		}
 	}
@@ -71,7 +71,7 @@ class Database(defs: Map[Language, List[MeaningDefinition]])
 			val caseOverrides = nonRootWordDefs.map(wd => {
 
 				val cs = implicitly[WordFlagProp[Case]].asEnum(wd.wordDescFlags)
-				val num = implicitly[WordFlagProp[Number]].asEnum(wd.wordDescFlags)
+				val num = implicitly[WordFlagProp[GNumber]].asEnum(wd.wordDescFlags)
 
 				(num, cs) -> wd.word
 			}).toMap
@@ -112,7 +112,7 @@ case class WordGroup(words: List[Word], meaningId: Int, meaningDescFlags: Set[Me
 {
 	def isPrimary(w: Word) = w.pos match
 	{
-		case nn: Noun => (Number.SINGULAR, Case.NOMINATIVE) == nn.decl
+		case nn: Noun => (GNumber.SINGULAR, Case.NOMINATIVE) == nn.decl
 		case _ => false
 	}
 

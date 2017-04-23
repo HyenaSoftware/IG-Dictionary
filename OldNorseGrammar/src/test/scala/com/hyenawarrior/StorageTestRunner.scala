@@ -5,7 +5,7 @@ import java.io.File
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Database, Language, Number, Root, Word}
+import com.hyenawarrior.OldNorseGrammar.grammar._
 import com.hyenawarrior.dictionaryLoader.Storage
 
 import scala.io.Source
@@ -56,7 +56,7 @@ object StorageTestRunner
         val cmds = cmd.split(' ')
         val word = cmds(1)
         val r = Root(word)
-        val n = new Noun(word, -1, (Number.SINGULAR, Case.NOMINATIVE), Some(r))
+        val n = new Noun(word, -1, (GNumber.SINGULAR, Case.NOMINATIVE), r)
         val w = Word(n, List(U_Umlaut))
         println(s" * $w")
 
@@ -78,8 +78,8 @@ object StorageTestRunner
         }
 
         val num = strNum match {
-          case "sg" => Number.SINGULAR
-          case "pl" => Number.PLURAL
+          case "sg" => GNumber.SINGULAR
+          case "pl" => GNumber.PLURAL
           case _ => throw new IllegalStateException("Number missing")
         }
 

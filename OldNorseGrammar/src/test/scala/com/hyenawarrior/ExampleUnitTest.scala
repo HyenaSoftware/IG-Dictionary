@@ -1,8 +1,7 @@
 package com.hyenawarrior
 
+import com.hyenawarrior.OldNorseGrammar.grammar._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, Number, PoS, Root, Word}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -19,7 +18,7 @@ class ExampleUnitTest {
   }
 
   @Test
-  def testInactiveUmlaut {
+  def testInactiveUmlaut() {
 
     val mp = MockPoS("kallada")
 
@@ -29,7 +28,7 @@ class ExampleUnitTest {
   }
 
   @Test
-  def testActiveUmlaut {
+  def testActiveUmlaut() {
 
     val mp = MockPoS("kalladu")
 

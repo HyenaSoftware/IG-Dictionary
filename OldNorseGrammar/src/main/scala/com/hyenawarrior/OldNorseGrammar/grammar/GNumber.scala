@@ -5,18 +5,18 @@ import com.hyenawarrior.auxiliary.EnumLike
 /**
 	* Created by HyenaWarrior on 2017.03.01..
 	*/
-final case class Number(str: String) extends DescriptorFlag
+final case class GNumber(str: String) extends DescriptorFlag
 {
-	Number.add(str -> this)
+	GNumber.add(str -> this)
 
 	override def toString = str
 }
 
-object Number extends EnumLike[Number]
+object GNumber extends EnumLike[GNumber]
 {
-	val SINGULAR = Number("Singular")
-	val DUAL = Number("Dual")
-	val PLURAL = Number("Plural")
+	val SINGULAR = GNumber("Singular")
+	val DUAL = GNumber("Dual")
+	val PLURAL = GNumber("Plural")
 
 	def conventionalValues = List(SINGULAR, PLURAL)
 }
