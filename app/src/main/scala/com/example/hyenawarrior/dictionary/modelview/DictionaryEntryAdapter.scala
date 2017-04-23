@@ -5,7 +5,7 @@ import android.view.{View, ViewGroup}
 import android.widget._
 import com.example.hyenawarrior.dictionary.model.DictionaryEntry
 import com.example.hyenawarrior.myapplication.R
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, Number}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, GNumber$}
 
 
 case class MetaData(words: List[String])

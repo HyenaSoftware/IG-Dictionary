@@ -1,6 +1,6 @@
 package com.example.hyenawarrior.dictionary.modelview
 
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, Number}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, GNumber}
 
 /**
 	* Created by HyenaWarrior on 2017.04.09..
@@ -13,7 +13,7 @@ object GrammarHelpers
 		case Case.ACCUSATIVE => "acc"
 		case Case.DATIVE => "dat"
 		case Case.GENITIVE => "gen"
-		case Number.SINGULAR => "sg"
-		case Number.PLURAL => "pl"
+		case GNumber.SINGULAR => "sg"
+		case GNumber.PLURAL => "pl"
 	}
 }

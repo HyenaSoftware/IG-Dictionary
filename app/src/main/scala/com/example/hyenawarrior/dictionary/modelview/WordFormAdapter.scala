@@ -2,10 +2,9 @@ package com.example.hyenawarrior.dictionary.modelview
 
 import android.app.Activity
 import android.view.{View, ViewGroup}
-import android.widget.{GridLayout, TextView}
-import com.example.hyenawarrior.dictionary.model.DictionaryEntry
+import android.widget.TextView
 import com.example.hyenawarrior.myapplication.R
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, Number, Word}
+import com.hyenawarrior.OldNorseGrammar.grammar._
 
 /**
 	* Created by HyenaWarrior on 2017.04.04..
@@ -36,7 +35,7 @@ class WordFormAdapter(activity: Activity) extends CustomAdapter[Word](activity)
 		case Case.ACCUSATIVE => "acc"
 		case Case.DATIVE => "dat"
 		case Case.GENITIVE => "gen"
-		case Number.SINGULAR => "sg"
-		case Number.PLURAL => "pl"
+		case GNumber.SINGULAR => "sg"
+		case GNumber.PLURAL => "pl"
 	}
 }

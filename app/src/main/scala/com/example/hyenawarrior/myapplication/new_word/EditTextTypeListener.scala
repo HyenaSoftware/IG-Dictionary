@@ -4,7 +4,7 @@ import android.app.Activity
 import android.text.{Editable, TextWatcher}
 import android.widget.TextView
 import com.example.hyenawarrior.myapplication.R
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber$}
 
 /**
 	* Created by HyenaWarrior on 2017.04.09..

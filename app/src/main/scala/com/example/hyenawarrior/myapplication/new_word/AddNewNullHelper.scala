@@ -1,7 +1,7 @@
 package com.example.hyenawarrior.myapplication.new_word
 import android.view.View
 import android.widget.TableRow
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, Number}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
 /**
 	* Created by HyenaWarrior on 2017.04.17..
@@ -20,7 +20,7 @@ object AddNewNullHelper extends AddNewPosHelper
 
 	override def onTextFormOverride(overridingView: View)(str: String): Unit = { }
 
-	override def onNounDeclensionSelected(overridingView: View)(item: (Number, Case)): Unit = { }
+	override def onNounDeclensionSelected(overridingView: View)(item: (GNumber, Case)): Unit = { }
 
 	override def onDeclensionSelected(index: Int): Unit = { }
 }
