@@ -1,11 +1,31 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Syllable
+import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
 
 /**
   * Created by HyenaWarrior on 2017.04.15..
   */
 trait Umlaut extends WordTransformation {
+
+	def unapply(str: String): String = {
+
+		val Syllables(syllables) = str
+
+		val newSyllables = unapply(syllables)
+
+		newSyllables.map(_.letters).reduce[String]{ case(a, b) => a + b }
+	}
+
+	def unapply(syllables: List[Syllable]): List[Syllable] = {
+
+		syllables.map
+		{
+			case Syllable(str, flag) =>
+				val str2 = str.map(c => inverseUmlautTransform.getOrElse(c, c))
+
+				Syllable(str2, flag)
+		}
+	}
 
 	override def forceApply(syllables: List[Syllable]): List[Syllable] = syllables.map
 	{
@@ -16,7 +36,7 @@ trait Umlaut extends WordTransformation {
 
 	private def selector(e: (Char, Char), isStressed: Boolean): Char = if(isStressed)	e._1 else e._2
 
-	override protected def isEligible(syllables: List[Syllable]): Boolean =	{
+	override def isEligible(syllables: List[Syllable]): Boolean =	{
 
 		val lastSyl = syllables.last
 		lastSyl.letters.exists(c => c == trigger)
@@ -24,6 +44,7 @@ trait Umlaut extends WordTransformation {
 
 	val trigger: Char
 	val umlautTransformation: Map[Char, (Char, Char)]
+	lazy val inverseUmlautTransform = umlautTransformation.flatMap { case (a, (b, c)) => Seq(b -> a, c -> a) }
 }
 
 object U_Umlaut extends Umlaut {

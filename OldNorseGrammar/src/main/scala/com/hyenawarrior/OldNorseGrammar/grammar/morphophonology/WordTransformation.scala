@@ -14,5 +14,5 @@ trait WordTransformation {
 
 	def forceApply(syllables: List[Syllable]): List[Syllable]
 
-	protected def isEligible(syllables: List[Syllable]): Boolean
+	def isEligible(syllables: List[Syllable]): Boolean
 }

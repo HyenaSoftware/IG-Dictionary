@@ -14,7 +14,7 @@ case class Word(pos: PoS, transformations: List[WordTransformation])
 	{
 		val Syllables(syllables) = pos.strForm
 
-		val transformedSyllables = transformations.foldLeft(syllables){ (sys, trn) => trn(sys) }
+		val transformedSyllables = transformations.foldLeft(syllables){ (sys, trn) => trn.forceApply(sys) }
 
 		val str = Syllables(transformedSyllables)
 
@@ -33,7 +33,7 @@ object Syllables {
 
 	private val VOWELS = "aáeéiíoóöuú"
 
-	private def isVowel(c: Char): Boolean = VOWELS.exists(c == _)
+	def isVowel(c: Char): Boolean = VOWELS.exists(c == _)
 
 	private def split(word: String, i: Int, syllableEnds: Seq[Int]): List[Syllable] = syllableEnds.headOption match
 	{

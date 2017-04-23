@@ -1,13 +1,14 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
-import com.hyenawarrior.OldNorseGrammar.grammar.{DescriptorFlag, PoS, Stem}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.{DescriptorFlag, GNumber, PoS, Pronoun}
 
 /**
-	* Created by HyenaWarrior on 2017.03.21..
+	* Created by HyenaWarrior on 2017.04.19..
 	*/
-class Verb(val str: String, val meaningId: Int) extends Stem(None) with PoS
+abstract class Verb(str: String, verbClass: VerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum) extends PoS
 {
-	override def strForm = str
+	override def strForm: String = str
 
 	override def descriptorFlags: List[DescriptorFlag] = List()
 }
