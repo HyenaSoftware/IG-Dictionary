@@ -5,19 +5,30 @@ import android.view.View
 import android.widget.{LinearLayout, Spinner, TableRow}
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
+import com.example.hyenawarrior.myapplication.new_word.AddNewVerbHelper.{ALL_DECLENSION, Declension, NON_FINITIVE_VERB_TYPES, TENSES}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{StrongVerbStem, VerbStem}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.StrongVerbStemClasses
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.StrongVerbStemClasses
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber, Pronoun}
 
 /**
 	* Created by HyenaWarrior on 2017.04.17..
 	*/
+object AddNewVerbHelper
+{
+	val NON_FINITIVE_VERB_TYPES = List(INFINITIVE, PRESENT_PARTICIPLE, PAST_PARTICIPLE)
+	val TENSES = List(PRESENT, PAST)
+
+	val ALL_DECLENSION = Pronoun.values.flatMap(p => TENSES.map(t => p -> t))
+
+	type Declension = Either[(Pronoun, VerbTenseEnum), NonFinitiveVerbType]
+}
+
 class AddNewVerbHelper(activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.verb_types)
 {
+	type OptDeclension = Either[(Option[Pronoun], Option[VerbTenseEnum]), Option[NonFinitiveVerbType]]
 	type Override = (Option[Pronoun], Option[VerbTenseEnum], Option[String])
 	type Parameters = (List[VerbClassEnum], Override, Map[AnyRef, Override])
 
@@ -95,38 +106,57 @@ class AddNewVerbHelper(activity: Activity, stemClassSpinner: Spinner) extends Ab
 
 	private def generateForm(verb: Verb, verbClass: VerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum): Option[StrongVerb] = verb match {
 
-		case strongVerb: StrongVerb =>
-			val optVerb = StrongVerbStemClasses.convertTo(strongVerb, Left(pronoun, VerbModeEnum.INDICATIVE, tense))
-
-			optVerb
+		case strongVerb: StrongVerb => StrongVerbStemClasses.convertTo(strongVerb, Left(pronoun, VerbModeEnum.INDICATIVE, tense))
+		case _ => None
 	}
 
-	private def generateFormsFrom(verbClass: VerbClassEnum, baseDef: (Pronoun, VerbTenseEnum, String), map: Map[AnyRef, Override]):	Map[(Pronoun, VerbTenseEnum), String] =	{
+	private def generateNonFinitiveForm(verb: Verb, verbClass: VerbClassEnum, givenNonFinVerbTypes: List[NonFinitiveVerbType]): Map[NonFinitiveVerbType, StrongVerb] = verb match {
+
+		case strongVerb: StrongVerb => givenNonFinVerbTypes
+				.flatMap
+				{
+					nonFinVerbType => StrongVerbStemClasses
+						.convertTo(strongVerb, Right(nonFinVerbType))
+						.map(x => nonFinVerbType -> x)
+				}
+			  .toMap
+
+		case _ => Map()
+	}
+
+	private def generateFormsFrom(verbClass: VerbClassEnum, baseDef: (Pronoun, VerbTenseEnum, String), map: Map[AnyRef, Override]):	Map[Declension, String] =	{
+
+		val (basePronoun, baseTense, baseStr) = baseDef
 
 		val overridingDefs = map.values.flatMap
 		{
-			case (Some(pronoun), Some(tense), Some(str)) => Some(pronoun -> str)
+			case (Some(pronoun), Some(tense), Some(str)) => Some(pronoun -> tense -> str)
 			case _ => None
 		}.toMap
 
-		val missingPronouns = Pronoun.values.filterNot(overridingDefs.keySet.contains(_))
-		val TENSES = List(PRESENT, PAST)
+		val missingDeclensions = ALL_DECLENSION
+			.filterNot(overridingDefs.keySet.contains(_))
+		  //.filterNot{ case (p, t) => p == basePronoun && t == baseTense }
 
-		val (basePronoun, baseTense, baseStr) = baseDef
-		val baseVerb = StrongVerb(baseStr, verbClass, basePronoun, baseTense)
+		val baseVerb = FinitiveStrongVerb(baseStr, verbClass, basePronoun, baseTense)
 		//val baseStem = StrongVerbGenerator.stemFrom(baseVerb)
 
-		val missingVerbs = missingPronouns
-			.flatMap(p => TENSES.map(t => p -> t))
+		// TODO: Word() should be used instead of verb.strForm to handle umlauts and other transformations correctly
+
+		val missingVerbs: Map[Declension, String] = missingDeclensions
 		  .flatMap
 			{
-				case(pn, tn) => generateForm(baseVerb, verbClass, pn, tn).map(v => pn -> tn -> v.strForm)
+				case(pn, tn) =>	generateForm(baseVerb, verbClass, pn, tn).map(v => Left(pn -> tn) -> v.strForm)
 			}
 			.toMap
 
+		val missingNonFinVerbs: Map[Declension, String] = generateNonFinitiveForm(baseVerb, verbClass, NON_FINITIVE_VERB_TYPES)
+			.map { case (k, v) => Right(k) -> v.strForm }
+
 		if(missingVerbs.nonEmpty)
 		{
-			Map(basePronoun -> baseTense -> baseStr) ++ missingVerbs
+			//Map(Left(basePronoun -> baseTense) -> baseStr) ++
+				missingVerbs ++ missingNonFinVerbs
 		}
 		else
 		{
@@ -148,7 +178,7 @@ class AddNewVerbHelper(activity: Activity, stemClassSpinner: Spinner) extends Ab
 		case _ => ()
 	}
 
-	private def setInflectedFormsToUI(map: List[(VerbClassEnum, Map[(Pronoun, VerbTenseEnum), String])]): Unit =
+	private def setInflectedFormsToUI(map: List[(VerbClassEnum, Map[Declension, String])]): Unit =
 	{
 		VerbDeclensionAdapter.resetItems(map)
 
