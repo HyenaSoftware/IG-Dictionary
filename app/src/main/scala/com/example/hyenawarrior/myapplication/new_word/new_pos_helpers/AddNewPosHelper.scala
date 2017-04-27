@@ -1,4 +1,4 @@
-package com.example.hyenawarrior.myapplication.new_word
+package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
 import android.view.View
 import android.widget.TableRow

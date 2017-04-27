@@ -1,4 +1,4 @@
-package com.example.hyenawarrior.myapplication.new_word
+package com.example.hyenawarrior.dictionary.modelview
 
 import android.view.View
 import android.widget.AdapterView

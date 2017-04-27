@@ -1,11 +1,10 @@
-package com.example.hyenawarrior.myapplication.new_word
+package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
 import android.app.Activity
 import android.view.View
 import android.widget.{LinearLayout, Spinner, TableRow}
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.NounDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
-import com.example.hyenawarrior.myapplication.new_word.AddNewNounHelper.NOUN_DECLENSIONS
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
@@ -18,7 +17,7 @@ object AddNewNounHelper
 	val NOUN_DECLENSIONS: Vector[(GNumber, Case)] = GNumber.conventionalValues.flatMap(n => Case.values.map(cs => (n, cs))).toVector
 }
 
-class AddNewNounHelper(activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.noun_types)
+class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.noun_types)
 {
 	type Override = (Option[(GNumber, Case)], Option[String])
 	type Parameters = (List[NounStemClassEnum], Override, Map[AnyRef, Override])
@@ -26,7 +25,7 @@ class AddNewNounHelper(activity: Activity, stemClassSpinner: Spinner) extends Ab
 	var selectedNounParameters: Parameters = (List(), (None, None), Map())
 
 	val NounDeclensionAdapter = new NounDeclensionAdapter(activity)
-	val LL_DECL_LIST = activity.findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
+	val LL_DECL_LIST = rootView.findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
 
 	override def activate(): Unit = {
 
@@ -66,7 +65,7 @@ class AddNewNounHelper(activity: Activity, stemClassSpinner: Spinner) extends Ab
 
 	override def onDeclensionSelected(index: Int): Unit =
 	{
-		onNounDeclensionSelected(NOUN_DECLENSIONS(index))
+		onNounDeclensionSelected(AddNewNounHelper.NOUN_DECLENSIONS(index))
 	}
 
 	private def onNounDeclensionSelected(item: (GNumber, Case)): Unit =
@@ -152,7 +151,7 @@ class AddNewNounHelper(activity: Activity, stemClassSpinner: Spinner) extends Ab
 			case _ => None
 		}
 
-		val optWordsOfRoot = root.map(r => NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, -1, nd).strForm).toMap)
+		val optWordsOfRoot = root.map(r => AddNewNounHelper.NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, -1, nd).strForm).toMap)
 
 		val wordMap = optWordsOfRoot.getOrElse(Map())
 

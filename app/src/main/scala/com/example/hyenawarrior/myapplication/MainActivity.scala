@@ -7,7 +7,7 @@ import android.view.View
 import android.widget._
 import com.example.hyenawarrior.dictionary.model.{AndroidStorage, Database, DictionaryEntry}
 import com.example.hyenawarrior.dictionary.modelview.DictionaryEntryAdapter
-import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivity
+import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivityPager
 import com.hyenawarrior.OldNorseGrammar.grammar.{Database, Language}
 import com.hyenawarrior.dictionaryLoader.Storage
 
@@ -75,7 +75,7 @@ class MainActivity extends AppCompatActivity
 
 	def addNewWord(view: View)
 	{
-		val clazz: Class[AddNewWordActivity] = classOf[AddNewWordActivity]
+		val clazz: Class[AddNewWordActivityPager] = classOf[AddNewWordActivityPager]
 		val intent = new Intent(this, clazz)
 
 		intent.putExtra(MainActivity.EXTRA_MESSAGE, "data")

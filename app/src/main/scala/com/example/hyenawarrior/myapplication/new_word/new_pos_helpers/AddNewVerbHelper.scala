@@ -1,11 +1,11 @@
-package com.example.hyenawarrior.myapplication.new_word
+package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
 import android.app.Activity
 import android.view.View
 import android.widget.{LinearLayout, Spinner, TableRow}
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
-import com.example.hyenawarrior.myapplication.new_word.AddNewVerbHelper.{ALL_DECLENSION, Declension, NON_FINITIVE_VERB_TYPES, TENSES}
+import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewVerbHelper.{Declension, NON_FINITIVE_VERB_TYPES}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
@@ -26,7 +26,7 @@ object AddNewVerbHelper
 	type Declension = Either[(Pronoun, VerbTenseEnum), NonFinitiveVerbType]
 }
 
-class AddNewVerbHelper(activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.verb_types)
+class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.verb_types)
 {
 	type OptDeclension = Either[(Option[Pronoun], Option[VerbTenseEnum]), Option[NonFinitiveVerbType]]
 	type Override = (Option[Pronoun], Option[VerbTenseEnum], Option[String])
@@ -35,7 +35,7 @@ class AddNewVerbHelper(activity: Activity, stemClassSpinner: Spinner) extends Ab
 	var selectedNounParameters: Parameters = (List(), (Some(Pronoun.SG_1), Some(VerbTenseEnum.PRESENT), None), Map())
 
 	val VerbDeclensionAdapter = new VerbDeclensionAdapter(activity)
-	val LL_DECL_LIST = activity.findViewById(R.id.llVerbDeclensions).asInstanceOf[LinearLayout]
+	val LL_DECL_LIST = rootView.findViewById(R.id.llVerbDeclensions).asInstanceOf[LinearLayout]
 
 	val LOAD_STEM_CLASS_ENUMS: Vector[List[VerbClassEnum]] = activity.getResources
 		.getStringArray(R.array.verb_types)
@@ -134,7 +134,7 @@ class AddNewVerbHelper(activity: Activity, stemClassSpinner: Spinner) extends Ab
 			case _ => None
 		}.toMap
 
-		val missingDeclensions = ALL_DECLENSION
+		val missingDeclensions = AddNewVerbHelper.ALL_DECLENSION
 			.filterNot(overridingDefs.keySet.contains(_))
 		  //.filterNot{ case (p, t) => p == basePronoun && t == baseTense }
 

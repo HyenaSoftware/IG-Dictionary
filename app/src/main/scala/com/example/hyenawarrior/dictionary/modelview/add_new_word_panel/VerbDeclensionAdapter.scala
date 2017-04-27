@@ -5,13 +5,11 @@ import android.view.{View, ViewGroup}
 import android.widget.TextView
 import com.example.hyenawarrior.dictionary.modelview.CustomAdapter
 import com.example.hyenawarrior.myapplication.R
-import com.example.hyenawarrior.myapplication.new_word.AddNewVerbHelper
-import com.example.hyenawarrior.myapplication.new_word.AddNewVerbHelper.Declension
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
+import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewVerbHelper.Declension
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _, _}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{NonFinitiveVerbType, VerbClassEnum, VerbTenseEnum}
 
 /**
 	* Created by HyenaWarrior on 2017.04.22..

@@ -1,22 +1,23 @@
-package com.example.hyenawarrior.myapplication.new_word
+package com.example.hyenawarrior.myapplication.new_word.pages
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.view.{LayoutInflater, View}
+import android.support.v4.app.Fragment
+import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget._
-import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.NounDeclensionAdapter
-import com.example.hyenawarrior.myapplication.{MainActivity, R}
+import com.example.hyenawarrior.dictionary.modelview.{EditTextTypeListener, SpinnerListener}
+import com.example.hyenawarrior.myapplication.R
+import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.{AddNewNounHelper, AddNewNullHelper, AddNewPosHelper, AddNewVerbHelper}
 
-class AddNewWordActivity extends AppCompatActivity
+object AddNewWordActivity extends Fragment
 {
 	outer =>
 
 	var currentPosHelper: AddNewPosHelper = AddNewNullHelper
 
 	//
-	class LazyPostInit {
+	class LazyPostInit(val rootView: View) {
 
 		trait Listener extends OnItemSelectedListener	{
 
@@ -39,50 +40,45 @@ class AddNewWordActivity extends AppCompatActivity
 			}
 		}
 
-		val tlOverrides = findViewById(R.id.tlOverrides).asInstanceOf[TableLayout]
+		val tlOverrides = rootView.findViewById(R.id.tlOverrides).asInstanceOf[TableLayout]
 
-		val SP_SELECT_STEM_CLASS = findViewById(R.id.spSelectStemClass).asInstanceOf[Spinner]
+		val SP_SELECT_STEM_CLASS = rootView.findViewById(R.id.spSelectStemClass).asInstanceOf[Spinner]
 		SP_SELECT_STEM_CLASS.setOnItemSelectedListener(StemClassListener)
 
-		val spPosDeclension = findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
+		val spPosDeclension = rootView.findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
 		spPosDeclension.setOnItemSelectedListener(DeclensionListener)
 
-		val addNewNounHelper = new AddNewNounHelper(outer, SP_SELECT_STEM_CLASS)
-		val addNewVerbHelper = new AddNewVerbHelper(outer, SP_SELECT_STEM_CLASS)
+		val addNewNounHelper = new AddNewNounHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
+		val addNewVerbHelper = new AddNewVerbHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
 
-		val NounDeclensionAdapter = new NounDeclensionAdapter(outer)
+		//val NounDeclensionAdapter = new NounDeclensionAdapter(outer.getActivity)
 
 		val POS_TYPES = Vector(addNewNounHelper, addNewVerbHelper, AddNewNullHelper)
-		val LL_DECL_LIST = findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
+		//val LL_DECL_LIST = rootView.findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
 	}
 
-	lazy val postInitContext = new LazyPostInit
+	var postInitContext: LazyPostInit = null
 
-	protected override def onCreate(savedInstanceState: Bundle)
-	{
-		super.onCreate(savedInstanceState)
+	override def onCreateView(inflater: LayoutInflater, container: ViewGroup, savedInstanceState: Bundle): View = {
 
-    setContentView(R.layout.activity_add_new_word)
+		val rootView = inflater.inflate(R.layout.activity_add_new_word, container, false)
 
-		//https://developer.android.com/training/basics/firstapp/starting-activity.html
-		// Get the Intent that started this activity and extract the string
-		val intent = getIntent
-		val message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE)
+		postInitContext = new LazyPostInit(rootView)
 
 		//
 		val posTypeSpinnerListener = new SpinnerListener(postInitContext.POS_TYPES, onPosTypeSelected)
-		val spSelectPoS = findViewById(R.id.spSelectPoS).asInstanceOf[Spinner]
+		val spSelectPoS = rootView.findViewById(R.id.spSelectPoS).asInstanceOf[Spinner]
 		spSelectPoS.setOnItemSelectedListener(posTypeSpinnerListener)
 
 		//
-		val etPriText = findViewById(R.id.etNewWord_PriText).asInstanceOf[EditText]
-		etPriText.addTextChangedListener(new EditTextTypeListener(this, onPrimaryTextChange))
+		val etPriText = rootView.findViewById(R.id.etNewWord_PriText).asInstanceOf[EditText]
+		etPriText.addTextChangedListener(new EditTextTypeListener(onPrimaryTextChange))
+
+		rootView
   }
 
-
-
 	//
-	def makeFormOverrideTextListener(view: View) = new EditTextTypeListener(this, onTextFormOverride(view))
+	private def makeFormOverrideTextListener(view: View) = new EditTextTypeListener(onTextFormOverride(view))
 
 	// forwarders
 	def onRemoveOverride(view: View) = view.getTag match
@@ -111,7 +107,7 @@ class AddNewWordActivity extends AppCompatActivity
 	//
 	def addNewOverride(view: View) = if(postInitContext.tlOverrides.getChildCount < 8)
 	{
-		val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
+		val inflater = getActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
 		val rowView = inflater.inflate(R.layout.new_word_overriding_def_row, null)
 
 		// add hint, it's necessary to be able to remove the overrides

@@ -1,8 +1,7 @@
-package com.example.hyenawarrior.myapplication.new_word
+package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
 import android.app.Activity
 import android.widget.{ArrayAdapter, Spinner}
-import com.example.hyenawarrior.myapplication.R
 
 /**
 	* Created by HyenaWarrior on 2017.04.17..
