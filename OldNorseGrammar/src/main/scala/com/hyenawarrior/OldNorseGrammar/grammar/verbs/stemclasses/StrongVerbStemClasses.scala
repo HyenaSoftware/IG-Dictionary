@@ -8,6 +8,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{StrongVerbStem, VerbStemEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbClassEnum, _}
 
+import scala.Option.option2Iterable
+
 /**
 	* Created by HyenaWarrior on 2017.04.19..
 	*/
@@ -60,10 +62,10 @@ object StrongVerbStemClasses extends VerbStemClass
 
 	def changeStem(srcStem: StrongVerbStem, currentClass: VerbClassEnum, dstVerbStemType: VerbStemEnum): Option[StrongVerbStem] = {
 
-		val CURRENT_ABLAUT = currentClass.ablaut.VOWELS
+		val CURRENT_ABLAUT = Option(currentClass.ablaut).map(_.VOWELS)
 
-		val optSrcAblaut = CURRENT_ABLAUT.get(srcStem.stemType)
-		val optDstAblaut = CURRENT_ABLAUT.get(dstVerbStemType)
+		val optSrcAblaut = CURRENT_ABLAUT.flatMap(_.get(srcStem.stemType))
+		val optDstAblaut = CURRENT_ABLAUT.flatMap(_.get(dstVerbStemType))
 
 		(optSrcAblaut, optDstAblaut) match
 		{
