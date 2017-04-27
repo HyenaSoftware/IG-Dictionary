@@ -1,41 +1,55 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses
 
 import com.hyenawarrior.OldNorseGrammar.grammar._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, AblautTransformation}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{AblautGrade, AblautTransformation}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{StrongVerbStem, VerbStemEnum}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbClassEnum, VerbTenseEnum, _}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbClassEnum, _}
 
 /**
 	* Created by HyenaWarrior on 2017.04.19..
 	*/
 object StrongVerbStemClasses extends VerbStemClass
 {
-	val STEMCLASSES_TO_ABLAUT: Map[(VerbStemEnum, VerbClassEnum), Ablaut] = Map(
+	val STEMCLASSES_TO_ABLAUT: Map[(VerbStemEnum, VerbClassEnum), AblautGrade] =
+		Map(
+			(PRESENT_STEM,						STRONG_1ST_CLASS) -> AblautGrade("í"),
+			(PRETERITE_SINGULAR_STEM,	STRONG_1ST_CLASS) -> AblautGrade("ei"),
+			(PRETERITE_PLURAL_STEM,		STRONG_1ST_CLASS) -> AblautGrade("i"),
+			(PERFECT_STEM,						STRONG_1ST_CLASS) -> AblautGrade("i"),
 
-		(PRESENT_STEM,						STRONG_1ST_CLASS) -> Ablaut("í"),
-		(PRETERITE_SINGULAR_STEM,	STRONG_1ST_CLASS) -> Ablaut("ei"),
-		(PRETERITE_PLURAL_STEM,		STRONG_1ST_CLASS) -> Ablaut("i"),
-		(PERFECT_STEM,						STRONG_1ST_CLASS) -> Ablaut("i"),
+			(PRESENT_STEM,						STRONG_3RD_CLASS) -> AblautGrade("e"),
+			(PRETERITE_SINGULAR_STEM,	STRONG_3RD_CLASS) -> AblautGrade("a"),
+			(PRETERITE_PLURAL_STEM,		STRONG_3RD_CLASS) -> AblautGrade("u"),
+			(PERFECT_STEM,						STRONG_3RD_CLASS) -> AblautGrade("o")
+		) ++
+		genAblautFor(STRONG_2ND_CLASS, "jú", "au", "u", "o") ++
+		genAblautFor(STRONG_4TH_CLASS, "e", "a", "á", "o") ++
+		genAblautFor(STRONG_5TH_CLASS, "e", "a", "á", "e") ++
+		genAblautFor(STRONG_6TH_CLASS, "a", "ó", "ó", "a")
 
-		(PRESENT_STEM,						STRONG_3RD_CLASS) -> Ablaut("e"),
-		(PRETERITE_SINGULAR_STEM,	STRONG_3RD_CLASS) -> Ablaut("a"),
-		(PRETERITE_PLURAL_STEM,		STRONG_3RD_CLASS) -> Ablaut("u"),
-		(PERFECT_STEM,						STRONG_3RD_CLASS) -> Ablaut("o")
-	)
+	private def genAblautFor(vc: VerbClassEnum, vowels: String*): Map[(VerbStemEnum, VerbClassEnum), AblautGrade] =
+		List(PRESENT_STEM, PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM, PERFECT_STEM)
+		  .map(s => s -> vc)
+		  .zipWithIndex
+		  .map{ case (k, i) => k -> AblautGrade(vowels(i)) }
+		  .toMap
+
 
 	override def convertTo(verb: StrongVerb, targetForm: Either[FinitiveVerbDesc, NonFinitiveVerbType]): Option[StrongVerb] = {
 
+		val stem = StrongVerbGenerator.stemFrom(verb)
+
 		targetForm match {
 
-			case Left(fin) => generateFinitiveForm(StrongVerbGenerator.stemFrom(verb), verb.verbClass, fin)
-			case Right(nfvt) => throw new NotImplementedError("not yet")
+			case Left(fin) => generateFinitiveForm(stem, verb.verbClass, fin)
+			case Right(nfvt) => generateNonFinitiveForms(stem, verb.verbClass, nfvt)
 		}
 	}
 
-	private def generateFinitiveForm(srcStem: StrongVerbStem, currentClass: VerbClassEnum, finTrg: FinitiveVerbDesc): Option[StrongVerb] =
-	{
+	private def generateFinitiveForm(srcStem: StrongVerbStem, currentClass: VerbClassEnum, finTrg: FinitiveVerbDesc): Option[StrongVerb] = {
 		val (pron, verbModeEnum, verbTense) = finTrg
 
 		val destVerbStemType = tenseToStem(verbTense, pron.number)
@@ -44,19 +58,43 @@ object StrongVerbStemClasses extends VerbStemClass
 		optDstVerbStem.map(stem => StrongVerbGenerator.verbFrom(stem, currentClass, pron, verbTense))
 	}
 
-	private def changeStem(srcStem: StrongVerbStem, currentClass: VerbClassEnum, dstVerbStemType: VerbStemEnum): Option[StrongVerbStem] = {
+	def changeStem(srcStem: StrongVerbStem, currentClass: VerbClassEnum, dstVerbStemType: VerbStemEnum): Option[StrongVerbStem] = {
 
-		if(!STEMCLASSES_TO_ABLAUT.contains(srcStem.stemType, currentClass) ||
-			!STEMCLASSES_TO_ABLAUT.contains(dstVerbStemType, currentClass))
+		val CURRENT_ABLAUT = currentClass.ablaut.VOWELS
+
+		val optSrcAblaut = CURRENT_ABLAUT.get(srcStem.stemType)
+		val optDstAblaut = CURRENT_ABLAUT.get(dstVerbStemType)
+
+		(optSrcAblaut, optDstAblaut) match
 		{
-			return None
+			//case (Some(srcAblaut), Some(dstAblaut)) if srcAblaut == dstAblaut && srcAblaut. => Some(srcStem)
+
+			case (Some(srcAblaut), Some(dstAblaut)) =>
+				val newStr = AblautTransformation(srcStem.stringForm, srcAblaut, dstAblaut)
+				newStr.map(str => StrongVerbStem(Root(str), dstVerbStemType))
+
+			case _ => None
+		}
+	}
+
+	def generateNonFinitiveForms(stem: StrongVerbStem, verbClass: VerbClassEnum, nonFinitiveForm: NonFinitiveVerbType): Option[StrongVerb] = {
+
+		/*
+				[Form]										[base stem]
+				Infinitive								Present Stem
+				Present Participle				Present Stem
+				Past/Perfect Participle		Perfect Stem
+				Supine										Perfect Stem
+		 */
+
+		val requiredStem = nonFinitiveForm match {
+
+			case INFINITIVE | PRESENT_PARTICIPLE 	=> PRESENT_STEM
+			case PAST_PARTICIPLE 									=> PERFECT_STEM
 		}
 
-		val srcAblaut = STEMCLASSES_TO_ABLAUT(srcStem.stemType, currentClass)
-		val dstAblaut = STEMCLASSES_TO_ABLAUT(dstVerbStemType, currentClass)
-		val newStr = AblautTransformation(srcStem.stringForm, srcAblaut, dstAblaut)
-
-		newStr.map(str => StrongVerbStem(Root(str), dstVerbStemType))
+		changeStem(stem, verbClass, requiredStem)
+			.map(stem => StrongVerbGenerator.verbFrom(stem, verbClass, nonFinitiveForm))
 	}
 }
 

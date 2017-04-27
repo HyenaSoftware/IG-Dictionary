@@ -1,12 +1,11 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStem
-import com.hyenawarrior.OldNorseGrammar.grammar.{DescriptorFlag, GNumber, PoS, Pronoun}
+import com.hyenawarrior.OldNorseGrammar.grammar.{DescriptorFlag, PoS}
 
 /**
 	* Created by HyenaWarrior on 2017.04.19..
 	*/
-abstract class Verb(str: String, verbClass: VerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum) extends PoS
+abstract class Verb(str: String) extends PoS
 {
 	override def strForm: String = str
 

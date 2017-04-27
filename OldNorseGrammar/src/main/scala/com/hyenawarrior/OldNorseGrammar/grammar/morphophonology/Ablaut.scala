@@ -1,39 +1,16 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum._
+
 /**
-	* Created by HyenaWarrior on 2017.04.19..
+	* Created by HyenaWarrior on 2017.04.25..
 	*/
-case class Ablaut(rootVowel: String)
-
-object AblautTransformation
+case class Ablaut(presentVowel: String, preteriteSingularVowel: String, preteritePluralVowel: String, perfectVowel: String)
 {
-	def apply(str: String, srcAblaut: Ablaut, dstAblaut: Ablaut): Option[String] =
-	{
-		val where = str.indexOf(srcAblaut.rootVowel)
-
-		if (where != -1)
-		{
-
-			val length = srcAblaut.rootVowel.length
-
-			val prefixStr = str.substring(0, where)
-			val suffixStr = str.substring(where + length)
-
-			Some(s"$prefixStr${dstAblaut.rootVowel}$suffixStr")
-
-			//val rootVowel = root.rootVowel
-			//root.word.replace(rootVowel, ablautVowel)
-		} else None
-	}
-
-/*	def forceApply(syllables: List[Syllable]): List[Syllable] = {
-
-		syllables.headOption
-			.map(firstSyll => firstSyll.stressed -> firstSyll.letters)
-		  .map{case (isS, str) => Syllable(str, isS)}
-			.map(newSyl => newSyl +: syllables.tail)
-			.getOrElse(List())
-	}
-*/
-
+	val VOWELS = Map(
+		PRESENT_STEM						-> AblautGrade(presentVowel),
+		PRETERITE_SINGULAR_STEM	-> AblautGrade(preteriteSingularVowel),
+		PRETERITE_PLURAL_STEM	 	-> AblautGrade(preteritePluralVowel),
+		PERFECT_STEM						-> AblautGrade(perfectVowel)
+	)
 }

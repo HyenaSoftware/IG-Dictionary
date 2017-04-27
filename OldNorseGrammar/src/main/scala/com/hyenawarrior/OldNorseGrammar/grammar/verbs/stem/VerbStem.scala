@@ -1,7 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Ablaut
-import com.hyenawarrior.OldNorseGrammar.grammar.{Root, Stem}
+import com.hyenawarrior.OldNorseGrammar.grammar.Root
 
 /**
 	* Created by HyenaWarrior on 2017.04.22..
