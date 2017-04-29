@@ -13,4 +13,7 @@ case class Ablaut(presentVowel: String, preteriteSingularVowel: String, preterit
 		PRETERITE_PLURAL_STEM	 	-> AblautGrade(preteritePluralVowel),
 		PERFECT_STEM						-> AblautGrade(perfectVowel)
 	)
+
+	override def toString: String	= List(presentVowel, preteriteSingularVowel, preteritePluralVowel, perfectVowel)
+		.mkString("(", " - ", ")")
 }

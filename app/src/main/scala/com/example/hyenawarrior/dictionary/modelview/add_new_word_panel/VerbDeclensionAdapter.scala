@@ -45,8 +45,9 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
 
 		val view = inflater.inflate(R.layout.verb_declension, viewGroup, false)
 
-		val (VerbClassEnum(vcName, _), map) = itemAt(i)
+		val (VerbClassEnum(vcName, ablaut), map) = itemAt(i)
 
+		// set declensions
 		val tv_addword_verb_stemName = view.findViewById(R.id.tv_addword_verb_stemName).asInstanceOf[TextView]
 		tv_addword_verb_stemName.setText(vcName)
 
@@ -56,6 +57,10 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
 			val text = map.getOrElse(key, "...")
 			tvVerbCtrl.setText(text)
 		}
+
+		// set ablaut grades
+		val tv_addword_verb_AblautGrades = view.findViewById(R.id.tv_addword_verb_AblautGrades).asInstanceOf[TextView]
+		tv_addword_verb_AblautGrades.setText(ablaut.toString)
 
 		view
 	}

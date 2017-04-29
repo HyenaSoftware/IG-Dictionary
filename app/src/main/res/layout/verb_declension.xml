@@ -22,13 +22,19 @@
                     android:text="Active"
                     android:textStyle="bold"/ -->
             <TextView
-                    android:layout_column="2"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="Weak I-stem"
-                    android:textAlignment="center" android:id="@+id/tv.addword.verb.stemName"/>
+                    android:textAlignment="center" android:id="@+id/tv.addword.verb.stemName"
+                    android:layout_weight="1"/>
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Small Text"
+                    android:id="@+id/tv.addword.verb.AblautGrades" android:layout_weight="1"
+                    android:textAlignment="center"/>
         </TableRow>
     </TableLayout>
     <TableLayout android:layout_width="match_parent"
