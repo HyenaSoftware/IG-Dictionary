@@ -110,7 +110,6 @@
                     android:layout_height="wrap_content" android:id="@+id/llVerbDeclensions"
                     android:visibility="gone"
                     android:layout_marginBottom="3dp">
-                <include layout="@layout/verb_declension"/>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

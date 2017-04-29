@@ -169,7 +169,9 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		case (maybeEmptyList, (Some(pronoun), Some(tense), Some(str)), map) =>
 			val verbClasses = if(maybeEmptyList.isEmpty) VerbClassEnum.values else maybeEmptyList
 
-			val wordMaps = verbClasses
+			val sortedVerbClasses = verbClasses.sortWith { case(a, b) => a.name < b.name }
+
+			val wordMaps = sortedVerbClasses
 				.map(vc => vc -> generateFormsFrom(vc, (pronoun, tense, str), map))
 				.filter { case (_, forms) => forms.nonEmpty }
 
