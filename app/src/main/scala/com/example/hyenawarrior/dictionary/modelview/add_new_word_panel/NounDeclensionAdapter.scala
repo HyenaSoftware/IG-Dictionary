@@ -2,10 +2,11 @@ package com.example.hyenawarrior.dictionary.modelview.add_new_word_panel
 
 import android.app.Activity
 import android.view.{View, ViewGroup}
-import android.widget.TextView
+import android.widget.{Button, TextView}
 import com.example.hyenawarrior.dictionary.modelview.CustomAdapter
 import com.example.hyenawarrior.myapplication.R
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
 /**
@@ -34,7 +35,7 @@ class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemC
 
 		val view = inflater.inflate(R.layout.noun_declension, viewGroup, false)
 
-		val (NounStemClassEnum(ncName, _), map) = itemAt(i)
+		val (nscEnum @ NounStemClassEnum(ncName, _), map) = itemAt(i)
 
 		//
 		val tvNounDeclDesc = view.findViewById(R.id.tvNounDeclDesc).asInstanceOf[TextView]
@@ -48,6 +49,16 @@ class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemC
 				tvNC.setText(ncTextForm)
 		}
 
+    // tag the select button
+    val tv_addword_noun_Select = view.findViewById(R.id.tv_addword_noun_Select).asInstanceOf[Button]
+    tv_addword_noun_Select.setTag(nscEnum)
+
 		view
 	}
+
+  def getSelectorTagOf(view: View): Option[NounStemClassEnum] = view match
+  {
+    case btn: Button => Option(btn.getTag.asInstanceOf[NounStemClassEnum])
+    case _ => None
+  }
 }

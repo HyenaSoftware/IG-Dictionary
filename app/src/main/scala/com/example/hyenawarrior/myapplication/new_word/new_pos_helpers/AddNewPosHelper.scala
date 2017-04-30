@@ -2,6 +2,7 @@ package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
 import android.view.View
 import android.widget.TableRow
+import com.example.hyenawarrior.myapplication.new_word.pages.WordData
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
 /**
@@ -23,4 +24,6 @@ trait AddNewPosHelper
 	def onStemClassSelected(index: Int): Unit
 	def onTextFormOverride(overridingView: View)(str: String): Unit
 	def onNounDeclensionSelected(overridingView: View)(item: (GNumber, Case)): Unit
+
+  def getWordFormsBy(view: View): WordData = null
 }

@@ -67,10 +67,19 @@ class AddNewWordActivityPager extends AppCompatActivity
 
 		val nextPageIndex = AddWordPagerAdapter.allowMoveToTheNextPage()
 
+    val wordData = AddNewWordActivity.getWordFormsBy(view)
+
+		SetMeaningFragment.setWordData(wordData)
+
 		pager.setCurrentItem(nextPageIndex)
 	}
 
-	def saveWordToDatabase(view: View): Unit = finish()
+	def saveWordToDatabase(view: View): Unit = {
+
+		SetMeaningFragment.saveDefinitionInto()
+
+		finish()
+	}
 
 	def addNewOverride(view: View) = AddNewWordActivity.addNewOverride(view)
 

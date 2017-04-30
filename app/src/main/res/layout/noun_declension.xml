@@ -89,7 +89,7 @@
         </TableRow>
     </TableLayout>
     <Button style="?android:attr/buttonStyleSmall" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="Choose this declension" android:id="@+id/button6"
+            android:layout_height="wrap_content" android:text="Choose this declension" android:id="@+id/tv.addword.noun.Select"
             android:layout_gravity="right" android:singleLine="true" android:drawableRight="@drawable/right_arrow32"
             android:duplicateParentState="false" android:onClick="selectThisDeclension" android:layout_columnSpan="2"/>
 </GridLayout>

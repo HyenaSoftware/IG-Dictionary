@@ -6,6 +6,7 @@ import android.widget.{LinearLayout, Spinner, TableRow}
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
 import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewVerbHelper.{Declension, NON_FINITIVE_VERB_TYPES}
+import com.example.hyenawarrior.myapplication.new_word.pages.{VerbData, WordData}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
@@ -33,6 +34,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	type Parameters = (List[VerbClassEnum], Override, Map[AnyRef, Override])
 
 	var selectedNounParameters: Parameters = (List(), (Some(Pronoun.SG_1), Some(VerbTenseEnum.PRESENT), None), Map())
+
+	var latestVerbData: Map[Declension, String] = Map()
 
 	val VerbDeclensionAdapter = new VerbDeclensionAdapter(activity)
 	val LL_DECL_LIST = rootView.findViewById(R.id.llVerbDeclensions).asInstanceOf[LinearLayout]
@@ -177,6 +180,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 			setInflectedFormsToUI(wordMaps)
 
+      latestVerbData = Map(Left(pronoun, tense) -> str)
+
 		case _ => ()
 	}
 
@@ -191,5 +196,14 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			.foreach(v => LL_DECL_LIST.addView(v))
 	}
 
+  override def getWordFormsBy(view: View): WordData =
+  {
+    val optVerbClassE = VerbDeclensionAdapter.getSelectorTagOf(view)
 
+    optVerbClassE match
+    {
+      case Some(verbClassE) => VerbData(latestVerbData)
+      case _ => throw new IllegalStateException("Unknown control")
+    }
+  }
 }

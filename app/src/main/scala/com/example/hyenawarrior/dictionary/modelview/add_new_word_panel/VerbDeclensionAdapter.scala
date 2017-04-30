@@ -2,7 +2,7 @@ package com.example.hyenawarrior.dictionary.modelview.add_new_word_panel
 
 import android.app.Activity
 import android.view.{View, ViewGroup}
-import android.widget.TextView
+import android.widget.{Button, TextView}
 import com.example.hyenawarrior.dictionary.modelview.CustomAdapter
 import com.example.hyenawarrior.myapplication.R
 import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewVerbHelper.Declension
@@ -45,7 +45,7 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
 
 		val view = inflater.inflate(R.layout.verb_declension, viewGroup, false)
 
-		val (VerbClassEnum(vcName, ablaut), map) = itemAt(i)
+		val (vcEnum @ VerbClassEnum(vcName, ablaut), map) = itemAt(i)
 
 		// set declensions
 		val tv_addword_verb_stemName = view.findViewById(R.id.tv_addword_verb_stemName).asInstanceOf[TextView]
@@ -62,6 +62,16 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
 		val tv_addword_verb_AblautGrades = view.findViewById(R.id.tv_addword_verb_AblautGrades).asInstanceOf[TextView]
 		tv_addword_verb_AblautGrades.setText(ablaut.toString)
 
+    // tag the select button
+    val tv_addword_verb_Select = view.findViewById(R.id.tv_addword_verb_Select).asInstanceOf[Button]
+    tv_addword_verb_Select.setTag(vcEnum)
+
 		view
 	}
+
+  def getSelectorTagOf(view: View): Option[VerbClassEnum] = view match
+  {
+    case btn: Button => Option(btn.getTag.asInstanceOf[VerbClassEnum])
+    case _ => None
+  }
 }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget._
+import com.example.hyenawarrior.dictionary.model.database.IGDatabase
 import com.example.hyenawarrior.dictionary.model.{AndroidStorage, Database, DictionaryEntry}
 import com.example.hyenawarrior.dictionary.modelview.DictionaryEntryAdapter
 import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivityPager
@@ -53,11 +54,9 @@ class MainActivity extends AppCompatActivity
 		}
 	}
 
-	override protected def onBackPressed
+	override protected def onBackPressed()
 	{
-		super.onBackPressed
-
-
+		super.onBackPressed()
 	}
 
 	object Storage extends Storage with AndroidStorage
@@ -66,11 +65,19 @@ class MainActivity extends AppCompatActivity
 	lazy val entryListAdapter = new DictionaryEntryAdapter(this) //new EntryListAdapter(this)
 	lazy val listView = findViewById(R.id.listView).asInstanceOf[ListView]
 
+	lazy val igDatabase = IGDatabase(getApplicationContext)
+
 	private def installEventHandlers
 	{
 		val sw = findViewById(R.id.searchView).asInstanceOf[SearchView]
 
 		sw setOnQueryTextListener TypeListener
+	}
+
+	private def initDatabase: Unit = {
+
+		igDatabase.addLanguage("Old Norse")
+		igDatabase.addLanguage("English")
 	}
 
 	def addNewWord(view: View)
@@ -89,6 +96,9 @@ class MainActivity extends AppCompatActivity
 		setContentView(R.layout.activity_main)
 
 		installEventHandlers
+		//initDatabase
+
+		val languages = igDatabase.getLangauges
 
 		listView setAdapter entryListAdapter
 

@@ -124,4 +124,7 @@ object AddNewWordActivity extends Fragment
 
 		postInitContext.tlOverrides.addView(rowView)
 	}
+
+	//
+	def getWordFormsBy(view: View): WordData = currentPosHelper.getWordFormsBy(view)
 }
