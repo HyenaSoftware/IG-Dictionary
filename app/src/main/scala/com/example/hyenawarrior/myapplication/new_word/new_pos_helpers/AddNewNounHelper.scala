@@ -193,7 +193,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
     optNounStemClassE match
     {
-      case Some(nounStemClassE) => NounData(latestNounData)
+      case Some(nounStemClassE) => NounData(nounStemClassE, latestNounData)
       case _ => throw new IllegalStateException("Unknown control")
     }
   }

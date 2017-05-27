@@ -202,7 +202,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
     optVerbClassE match
     {
-      case Some(verbClassE) => VerbData(latestVerbData)
+      case Some(verbClassE) => VerbData(verbClassE, latestVerbData)
       case _ => throw new IllegalStateException("Unknown control")
     }
   }
