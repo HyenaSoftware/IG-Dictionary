@@ -10,7 +10,7 @@ case class NonFinitiveVerbType(name: String) {
 	NonFinitiveVerbType.add(name -> this)
 }
 
-object NonFinitiveVerbType extends EnumLike[NonFinitiveVerbType] {
+object NonFinitiveVerbType extends EnumLike[String, NonFinitiveVerbType] {
 
 	val INFINITIVE = NonFinitiveVerbType("Infinitive")
 	val PRESENT_PARTICIPLE = NonFinitiveVerbType("Present Participle")

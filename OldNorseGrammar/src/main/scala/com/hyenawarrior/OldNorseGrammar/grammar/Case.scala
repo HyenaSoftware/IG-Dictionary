@@ -12,7 +12,7 @@ final case class Case(name: String) extends DescriptorFlag
 	override def toString = name
 }
 
-object Case extends EnumLike[Case]
+object Case extends EnumLike[String, Case]
 {
 	val NOMINATIVE = Case("Nominative")
 	val ACCUSATIVE = Case("Accusative")

@@ -14,7 +14,7 @@ case class VerbStemEnum(name: String)
 /**
 	* Created by HyenaWarrior on 2017.04.19..
 	*/
-object VerbStemEnum extends EnumLike[VerbStemEnum]
+object VerbStemEnum extends EnumLike[String, VerbStemEnum]
 {
 	val PRESENT_STEM							= VerbStemEnum("Present")
 	val PRETERITE_SINGULAR_STEM		= VerbStemEnum("Preterite Singular")

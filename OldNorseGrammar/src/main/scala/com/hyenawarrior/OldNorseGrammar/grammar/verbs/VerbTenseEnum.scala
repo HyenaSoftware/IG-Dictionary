@@ -10,7 +10,7 @@ case class VerbTenseEnum(name: String)
 	VerbTenseEnum.add(name -> this)
 }
 
-object VerbTenseEnum extends EnumLike[VerbTenseEnum]
+object VerbTenseEnum extends EnumLike[String, VerbTenseEnum]
 {
 	val PRESENT = VerbTenseEnum("Present")
 	val PAST = VerbTenseEnum("Past")

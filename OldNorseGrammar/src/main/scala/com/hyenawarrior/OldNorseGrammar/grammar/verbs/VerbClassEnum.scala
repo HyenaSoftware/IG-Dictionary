@@ -13,7 +13,7 @@ case class VerbClassEnum(name: String, ablaut: Ablaut)
 	override def toString = name
 }
 
-object VerbClassEnum extends EnumLike[VerbClassEnum]
+object VerbClassEnum extends EnumLike[String, VerbClassEnum]
 {
 	val STRONG_1ST_CLASS = VerbClassEnum("Strong 1st class", Ablaut("í",	"ei", "i", "i"))
 	val STRONG_2ND_CLASS = VerbClassEnum("Strong 2nd class", Ablaut("jú", "au", "u", "o"))

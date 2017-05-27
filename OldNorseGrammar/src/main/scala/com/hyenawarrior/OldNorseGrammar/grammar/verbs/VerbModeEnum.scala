@@ -5,7 +5,7 @@ import com.hyenawarrior.auxiliary.EnumLike
 /**
 	* Created by HyenaWarrior on 2017.04.19..
 	*/
-object VerbModeEnum extends EnumLike[VerbModeEnum] {
+object VerbModeEnum extends EnumLike[String, VerbModeEnum] {
 
 	val INDICATIVE = VerbModeEnum("Indicative")
 	val SUBJUNCTIVE = VerbModeEnum("Indicative")

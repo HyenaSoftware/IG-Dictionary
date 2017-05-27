@@ -12,7 +12,7 @@ case class Pronoun(str: String, cs: Case, number: GNumber)
 	Pronoun.add(str -> this)
 }
 
-object Pronoun extends EnumLike[Pronoun]
+object Pronoun extends EnumLike[String, Pronoun]
 {
 	val SG_1 			= Pronoun("Ek", NOMINATIVE, SINGULAR)
 	val SG_2			= Pronoun("Þú", NOMINATIVE, SINGULAR)

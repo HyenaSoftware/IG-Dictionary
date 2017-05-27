@@ -12,7 +12,7 @@ final case class GNumber(str: String) extends DescriptorFlag
 	override def toString = str
 }
 
-object GNumber extends EnumLike[GNumber]
+object GNumber extends EnumLike[String, GNumber]
 {
 	val SINGULAR = GNumber("Singular")
 	val DUAL = GNumber("Dual")

@@ -12,7 +12,7 @@ final case class NounStemClassEnum(name: String, nounStemClass: NounStemClass)
 	override def toString = name
 }
 
-object NounStemClassEnum extends EnumLike[NounStemClassEnum]
+object NounStemClassEnum extends EnumLike[String, NounStemClassEnum]
 {
 	val STRONG_MASCULINE_A = NounStemClassEnum("Strong Masc. A-class", StrongStemClassMascA)
 	val STRONG_MASCULINE_I = NounStemClassEnum("Strong Masc. I-class", null) //StrongStemClassMascI)
