@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget.TextView
-import com.example.hyenawarrior.dictionary.model.database.IGDatabase
-import com.example.hyenawarrior.myapplication.R
+import com.example.hyenawarrior.dictionary.model.database.marshallers.VerbForm
+import com.example.hyenawarrior.dictionary.model.database.{IGDatabase, Meaning}
 import com.example.hyenawarrior.dictionary.model.{database => orm}
+import com.example.hyenawarrior.myapplication.R
 import com.hyenawarrior.OldNorseGrammar.grammar.Case.NOMINATIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.SINGULAR
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.INFINITIVE
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{NonFinitiveStrongVerb, NonFinitiveVerbType}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
 /**
 	* Created by HyenaWarrior on 2017.04.27..
@@ -20,6 +18,7 @@ object SetMeaningFragment extends Fragment
 {
   lazy val igDatabase = IGDatabase(getContext)
   var optWordData: Option[WordData] = None
+  var meanings: List[Meaning] = List()
 
   class DataContext(val rootView: View)
 
@@ -54,7 +53,7 @@ object SetMeaningFragment extends Fragment
     val word = optWordData match
     {
       case Some(NounData(_, map)) => map.getOrElse(SINGULAR -> NOMINATIVE, "???")
-      case Some(VerbData(_, map)) => map.getOrElse(Right(INFINITIVE), "???")
+      case Some(VerbData(_, map)) => map.getOrElse(VerbForm.VERB_INFINITIVE, "???")
       case _ => "???"
     }
 
@@ -64,7 +63,7 @@ object SetMeaningFragment extends Fragment
 
   def saveDefinitionInto(): Unit = optWordData match
   {
-    case Some(data) => igDatabase.save(data)
+    case Some(data) => igDatabase.save(data, meanings)
     case None => ()
   }
 }

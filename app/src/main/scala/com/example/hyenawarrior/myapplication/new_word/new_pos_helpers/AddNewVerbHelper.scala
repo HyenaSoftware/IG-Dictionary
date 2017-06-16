@@ -3,6 +3,7 @@ package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 import android.app.Activity
 import android.view.View
 import android.widget.{LinearLayout, Spinner, TableRow}
+import com.example.hyenawarrior.dictionary.model.database.marshallers.VerbForm
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
 import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewVerbHelper.{Declension, NON_FINITIVE_VERB_TYPES}
@@ -35,7 +36,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 	var selectedNounParameters: Parameters = (List(), (Some(Pronoun.SG_1), Some(VerbTenseEnum.PRESENT), None), Map())
 
-	var latestVerbData: Map[Declension, String] = Map()
+	var latestVerbData: Map[VerbForm, String] = Map()
 
 	val VerbDeclensionAdapter = new VerbDeclensionAdapter(activity)
 	val LL_DECL_LIST = rootView.findViewById(R.id.llVerbDeclensions).asInstanceOf[LinearLayout]
@@ -180,7 +181,9 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 			setInflectedFormsToUI(wordMaps)
 
-      latestVerbData = Map(Left(pronoun, tense) -> str)
+			val optVerbForm = VerbForm.values.find(vf => vf.optPronoun.contains(pronoun) && vf.tense.contains(tense))
+
+      latestVerbData = Map(optVerbForm.head -> str)
 
 		case _ => ()
 	}

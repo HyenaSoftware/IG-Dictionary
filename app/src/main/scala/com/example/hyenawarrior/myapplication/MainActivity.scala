@@ -1,15 +1,20 @@
 package com.example.hyenawarrior.myapplication
 
+import java.io.{File, FileInputStream, FileOutputStream}
+
 import android.content.Intent
-import android.os.Bundle
+import android.database.sqlite.SQLiteDatabase
+import android.os.{Bundle, Environment}
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget._
-import com.example.hyenawarrior.dictionary.model.database.IGDatabase
+import com.example.hyenawarrior.dictionary.model.database.marshallers.{PosType, VerbForm, VerbType}
+import com.example.hyenawarrior.dictionary.model.database.{IGDatabase, SQLDatabaseHelper, WordForm}
 import com.example.hyenawarrior.dictionary.model.{AndroidStorage, Database, DictionaryEntry}
 import com.example.hyenawarrior.dictionary.modelview.DictionaryEntryAdapter
 import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivityPager
-import com.hyenawarrior.OldNorseGrammar.grammar.{Database, Language}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Database, Language, Word, verbs}
 import com.hyenawarrior.dictionaryLoader.Storage
 
 
@@ -33,7 +38,7 @@ class MainActivity extends AppCompatActivity
 	{
 		override def onQueryTextSubmit(s: String): Boolean = true
 
-		override def onQueryTextChange(s: String): Boolean =
+		def onQueryTextChangeOld(s: String): Boolean =
 		{
 			val meaningsToWords = Database.database.findBy(s)
 
@@ -52,6 +57,29 @@ class MainActivity extends AppCompatActivity
 
 			true
 		}
+
+		override def onQueryTextChange(s: String): Boolean =
+		{
+			val words = igDatabase.findByStr(s).groupBy(_.wordId).values
+
+			val list: List[DictionaryEntry] = words.map(toDictionaryEntry).toList
+
+			entryListAdapter resetItems list
+			listView.invalidateViews()
+			true
+		}
+	}
+
+	private def toDictionaryEntry(wordForms: Seq[WordForm]): DictionaryEntry =
+	{
+		val words = wordForms.map
+		{
+			case WordForm(str, wordId, vf: VerbForm, VerbType(_, _, verbClass)) =>
+				val VerbForm(_, mode, optTense, optPronoun) = vf
+				Word(verbs.verbFrom(str, mode, verbClass, optTense, optPronoun))
+		}
+
+		DictionaryEntry(words.toList, None, List())
 	}
 
 	override protected def onBackPressed()
@@ -80,6 +108,33 @@ class MainActivity extends AppCompatActivity
 		igDatabase.addLanguage("English")
 	}
 
+	def backup
+	{
+		try
+		{
+			val sd = "/storage/extSdCard" //Environment.getExternalStorageDirectory
+			val data = Environment.getDataDirectory
+
+			val currentDBPath = "/data/data/" + getPackageName + "/databases/" + SQLDatabaseHelper.DATABASE_NAME
+			val backupDBPath =  SQLDatabaseHelper.DATABASE_NAME + ".db"
+			val currentDB = new File(currentDBPath)
+			val backupDB = new File(sd, backupDBPath)
+
+			if (currentDB.exists())
+			{
+				val src = new FileInputStream(currentDB).getChannel
+				val dst = new FileOutputStream(backupDB).getChannel
+				dst.transferFrom(src, 0, src.size)
+				src.close()
+				dst.close()
+			}
+		}
+		catch
+		{
+			case e: Exception => Log.e("BACKUP", "Failed to backup: " + e.getMessage)
+		}
+	}
+
 	def addNewWord(view: View)
 	{
 		val clazz: Class[AddNewWordActivityPager] = classOf[AddNewWordActivityPager]
@@ -98,9 +153,12 @@ class MainActivity extends AppCompatActivity
 		installEventHandlers
 		//initDatabase
 
-		val languages = igDatabase.getLangauges
+		//igDatabase.clear
+		//val languages = igDatabase.getLangauges
 
 		listView setAdapter entryListAdapter
+
+		backup
 
 		//val isReadable = Storage.isExternalStorageReadable
 		//val isWriteable = Storage.isExternalStorageWritable
