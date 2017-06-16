@@ -28,18 +28,18 @@ abstract class Storage
 
 		val word = qword.stripPrefix("\"").stripSuffix("\"")
 
-		val flags = parts.flatMap(AbstractFlag.findByName[WordDescFlags]).toSet
+		//val flags = parts.flatMap(AbstractFlag.findByName[WordDescFlags]).toSet
 
-		WordDefinition(word, flags)
+		WordDefinition(word,  Set()) //flags)
 	}
 
 	private def extractDescFromRecord(fieldsOfRecord: Array[String]): (Set[MeaningDescFlags], List[WordDefinition]) =
 	{
 		val meaningDescStrs = fieldsOfRecord.head.split('.').toList
 
-		val mdSet = meaningDescStrs.flatMap(AbstractFlag.findByName[MeaningDescFlags]).toSet
+		//val mdSet = meaningDescStrs.flatMap(AbstractFlag.findByName[MeaningDescFlags]).toSet
 
-		(mdSet, fieldsOfRecord.tail.map(parseWordDef).toList)
+		(/*mdSet*/ Set(), fieldsOfRecord.tail.map(parseWordDef).toList)
 	}
 
 	def meanings(language: String): List[MeaningDefinition] =

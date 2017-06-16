@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.auxiliary.EnumLike
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.WordTransformation
 
 /**
 	* Created by HyenaWarrior on 2017.03.20..
@@ -12,4 +12,6 @@ trait PoS
 	def strForm: String
 
 	def descriptorFlags: List[DescriptorFlag]
+
+	def transformations: List[WordTransformation] = List()
 }

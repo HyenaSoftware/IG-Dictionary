@@ -2,10 +2,9 @@ package com.hyenawarrior
 
 import java.io.File
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar._
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClassEnum, StrongStemClassMascA}
 import com.hyenawarrior.dictionaryLoader.Storage
 
 import scala.io.Source
@@ -56,8 +55,8 @@ object StorageTestRunner
         val cmds = cmd.split(' ')
         val word = cmds(1)
         val r = Root(word)
-        val n = new Noun(word, -1, (GNumber.SINGULAR, Case.NOMINATIVE), r)
-        val w = Word(n, List(U_Umlaut))
+        val n = new Noun(word, -1, (GNumber.SINGULAR, Case.NOMINATIVE), r, StrongStemClassMascA)
+        val w = Word(n)
         println(s" * $w")
 
       case cmd if cmd.startsWith("gen") =>

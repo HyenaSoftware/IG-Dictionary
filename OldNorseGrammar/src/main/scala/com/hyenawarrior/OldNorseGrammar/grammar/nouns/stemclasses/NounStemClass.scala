@@ -13,8 +13,9 @@ trait NounStemClass
 	def apply(root: Root, meaningId: Int, decl: (GNumber, Case)): Word =
 	{
 		val str = inflect(root, decl)
-		val nn = new Noun(str, meaningId, decl, root)
-		Word(nn, transformationsFor(decl))
+		val nn = new Noun(str, meaningId, decl, root, this)
+
+		Word(nn)
 	}
 
 	def transformationsFor(decl: (GNumber, Case)): List[WordTransformation] = List()

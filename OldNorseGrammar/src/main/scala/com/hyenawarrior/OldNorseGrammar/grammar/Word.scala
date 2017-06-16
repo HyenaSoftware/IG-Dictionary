@@ -1,12 +1,15 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.WordTransformation
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{I_Umlaut, U_Umlaut}
 
 /**
 	* Created by HyenaWarrior on 2017.03.01..
 	*/
-case class Word(pos: PoS, transformations: List[WordTransformation])
+case class Word(pos: PoS)
 {
+	private val DEFAULT_TRANSFORMATIONS = List(U_Umlaut, I_Umlaut)
+	private val POS_DEPENDENT_TRANSFORMATIONS = pos.transformations
+
 	def underlyingPoS: PoS = pos
 
 	// useful for lookup
@@ -14,7 +17,8 @@ case class Word(pos: PoS, transformations: List[WordTransformation])
 	{
 		val Syllables(syllables) = pos.strForm
 
-		val transformedSyllables = transformations.foldLeft(syllables){ (sys, trn) => trn.forceApply(sys) }
+		val allTransformations = POS_DEPENDENT_TRANSFORMATIONS ++ DEFAULT_TRANSFORMATIONS
+		val transformedSyllables = allTransformations.foldLeft(syllables){ (sys, trn) => trn(sys) }
 
 		val str = Syllables(transformedSyllables)
 
@@ -26,7 +30,7 @@ case class Word(pos: PoS, transformations: List[WordTransformation])
 
 	val traits: List[DescriptorFlag] = pos.descriptorFlags
 
-	override def toString = s"$strForm [$pos + ${transformations.map(_.toString)}]"
+	override def toString = s"$strForm [$pos + ${POS_DEPENDENT_TRANSFORMATIONS.map(_.toString)}]"
 }
 
 object Syllables {

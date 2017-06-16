@@ -8,13 +8,12 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{StrongVerbStem, VerbStemEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbClassEnum, _}
 
-import scala.Option.option2Iterable
-
 /**
 	* Created by HyenaWarrior on 2017.04.19..
 	*/
-object StrongVerbStemClasses extends VerbStemClass
+object StrongVerbStemClasses extends VerbStemClass[StrongVerb]
 {
+	// TODO: remove it
 	val STEMCLASSES_TO_ABLAUT: Map[(VerbStemEnum, VerbClassEnum), AblautGrade] =
 		Map(
 			(PRESENT_STEM,						STRONG_1ST_CLASS) -> AblautGrade("í"),
@@ -32,6 +31,7 @@ object StrongVerbStemClasses extends VerbStemClass
 		genAblautFor(STRONG_5TH_CLASS, "e", "a", "á", "e") ++
 		genAblautFor(STRONG_6TH_CLASS, "a", "ó", "ó", "a")
 
+	// TODO: remove it
 	private def genAblautFor(vc: VerbClassEnum, vowels: String*): Map[(VerbStemEnum, VerbClassEnum), AblautGrade] =
 		List(PRESENT_STEM, PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM, PERFECT_STEM)
 		  .map(s => s -> vc)
@@ -79,8 +79,8 @@ object StrongVerbStemClasses extends VerbStemClass
 		}
 	}
 
-	def generateNonFinitiveForms(stem: StrongVerbStem, verbClass: VerbClassEnum, nonFinitiveForm: NonFinitiveVerbType): Option[StrongVerb] = {
-
+	def generateNonFinitiveForms(stem: StrongVerbStem, verbClass: VerbClassEnum, nonFinitiveForm: NonFinitiveVerbType): Option[StrongVerb] =
+	{
 		/*
 				[Form]										[base stem]
 				Infinitive								Present Stem
@@ -89,8 +89,8 @@ object StrongVerbStemClasses extends VerbStemClass
 				Supine										Perfect Stem
 		 */
 
-		val requiredStem = nonFinitiveForm match {
-
+		val requiredStem = nonFinitiveForm match
+		{
 			case INFINITIVE | PRESENT_PARTICIPLE 	=> PRESENT_STEM
 			case PAST_PARTICIPLE 									=> PERFECT_STEM
 		}

@@ -7,7 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum.{apply => _}
-import com.hyenawarrior.OldNorseGrammar.grammar.{GNumber, Pronoun, Root}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, Root}
 
 /**
 	* Created by HyenaWarrior on 2017.04.22..
@@ -19,15 +19,9 @@ object StrongVerbGenerator
 	 */
 	def verbFrom(stem: StrongVerbStem, verbClass: VerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum): StrongVerb = {
 
-		val str = stem.stringForm + stemEnding(pronoun, tense)
+		val str = stem.stringForm + StrongVerb.stemEnding(pronoun, tense)
 
-		val strUmlauted = (pronoun.number, tense) match
-		{
-			case (SINGULAR, PRESENT) => I_Umlaut.forceApply(str)
-			case _ => str
-		}
-
-		FinitiveStrongVerb(strUmlauted, verbClass, pronoun, tense)
+		FinitiveStrongVerb(str, verbClass, pronoun, tense)
 	}
 
 	def verbFrom(stem: StrongVerbStem, verbClass: VerbClassEnum, nonFinitiveForm: NonFinitiveVerbType): StrongVerb = {
@@ -42,10 +36,10 @@ object StrongVerbGenerator
 
 		nonFinitiveForm match	{
 
-			case INFINITIVE=>
+			case INFINITIVE =>
 				val lastChar = stem.stringForm.last
-				val newStr = lastChar match {
-
+				val newStr = lastChar match
+				{
 					case 'á' => stem.stringForm
 					case _ => stem.stringForm :+ 'a'
 				}
@@ -60,8 +54,8 @@ object StrongVerbGenerator
 	/*
 			verb -> stem
 	 */
-	def stemFrom(verb: StrongVerb): StrongVerbStem = verb match {
-
+	def stemFrom(verb: StrongVerb): StrongVerbStem = verb match
+	{
 		case fVerb: FinitiveStrongVerb => stemFromFinitive(fVerb)
 		case nVerb: NonFinitiveStrongVerb => null
 	}
@@ -78,7 +72,7 @@ object StrongVerbGenerator
 			case _ => verb.strForm
 		}
 
-		val stemEnding = StrongVerbGenerator.stemEnding(verb.pronoun, verb.tense)
+		val stemEnding = StrongVerb.stemEnding(verb.pronoun, verb.tense)
 		val strWithoutInflection = strWithoutIUmlaut.stripSuffix(stemEnding)
 
 		val root = Root(strWithoutInflection)
@@ -86,12 +80,14 @@ object StrongVerbGenerator
 		StrongVerbStem(root, stemType)
 	}
 
+	@deprecated("use StrongVerb.stemEnding")
 	def stemEnding(pronoun: Pronoun, tense: VerbTenseEnum) = tense match
 	{
 		case PRESENT => stemEndingForPresent(pronoun)
 		case PAST => stemEndingForPreterite(pronoun)
 	}
 
+	@deprecated("use StrongVerb.stemEndingForPresent")
 	private def stemEndingForPresent(pronoun: Pronoun) = pronoun match
 	{
 		case SG_1 => ""
@@ -101,6 +97,7 @@ object StrongVerbGenerator
 		case PL_3_FEMN | PL_3_MASC | PL_3_NEUT => "a"
 	}
 
+	@deprecated("use StrongVerb.stemEndingForPreterite")
 	private def stemEndingForPreterite(pronoun: Pronoun) = pronoun match
 	{
 		case SG_1 | SG_3_FEMN | SG_3_MASC | SG_3_NEUT => ""

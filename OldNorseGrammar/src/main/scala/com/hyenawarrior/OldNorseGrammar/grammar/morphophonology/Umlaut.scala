@@ -47,16 +47,16 @@ trait Umlaut extends WordTransformation {
 	lazy val inverseUmlautTransform = umlautTransformation.flatMap { case (a, (b, c)) => Seq(b -> a, c -> a) }
 }
 
-object U_Umlaut extends Umlaut {
-
+class U_Umlaut extends Umlaut
+{
 	override val umlautTransformation = Map('a' -> ('ö' -> 'u'))
 	override val trigger = 'u'
 
 	override def toString = "U-umlaut"
 }
 
-object I_Umlaut extends Umlaut {
-
+class I_Umlaut extends Umlaut
+{
 	override val trigger = 'i'
 
 	override val umlautTransformation = Map(
@@ -72,3 +72,7 @@ object I_Umlaut extends Umlaut {
 
 	override def toString = "I-umlaut"
 }
+
+object I_Umlaut extends I_Umlaut
+object U_Umlaut extends U_Umlaut
+object Explicit_I_Umlaut extends I_Umlaut with Explicit

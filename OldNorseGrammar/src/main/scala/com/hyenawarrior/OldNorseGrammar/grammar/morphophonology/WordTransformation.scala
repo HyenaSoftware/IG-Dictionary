@@ -34,3 +34,8 @@ trait WordTransformation {
 
 	def isEligible(syllables: List[Syllable]): Boolean
 }
+
+trait Explicit extends WordTransformation
+{
+	override def isEligible(syllables: List[Syllable]): Boolean = true
+}

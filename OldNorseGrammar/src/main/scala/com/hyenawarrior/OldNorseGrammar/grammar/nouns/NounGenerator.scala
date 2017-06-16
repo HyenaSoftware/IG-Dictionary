@@ -61,7 +61,7 @@ object NounGenerator
 		val irregularInflections = extOverrides
 			.map
 			{
-				case(decl, str) => Word(new Noun(str, meaningId, decl, root), nounGeneratorOf.transformationsFor(decl))
+				case(decl, str) => Word(new Noun(str, meaningId, decl, root, nounGeneratorOf))
 			}
 		  .toList
 
