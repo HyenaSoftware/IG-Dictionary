@@ -33,7 +33,7 @@ final case class PosFlag		(name: String) extends MeaningDescFlags(name) { PosFla
 final case class PosSubFlag	(name: String) extends MeaningDescFlags(name) { PosSubFlag				.add(name -> this) }
 final case class CaseFlag		(name: String) extends WordDescFlags(name) 		{ CaseFlag					.add(name -> this) }
 final case class NumFlag		(name: String) extends WordDescFlags(name) 		{ NumFlag						.add(name -> this) }
-final case class GenderFlag	(name: String) extends MeaningDescFlags(name)	{ GenderFlag				.add(name -> this) }
+@deprecated("use Gender instead") final case class GenderFlag	(name: String) extends MeaningDescFlags(name)	{ GenderFlag				.add(name -> this) }
 final case class MinorFlag	(name: String) extends MeaningDescFlags(name)	{ MinorFlag 				.add(name -> this) }
 
 object MiscFlags extends EnumLike[String, MiscFlags] {

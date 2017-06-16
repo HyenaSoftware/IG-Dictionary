@@ -76,7 +76,7 @@ class Database(defs: Map[Language, List[MeaningDefinition]])
 				(num, cs) -> wd.word
 			}).toMap
 
-			NounGenerator(optRoot, caseOverrides, md.meaningId, gd, mnr)
+			NounGenerator(optRoot, caseOverrides, md.meaningId, Gender.FEMININE, mnr)
 		}
 
 

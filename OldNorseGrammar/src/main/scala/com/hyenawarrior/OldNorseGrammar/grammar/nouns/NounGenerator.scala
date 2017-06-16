@@ -3,7 +3,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses._
 import com.hyenawarrior.OldNorseGrammar.grammar._
-import com.hyenawarrior.dictionaryLoader.{GenderFlag, MinorFlag}
+import com.hyenawarrior.dictionaryLoader.MinorFlag
 
 
 
@@ -11,7 +11,7 @@ object NounGenerator
 {
 	val ALL_DECLENSION = List(SINGULAR, PLURAL).flatMap(num => Case.values.map(cs => num -> cs))
 
-	private def extractRootFrom(overrides: Map[(GNumber, Case), String])(implicit genderStemClass: (GenderFlag, MinorFlag)): Root =
+	private def extractRootFrom(overrides: Map[(GNumber, Case), String])(implicit genderStemClass: (Gender, MinorFlag)): Root =
 	{
 		val nounGen = nounGeneratorOf
 
@@ -33,20 +33,20 @@ object NounGenerator
 		})
 	}
 
-	private def nounGeneratorOf(implicit genderStemClass: (GenderFlag, MinorFlag)) = genderStemClass match
+	private def nounGeneratorOf(implicit genderStemClass: (Gender, MinorFlag)) = genderStemClass match
 	{
-		case (GenderFlag.MASCULINE, MinorFlag.A) => StrongStemClassMascA
-		case (GenderFlag.MASCULINE, MinorFlag.R) => StrongStemClassMascR
-		case (GenderFlag.FEMININE, MinorFlag.R) => StrongStemClassFeminineR
+		case (Gender.MASCULINE, MinorFlag.A) => StrongStemClassMascA
+		case (Gender.MASCULINE, MinorFlag.R) => StrongStemClassMascR
+		case (Gender.FEMININE, MinorFlag.R) => StrongStemClassFeminineR
 		case _ => NullStemClass
 	}
 
-	private def inflectionFor(root: Root, meaningId: Int, decl: (GNumber, Case))(implicit genderStemClass: (GenderFlag, MinorFlag)): Word =
+	private def inflectionFor(root: Root, meaningId: Int, decl: (GNumber, Case))(implicit genderStemClass: (Gender, MinorFlag)): Word =
 	{
 		nounGeneratorOf.apply(root, meaningId, decl)
 	}
 
-	def apply(givenRoot: Option[Root], overrides: Map[(Option[GNumber], Option[Case]), String], meaningId: Int, gender: GenderFlag, stemClass: MinorFlag): List[Word] =
+	def apply(givenRoot: Option[Root], overrides: Map[(Option[GNumber], Option[Case]), String], meaningId: Int, gender: Gender, stemClass: MinorFlag): List[Word] =
 	{
 		implicit val genderAndStemClass = (gender, stemClass)
 
