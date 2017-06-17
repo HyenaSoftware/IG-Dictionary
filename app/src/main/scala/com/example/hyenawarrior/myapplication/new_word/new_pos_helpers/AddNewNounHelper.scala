@@ -1,11 +1,14 @@
 package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
 import android.app.Activity
-import android.view.View
-import android.widget.{LinearLayout, Spinner, TableRow}
+import android.content.Context
+import android.view.{LayoutInflater, View}
+import android.widget._
+import com.example.hyenawarrior.dictionary.modelview.EditTextTypeListener
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.NounDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
 import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewNounHelper.Declension
+import com.example.hyenawarrior.myapplication.new_word.pages.AddNewWordActivity._
 import com.example.hyenawarrior.myapplication.new_word.pages.{NounData, VerbData, WordData}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
@@ -32,8 +35,8 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	val NounDeclensionAdapter = new NounDeclensionAdapter(activity)
 	val LL_DECL_LIST = rootView.findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
 
-	override def activate(): Unit = {
-
+	override def activate(): Unit =
+	{
 		super.activate()
 
 		LL_DECL_LIST.setVisibility(View.VISIBLE)
@@ -66,6 +69,28 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		selectedNounParameters = (stemClass, (givenCaseNum, strFixed), map)
 
 		fillNounForms()
+	}
+
+	private def makeFormOverrideTextListener(view: View) = new EditTextTypeListener(onTextFormOverride(view))
+
+	override def addNewOverride(container: TableLayout): Unit =
+	{
+		val inflater = getActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
+		val rowView = inflater.inflate(R.layout.new_word_overriding_def_row, null)
+
+		// add hint, it's necessary to be able to remove the overrides
+		val btnView = rowView.findViewById(R.id.ibRemove)
+		btnView.setTag(rowView)
+
+		// add type listeners
+		val etView = rowView.findViewById(R.id.etNewWord_Text).asInstanceOf[EditText]
+		etView.addTextChangedListener(makeFormOverrideTextListener(rowView))
+
+		//
+		val spNounDecl = rowView.findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
+		spNounDecl.setOnItemSelectedListener(postInitContext.DeclensionListener)
+
+		postInitContext.tlOverrides.addView(rowView)
 	}
 
 	override def onDeclensionSelected(index: Int): Unit =

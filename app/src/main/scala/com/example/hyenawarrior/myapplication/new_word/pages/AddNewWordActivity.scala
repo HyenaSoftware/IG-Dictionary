@@ -107,22 +107,7 @@ object AddNewWordActivity extends Fragment
 	//
 	def addNewOverride(view: View) = if(postInitContext.tlOverrides.getChildCount < 8)
 	{
-		val inflater = getActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
-		val rowView = inflater.inflate(R.layout.new_word_overriding_def_row, null)
-
-		// add hint, it's necessary to be able to remove the overrides
-		val btnView = rowView.findViewById(R.id.ibRemove)
-		btnView.setTag(rowView)
-
-		// add type listeners
-		val etView = rowView.findViewById(R.id.etNewWord_Text).asInstanceOf[EditText]
-		etView.addTextChangedListener(makeFormOverrideTextListener(rowView))
-
-		//
-		val spNounDecl = rowView.findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
-		spNounDecl.setOnItemSelectedListener(postInitContext.DeclensionListener)
-
-		postInitContext.tlOverrides.addView(rowView)
+		currentPosHelper.addNewOverride(postInitContext.tlOverrides)
 	}
 
 	//

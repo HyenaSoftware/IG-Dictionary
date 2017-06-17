@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="verb_ind_subj_decls">
+        <item>1st Person Singular</item>
+        <item>2nd Person Singular</item>
+        <item>3rd Person Singular</item>
+
+        <item>1st Person Plural</item>
+        <item>2nd Person Plural</item>
+        <item>3rd Person Plural</item>
+    </string-array>
+    <string-array name="verb_nonfinitive_decls">
+        <item>Infinitive</item>
+        <item>Present Participle</item>
+        <item>Perfect Participle</item>
+
+        <item>Imperative 2nd Person Singular</item>
+        <item>Imperative 1st Person Plural</item>
+        <item>Imperative 2nd Person Plural</item>
+    </string-array>
+</resources>

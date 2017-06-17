@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFBB33">
+        <ImageView
+                android:src="@android:drawable/ic_menu_info_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name" android:layout_weight="1"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Set Verb Declension"
+                android:id="@+id/textView11" android:textAlignment="textStart" android:layout_weight="1"
+                android:layout_gravity="center_vertical" android:singleLine="true"/>
+    </LinearLayout>
+    <Spinner android:layout_width="wrap_content" android:layout_height="fill_parent" android:id="@+id/spVerbDeclensions"
+             android:layout_gravity="center_vertical" android:entries="@array/verb_ind_subj_decls" android:layout_weight="2"
+             android:layout_margin="1dp"/>
+    <RadioGroup android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"
+                android:orientation="horizontal" android:layout_margin="1dp" android:id="@+id/rbgModes">
+        <RadioButton android:layout_width="0dp" android:layout_height="fill_parent" android:text="Indicative"
+                     android:id="@+id/rbInd" android:layout_weight="1" android:singleLine="false"
+                     android:checked="true"/>
+        <RadioButton android:layout_width="0dp" android:layout_height="fill_parent" android:text="Subjunctive"
+                     android:id="@+id/rbSubj" android:layout_weight="1"/>
+        <RadioButton android:layout_width="0dp" android:layout_height="fill_parent" android:text="NonFinitive"
+                     android:id="@+id/rbNonFinitive" android:layout_weight="1"/>
+    </RadioGroup>
+    <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
+                  android:layout_height="wrap_content">
+        <RadioGroup android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_weight="2"
+                    android:baselineAligned="true" android:layout_margin="1dp" android:id="@+id/rbgTense">
+            <RadioButton android:layout_width="0dp" android:layout_height="fill_parent" android:text="Present"
+                         android:id="@+id/rbPresent" android:layout_weight="1" android:checked="true"/>
+            <RadioButton android:layout_width="0dp" android:layout_height="fill_parent" android:text="Preterite"
+                         android:id="@+id/rbPreterite" android:layout_weight="1"/>
+        </RadioGroup>
+        <CheckBox android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="Reflexive"
+                  android:id="@+id/cbReflexive" android:layout_weight="1" android:checked="false"
+                  android:layout_margin="1dp"/>
+    </LinearLayout>
+</LinearLayout>

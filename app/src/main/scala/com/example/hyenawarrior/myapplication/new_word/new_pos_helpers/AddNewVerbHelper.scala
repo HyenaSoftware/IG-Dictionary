@@ -1,12 +1,15 @@
 package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
-import android.app.Activity
-import android.view.View
-import android.widget.{LinearLayout, Spinner, TableRow}
+import android.app.{Activity, AlertDialog, FragmentManager}
+import android.content.{Context, DialogInterface}
+import android.view.{LayoutInflater, View}
+import android.widget.{LinearLayout, Spinner, TableLayout, TableRow}
 import com.example.hyenawarrior.dictionary.model.database.marshallers.VerbForm
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
+import com.example.hyenawarrior.myapplication.new_word.VerbDeclPreferencesDialog
 import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewVerbHelper.{Declension, NON_FINITIVE_VERB_TYPES}
+import com.example.hyenawarrior.myapplication.new_word.pages.AddNewWordActivity._
 import com.example.hyenawarrior.myapplication.new_word.pages.{VerbData, WordData}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
@@ -52,6 +55,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		}
 		.toVector
 
+	val verbDeclPreferencesDialog = new VerbDeclPreferencesDialog(activity)
+
 	override def activate(): Unit = {
 
 		super.activate()
@@ -77,7 +82,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		fillForms()
 	}
 
-	override def onRemoveOverride(view: TableRow): Unit = {
+	override def onRemoveOverride(view: TableRow): Unit =
+	{
 
 	}
 
@@ -90,6 +96,26 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		selectedNounParameters = (classes, (primaryDecl, optTense, optStrFixed), map)
 
 		fillForms()
+	}
+
+	override def addNewOverride(container: TableLayout) : Unit =
+	{
+		val inflater = getActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
+		val rowView = inflater.inflate(R.layout.new_verb_overriding_def_row, null)
+
+		val btnView = rowView.findViewById(R.id.ibRemove)
+		btnView.setTag(rowView)
+
+
+		val btnPref = rowView.findViewById(R.id.ibPreferences)
+		btnPref.setOnClickListener(ShowVerbDeclDialogListener)
+
+		container.addView(rowView)
+	}
+
+	object ShowVerbDeclDialogListener extends View.OnClickListener
+	{
+		override def onClick(view: View): Unit = verbDeclPreferencesDialog.dialog.show()
 	}
 
 	override def onDeclensionSelected(index: Int): Unit = {
