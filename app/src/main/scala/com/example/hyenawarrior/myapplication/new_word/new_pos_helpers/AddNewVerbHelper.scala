@@ -1,9 +1,9 @@
 package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
-import android.app.{Activity, AlertDialog, FragmentManager}
-import android.content.{Context, DialogInterface}
+import android.app.Activity
+import android.content.Context
 import android.view.{LayoutInflater, View}
-import android.widget.{LinearLayout, Spinner, TableLayout, TableRow}
+import android.widget.{LinearLayout, Spinner, TableRow}
 import com.example.hyenawarrior.dictionary.model.database.marshallers.VerbForm
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
@@ -98,19 +98,19 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		fillForms()
 	}
 
-	override def addNewOverride(container: TableLayout) : Unit =
+	override def createOverrideFormSetter(isPrimary: Boolean) : View =
 	{
 		val inflater = getActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
 		val rowView = inflater.inflate(R.layout.new_verb_overriding_def_row, null)
 
-		val btnView = rowView.findViewById(R.id.ibRemove)
-		btnView.setTag(rowView)
-
+		val btnRemoveView = rowView.findViewById(R.id.ibRemove)
+		btnRemoveView.setTag(rowView)
+		btnRemoveView.setVisibility(if(isPrimary) View.GONE else View.VISIBLE)
 
 		val btnPref = rowView.findViewById(R.id.ibPreferences)
 		btnPref.setOnClickListener(ShowVerbDeclDialogListener)
 
-		container.addView(rowView)
+		rowView
 	}
 
 	object ShowVerbDeclDialogListener extends View.OnClickListener

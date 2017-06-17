@@ -1,6 +1,7 @@
 package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
 import android.app.Activity
+import android.view.View
 import android.widget.{ArrayAdapter, Spinner}
 
 /**
@@ -16,5 +17,9 @@ abstract class AbstractAddNewPosHelper(activity: Activity, spSelectStemClass: Sp
 	}
 
 	def deactivate(): Unit = ()
+
+	private lazy val priFormSetter = createOverrideFormSetter(true)
+
+	override def primaryFromSetter(): View = priFormSetter
 }
 

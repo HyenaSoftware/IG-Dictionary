@@ -97,17 +97,23 @@ object AddNewWordActivity extends Fragment
 	// router
 	private def onPosTypeSelected(newPosType: AddNewPosHelper) {
 
+		postInitContext.tlOverrides.removeAllViews()
+
 		currentPosHelper.deactivate()
 
 		currentPosHelper = newPosType
 
 		currentPosHelper.activate()
+
+		postInitContext.tlOverrides.addView(currentPosHelper.primaryFromSetter())
 	}
 
 	//
 	def addNewOverride(view: View) = if(postInitContext.tlOverrides.getChildCount < 8)
 	{
-		currentPosHelper.addNewOverride(postInitContext.tlOverrides)
+		val newForm = currentPosHelper.createOverrideFormSetter()
+
+		postInitContext.tlOverrides.addView(newForm)
 	}
 
 	//

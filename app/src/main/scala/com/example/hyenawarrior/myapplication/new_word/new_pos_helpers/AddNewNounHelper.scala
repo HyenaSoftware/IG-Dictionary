@@ -9,7 +9,7 @@ import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.NounDecl
 import com.example.hyenawarrior.myapplication.R
 import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewNounHelper.Declension
 import com.example.hyenawarrior.myapplication.new_word.pages.AddNewWordActivity._
-import com.example.hyenawarrior.myapplication.new_word.pages.{NounData, VerbData, WordData}
+import com.example.hyenawarrior.myapplication.new_word.pages.{NounData, WordData}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
@@ -73,7 +73,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 	private def makeFormOverrideTextListener(view: View) = new EditTextTypeListener(onTextFormOverride(view))
 
-	override def addNewOverride(container: TableLayout): Unit =
+	override def createOverrideFormSetter(isPrimary: Boolean): View =
 	{
 		val inflater = getActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
 		val rowView = inflater.inflate(R.layout.new_word_overriding_def_row, null)
@@ -81,6 +81,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		// add hint, it's necessary to be able to remove the overrides
 		val btnView = rowView.findViewById(R.id.ibRemove)
 		btnView.setTag(rowView)
+		btnView.setVisibility(if(isPrimary) View.GONE else View.VISIBLE)
 
 		// add type listeners
 		val etView = rowView.findViewById(R.id.etNewWord_Text).asInstanceOf[EditText]
@@ -90,7 +91,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		val spNounDecl = rowView.findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
 		spNounDecl.setOnItemSelectedListener(postInitContext.DeclensionListener)
 
-		postInitContext.tlOverrides.addView(rowView)
+		rowView
 	}
 
 	override def onDeclensionSelected(index: Int): Unit =

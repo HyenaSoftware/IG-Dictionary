@@ -1,7 +1,7 @@
 package com.example.hyenawarrior.myapplication.new_word.new_pos_helpers
 
 import android.view.View
-import android.widget.{TableLayout, TableRow}
+import android.widget.TableRow
 import com.example.hyenawarrior.myapplication.new_word.pages.WordData
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
@@ -19,7 +19,9 @@ trait AddNewPosHelper
 	def deactivate(): Unit
 	def onRemoveOverride(view: TableRow)
 	def onPrimaryTextChange(str: String): Unit
-	def addNewOverride(container: TableLayout) : Unit = ()
+
+	def primaryFromSetter(): View
+	def createOverrideFormSetter(isPrimary: Boolean = false) : View
 
 	def onDeclensionSelected(index: Int): Unit
 	def onStemClassSelected(index: Int): Unit
