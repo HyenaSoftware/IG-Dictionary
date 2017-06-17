@@ -3,19 +3,17 @@ package com.example.hyenawarrior.myapplication
 import java.io.{File, FileInputStream, FileOutputStream}
 
 import android.content.Intent
-import android.database.sqlite.SQLiteDatabase
 import android.os.{Bundle, Environment}
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget._
-import com.example.hyenawarrior.dictionary.model.database.marshallers.{PosType, VerbForm, VerbType}
+import com.example.hyenawarrior.dictionary.model.DictionaryEntry
+import com.example.hyenawarrior.dictionary.model.database.marshallers.{VerbForm, VerbType}
 import com.example.hyenawarrior.dictionary.model.database.{IGDatabase, SQLDatabaseHelper, WordForm}
-import com.example.hyenawarrior.dictionary.model.{AndroidStorage, Database, DictionaryEntry}
 import com.example.hyenawarrior.dictionary.modelview.DictionaryEntryAdapter
 import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivityPager
-import com.hyenawarrior.OldNorseGrammar.grammar.{Database, Language, Word, verbs}
-import com.hyenawarrior.dictionaryLoader.Storage
+import com.hyenawarrior.OldNorseGrammar.grammar.{Word, verbs}
 
 
 object MainActivity
@@ -27,36 +25,9 @@ class MainActivity extends AppCompatActivity
 {
 	outer =>
 
-	/*
-	implicit class DictEntryStringEx(val wDef: WordDefinition) //extends AnyVal
-	{
-		def toMeaning = Meaning(wDef.word, s"[...]")
-	}
-	*/
-
 	object TypeListener extends SearchView.OnQueryTextListener
 	{
 		override def onQueryTextSubmit(s: String): Boolean = true
-
-		def onQueryTextChangeOld(s: String): Boolean =
-		{
-			val meaningsToWords = Database.database.findBy(s)
-
-			val list: List[DictionaryEntry] = meaningsToWords.map
-			{
-				case(wg, matchingWords) =>
-					val optPriWord = if(!matchingWords.exists(w => wg.isPrimary(w))) Some(wg.primaryWord)	else None
-
-					val meanings = Range(0, 5).map(i => s"Meaning$i").toList //wg.meaningId   ...
-
-					DictionaryEntry(matchingWords, optPriWord, meanings)
-			}.toList
-
-			entryListAdapter resetItems list
-			listView.invalidateViews()
-
-			true
-		}
 
 		override def onQueryTextChange(s: String): Boolean =
 		{
@@ -87,10 +58,7 @@ class MainActivity extends AppCompatActivity
 		super.onBackPressed()
 	}
 
-	object Storage extends Storage with AndroidStorage
-
-
-	lazy val entryListAdapter = new DictionaryEntryAdapter(this) //new EntryListAdapter(this)
+	lazy val entryListAdapter = new DictionaryEntryAdapter(this)
 	lazy val listView = findViewById(R.id.listView).asInstanceOf[ListView]
 
 	lazy val igDatabase = IGDatabase(getApplicationContext)

@@ -14,5 +14,4 @@ object VerbTenseEnum extends EnumLike[String, VerbTenseEnum]
 {
 	val PRESENT = VerbTenseEnum("Present")
 	val PAST = VerbTenseEnum("Past")
-	val PERFECT = VerbTenseEnum("Perfect")
 }

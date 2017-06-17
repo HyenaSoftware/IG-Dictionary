@@ -8,15 +8,13 @@ import android.widget.{ArrayAdapter, Spinner}
 	*/
 abstract class AbstractAddNewPosHelper(activity: Activity, spSelectStemClass: Spinner, spinnerItemRsrc: Int) extends AddNewPosHelper
 {
-	def activate(): Unit = {
-		//
+	def activate(): Unit =
+	{
 		val adapter = ArrayAdapter.createFromResource(activity,	spinnerItemRsrc, android.R.layout.simple_spinner_item)
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 		spSelectStemClass.setAdapter(adapter)
 	}
 
-	def deactivate(): Unit = {
-
-	}
+	def deactivate(): Unit = ()
 }
 

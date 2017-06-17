@@ -1,9 +1,8 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses
 
 import com.hyenawarrior.OldNorseGrammar.grammar._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{AblautGrade, AblautTransformation}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautTransformation
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{StrongVerbStem, VerbStemEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbClassEnum, _}
@@ -13,33 +12,6 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbClassEnum
 	*/
 object StrongVerbStemClasses extends VerbStemClass[StrongVerb]
 {
-	// TODO: remove it
-	val STEMCLASSES_TO_ABLAUT: Map[(VerbStemEnum, VerbClassEnum), AblautGrade] =
-		Map(
-			(PRESENT_STEM,						STRONG_1ST_CLASS) -> AblautGrade("í"),
-			(PRETERITE_SINGULAR_STEM,	STRONG_1ST_CLASS) -> AblautGrade("ei"),
-			(PRETERITE_PLURAL_STEM,		STRONG_1ST_CLASS) -> AblautGrade("i"),
-			(PERFECT_STEM,						STRONG_1ST_CLASS) -> AblautGrade("i"),
-
-			(PRESENT_STEM,						STRONG_3RD_CLASS) -> AblautGrade("e"),
-			(PRETERITE_SINGULAR_STEM,	STRONG_3RD_CLASS) -> AblautGrade("a"),
-			(PRETERITE_PLURAL_STEM,		STRONG_3RD_CLASS) -> AblautGrade("u"),
-			(PERFECT_STEM,						STRONG_3RD_CLASS) -> AblautGrade("o")
-		) ++
-		genAblautFor(STRONG_2ND_CLASS, "jú", "au", "u", "o") ++
-		genAblautFor(STRONG_4TH_CLASS, "e", "a", "á", "o") ++
-		genAblautFor(STRONG_5TH_CLASS, "e", "a", "á", "e") ++
-		genAblautFor(STRONG_6TH_CLASS, "a", "ó", "ó", "a")
-
-	// TODO: remove it
-	private def genAblautFor(vc: VerbClassEnum, vowels: String*): Map[(VerbStemEnum, VerbClassEnum), AblautGrade] =
-		List(PRESENT_STEM, PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM, PERFECT_STEM)
-		  .map(s => s -> vc)
-		  .zipWithIndex
-		  .map{ case (k, i) => k -> AblautGrade(vowels(i)) }
-		  .toMap
-
-
 	override def convertTo(verb: StrongVerb, targetForm: Either[FinitiveVerbDesc, NonFinitiveVerbType]): Option[StrongVerb] = {
 
 		val stem = StrongVerbGenerator.stemFrom(verb)
@@ -69,8 +41,6 @@ object StrongVerbStemClasses extends VerbStemClass[StrongVerb]
 
 		(optSrcAblaut, optDstAblaut) match
 		{
-			//case (Some(srcAblaut), Some(dstAblaut)) if srcAblaut == dstAblaut && srcAblaut. => Some(srcStem)
-
 			case (Some(srcAblaut), Some(dstAblaut)) =>
 				val newStr = AblautTransformation(srcStem.stringForm, srcAblaut, dstAblaut)
 				newStr.map(str => StrongVerbStem(Root(str), dstVerbStemType))

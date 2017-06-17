@@ -17,7 +17,6 @@ package object verbs
 		case (PRESENT, _)			=> PRESENT_STEM
 		case (PAST, SINGULAR) => PRETERITE_SINGULAR_STEM
 		case (PAST, PLURAL)		=> PRETERITE_PLURAL_STEM
-		case (PERFECT, _)			=> PERFECT_STEM
 	}
 
 	def stemToTense(stem: VerbStemEnum): (VerbTenseEnum, Option[GNumber]) = stem match	{
@@ -25,7 +24,6 @@ package object verbs
 		case PRESENT_STEM							=> PRESENT	-> None
 		case PRETERITE_SINGULAR_STEM	=> PAST			-> Some(SINGULAR)
 		case PRETERITE_PLURAL_STEM		=> PAST			-> Some(PLURAL)
-		case PERFECT_STEM							=> PERFECT	-> None
 	}
 
 	def verbFrom(text: String, mode: VerbModeEnum, verbClass: VerbClassEnum, optTense: Option[VerbTenseEnum], optPronoun: Option[Pronoun]): Verb
