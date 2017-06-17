@@ -1,12 +1,10 @@
 package com.example.hyenawarrior.myapplication.new_word.pages
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
-import android.widget.AdapterView.OnItemSelectedListener
 import android.widget._
-import com.example.hyenawarrior.dictionary.modelview.{EditTextTypeListener, SpinnerListener}
+import com.example.hyenawarrior.dictionary.modelview.{EditTextTypeListener, ItemListener, SpinnerListener}
 import com.example.hyenawarrior.myapplication.R
 import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.{AddNewNounHelper, AddNewNullHelper, AddNewPosHelper, AddNewVerbHelper}
 
@@ -19,34 +17,12 @@ object AddNewWordActivity extends Fragment
 	//
 	class LazyPostInit(val rootView: View) {
 
-		trait Listener extends OnItemSelectedListener	{
-
-			override def onNothingSelected(adapterView: AdapterView[_]) = ()
-		}
-
-		object StemClassListener extends Listener {
-
-			override def onItemSelected(adapterView: AdapterView[_], view: View, i: Int, l: Long): Unit = {
-
-				currentPosHelper.onStemClassSelected(i)
-			}
-		}
-
-		object DeclensionListener extends Listener {
-
-			override def onItemSelected(adapterView: AdapterView[_], view: View, i: Int, l: Long): Unit = {
-
-				currentPosHelper.onDeclensionSelected(i)
-			}
-		}
+		object StemClassListener extends ItemListener(i => currentPosHelper.onStemClassSelected(i))
 
 		val tlOverrides = rootView.findViewById(R.id.tlOverrides).asInstanceOf[TableLayout]
 
 		val SP_SELECT_STEM_CLASS = rootView.findViewById(R.id.spSelectStemClass).asInstanceOf[Spinner]
 		SP_SELECT_STEM_CLASS.setOnItemSelectedListener(StemClassListener)
-
-		val spPosDeclension = rootView.findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
-		spPosDeclension.setOnItemSelectedListener(DeclensionListener)
 
 		val addNewNounHelper = new AddNewNounHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
 		val addNewVerbHelper = new AddNewVerbHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
@@ -69,10 +45,6 @@ object AddNewWordActivity extends Fragment
 		val posTypeSpinnerListener = new SpinnerListener(postInitContext.POS_TYPES, onPosTypeSelected)
 		val spSelectPoS = rootView.findViewById(R.id.spSelectPoS).asInstanceOf[Spinner]
 		spSelectPoS.setOnItemSelectedListener(posTypeSpinnerListener)
-
-		//
-		val etPriText = rootView.findViewById(R.id.etNewWord_PriText).asInstanceOf[EditText]
-		etPriText.addTextChangedListener(new EditTextTypeListener(onPrimaryTextChange))
 
 		rootView
   }

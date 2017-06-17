@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
 import android.widget._
-import com.example.hyenawarrior.dictionary.modelview.EditTextTypeListener
+import com.example.hyenawarrior.dictionary.modelview.{EditTextTypeListener, ItemListener}
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.NounDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
 import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewNounHelper.Declension
@@ -35,6 +35,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	val NounDeclensionAdapter = new NounDeclensionAdapter(activity)
 	val LL_DECL_LIST = rootView.findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
 
+	//
 	override def activate(): Unit =
 	{
 		super.activate()
@@ -85,11 +86,19 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		// add type listeners
 		val etView = rowView.findViewById(R.id.etNewWord_Text).asInstanceOf[EditText]
-		etView.addTextChangedListener(makeFormOverrideTextListener(rowView))
+		val etListener = new EditTextTypeListener(
+			if(isPrimary)	onPrimaryTextChange
+			else					onTextFormOverride(rowView))
+
+		etView.addTextChangedListener(etListener)
 
 		//
 		val spNounDecl = rowView.findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
-		spNounDecl.setOnItemSelectedListener(postInitContext.DeclensionListener)
+		val spListener = new ItemListener(
+			if(isPrimary)	i => onNounDeclensionSelected(AddNewNounHelper.NOUN_DECLENSIONS(i))
+			else					i => onNounDeclensionSelected(rowView)(AddNewNounHelper.NOUN_DECLENSIONS(i)))
+
+		spNounDecl.setOnItemSelectedListener(spListener)
 
 		rowView
 	}
