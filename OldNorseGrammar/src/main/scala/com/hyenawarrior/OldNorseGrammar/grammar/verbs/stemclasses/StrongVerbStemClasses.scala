@@ -5,6 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautTransforma
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{StrongVerbStem, VerbStemEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.VerbStemClass.FinitiveVerbDesc
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbClassEnum, _}
 
 /**
@@ -42,6 +43,7 @@ object StrongVerbStemClasses extends VerbStemClass[StrongVerb]
 		(optSrcAblaut, optDstAblaut) match
 		{
 			case (Some(srcAblaut), Some(dstAblaut)) =>
+				// change the strong verb stem
 				val newStr = AblautTransformation(srcStem.stringForm, srcAblaut, dstAblaut)
 				newStr.map(str => StrongVerbStem(Root(str), dstVerbStemType))
 

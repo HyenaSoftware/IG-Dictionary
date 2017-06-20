@@ -13,7 +13,7 @@ object AddNewNullHelper extends AddNewPosHelper
 
 	override def deactivate(): Unit = { }
 
-	override def onRemoveOverride(view: TableRow): Unit = { }
+	override def onRemoveOverride(tableRow: View): Unit = { }
 
 	override def onPrimaryTextChange(str: String): Unit = { }
 

@@ -2,35 +2,98 @@ package com.example.hyenawarrior.myapplication.new_word
 
 import android.app.{Activity, AlertDialog}
 import android.content.{Context, DialogInterface}
+import android.os.AsyncTask
 import android.view.{LayoutInflater, View}
-import android.widget.{ArrayAdapter, Spinner}
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.{AdapterView, ArrayAdapter, Spinner}
+import com.example.hyenawarrior.dictionary.model.database.marshallers.VerbForm
 import com.example.hyenawarrior.myapplication.R
+import com.example.hyenawarrior.myapplication.new_word.VerbDeclPreferencesDialog.{spinnerItemsIndItem, spinnerItemsNonFinitive, spinnerItemsSubjItem}
+import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbModeEnum, VerbTenseEnum}
 
 /**
 	* Created by HyenaWarrior on 2017.06.17..
 	*/
+object VerbDeclPreferencesDialog
+{
+	val spinnerItemsIndItem			= List(
+		VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG,
+		VerbForm.VERB_INDICATIVE_PRESENT_2ND_SG,
+		VerbForm.VERB_INDICATIVE_PRESENT_3RD_SG,
+
+		VerbForm.VERB_INDICATIVE_PRESENT_1ST_PL,
+		VerbForm.VERB_INDICATIVE_PRESENT_2ND_PL,
+		VerbForm.VERB_INDICATIVE_PRESENT_3RD_PL)
+
+	val spinnerItemsSubjItem			= List(
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_SG,
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_SG,
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_SG,
+
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_PL,
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_PL,
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_PL)
+
+	val spinnerItemsNonFinitive		=  List(
+			VerbForm.VERB_INFINITIVE,
+			VerbForm.VERB_PRESENT_PARTICIPLE,
+			VerbForm.VERB_PAST_PARTICIPLE,
+			VerbForm.VERB_IMPERATIVE_SG_2ND,
+			VerbForm.VERB_IMPERATIVE_PL_1ST,
+			VerbForm.VERB_IMPERATIVE_PL_2ND)
+}
+
 class VerbDeclPreferencesDialog(activity: Activity)
 {
+	type State = (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])
+
+	var state = VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG
+	var activeVerbMode = R.id.rbInd
+	var activeVerbTense = R.id.rbPresent
+	var isReflexive = false
+	var callback: Option[Option[VerbForm] => Unit] = None
+
 	object DialogOnClickListener extends DialogInterface.OnClickListener
 	{
-		override def onClick(dialogInterface: DialogInterface, i: Int): Unit = i match
+		override def onClick(dialogInterface: DialogInterface, i: Int): Unit = if(callback.isDefined) i match
 		{
-			case DialogInterface.BUTTON_POSITIVE => ()
-			case DialogInterface.BUTTON_NEGATIVE => ()
+			case DialogInterface.BUTTON_POSITIVE => callback.get(Some(state))
+			case DialogInterface.BUTTON_NEGATIVE => callback.get(None)
+		}
+	}
+
+	object SpinnerListener extends OnItemSelectedListener
+	{
+		override def onNothingSelected(adapterView: AdapterView[_]): Unit = ???
+
+		override def onItemSelected(adapterView: AdapterView[_], view: View, i: Int, l: Long): Unit = activeVerbMode match
+		{
+			case R.id.rbInd => state = spinnerItemsIndItem(i)
+
+			case R.id.rbSubj => state = spinnerItemsSubjItem(i)
+
+			case R.id.rbNonFinitive => state = spinnerItemsNonFinitive(i)
 		}
 	}
 
 	object RadioButtonListener extends View.OnClickListener
 	{
 		val verbDeclSpinner: Spinner = selfView.findViewById(R.id.spVerbDeclensions).asInstanceOf[Spinner]
+		verbDeclSpinner.setOnItemSelectedListener(SpinnerListener)
 
 		override def onClick(view: View): Unit = view.getId match
 		{
-			case R.id.rbInd | R.id.rbSubj => setSpinnerAndTenseRadioButtons(R.array.verb_ind_subj_decls, true)
+			case R.id.rbInd | R.id.rbSubj =>
+				activeVerbMode = view.getId
+				setSpinnerAndTenseRadioButtons(R.array.verb_ind_subj_decls, true)
 
-			case R.id.rbNonFinitive				=> setSpinnerAndTenseRadioButtons(R.array.verb_nonfinitive_decls, false)
+			case R.id.rbNonFinitive				=>
+				activeVerbMode = view.getId
+				setSpinnerAndTenseRadioButtons(R.array.verb_nonfinitive_decls, false)
 
-			case R.id.rbPresent | R.id.rbPreterite => ()
+			case R.id.rbPresent | R.id.rbPreterite =>
+				activeVerbTense = view.getId
 		}
 
 		private def setSpinnerAndTenseRadioButtons(intSpinnerRsrc: Int, enableTenseButtons: Boolean): Unit =
@@ -44,6 +107,12 @@ class VerbDeclPreferencesDialog(activity: Activity)
 		}
 	}
 
+	def show(callback: Option[VerbForm] => Unit)
+	{
+		this.callback = Some(callback)
+
+		dialog.show()
+	}
 
 	private val selfView =
 	{
@@ -58,7 +127,7 @@ class VerbDeclPreferencesDialog(activity: Activity)
 		selfView.findViewById(id).setOnClickListener(RadioButtonListener)
 	}
 
-	val dialog = new AlertDialog.Builder(activity)
+	private val dialog = new AlertDialog.Builder(activity)
 		//.setTitle("Set Verb Declension")
 		.setView(selfView)
 		.setPositiveButton("Accept", DialogOnClickListener)

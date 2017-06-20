@@ -17,7 +17,7 @@ trait AddNewPosHelper
 {
 	def activate(): Unit
 	def deactivate(): Unit
-	def onRemoveOverride(view: TableRow)
+	def onRemoveOverride(tableRow: View)
 	def onPrimaryTextChange(str: String): Unit
 
 	def primaryFromSetter(): View

@@ -55,7 +55,7 @@ object AddNewWordActivity extends Fragment
 	// forwarders
 	def onRemoveOverride(view: View) = view.getTag match
 	{
-		case tableRow: TableRow =>
+		case tableRow: View =>
 			postInitContext.tlOverrides.removeView(tableRow)
 			currentPosHelper.onRemoveOverride(tableRow)
 

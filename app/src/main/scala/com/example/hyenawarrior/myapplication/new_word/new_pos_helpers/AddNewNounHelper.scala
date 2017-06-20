@@ -27,7 +27,7 @@ object AddNewNounHelper
 class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.noun_types)
 {
 	type Override = (Option[(GNumber, Case)], Option[String])
-	type Parameters = (List[NounStemClassEnum], Override, Map[AnyRef, Override])
+	type Parameters = (List[NounStemClassEnum], Override, Map[View, Override])
 
 	var selectedNounParameters: Parameters = (List(), (None, None), Map())
   var latestNounData: Map[Declension, String] = Map()
@@ -50,8 +50,8 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		LL_DECL_LIST.setVisibility(View.GONE)
 	}
 
-	def onRemoveOverride(tableRow: TableRow) = {
-
+	def onRemoveOverride(tableRow: View) =
+	{
 		selectedNounParameters = selectedNounParameters match
 		{
 			case (nc, baseDef, map) => (nc, baseDef, map - tableRow)
@@ -80,11 +80,11 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		val rowView = inflater.inflate(R.layout.new_word_overriding_def_row, null)
 
 		// add hint, it's necessary to be able to remove the overrides
-		val btnView = rowView.findViewById(R.id.ibRemove)
-		btnView.setTag(rowView)
-		btnView.setVisibility(if(isPrimary) View.GONE else View.VISIBLE)
+		val btnRemoveView = rowView.findViewById(R.id.ibRemove)
+		btnRemoveView.setTag(rowView)
+		btnRemoveView.setVisibility(if(isPrimary) View.GONE else View.VISIBLE)
 
-		// add type listeners
+		// add text listeners
 		val etView = rowView.findViewById(R.id.etNewWord_Text).asInstanceOf[EditText]
 		val etListener = new EditTextTypeListener(
 			if(isPrimary)	onPrimaryTextChange
@@ -177,7 +177,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		}
 		.toVector
 
-	private def generateFormsFrom(stemClass: NounStemClass, baseDef: ((GNumber, Case), String), map: Map[AnyRef, Override]):	Map[(GNumber, Case), String] =
+	private def generateFormsFrom(stemClass: NounStemClass, baseDef: ((GNumber, Case), String), map: Map[View, Override]):	Map[(GNumber, Case), String] =
 	{
 		val overridingDefs = map.values.flatMap
 		{

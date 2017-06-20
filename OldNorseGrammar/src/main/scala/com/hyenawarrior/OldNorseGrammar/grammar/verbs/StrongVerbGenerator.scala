@@ -16,38 +16,44 @@ object StrongVerbGenerator
 	/*
 			stem -> verb
 	 */
-	def verbFrom(stem: StrongVerbStem, verbClass: VerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum): StrongVerb = {
-
+	def verbFrom(stem: StrongVerbStem, verbClass: VerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum): StrongVerb =
+	{
 		val str = stem.stringForm + StrongVerb.stemEnding(pronoun, tense)
 
 		FinitiveStrongVerb(str, verbClass, pronoun, tense)
 	}
 
-	def verbFrom(stem: StrongVerbStem, verbClass: VerbClassEnum, nonFinitiveForm: NonFinitiveVerbType): StrongVerb = {
-
-		/*
+	/*
 				[Form]										[base stem]
 				Infinitive								Present Stem
 				Present Participle				Present Stem
 				Past/Perfect Participle		Perfect Stem
 				Supine										Perfect Stem
 		 */
+	def verbFrom(stem: StrongVerbStem, verbClass: VerbClassEnum, nonFinitiveForm: NonFinitiveVerbType): StrongVerb = nonFinitiveForm match
+	{
+		case INFINITIVE					=>	infinitiveVerbFrom(stem, verbClass)
 
-		nonFinitiveForm match	{
+		case PRESENT_PARTICIPLE =>	particibleVerbFrom(stem, verbClass, VerbTenseEnum.PRESENT)
+		case PAST_PARTICIPLE 		=>	particibleVerbFrom(stem, verbClass, VerbTenseEnum.PAST)
+	}
 
-			case INFINITIVE =>
-				val lastChar = stem.stringForm.last
-				val newStr = lastChar match
-				{
-					case 'á' => stem.stringForm
-					case _ => stem.stringForm :+ 'a'
-				}
-
-				NonFinitiveStrongVerb(newStr, verbClass, nonFinitiveForm)
-
-			case PRESENT_PARTICIPLE =>	NonFinitiveStrongVerb(stem.stringForm + "andi", verbClass, nonFinitiveForm)
-			case PAST_PARTICIPLE =>			NonFinitiveStrongVerb(stem.stringForm + "inn",	verbClass, nonFinitiveForm)
+	def infinitiveVerbFrom(stem: StrongVerbStem, verbClass: VerbClassEnum): StrongVerb =
+	{
+		val lastChar = stem.stringForm.last
+		val newStr = lastChar match
+		{
+			case 'á' => stem.stringForm
+			case _ => stem.stringForm :+ 'a'
 		}
+
+		NonFinitiveStrongVerb(newStr, verbClass, NonFinitiveVerbType.INFINITIVE)
+	}
+
+	def particibleVerbFrom(stem: StrongVerbStem, verbClass: VerbClassEnum, verbTense: VerbTenseEnum): StrongVerb = verbTense match
+	{
+		case VerbTenseEnum.PAST			=> NonFinitiveStrongVerb(stem.stringForm + "inn",	verbClass, NonFinitiveVerbType.PAST_PARTICIPLE)
+		case VerbTenseEnum.PRESENT	=> NonFinitiveStrongVerb(stem.stringForm + "andi",verbClass, NonFinitiveVerbType.PRESENT_PARTICIPLE)
 	}
 
 	/*

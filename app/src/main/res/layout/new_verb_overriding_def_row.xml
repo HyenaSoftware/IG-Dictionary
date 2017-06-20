@@ -43,7 +43,7 @@
                      android:src="@android:drawable/ic_menu_preferences" android:adjustViewBounds="false"
                      android:contentDescription="Add"
                      android:layout_gravity="center_vertical"/>
-        <EditText android:layout_width="wrap_content" android:layout_height="fill_parent" android:id="@+id/editText2"
-                  android:text="Abcde" android:layout_weight="1"/>
+        <EditText android:layout_width="wrap_content" android:layout_height="fill_parent" android:id="@+id/etNewWord.Text"
+                  android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>
