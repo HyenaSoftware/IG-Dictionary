@@ -2,13 +2,12 @@ package com.example.hyenawarrior.myapplication.new_word
 
 import android.app.{Activity, AlertDialog}
 import android.content.{Context, DialogInterface}
-import android.os.AsyncTask
 import android.view.{LayoutInflater, View}
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.{AdapterView, ArrayAdapter, Spinner}
 import com.example.hyenawarrior.dictionary.model.database.marshallers.VerbForm
 import com.example.hyenawarrior.myapplication.R
-import com.example.hyenawarrior.myapplication.new_word.VerbDeclPreferencesDialog.{spinnerItemsIndItem, spinnerItemsNonFinitive, spinnerItemsSubjItem}
+import com.example.hyenawarrior.myapplication.new_word.VerbDeclPreferencesDialog._
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbModeEnum, VerbTenseEnum}
 
@@ -17,7 +16,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbModeEnum, VerbTenseEn
 	*/
 object VerbDeclPreferencesDialog
 {
-	val spinnerItemsIndItem			= List(
+	val spinnerItemsIndPresentItem			= List(
 		VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG,
 		VerbForm.VERB_INDICATIVE_PRESENT_2ND_SG,
 		VerbForm.VERB_INDICATIVE_PRESENT_3RD_SG,
@@ -26,7 +25,16 @@ object VerbDeclPreferencesDialog
 		VerbForm.VERB_INDICATIVE_PRESENT_2ND_PL,
 		VerbForm.VERB_INDICATIVE_PRESENT_3RD_PL)
 
-	val spinnerItemsSubjItem			= List(
+	val spinnerItemsIndPreteriteItem			= List(
+		VerbForm.VERB_INDICATIVE_PAST_1ST_SG,
+		VerbForm.VERB_INDICATIVE_PAST_2ND_SG,
+		VerbForm.VERB_INDICATIVE_PAST_3RD_SG,
+
+		VerbForm.VERB_INDICATIVE_PAST_1ST_PL,
+		VerbForm.VERB_INDICATIVE_PAST_2ND_PL,
+		VerbForm.VERB_INDICATIVE_PAST_3RD_PL)
+
+	val spinnerItemsSubjPresentItem			= List(
 		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_SG,
 		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_SG,
 		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_SG,
@@ -34,6 +42,15 @@ object VerbDeclPreferencesDialog
 		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_PL,
 		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_PL,
 		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_PL)
+
+	val spinnerItemsSubjPreteriteItem			= List(
+		VerbForm.VERB_SUBJUNCTIVE_PAST_1ST_SG,
+		VerbForm.VERB_SUBJUNCTIVE_PAST_2ND_SG,
+		VerbForm.VERB_SUBJUNCTIVE_PAST_3RD_SG,
+
+		VerbForm.VERB_SUBJUNCTIVE_PAST_1ST_PL,
+		VerbForm.VERB_SUBJUNCTIVE_PAST_2ND_PL,
+		VerbForm.VERB_SUBJUNCTIVE_PAST_3RD_PL)
 
 	val spinnerItemsNonFinitive		=  List(
 			VerbForm.VERB_INFINITIVE,
@@ -51,6 +68,8 @@ class VerbDeclPreferencesDialog(activity: Activity)
 	var state = VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG
 	var activeVerbMode = R.id.rbInd
 	var activeVerbTense = R.id.rbPresent
+	var spinnerIndex = 0
+
 	var isReflexive = false
 	var callback: Option[Option[VerbForm] => Unit] = None
 
@@ -67,13 +86,26 @@ class VerbDeclPreferencesDialog(activity: Activity)
 	{
 		override def onNothingSelected(adapterView: AdapterView[_]): Unit = ???
 
-		override def onItemSelected(adapterView: AdapterView[_], view: View, i: Int, l: Long): Unit = activeVerbMode match
+		override def onItemSelected(adapterView: AdapterView[_], view: View, idx: Int, l: Long): Unit =
 		{
-			case R.id.rbInd => state = spinnerItemsIndItem(i)
+			spinnerIndex = idx
+			resetState()
+		}
+	}
 
-			case R.id.rbSubj => state = spinnerItemsSubjItem(i)
+	private def resetState(): Unit =
+	{
+		(activeVerbMode, activeVerbTense) match
+		{
+			case (R.id.rbInd, R.id.rbPresent) => state = spinnerItemsIndPresentItem(spinnerIndex)
 
-			case R.id.rbNonFinitive => state = spinnerItemsNonFinitive(i)
+			case (R.id.rbInd, R.id.rbPreterite) => state = spinnerItemsIndPreteriteItem(spinnerIndex)
+
+			case (R.id.rbSubj, R.id.rbPresent) => state = spinnerItemsSubjPresentItem(spinnerIndex)
+
+			case (R.id.rbSubj, R.id.rbPreterite) => state = spinnerItemsSubjPreteriteItem(spinnerIndex)
+
+			case (R.id.rbNonFinitive, _) => state = spinnerItemsNonFinitive(spinnerIndex)
 		}
 	}
 
@@ -87,13 +119,16 @@ class VerbDeclPreferencesDialog(activity: Activity)
 			case R.id.rbInd | R.id.rbSubj =>
 				activeVerbMode = view.getId
 				setSpinnerAndTenseRadioButtons(R.array.verb_ind_subj_decls, true)
+				resetState()
 
 			case R.id.rbNonFinitive				=>
 				activeVerbMode = view.getId
 				setSpinnerAndTenseRadioButtons(R.array.verb_nonfinitive_decls, false)
+				resetState()
 
 			case R.id.rbPresent | R.id.rbPreterite =>
 				activeVerbTense = view.getId
+				resetState()
 		}
 
 		private def setSpinnerAndTenseRadioButtons(intSpinnerRsrc: Int, enableTenseButtons: Boolean): Unit =
