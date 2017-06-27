@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.WordTransformation
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{I_Umlaut, U_Umlaut, WordTransformation}
 
 /**
 	* Created by HyenaWarrior on 2017.03.20..
@@ -13,5 +13,5 @@ trait PoS
 
 	def descriptorFlags: List[DescriptorFlag]
 
-	def transformations: List[WordTransformation] = List()
+	def transformations: List[WordTransformation] = List(U_Umlaut, I_Umlaut)
 }

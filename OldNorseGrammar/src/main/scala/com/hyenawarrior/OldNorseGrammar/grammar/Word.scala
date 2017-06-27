@@ -18,11 +18,13 @@ case class Word(pos: PoS)
 		val Syllables(syllables) = pos.strForm
 
 		val allTransformations = POS_DEPENDENT_TRANSFORMATIONS ++ DEFAULT_TRANSFORMATIONS
-		val transformedSyllables = allTransformations.foldLeft(syllables){ (sys, trn) => trn(sys) }
+		val transformedSyllables = POS_DEPENDENT_TRANSFORMATIONS.foldLeft(syllables){ (sys, trn) => trn(sys) }
 
 		val str = Syllables(transformedSyllables)
 
-		str
+		//str
+
+		pos.strForm
 	}
 
 	// formatted description

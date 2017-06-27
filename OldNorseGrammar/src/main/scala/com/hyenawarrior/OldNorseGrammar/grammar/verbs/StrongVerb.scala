@@ -3,7 +3,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.SINGULAR
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, WordTransformation}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut, WordTransformation}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
 
 /**
@@ -16,11 +16,18 @@ case class FinitiveStrongVerb(str: String, override val verbClass: VerbClassEnum
 	override def transformations: List[WordTransformation] = (pronoun.number, tense) match
 	{
 		case (SINGULAR, PRESENT) => List(Explicit_I_Umlaut)
-		case _ => List()
+		case _ => List(U_Umlaut)
 	}
 }
 
 case class NonFinitiveStrongVerb(str: String, override val verbClass: VerbClassEnum, nonFinitiveVerbType: NonFinitiveVerbType) extends StrongVerb(str, verbClass)
+{
+	override def transformations: List[WordTransformation] = nonFinitiveVerbType match
+	{
+		case NonFinitiveVerbType.PRESENT_PARTICIPLE => List()
+		case _ => List()
+	}
+}
 
 object StrongVerb
 {

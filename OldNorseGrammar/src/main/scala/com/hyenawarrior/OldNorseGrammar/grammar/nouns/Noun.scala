@@ -11,8 +11,14 @@ class Noun(str: String, meaningId: Int, val decl: (GNumber, Case), root: Root, s
 	// mostly for debug
 	override def toString = s"$str (Noun) [${decl._1}, ${decl._2}] [root:${super.toString}]"
 
-	// testing or searching, perhaps it will be deprecated
-	override def strForm: String = str
+	override def strForm: String =
+	{
+		val Syllables(syllables) = str
+
+		val transformedSyllables = transformations.foldLeft(syllables){ (sys, trn) => trn(sys) }
+
+		Syllables(transformedSyllables)
+	}
 
 	override def descriptorFlags = List(decl._1, decl._2)
 
