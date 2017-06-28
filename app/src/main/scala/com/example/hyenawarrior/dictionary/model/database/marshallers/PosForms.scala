@@ -3,7 +3,7 @@ package com.example.hyenawarrior.dictionary.model.database.marshallers
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbClassEnum, VerbModeEnum, VerbTenseEnum}
-import com.hyenawarrior.OldNorseGrammar.grammar.{GNumber, Pronoun}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber, Gender, Pronoun}
 import com.hyenawarrior.auxiliary.EnumLike
 
 
@@ -22,11 +22,11 @@ trait PosForm
 	val id: Int
 }
 
-case class NounForm(id: Int, number: GNumber, stemClass: NounStemClassEnum) extends PosForm { NounForm.add(id -> this) }
+case class NounForm(id: Int, number: GNumber, caze: Case) extends PosForm { NounForm.add(id -> this) }
 case class VerbForm(id: Int, vtype: VerbModeEnum, tense: Option[VerbTenseEnum], optPronoun: Option[Pronoun]) extends PosForm { VerbForm.add(id -> this) }
 
 case class VerbType(id: Int, text: String, verbClass: VerbClassEnum) extends PosType
-case class NounType(id: Int, text: String) extends PosType
+case class NounType(id: Int, text: String, stemClass: NounStemClassEnum) extends PosType
 case class AdjectiveType(id: Int, text: String) extends PosType
 
 // subview of PosType enum
@@ -59,30 +59,42 @@ object PosType extends EnumLike[Int, PosType]
 
 	// Nouns
 	// - strong nouns
-	val NOUN_STRONG_FEM_A = NounType(10, "Noun")
-	val NOUN_STRONG_FEM_I = NounType(11, "Noun")
-	val NOUN_STRONG_FEM_R = NounType(12, "Noun")
+	val NOUN_STRONG_FEM_A = NounType(10, "Noun", NounStemClassEnum.STRONG_FEMININE_A)
+	val NOUN_STRONG_FEM_I = NounType(11, "Noun", NounStemClassEnum.STRONG_FEMININE_I)
+	val NOUN_STRONG_FEM_R = NounType(12, "Noun", NounStemClassEnum.STRONG_FEMININE_R)
 
-	val NOUN_STRONG_MASC_A = NounType(13, "Noun")
-	val NOUN_STRONG_MASC_I = NounType(14, "Noun")
-	val NOUN_STRONG_MASC_U = NounType(15, "Noun")
-	val NOUN_STRONG_MASC_R = NounType(16, "Noun")
+	val NOUN_STRONG_MASC_A = NounType(13, "Noun", NounStemClassEnum.STRONG_MASCULINE_A)
+	val NOUN_STRONG_MASC_I = NounType(14, "Noun", NounStemClassEnum.STRONG_MASCULINE_I)
+	val NOUN_STRONG_MASC_U = NounType(15, "Noun", NounStemClassEnum.STRONG_MASCULINE_U)
+	val NOUN_STRONG_MASC_R = NounType(16, "Noun", NounStemClassEnum.STRONG_MASCULINE_R)
 
-	val NOUN_STRONG_NEUT = NounType(17, "Noun")
+	val NOUN_STRONG_NEUT = NounType(17, "Noun", NounStemClassEnum.STRONG_NEUTER)
 
 	// - weak nouns
-	val NOUN_WEAK_FEM_I = NounType(18, "Noun")
-	val NOUN_WEAK_FEM_U = NounType(19, "Noun")
+	val NOUN_WEAK_FEM_I = NounType(18, "Noun", NounStemClassEnum.WEAK_FEMININE_I)
+	val NOUN_WEAK_FEM_U = NounType(19, "Noun", NounStemClassEnum.WEAK_FEMININE_U)
 
-	val NOUN_WEAK_MASC_A = NounType(20, "Noun")
-	val NOUN_WEAK_MASC_R = NounType(21, "Noun")
+	val NOUN_WEAK_MASC_A = NounType(20, "Noun", NounStemClassEnum.WEAK_MASCULINE_A)
+	val NOUN_WEAK_MASC_R = NounType(21, "Noun", NounStemClassEnum.WEAK_MASCULINE_R)
 
-	val NOUN_WEAK_NEUT_U = NounType(22, "Noun")
+	val NOUN_WEAK_NEUT_U = NounType(22, "Noun", NounStemClassEnum.WEAK_NEUTER_U)
 
 	// Adjectives
 	val ADJECTIVE = AdjectiveType(30, "Adjective")
 }
 
+object NounType
+{
+	lazy val nouns = PosType.values
+		.flatMap
+		{
+			case e: NounType => Some(e.asInstanceOf[NounType])
+			case _ => None
+		}
+		.map(e => NounStemClassEnum.STRONG_FEMININE_A -> e).toMap
+
+	def findByVerbClass(nounStemClassEnum: NounStemClassEnum) = nouns(nounStemClassEnum)
+}
 
 
 
@@ -138,43 +150,15 @@ object NounForm extends EnumLike[Int, NounForm]
 {
 	// Nouns it can be divided by number
 	// - number x case x gender (x definiteness) = 2*4*3 (*2) = 24(*2)
-	val NOUN_STG_FEM_A_SG		= NounForm(1000, SINGULAR, NounStemClassEnum.STRONG_FEMININE_A)
-	val NOUN_STG_FEM_I_SG		= NounForm(1001, SINGULAR, NounStemClassEnum.STRONG_FEMININE_I)
-	val NOUN_STG_FEM_R_SG		= NounForm(1002, SINGULAR, NounStemClassEnum.STRONG_FEMININE_R)
+	val NOUN_NOM_SG		= NounForm(1000, SINGULAR, Case.NOMINATIVE)
+	val NOUN_ACC_SG		= NounForm(1001, SINGULAR, Case.ACCUSATIVE)
+	val NOUN_DAT_SG		= NounForm(1002, SINGULAR, Case.DATIVE)
+	val NOUN_GEN_SG		= NounForm(1003, SINGULAR, Case.GENITIVE)
 
-	val NOUN_STG_FEM_A_PL		= NounForm(1003, PLURAL, NounStemClassEnum.STRONG_FEMININE_A)
-	val NOUN_STG_FEM_I_PL		= NounForm(1004, PLURAL, NounStemClassEnum.STRONG_FEMININE_I)
-	val NOUN_STG_FEM_R_PL		= NounForm(1005, PLURAL, NounStemClassEnum.STRONG_FEMININE_R)
-
-	val NOUN_WEAK_FEM_I_SG		= NounForm(1006, SINGULAR, NounStemClassEnum.WEAK_FEMININE_I)
-	val NOUN_WEAK_FEM_U_SG		= NounForm(1008, SINGULAR, NounStemClassEnum.WEAK_FEMININE_U)
-
-	//val NOUN_WEAK_FEM_I_PL		= NounForm(1007, GNumber.PLURAL, NounStemClassEnum.WEAK_FEMININE_I)	// it doesn't exists
-	val NOUN_WEAK_FEM_U_PL		= NounForm(1009, PLURAL, NounStemClassEnum.WEAK_FEMININE_U)
-
-	// - masc
-	val NOUN_STG_MASC_A_SG		= NounForm(1010, SINGULAR, NounStemClassEnum.STRONG_MASCULINE_A)
-	val NOUN_STG_MASC_I_SG		= NounForm(1011, SINGULAR, NounStemClassEnum.STRONG_MASCULINE_I)
-	val NOUN_STG_MASC_U_SG		= NounForm(1012, SINGULAR, NounStemClassEnum.STRONG_MASCULINE_U)
-	val NOUN_STG_MASC_R_SG		= NounForm(1013, SINGULAR, NounStemClassEnum.STRONG_MASCULINE_R)
-
-	val NOUN_STG_MASC_A_PL		= NounForm(1014, PLURAL, NounStemClassEnum.STRONG_MASCULINE_A)
-	val NOUN_STG_MASC_I_PL		= NounForm(1015, PLURAL, NounStemClassEnum.STRONG_MASCULINE_I)
-	val NOUN_STG_MASC_U_PL		= NounForm(1016, PLURAL, NounStemClassEnum.STRONG_MASCULINE_U)
-	val NOUN_STG_MASC_R_PL		= NounForm(1017, PLURAL, NounStemClassEnum.STRONG_MASCULINE_R)
-
-	val NOUN_WEAK_MASC_A_SG		= NounForm(1018, SINGULAR, NounStemClassEnum.WEAK_MASCULINE_A)
-	val NOUN_WEAK_MASC_R_SG		= NounForm(1020, SINGULAR, NounStemClassEnum.WEAK_MASCULINE_R)
-
-	val NOUN_WEAK_MASC_A_PL		= NounForm(1019, PLURAL, NounStemClassEnum.WEAK_MASCULINE_A)
-	val NOUN_WEAK_MASC_R_PL		= NounForm(1021, PLURAL, NounStemClassEnum.WEAK_MASCULINE_R)
-
-	// - neut
-	val NOUN_STG_NEUT_SG		= NounForm(1022, SINGULAR, NounStemClassEnum.STRONG_NEUTER)
-	val NOUN_STG_NEUT_PL		= NounForm(1023, PLURAL, NounStemClassEnum.STRONG_NEUTER)
-
-	val NOUN_WEAK_NEUT_U_SG		= NounForm(1024, SINGULAR, NounStemClassEnum.WEAK_NEUTER_U)
-	val NOUN_WEAK_NEUT_U_PL		= NounForm(1025, SINGULAR, NounStemClassEnum.WEAK_NEUTER_U)
+	val NOUN_NOM_PL		= NounForm(1004, PLURAL, Case.NOMINATIVE)
+	val NOUN_ACC_PL		= NounForm(1005, PLURAL, Case.ACCUSATIVE)
+	val NOUN_DAT_PL		= NounForm(1006, PLURAL, Case.DATIVE)
+	val NOUN_GEN_PL		= NounForm(1007, PLURAL, Case.GENITIVE)
 
 	// adjectival
 	// - number x case x gender x strength x type = 2*4*3*2=48
