@@ -46,7 +46,7 @@ object SetMeaningFragment extends Fragment
     tv_setmeaning_PosType.setText(posTypeName)
 
     val tv_setmeaning_ClassType = dataContext.rootView.findViewById(R.id.tv_setmeaning_ClassType).asInstanceOf[TextView]
-    tv_setmeaning_ClassType.setText(wordData.posType.text)
+    tv_setmeaning_ClassType.setText(wordData.posType.toString)
 
     val word = optWordData match
     {

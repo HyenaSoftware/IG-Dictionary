@@ -46,11 +46,11 @@ class MainActivity extends AppCompatActivity
 	{
 		val words = wordForms.map
 		{
-			case WordForm(str, wordId, vf: VerbForm, VerbType(_, _, verbClass)) =>
+			case WordForm(str, wordId, vf: VerbForm, VerbType(_, verbClass)) =>
 				val VerbForm(_, mode, optTense, optPronoun) = vf
 				Word(verbs.verbFrom(str, mode, verbClass, optTense, optPronoun))
 
-			case WordForm(str, wordId, nf: NounForm, NounType(_, _, nounClass)) =>
+			case WordForm(str, wordId, nf: NounForm, NounType(_, nounClass)) =>
 				val NounForm(_, num, caze) = nf
 				Word(new Noun(str, -1, (num, caze), Root("???"), nounClass.nounStemClass))
 		}

@@ -13,7 +13,6 @@ import com.hyenawarrior.auxiliary.EnumLike
 trait PosType
 {
 	val id: Int
-	val text: String
 
 	PosType.add(id -> this)
 }
@@ -26,8 +25,16 @@ trait PosForm
 case class NounForm(id: Int, number: GNumber, caze: Case) extends PosForm { NounForm.add(id -> this) }
 case class VerbForm(id: Int, vtype: VerbModeEnum, tense: Option[VerbTenseEnum], optPronoun: Option[Pronoun]) extends PosForm { VerbForm.add(id -> this) }
 
-case class VerbType(id: Int, text: String, verbClass: VerbClassEnum) extends PosType
-case class NounType(id: Int, text: String, stemClass: NounStemClassEnum) extends PosType
+case class VerbType(id: Int, verbClass: VerbClassEnum) extends PosType
+{
+	override def toString: String = verbClass.name
+}
+
+case class NounType(id: Int, stemClass: NounStemClassEnum) extends PosType
+{
+	override def toString: String = stemClass.name
+}
+
 case class AdjectiveType(id: Int, text: String) extends PosType
 
 // subview of PosType enum
@@ -48,37 +55,37 @@ object PosType extends EnumLike[Int, PosType]
 {
 	// Verbs
 	// - strong verbs
-	val VERB_STRONG_1ST = VerbType(0, "Strong verb 1st", VerbClassEnum.STRONG_1ST_CLASS)
-	val VERB_STRONG_2ND = VerbType(1, "Strong verb 2nd", VerbClassEnum.STRONG_2ND_CLASS)
-	val VERB_STRONG_3RD = VerbType(2, "Strong verb 3rd", VerbClassEnum.STRONG_3RD_CLASS)
-	val VERB_STRONG_4TH = VerbType(3, "Strong verb 4th", VerbClassEnum.STRONG_4TH_CLASS)
-	val VERB_STRONG_5TH = VerbType(4, "Strong verb 5th", VerbClassEnum.STRONG_5TH_CLASS)
-	val VERB_STRONG_6TH = VerbType(5, "Strong verb 6th", VerbClassEnum.STRONG_6TH_CLASS)
-	val VERB_STRONG_7TH = VerbType(6, "Strong verb 7th", VerbClassEnum.STRONG_7TH_CLASS)
+	val VERB_STRONG_1ST = VerbType(0, VerbClassEnum.STRONG_1ST_CLASS)
+	val VERB_STRONG_2ND = VerbType(1, VerbClassEnum.STRONG_2ND_CLASS)
+	val VERB_STRONG_3RD = VerbType(2, VerbClassEnum.STRONG_3RD_CLASS)
+	val VERB_STRONG_4TH = VerbType(3, VerbClassEnum.STRONG_4TH_CLASS)
+	val VERB_STRONG_5TH = VerbType(4, VerbClassEnum.STRONG_5TH_CLASS)
+	val VERB_STRONG_6TH = VerbType(5, VerbClassEnum.STRONG_6TH_CLASS)
+	val VERB_STRONG_7TH = VerbType(6, VerbClassEnum.STRONG_7TH_CLASS)
 
 	// - weak verbs
 
 	// Nouns
 	// - strong nouns
-	val NOUN_STRONG_FEM_A = NounType(10, "Noun", NounStemClassEnum.STRONG_FEMININE_A)
-	val NOUN_STRONG_FEM_I = NounType(11, "Noun", NounStemClassEnum.STRONG_FEMININE_I)
-	val NOUN_STRONG_FEM_R = NounType(12, "Noun", NounStemClassEnum.STRONG_FEMININE_R)
+	val NOUN_STRONG_FEM_A = NounType(10, NounStemClassEnum.STRONG_FEMININE_A)
+	val NOUN_STRONG_FEM_I = NounType(11, NounStemClassEnum.STRONG_FEMININE_I)
+	val NOUN_STRONG_FEM_R = NounType(12, NounStemClassEnum.STRONG_FEMININE_R)
 
-	val NOUN_STRONG_MASC_A = NounType(13, "Noun", NounStemClassEnum.STRONG_MASCULINE_A)
-	val NOUN_STRONG_MASC_I = NounType(14, "Noun", NounStemClassEnum.STRONG_MASCULINE_I)
-	val NOUN_STRONG_MASC_U = NounType(15, "Noun", NounStemClassEnum.STRONG_MASCULINE_U)
-	val NOUN_STRONG_MASC_R = NounType(16, "Noun", NounStemClassEnum.STRONG_MASCULINE_R)
+	val NOUN_STRONG_MASC_A = NounType(13, NounStemClassEnum.STRONG_MASCULINE_A)
+	val NOUN_STRONG_MASC_I = NounType(14, NounStemClassEnum.STRONG_MASCULINE_I)
+	val NOUN_STRONG_MASC_U = NounType(15, NounStemClassEnum.STRONG_MASCULINE_U)
+	val NOUN_STRONG_MASC_R = NounType(16, NounStemClassEnum.STRONG_MASCULINE_R)
 
-	val NOUN_STRONG_NEUT = NounType(17, "Noun", NounStemClassEnum.STRONG_NEUTER)
+	val NOUN_STRONG_NEUT = NounType(17, NounStemClassEnum.STRONG_NEUTER)
 
 	// - weak nouns
-	val NOUN_WEAK_FEM_I = NounType(18, "Noun", NounStemClassEnum.WEAK_FEMININE_I)
-	val NOUN_WEAK_FEM_U = NounType(19, "Noun", NounStemClassEnum.WEAK_FEMININE_U)
+	val NOUN_WEAK_FEM_I = NounType(18, NounStemClassEnum.WEAK_FEMININE_I)
+	val NOUN_WEAK_FEM_U = NounType(19, NounStemClassEnum.WEAK_FEMININE_U)
 
-	val NOUN_WEAK_MASC_A = NounType(20, "Noun", NounStemClassEnum.WEAK_MASCULINE_A)
-	val NOUN_WEAK_MASC_R = NounType(21, "Noun", NounStemClassEnum.WEAK_MASCULINE_R)
+	val NOUN_WEAK_MASC_A = NounType(20, NounStemClassEnum.WEAK_MASCULINE_A)
+	val NOUN_WEAK_MASC_R = NounType(21, NounStemClassEnum.WEAK_MASCULINE_R)
 
-	val NOUN_WEAK_NEUT_U = NounType(22, "Noun", NounStemClassEnum.WEAK_NEUTER_U)
+	val NOUN_WEAK_NEUT_U = NounType(22, NounStemClassEnum.WEAK_NEUTER_U)
 
 	// Adjectives
 	val ADJECTIVE = AdjectiveType(30, "Adjective")
