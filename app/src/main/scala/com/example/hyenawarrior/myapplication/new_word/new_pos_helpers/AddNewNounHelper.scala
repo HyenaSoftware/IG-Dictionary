@@ -19,7 +19,17 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object AddNewNounHelper
 {
-	val NOUN_DECLENSIONS = NounForm.values.toVector
+	val NOUN_DECLENSIONS = Vector(
+		NounForm.NOUN_NOM_SG,
+		NounForm.NOUN_ACC_SG,
+		NounForm.NOUN_DAT_SG,
+		NounForm.NOUN_GEN_SG,
+
+		NounForm.NOUN_NOM_PL,
+		NounForm.NOUN_ACC_PL,
+		NounForm.NOUN_DAT_PL,
+		NounForm.NOUN_GEN_PL
+	)
 
   type Declension = (GNumber, Case)
 }

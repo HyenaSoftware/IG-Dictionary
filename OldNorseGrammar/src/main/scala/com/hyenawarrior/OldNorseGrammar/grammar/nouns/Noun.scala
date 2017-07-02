@@ -22,5 +22,5 @@ class Noun(str: String, meaningId: Int, val decl: (GNumber, Case), root: Root, s
 
 	override def descriptorFlags = List(decl._1, decl._2)
 
-	override def transformations = stemClass.transformationsFor(decl)
+	override def transformations = super.transformations ++ stemClass.transformationsFor(decl)
 }

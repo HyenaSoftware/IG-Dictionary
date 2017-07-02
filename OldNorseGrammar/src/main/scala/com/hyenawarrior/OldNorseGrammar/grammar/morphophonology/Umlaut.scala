@@ -76,3 +76,4 @@ class I_Umlaut extends Umlaut
 object I_Umlaut extends I_Umlaut
 object U_Umlaut extends U_Umlaut
 object Explicit_I_Umlaut extends I_Umlaut with Explicit
+object Explicit_U_Umlaut extends U_Umlaut with Explicit
