@@ -81,7 +81,9 @@ class MainActivity extends AppCompatActivity
 		igDatabase.addLanguage("English")
 	}
 
-	def backup
+	def clear(view: View) = igDatabase.clear
+
+	def backup(view: View)
 	{
 		try
 		{
@@ -131,7 +133,7 @@ class MainActivity extends AppCompatActivity
 
 		listView setAdapter entryListAdapter
 
-		backup
+		//backup
 
 		//val isReadable = Storage.isExternalStorageReadable
 		//val isWriteable = Storage.isExternalStorageWritable
