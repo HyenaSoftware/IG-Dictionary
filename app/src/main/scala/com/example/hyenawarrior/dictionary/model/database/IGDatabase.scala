@@ -112,13 +112,19 @@ class IGDatabase(ctx: Context)
 		database.getWritableDatabase.insert(marshaller.TABLE_NAME, null, record)
 	}
 
-	def findByStr(str: String): Seq[WordForm] =
+	def findByStr(str: String): Seq[WordForm] = if(str.isEmpty) Seq() else
 	{
+		val sqlStr = str.map
+		{
+			case '*' => '%'
+			case c => c
+		} + '%'
+
 		val cr: Cursor  = database.getReadableDatabase.query(
 			WordFormMarshaller.TABLE_NAME,
 			null, //Array("Form", "WordId"), // all columns
 			"Form like ?",	// where caluse
-			Array(str),			// args for the arguments of the where clause
+			Array(sqlStr),			// args for the arguments of the where clause
 			null, // group by
 			null,	// having
 			null	// order by
