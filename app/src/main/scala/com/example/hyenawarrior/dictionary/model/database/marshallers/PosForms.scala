@@ -13,6 +13,7 @@ import com.hyenawarrior.auxiliary.EnumLike
 trait PosType
 {
 	val id: Int
+	val text: String
 
 	PosType.add(id -> this)
 }
@@ -86,12 +87,11 @@ object PosType extends EnumLike[Int, PosType]
 object NounType
 {
 	lazy val nouns = PosType.values
-		.flatMap
+		.collect
 		{
-			case e: NounType => Some(e.asInstanceOf[NounType])
-			case _ => None
+			case e: NounType => e.asInstanceOf[NounType]
 		}
-		.map(e => NounStemClassEnum.STRONG_FEMININE_A -> e).toMap
+		.map(e => e.stemClass -> e).toMap
 
 	def findByVerbClass(nounStemClassEnum: NounStemClassEnum) = nouns(nounStemClassEnum)
 }

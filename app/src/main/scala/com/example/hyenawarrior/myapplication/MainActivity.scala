@@ -9,11 +9,12 @@ import android.util.Log
 import android.view.View
 import android.widget._
 import com.example.hyenawarrior.dictionary.model.DictionaryEntry
-import com.example.hyenawarrior.dictionary.model.database.marshallers.{VerbForm, VerbType}
+import com.example.hyenawarrior.dictionary.model.database.marshallers.{NounForm, NounType, VerbForm, VerbType}
 import com.example.hyenawarrior.dictionary.model.database.{IGDatabase, SQLDatabaseHelper, WordForm}
 import com.example.hyenawarrior.dictionary.modelview.DictionaryEntryAdapter
 import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivityPager
-import com.hyenawarrior.OldNorseGrammar.grammar.{Word, verbs}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.{Root, Word, verbs}
 
 
 object MainActivity
@@ -48,6 +49,10 @@ class MainActivity extends AppCompatActivity
 			case WordForm(str, wordId, vf: VerbForm, VerbType(_, _, verbClass)) =>
 				val VerbForm(_, mode, optTense, optPronoun) = vf
 				Word(verbs.verbFrom(str, mode, verbClass, optTense, optPronoun))
+
+			case WordForm(str, wordId, nf: NounForm, NounType(_, _, nounClass)) =>
+				val NounForm(_, num, caze) = nf
+				Word(new Noun(str, -1, (num, caze), Root("???"), nounClass.nounStemClass))
 		}
 
 		DictionaryEntry(words.toList, None, List())

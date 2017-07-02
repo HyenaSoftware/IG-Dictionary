@@ -3,11 +3,10 @@ package com.example.hyenawarrior.dictionary.modelview.add_new_word_panel
 import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.{Button, TextView}
+import com.example.hyenawarrior.dictionary.model.database.marshallers.NounForm
 import com.example.hyenawarrior.dictionary.modelview.CustomAdapter
 import com.example.hyenawarrior.myapplication.R
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
 /**
 	* Created by HyenaWarrior on 2017.04.12..
@@ -15,19 +14,19 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 object NounDeclensionAdapter
 {
 	val NOUN_EDIT_TEXTS = List(
-		(R.id.tvNewWord_Nom_Sg, Case.NOMINATIVE,	GNumber.SINGULAR)
-		, (R.id.tvNewWord_Acc_Sg, Case.ACCUSATIVE,	GNumber.SINGULAR)
-		, (R.id.tvNewWord_Dat_Sg, Case.DATIVE,			GNumber.SINGULAR)
-		, (R.id.tvNewWord_Gen_Sg, Case.GENITIVE,		GNumber.SINGULAR)
+		(R.id.tvNewWord_Nom_Sg, 	NounForm.NOUN_NOM_SG)
+		, (R.id.tvNewWord_Acc_Sg, NounForm.NOUN_ACC_SG)
+		, (R.id.tvNewWord_Dat_Sg, NounForm.NOUN_DAT_SG)
+		, (R.id.tvNewWord_Gen_Sg, NounForm.NOUN_GEN_SG)
 
-		, (R.id.tvNewWord_Nom_Pl, Case.NOMINATIVE,	GNumber.PLURAL)
-		, (R.id.tvNewWord_Acc_Pl, Case.ACCUSATIVE,	GNumber.PLURAL)
-		, (R.id.tvNewWord_Dat_Pl, Case.DATIVE,			GNumber.PLURAL)
-		, (R.id.tvNewWord_Gen_Pl, Case.GENITIVE,		GNumber.PLURAL)
+		, (R.id.tvNewWord_Nom_Pl, NounForm.NOUN_NOM_PL)
+		, (R.id.tvNewWord_Acc_Pl, NounForm.NOUN_ACC_PL)
+		, (R.id.tvNewWord_Dat_Pl, NounForm.NOUN_DAT_PL)
+		, (R.id.tvNewWord_Gen_Pl, NounForm.NOUN_GEN_PL)
 	)
 }
 
-class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemClassEnum, Map[(GNumber, Case), String])](activity)
+class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemClassEnum, Map[NounForm, String])](activity)
 {
 	override protected def getNewView(i: Int, viewGroup: ViewGroup): View =
 	{
@@ -43,9 +42,9 @@ class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemC
 
 		NounDeclensionAdapter.NOUN_EDIT_TEXTS.foreach
 		{
-			case (id, cs, num) =>
+			case (id, nf) =>
 				val tvNC = view.findViewById(id).asInstanceOf[TextView]
-				val ncTextForm = map.get(num, cs).getOrElse("...")
+				val ncTextForm = map.getOrElse(nf, "...")
 				tvNC.setText(ncTextForm)
 		}
 

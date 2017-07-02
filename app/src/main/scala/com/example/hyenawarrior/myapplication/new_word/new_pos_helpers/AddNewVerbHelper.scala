@@ -4,13 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
 import android.widget.{EditText, LinearLayout, Spinner}
-import com.example.hyenawarrior.dictionary.model.database.marshallers.VerbForm
+import com.example.hyenawarrior.dictionary.model.database.marshallers.{PosForm, VerbForm, VerbType}
 import com.example.hyenawarrior.dictionary.modelview.EditTextTypeListener
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
 import com.example.hyenawarrior.myapplication.R
 import com.example.hyenawarrior.myapplication.new_word.VerbDeclPreferencesDialog
 import com.example.hyenawarrior.myapplication.new_word.pages.AddNewWordActivity._
-import com.example.hyenawarrior.myapplication.new_word.pages.{VerbData, WordData}
+import com.example.hyenawarrior.myapplication.new_word.pages.WordData
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{IMPERATIVE, INDICATIVE, PARTICIPLE, SUBJUNCTIVE}
@@ -267,7 +267,14 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
     optVerbClassE match
     {
-      case Some(verbClassE) => VerbData(verbClassE, latestVerbData(verbClassE))
+      case Some(verbClassE) =>
+				val forms = latestVerbData(verbClassE).map
+				{
+					case (k,v) => k.asInstanceOf[PosForm] -> v
+				}
+
+				WordData(VerbType.findByVerbClass(verbClassE), forms)
+
       case _ => throw new IllegalStateException("Unknown UI control")
     }
   }

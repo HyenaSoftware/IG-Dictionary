@@ -3,9 +3,9 @@ package com.example.hyenawarrior.dictionary.model.database
 import android.content.Context
 import android.database.Cursor
 import com.example.hyenawarrior.dictionary.model.database.SQLDatabaseHelper.LANGUAGE_TABLE_NAME
+import com.example.hyenawarrior.dictionary.model.database.marshallers._
 import com.example.hyenawarrior.dictionary.model.database.marshallers.marshallers._
-import com.example.hyenawarrior.dictionary.model.database.marshallers.{PosType, TMarshaller, VerbType}
-import com.example.hyenawarrior.myapplication.new_word.pages.{NounData, VerbData, WordData}
+import com.example.hyenawarrior.myapplication.new_word.pages.WordData
 
 /**
   * Created by HyenaWarrior on 2017.04.29..
@@ -28,7 +28,7 @@ object IGDatabase
 
 class IGDatabase(ctx: Context)
 {
-  val database = new SQLDatabaseHelper(ctx)
+	val database = new SQLDatabaseHelper(ctx)
 
 	def clear
 	{
@@ -48,76 +48,62 @@ class IGDatabase(ctx: Context)
 		maxId
 	}
 
-  def addLanguage(name: String): Unit = {
+	def addLanguage(name: String): Unit =
+	{
 
-    val cr = database.getReadableDatabase.rawQuery(s"select count(1) from $LANGUAGE_TABLE_NAME", null)
-    cr.moveToNext()
-    val tableSize: java.lang.Integer = cr.getInt(0)
-    cr.close()
+		val cr = database.getReadableDatabase.rawQuery(s"select count(1) from $LANGUAGE_TABLE_NAME", null)
+		cr.moveToNext()
+		val tableSize: java.lang.Integer = cr.getInt(0)
+		cr.close()
 
 		val newLang = Language(tableSize, name)
 		execInsert(newLang)
-  }
+	}
 
-  def getLangauges: Seq[Language] = {
+	def getLangauges: Seq[Language] =
+	{
 
-    val (_, columnsToType, _) = SQLDatabaseHelper.LANGUAGE_TABLE_DEF
+		val (_, columnsToType, _) = SQLDatabaseHelper.LANGUAGE_TABLE_DEF
 
-    val columns = columnsToType.keys.toArray
+		val columns = columnsToType.keys.toArray
 
-    val cr: Cursor  = database.getReadableDatabase.query(
-      LANGUAGE_TABLE_NAME,
-      columns,
-      null,
-      null,
-      null,
-      null,
-      null
-      )
+		val cr: Cursor = database.getReadableDatabase.query(
+			LANGUAGE_TABLE_NAME,
+			columns,
+			null,
+			null,
+			null,
+			null,
+			null
+		)
 
-    val langs = Range(0, cr.getCount).map(_ =>
-    {
-      cr.moveToNext
+		val langs = Range(0, cr.getCount).map(_ =>
+		{
+			cr.moveToNext
 
 			LanguageMarshaller.unapply(cr)
-    })
+		})
 
-    cr.close()
+		cr.close()
 
-    langs.flatten
-  }
+		langs.flatten
+	}
 
-	private def wordDataToWords(wordData: WordData): Word = wordData match
+	private def wordDataToWords(wordData: WordData): Word = wordData.posType match
 	{
-		case _: VerbData => Word(-1, -1, PosType.VERB_STRONG_1ST)
-		case _: NounData => Word(-1, -1, PosType.NOUN_STRONG_FEM_A)
+		case _: VerbType => Word(-1, -1, PosType.VERB_STRONG_1ST)
+		case _: NounType => Word(-1, -1, PosType.NOUN_STRONG_FEM_A)
 	}
 
 	def save(wordData: WordData, meanings: List[Meaning]) =
-  {
-		val wordForms = wordDataToWordForms(wordData)
+	{
+		val nextWordId = maxIdFor("WordId", "WordForms") + 1
 
-		for(wordForm <- wordForms)
+		for ((verbForm, str) <- wordData.forms)
 		{
-			execInsert(wordForm)
+			execInsert(WordForm(str, nextWordId, verbForm, wordData.posType))
 		}
 	}
-
-  private def wordDataToWordForms(wordData: WordData): List[WordForm] = wordData match
-  {
-		case verb: VerbData =>
-			val nextWordId = maxIdFor("WordId", "WordForms") + 1
-			val verbType = VerbType.findByVerbClass(verb.verbClass)
-
-			verb.forms
-				.map
-				{
-					case (verbForm, str) => WordForm(str, nextWordId, verbForm, verbType)
-				}
-				.toList
-
-		case noun: NounData => List()
-  }
 
 	private def execInsert[T <: dbrecord](data: T)(implicit marshaller: TMarshaller[T]): Unit =
 	{

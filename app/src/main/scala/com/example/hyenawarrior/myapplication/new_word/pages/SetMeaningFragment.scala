@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget.TextView
-import com.example.hyenawarrior.dictionary.model.database.marshallers.VerbForm
+import com.example.hyenawarrior.dictionary.model.database.marshallers.{NounForm, NounType, VerbForm, VerbType}
 import com.example.hyenawarrior.dictionary.model.database.{IGDatabase, Meaning}
 import com.example.hyenawarrior.dictionary.model.{database => orm}
 import com.example.hyenawarrior.myapplication.R
-import com.hyenawarrior.OldNorseGrammar.grammar.Case.NOMINATIVE
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.SINGULAR
 
 /**
 	* Created by HyenaWarrior on 2017.04.27..
@@ -37,23 +35,23 @@ object SetMeaningFragment extends Fragment
   {
     optWordData = Option(wordData)
 
-    val (posTypeName, className) = wordData match
+    val posTypeName = wordData.posType match
     {
-      case VerbData(verbClass, _) => ("verb", verbClass.name)
-      case NounData(nounClass, _) => ("noun", nounClass.name)
-      case _ => ("???", "???")
+      case _: VerbType => "verb"
+      case _: NounType => "noun"
+      case _ => "???"
     }
 
     val tv_setmeaning_PosType = dataContext.rootView.findViewById(R.id.tv_setmeaning_PosType).asInstanceOf[TextView]
     tv_setmeaning_PosType.setText(posTypeName)
 
     val tv_setmeaning_ClassType = dataContext.rootView.findViewById(R.id.tv_setmeaning_ClassType).asInstanceOf[TextView]
-    tv_setmeaning_ClassType.setText(className)
+    tv_setmeaning_ClassType.setText(wordData.posType.text)
 
     val word = optWordData match
     {
-      case Some(NounData(_, map)) => map.getOrElse(SINGULAR -> NOMINATIVE, "???")
-      case Some(VerbData(_, map)) => map.getOrElse(VerbForm.VERB_INFINITIVE, "???")
+      case Some(WordData(_: NounType, map)) => map.getOrElse(NounForm.NOUN_NOM_SG, "???")
+      case Some(WordData(_: VerbType, map)) => map.getOrElse(VerbForm.VERB_INFINITIVE, "???")
       case _ => "???"
     }
 

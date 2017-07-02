@@ -4,12 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
 import android.widget._
-import com.example.hyenawarrior.dictionary.modelview.{EditTextTypeListener, ItemListener}
+import com.example.hyenawarrior.dictionary.model.database.marshallers.{NounForm, NounType, PosForm}
 import com.example.hyenawarrior.dictionary.modelview.add_new_word_panel.NounDeclensionAdapter
+import com.example.hyenawarrior.dictionary.modelview.{EditTextTypeListener, ItemListener}
 import com.example.hyenawarrior.myapplication.R
-import com.example.hyenawarrior.myapplication.new_word.new_pos_helpers.AddNewNounHelper.Declension
 import com.example.hyenawarrior.myapplication.new_word.pages.AddNewWordActivity._
-import com.example.hyenawarrior.myapplication.new_word.pages.{NounData, WordData}
+import com.example.hyenawarrior.myapplication.new_word.pages.WordData
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
@@ -19,18 +19,18 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object AddNewNounHelper
 {
-	val NOUN_DECLENSIONS: Vector[(GNumber, Case)] = GNumber.conventionalValues.flatMap(n => Case.values.map(cs => (n, cs))).toVector
+	val NOUN_DECLENSIONS = NounForm.values.toVector
 
   type Declension = (GNumber, Case)
 }
 
 class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.noun_types)
 {
-	type Override = (Option[(GNumber, Case)], Option[String])
+	type Override = (Option[NounForm], Option[String])
 	type Parameters = (List[NounStemClassEnum], Override, Map[View, Override])
 
 	var selectedNounParameters: Parameters = (List(), (None, None), Map())
-  var latestNounData: Map[Declension, String] = Map()
+  var latestNounData: Map[NounStemClassEnum, Map[NounForm, String]] = Map()
 
 	val NounDeclensionAdapter = new NounDeclensionAdapter(activity)
 	val LL_DECL_LIST = rootView.findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
@@ -96,7 +96,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		val spNounDecl = rowView.findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
 		val spListener = new ItemListener(
 			if(isPrimary)	i => onNounDeclensionSelected(AddNewNounHelper.NOUN_DECLENSIONS(i))
-			else					i => onNounDeclensionSelected(rowView)(AddNewNounHelper.NOUN_DECLENSIONS(i)))
+			else					i => onNounDeclensionSelected2(rowView)(AddNewNounHelper.NOUN_DECLENSIONS(i)))
 
 		spNounDecl.setOnItemSelectedListener(spListener)
 
@@ -105,10 +105,11 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 	override def onDeclensionSelected(index: Int): Unit =
 	{
+		// TODO: it's not used
 		onNounDeclensionSelected(AddNewNounHelper.NOUN_DECLENSIONS(index))
 	}
 
-	private def onNounDeclensionSelected(item: (GNumber, Case)): Unit =
+	private def onNounDeclensionSelected(item: NounForm): Unit =
 	{
 		val (stemClass, (_, givenBaseForm), map) = selectedNounParameters
 
@@ -148,7 +149,9 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		fillNounForms()
 	}
 
-	override def onNounDeclensionSelected(overridingView: View)(item: (GNumber, Case)): Unit =
+	override def onNounDeclensionSelected(overridingView: View)(item: (GNumber, Case)): Unit = ()
+
+	def onNounDeclensionSelected2(overridingView: View)(item: NounForm): Unit =
 	{
 		val (stemClass, givenBaseForm, map) = selectedNounParameters
 
@@ -177,7 +180,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		}
 		.toVector
 
-	private def generateFormsFrom(stemClass: NounStemClass, baseDef: ((GNumber, Case), String), map: Map[View, Override]):	Map[(GNumber, Case), String] =
+	private def generateFormsFrom(stemClass: NounStemClass, baseDef: (NounForm, String), map: Map[View, Override]):	Map[NounForm, String] =
 	{
 		val overridingDefs = map.values.flatMap
 		{
@@ -187,11 +190,11 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		val root = baseDef match
 		{
-			case (numCase, str) if stemClass != null => stemClass.unapply(str, numCase)
+			case (nf, str) if stemClass != null => stemClass.unapply(str, (nf.number, nf.caze))
 			case _ => None
 		}
 
-		val optWordsOfRoot = root.map(r => AddNewNounHelper.NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, -1, nd).strForm).toMap)
+		val optWordsOfRoot = root.map(r => AddNewNounHelper.NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, -1, (nd.number, nd.caze)).strForm).toMap)
 
 		val wordMap = optWordsOfRoot.getOrElse(Map())
 
@@ -206,12 +209,12 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
       val wordMaps = listOfNSCE.map(n => n -> generateFormsFrom(n.nounStemClass, (numCase, str), map))
       setInflectedFormsToUI(wordMaps)
 
-      latestNounData = Map(numCase -> str)
+      latestNounData = wordMaps.toMap
 
 		case _ => ()
 	}
 
-	private def setInflectedFormsToUI(map: List[(NounStemClassEnum, Map[(GNumber, Case), String])]): Unit =
+	private def setInflectedFormsToUI(map: List[(NounStemClassEnum, Map[NounForm, String])]): Unit =
 	{
 		NounDeclensionAdapter.resetItems(map)
 
@@ -228,7 +231,14 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
     optNounStemClassE match
     {
-      case Some(nounStemClassE) => NounData(nounStemClassE, latestNounData)
+      case Some(nounStemClassE) =>
+				val forms = latestNounData(nounStemClassE).map
+				{
+					case (k,v) => k.asInstanceOf[PosForm] -> v
+				}
+
+				WordData(NounType.findByVerbClass(nounStemClassE), forms)
+
       case _ => throw new IllegalStateException("Unknown control")
     }
   }
