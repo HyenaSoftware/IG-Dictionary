@@ -4,8 +4,12 @@ import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget._
 import com.example.hyenawarrior.dictionary.model.DictionaryEntry
+import com.example.hyenawarrior.dictionary.model.database.WordForm
+import com.example.hyenawarrior.dictionary.model.database.marshallers.NounForm
 import com.example.hyenawarrior.myapplication.R
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, GNumber$}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.Verb
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, GNumber$, Word}
 
 
 case class MetaData(words: List[String])
@@ -25,8 +29,8 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 		view.setTag(MetaData(item.word.map(_.toString)))
 
 		val tvDesc = view.findViewById(R.id.tvDesc).asInstanceOf[TextView]
-		val dictWordRef = item.dictWord.map(w => s" -> ${w.strForm}").getOrElse("")
-		val text = "[noun]" + dictWordRef
+		val dictWordRef = item.dictWord.map(w => s" -> ${w.strForm()}").getOrElse("")
+		val text = s"[${posTypeOf(item)}] $dictWordRef"
 
 		tvDesc setText text
 
@@ -47,6 +51,17 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 		view
 	}
 
+	private def posTypeOf(de: DictionaryEntry): String =
+	{
+		val types = de.word.map
+		{
+			case Word(_: Verb) => "verb"
+			case Word(_: Noun) => "noun"
+			case _ => "???"
+		}.toSet
+
+		if(types.size == 1) types.head else "mixed"
+	}
 
 	def extractViewsInto(adapter: Adapter, layout: LinearLayout): Unit =
 	{
