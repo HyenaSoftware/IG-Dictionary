@@ -5,6 +5,8 @@ import android.view.{View, ViewGroup}
 import android.widget.TextView
 import com.example.hyenawarrior.myapplication.R
 import com.hyenawarrior.OldNorseGrammar.grammar._
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{FinitiveStrongVerb, NonFinitiveStrongVerb, NonFinitiveVerbType}
 
 /**
 	* Created by HyenaWarrior on 2017.04.04..
@@ -22,14 +24,24 @@ class WordFormAdapter(activity: Activity) extends CustomAdapter[Word](activity)
 		val tvWordDesc = view.findViewById(R.id.tvWordDesc).asInstanceOf[TextView]
 
 		tvWordForm setText item.strForm
-		tvWordDesc setText formatTraits(item.traits)
+		//tvWordDesc setText formatTraits(item.traits)
+
+		val formDesc = item.pos match
+		{
+			case n: Noun => s"[${shortCut(n.decl._1)}, ${shortCut(n.decl._2)}]"
+			case v: FinitiveStrongVerb => s"[${shortCut(v.pronoun.number)}, ${v.pronoun.person}]"
+			case v: NonFinitiveStrongVerb => s"[${shortCut(v.nonFinitiveVerbType)}]"
+			case _ => "???"
+		}
+
+		tvWordDesc setText formDesc
 
 		view
 	}
 
 	def formatTraits(trs: List[DescriptorFlag]): String = trs.map(t => shortCut(t)).mkString("[", ", ", "]")
 
-	def shortCut(df: DescriptorFlag) = df match
+	def shortCut(df: Any) = df match
 	{
 		case Case.NOMINATIVE => "nom"
 		case Case.ACCUSATIVE => "acc"
@@ -37,5 +49,8 @@ class WordFormAdapter(activity: Activity) extends CustomAdapter[Word](activity)
 		case Case.GENITIVE => "gen"
 		case GNumber.SINGULAR => "sg"
 		case GNumber.PLURAL => "pl"
+		case NonFinitiveVerbType.INFINITIVE => "inf"
+		case NonFinitiveVerbType.PRESENT_PARTICIPLE => "present part."
+		case NonFinitiveVerbType.PAST_PARTICIPLE => "past part."
 	}
 }

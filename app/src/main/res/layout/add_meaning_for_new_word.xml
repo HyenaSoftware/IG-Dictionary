@@ -51,12 +51,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceSmall"
-                        android:text="context"
+                        android:text="description"
                         android:singleLine="true" android:layout_weight="1"/>
                 <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:id="@+id/et.setmeaning.Context" android:text="abcdefghijklm" android:layout_weight="3"/>
+                        android:id="@+id/et.setmeaning.Context" android:text="whatever" android:layout_weight="3"/>
             </TableRow>
             <TableRow
                     android:layout_width="match_parent"
@@ -67,13 +67,30 @@
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:text="meaning"
                         android:id="@+id/textView3" android:layout_weight="1"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="1."
+                        android:id="@+id/textView13"/>
                 <EditText
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:inputType="textMultiLine"
                         android:ems="10"
-                        android:id="@+id/et.setmeaning.Meaning" android:text="abcdefghijklm\nnopqrstuvwxyz"
+                        android:id="@+id/et.setmeaning.Meaning" android:text="foo"
                         android:layout_weight="3"/>
+            </TableRow>
+            <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+                <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="meaning"
+                          android:id="@+id/textView14" android:layout_weight="1"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="2."
+                          android:id="@+id/textView15"/>
+                <EditText android:layout_width="0dp" android:layout_height="wrap_content"
+                          android:inputType="textMultiLine" android:ems="10" android:id="@+id/editText"
+                          android:text="bar" android:layout_weight="3"/>
             </TableRow>
         </TableLayout>
     </LinearLayout>

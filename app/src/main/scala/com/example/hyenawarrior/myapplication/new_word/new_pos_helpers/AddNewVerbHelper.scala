@@ -273,7 +273,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 					case (k,v) => k.asInstanceOf[PosForm] -> v
 				}
 
-				WordData(VerbType.findByVerbClass(verbClassE), forms)
+				WordData(VerbType.findByVerbClass(verbClassE), forms, List())
 
       case _ => throw new IllegalStateException("Unknown UI control")
     }

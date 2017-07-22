@@ -10,12 +10,50 @@ import android.view.View
 import android.widget._
 import com.example.hyenawarrior.dictionary.model.DictionaryEntry
 import com.example.hyenawarrior.dictionary.model.database.marshallers.{NounForm, NounType, VerbForm, VerbType}
-import com.example.hyenawarrior.dictionary.model.database.{IGDatabase, SQLDatabaseHelper, WordForm}
+import com.example.hyenawarrior.dictionary.model.database.{IGDatabase, SQLDatabaseHelper, WordForm, Word}
 import com.example.hyenawarrior.dictionary.modelview.DictionaryEntryAdapter
 import com.example.hyenawarrior.myapplication.new_word.AddNewWordActivityPager
+import com.example.hyenawarrior.myapplication.new_word.pages.MeaningDef
+import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{DUAL, PLURAL, SINGULAR}
+import com.hyenawarrior.OldNorseGrammar.grammar._
+import com.hyenawarrior.OldNorseGrammar.grammar.{Word => GWord}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.{Root, Word, verbs}
 
+object Orderings
+{
+	def sgnDiff[T](a: T, b: T)(implicit ordering: Ordering[T]): Int = ordering.compare(a, b)
+
+	implicit object NumberOrdering extends Ordering[GNumber]
+	{
+		override def compare(x: GNumber, y: GNumber): Int = (x, y) match
+		{
+			case (SINGULAR, DUAL | PLURAL) => -1
+			case (DUAL | PLURAL, SINGULAR) => 1
+			case _ => 0
+		}
+	}
+
+	implicit object CaseOrdering extends Ordering[Case]
+	{
+		override def compare(x: Case, y: Case): Int = math.signum(x.id - y.id)
+	}
+
+	implicit object WordOrdering extends Ordering[GWord]
+	{
+		override def compare(x: GWord, y: GWord): Int = (x, y) match
+		{
+			case (GWord(Noun(_, _, (n1, c1), _, _)), GWord(Noun(_, _, (n2, c2), _, _))) if n1 != n2 => sgnDiff(n1, n2)
+			case (GWord(Noun(_, _, (n1, c1), _, _)), GWord(Noun(_, _, (n2, c2), _, _))) => sgnDiff(c1, c2)
+			//case (Word(VerbForm(_, )), Word())
+			case _ => 0
+		}
+	}
+
+	implicit object MeaningDefOrdering extends Ordering[MeaningDef]
+	{
+		override def compare(x: MeaningDef, y: MeaningDef): Int = x.desc.compareTo(y.desc)
+	}
+}
 
 object MainActivity
 {
@@ -32,30 +70,45 @@ class MainActivity extends AppCompatActivity
 
 		override def onQueryTextChange(s: String): Boolean =
 		{
-			val words = igDatabase.findByStr(s).groupBy(_.wordId).values
+			val words = igDatabase.findByStr(s)
 
 			val list: List[DictionaryEntry] = words.map(toDictionaryEntry).toList
 
-			entryListAdapter resetItems list
+			val orderedList = list.sortWith
+			{
+				case (a, b) => a.dictWord.map(_.strForm()).getOrElse("") > b.dictWord.map(_.strForm()).getOrElse("")
+			}
+
+			entryListAdapter resetItems orderedList
 			listView.invalidateViews()
 			true
 		}
 	}
 
-	private def toDictionaryEntry(wordForms: Seq[WordForm]): DictionaryEntry =
+	private def toDictionaryEntry(wordForms: (Word, (Seq[WordForm], Seq[MeaningDef]))): DictionaryEntry =
 	{
-		val words = wordForms.map
+		val words = wordForms._2._1.map
 		{
 			case WordForm(str, wordId, vf: VerbForm, VerbType(_, verbClass)) =>
 				val VerbForm(_, mode, optTense, optPronoun) = vf
-				Word(verbs.verbFrom(str, mode, verbClass, optTense, optPronoun))
+				val verb = verbs.verbFrom(str, mode, verbClass, optTense, optPronoun)
+				val isPrimary = vf == VerbForm.VERB_INFINITIVE
+				GWord(verb) -> isPrimary
 
 			case WordForm(str, wordId, nf: NounForm, NounType(_, nounClass)) =>
 				val NounForm(_, num, caze) = nf
-				Word(new Noun(str, -1, (num, caze), Root("???"), nounClass.nounStemClass))
+				val isPrimary = nf == NounForm.NOUN_NOM_SG
+				val noun = Noun(str, -1, (num, caze), Root("???"), nounClass.nounStemClass)
+				GWord(noun) -> isPrimary
 		}
 
-		DictionaryEntry(words.toList, None, List())
+		val dictForm = words.find(_._2).map(_._1)
+
+		import Orderings._
+
+		val meanings = wordForms._2._2
+
+		DictionaryEntry(words.map(_._1).toList.sorted, dictForm, meanings.toList.sorted)
 	}
 
 	override protected def onBackPressed()
@@ -81,7 +134,11 @@ class MainActivity extends AppCompatActivity
 		igDatabase.addLanguage("English")
 	}
 
-	def clear(view: View) = igDatabase.clear
+	def clear(view: View)
+	{
+		igDatabase.clear
+		initDatabase
+	}
 
 	def backup(view: View)
 	{

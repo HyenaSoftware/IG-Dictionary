@@ -4,12 +4,10 @@ import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget._
 import com.example.hyenawarrior.dictionary.model.DictionaryEntry
-import com.example.hyenawarrior.dictionary.model.database.WordForm
-import com.example.hyenawarrior.dictionary.model.database.marshallers.NounForm
 import com.example.hyenawarrior.myapplication.R
+import com.hyenawarrior.OldNorseGrammar.grammar.Word
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.Verb
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, DescriptorFlag, GNumber$, Word}
 
 
 case class MetaData(words: List[String])

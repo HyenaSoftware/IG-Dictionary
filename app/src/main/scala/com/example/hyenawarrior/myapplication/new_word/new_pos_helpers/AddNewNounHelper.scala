@@ -247,7 +247,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 					case (k,v) => k.asInstanceOf[PosForm] -> v
 				}
 
-				WordData(NounType.findByVerbClass(nounStemClassE), forms)
+				WordData(NounType.findByVerbClass(nounStemClassE), forms, List())
 
       case _ => throw new IllegalStateException("Unknown control")
     }

@@ -9,7 +9,7 @@ import com.example.hyenawarrior.dictionary.model.database.SQLDatabaseHelper._
   */
 object SQLDatabaseHelper {
 
-  val DATABASE_VERSION = 1
+  val DATABASE_VERSION = 5
   val DATABASE_NAME = "ig-dictionary"
 
   val LANGUAGE_TABLE_NAME = "Langs"
@@ -30,9 +30,9 @@ object SQLDatabaseHelper {
 
   val CREATE_EXAMPLE_TABLE	= """CREATE TABLE "Examples" ( `ExampleGroupId` INTEGER NOT NULL UNIQUE, `Example` TEXT NOT NULL )"""
 	val CREATE_LANGS_TABLE		= """CREATE TABLE "Langs" ( `LangId` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, `LangName` TEXT NOT NULL )"""
-	val CREATE_MEANING_TABLE	= """CREATE TABLE "Meaning" ( `WordId` INTEGER NOT NULL, `MeaningId` INTEGER NOT NULL, `LangId` INTEGER NOT NULL, `Context` TEXT, `ExampleGroupId` INTEGER )"""
+	val CREATE_MEANING_TABLE	= """CREATE TABLE "Meaning" ( `MeaningId` INTEGER NOT NULL, `LangId` INTEGER NOT NULL, `Context` TEXT, `ExampleGroupId` INTEGER )"""
 	val CREATE_WORD_TABLE 		= """CREATE TABLE "Word" ( `WordId` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, `MeaningId` INTEGER NOT NULL, `PosId` INTEGER NOT NULL )"""
-	val CREATE_WORD_FORMS_TABLE = """CREATE TABLE "WordForms" ( `Form` TEXT NOT NULL, `WordId` INTEGER NOT NULL, `FormId` INTEGER NOT NULL, `PosId` INTEGER NOT NULL, PRIMARY KEY(`Form`) )"""
+	val CREATE_WORD_FORMS_TABLE = """CREATE TABLE "WordForms" ( `Form` TEXT NOT NULL, `WordId` INTEGER NOT NULL, `FormId` INTEGER NOT NULL, `PosId` INTEGER NOT NULL, PRIMARY KEY(`WordId`, `FormId`) )"""
 
 	val DROP_EXAMPLE_TABLE 		= """DROP TABLE IF EXISTS Examples"""
 	val DROP_LANGS_TABLE 			= """DROP TABLE IF EXISTS Langs"""

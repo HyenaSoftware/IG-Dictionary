@@ -3,8 +3,9 @@ package com.example.hyenawarrior.dictionary.modelview
 import android.app.Activity
 import android.view.ViewGroup
 import android.widget.{LinearLayout, TextView}
-import com.example.hyenawarrior.dictionary.model.Meaning
+import com.example.hyenawarrior.dictionary.model.database.Meaning
 import com.example.hyenawarrior.myapplication.R
+import com.example.hyenawarrior.myapplication.new_word.pages.MeaningDef
 
 
 
@@ -16,7 +17,7 @@ import com.example.hyenawarrior.myapplication.R
 	* |        | meaning2  |
 	* + - - - -+ - - - - - +
 	*/
-class MeaningAdapter(activity: Activity) extends CustomAdapter[String](activity)
+class MeaningAdapter(activity: Activity) extends CustomAdapter[MeaningDef](activity)
 {
 	def getNewView(i: Int, viewGroup: ViewGroup) =
 	{
@@ -26,9 +27,13 @@ class MeaningAdapter(activity: Activity) extends CustomAdapter[String](activity)
 
 		val meaning = itemAt(i)
 
-		val textView = view.findViewById(R.id.tvMeaning).asInstanceOf[TextView]
+		val tvMeaning = view.findViewById(R.id.tvDesc).asInstanceOf[TextView]
 
-		textView.setText(meaning)
+		tvMeaning.setText(meaning.desc)
+
+		val tvDesc = view.findViewById(R.id.tvMeaning).asInstanceOf[TextView]
+
+		tvDesc.setText(meaning.examples.mkString("\n"))
 
 		view
 	}

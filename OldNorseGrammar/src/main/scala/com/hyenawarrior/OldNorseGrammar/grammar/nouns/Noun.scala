@@ -6,7 +6,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 /**
 	* Created by HyenaWarrior on 2017.03.20..
 	*/
-class Noun(str: String, meaningId: Int, val decl: (GNumber, Case), root: Root, stemClass: NounStemClass) extends Stem(root) with PoS
+case class Noun(str: String, meaningId: Int, decl: (GNumber, Case), override val root: Root, stemClass: NounStemClass) extends Stem(root) with PoS
 {
 	// mostly for debug
 	override def toString = s"$str (Noun) [${decl._1}, ${decl._2}] [root:${super.toString}]"

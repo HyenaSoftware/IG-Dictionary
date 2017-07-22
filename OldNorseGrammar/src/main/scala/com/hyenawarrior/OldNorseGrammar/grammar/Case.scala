@@ -5,7 +5,7 @@ import com.hyenawarrior.auxiliary.EnumLike
 /**
 	* Created by HyenaWarrior on 2017.03.01..
 	*/
-final case class Case(name: String) extends DescriptorFlag
+final case class Case(id: Int, name: String) extends DescriptorFlag
 {
 	Case.add(name -> this)
 
@@ -14,9 +14,9 @@ final case class Case(name: String) extends DescriptorFlag
 
 object Case extends EnumLike[String, Case]
 {
-	val NOMINATIVE = Case("Nominative")
-	val ACCUSATIVE = Case("Accusative")
-	val DATIVE = Case("Dative")
-	val GENITIVE = Case("Genitive")
+	val NOMINATIVE = Case(0, "Nominative")
+	val ACCUSATIVE = Case(1, "Accusative")
+	val DATIVE = Case(2, "Dative")
+	val GENITIVE = Case(3, "Genitive")
 
 }

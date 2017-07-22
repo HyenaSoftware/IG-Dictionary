@@ -146,24 +146,26 @@ package object marshallers
 		{
 			val record = new ContentValues
 
-			record.put("WordId",					data.wordId: jint)
 			record.put("MeaningId",				data.meaningId: jint)
 			record.put("LangId",					data.langId: jint)
 			record.put("Context",					data.context)
-			record.put("ExampleGroupId",	data.exampleId: jint)
+
+			if(data.exampleId.isDefined)
+				record.put("ExampleGroupId",	data.exampleId.get: jint)
+			else
+				record.putNull("ExampleGroupId")
 
 			record
 		}
 
 		override def unapply(record: ContentValues): Option[Meaning] =
 		{
-			val wordId = record.getAsInteger("WordId")
 			val meaningId = record.getAsInteger("MeaningId")
 			val langId = record.getAsInteger("LangId")
 			val context = record.getAsString("Context")
-			val exampleId = record.getAsInteger("ExampleGroupId")
+			val exampleId = Option(record.getAsInteger("ExampleGroupId")).map(i => i: Int)
 
-			Some(Meaning(wordId, meaningId, langId, context, exampleId))
+			Some(Meaning(meaningId, langId, context, exampleId))
 		}
 	}
 }
