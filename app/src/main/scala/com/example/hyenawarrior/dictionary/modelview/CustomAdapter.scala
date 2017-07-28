@@ -3,7 +3,6 @@ import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget.BaseAdapter
-import com.example.hyenawarrior.dictionary.model.DictionaryEntry
 
 /**
 	* Created by HyenaWarrior on 2017.03.10..
@@ -19,6 +18,13 @@ abstract class CustomAdapter[T](val activity: Activity) extends BaseAdapter
 	def resetItems(items: List[T]): Unit =
 	{
 		this.items = items
+	}
+
+	def remove(i: Int): Unit =
+	{
+		items = items.indices.filterNot(_ == i).map(items(_)).toList
+
+		notifyDataSetChanged()
 	}
 
 	protected def getNewView(i: Int, viewGroup: ViewGroup): View

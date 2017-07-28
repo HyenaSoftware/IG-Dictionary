@@ -85,6 +85,8 @@ class AddNewWordActivityPager extends AppCompatActivity
 
 	def onRemoveOverride(view: View) = AddNewWordActivity.onRemoveOverride(view)
 
+	def onNewMeaning(view: View): Unit = SetMeaningFragment.onNewMeaning(view)
+
 	//
 	protected override def onCreate(savedInstanceState: Bundle): Unit = {
 

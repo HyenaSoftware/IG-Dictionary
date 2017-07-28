@@ -3,10 +3,10 @@ package com.example.hyenawarrior.myapplication.new_word.pages
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
-import android.widget.{EditText, TextView}
+import android.widget._
 import com.example.hyenawarrior.dictionary.model.database.IGDatabase
 import com.example.hyenawarrior.dictionary.model.database.marshallers.{NounForm, NounType, VerbForm, VerbType}
-import com.example.hyenawarrior.dictionary.modelview.EditTextTypeListener
+import com.example.hyenawarrior.dictionary.modelview.meaning_panel.MeaningDefListView
 import com.example.hyenawarrior.myapplication.R
 
 /**
@@ -14,11 +14,16 @@ import com.example.hyenawarrior.myapplication.R
 	*/
 object SetMeaningFragment extends Fragment
 {
-  lazy val igDatabase = IGDatabase(getContext)
+	lazy val igDatabase = IGDatabase(getContext)
   var optWordData: Option[WordData] = None
-  var meanings: List[MeaningDef] = List(MeaningDef("", List()))
+  //var meanings: List[MeaningDef] = List()
 
   class DataContext(val rootView: View)
+	{
+		private val hostView = rootView.findViewById(R.id.llMeanings).asInstanceOf[ViewGroup]
+
+		val meaningDefListView = new MeaningDefListView(getActivity, hostView)
+	}
 
   var dataContext: DataContext = null
 
@@ -26,30 +31,12 @@ object SetMeaningFragment extends Fragment
   {
 		val rootView = inflater.inflate(R.layout.add_meaning_for_new_word, container, false)
 
-    installTypeListener(rootView, R.id.et_setmeaning_Context, onChangeContext)
-		installTypeListener(rootView, R.id.et_setmeaning_Meaning, onChangeMeaning)
-
     dataContext = new DataContext(rootView)
 
 		rootView
 	}
 
-	private def installTypeListener(rootView: View, id: Int, callback: (String) => Unit): Unit = rootView
-		.findViewById(id)
-		.asInstanceOf[EditText]
-		.addTextChangedListener(new EditTextTypeListener(callback))
-
-	private def onChangeContext(desc: String) = meanings = meanings match
-	{
-		case List(MeaningDef(_, ex)) => List(MeaningDef(desc, ex))
-	}
-
-	private def onChangeMeaning(str: String) = meanings = meanings match
-	{
-		case List(MeaningDef(desc, _)) => List(MeaningDef(desc, Seq(str)))
-	}
-
-  def setWordData(wordData: WordData): Unit =
+	def setWordData(wordData: WordData): Unit =
   {
     optWordData = Option(wordData)
 
@@ -79,7 +66,12 @@ object SetMeaningFragment extends Fragment
 
   def saveDefinitionInto(): Unit = optWordData match
   {
-    case Some(data) => igDatabase.save(data, meanings)
+    case Some(data) => igDatabase.save(data, dataContext.meaningDefListView.fetch())
     case None => ()
   }
+
+	def onNewMeaning(view: View): Unit =
+	{
+		dataContext.meaningDefListView.add()
+	}
 }

@@ -146,9 +146,10 @@ package object marshallers
 		{
 			val record = new ContentValues
 
-			record.put("MeaningId",				data.meaningId: jint)
-			record.put("LangId",					data.langId: jint)
-			record.put("Context",					data.context)
+			record.put("MeaningId",			data.meaningId: jint)
+			record.put("LangId",				data.langId: jint)
+			record.put("Meaning",				data.meaning)
+			record.put("Note",					data.note)
 
 			if(data.exampleId.isDefined)
 				record.put("ExampleGroupId",	data.exampleId.get: jint)
@@ -162,10 +163,11 @@ package object marshallers
 		{
 			val meaningId = record.getAsInteger("MeaningId")
 			val langId = record.getAsInteger("LangId")
-			val context = record.getAsString("Context")
+			val meaning = record.getAsString("Meaning")
+			val note = record.getAsString("Note")
 			val exampleId = Option(record.getAsInteger("ExampleGroupId")).map(i => i: Int)
 
-			Some(Meaning(meaningId, langId, context, exampleId))
+			Some(Meaning(meaningId, langId, meaning, note, exampleId))
 		}
 	}
 }

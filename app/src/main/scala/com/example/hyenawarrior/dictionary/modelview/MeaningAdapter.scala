@@ -28,12 +28,13 @@ class MeaningAdapter(activity: Activity) extends CustomAdapter[MeaningDef](activ
 		val meaning = itemAt(i)
 
 		val tvMeaning = view.findViewById(R.id.tvDesc).asInstanceOf[TextView]
-
-		tvMeaning.setText(meaning.desc)
+		tvMeaning.setText(meaning.meaning)
 
 		val tvDesc = view.findViewById(R.id.tvMeaning).asInstanceOf[TextView]
-
 		tvDesc.setText(meaning.examples.mkString("\n"))
+
+		val tvNote = view.findViewById(R.id.tvNote).asInstanceOf[TextView]
+		tvNote.setText(meaning.note)
 
 		view
 	}

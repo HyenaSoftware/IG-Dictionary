@@ -122,7 +122,7 @@ class IGDatabase(ctx: Context)
 				execInsert(Example(exGroupId.get, exStr))
 			}
 
-			execInsert(Meaning(nextMeaningId, langId, mDef.desc, exGroupId))
+			execInsert(Meaning(nextMeaningId, langId, mDef.meaning, mDef.note, exGroupId))
 			execInsert(Word(nextWordId, nextMeaningId, wordData.posType))
 		}
 	}
@@ -184,7 +184,7 @@ class IGDatabase(ctx: Context)
 
 		def getExs(i: Int) = examples.get(i).map(e => e.text).toSeq
 
-		meanings.map(m => MeaningDef(m.context, m.exampleId.map(getExs).getOrElse(Seq())))
+		meanings.map(m => MeaningDef(m.meaning, m.note, m.exampleId.map(getExs).getOrElse(Seq())))
 	}
 
 	private def findWordBy(wordId: Int, posId: Int): Option[Word] =

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:id="@+id/ll.setmeaning.MeaningList"
+        android:layout_marginBottom="3dp" android:background="@drawable/back" >
+        <!-- tools:showIn="@layout/add_meaning_for_new_word" -->
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="meaning"
+            android:singleLine="true" android:id="@+id/tvMeaning"
+    />
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/et.setmeaning.Desc"
+            android:inputType="textMultiLine"
+            android:layout_below="@+id/tvMeaning" android:layout_toLeftOf="@+id/ibRemove"
+            android:layout_alignParentStart="true" android:layout_alignParentEnd="false"/>
+    <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:id="@+id/ibRemove" android:src="@android:drawable/ic_delete"
+                 android:adjustViewBounds="false" android:contentDescription="Add"
+                 android:layout_alignParentLeft="false"
+                 android:layout_alignParentTop="true" android:layout_alignParentRight="true"
+    />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="note"
+            android:id="@+id/tvNote" android:layout_below="@+id/et.setmeaning.Desc"/>
+    <EditText android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:id="@+id/et.setmeaning.Note" android:inputType="textMultiLine"
+              android:layout_below="@+id/tvNote"
+              android:layout_alignParentStart="false" android:layout_alignParentEnd="false"
+              android:layout_alignParentRight="true" android:layout_alignParentLeft="true"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="examples"
+            android:id="@+id/tvExample" android:singleLine="false"
+            android:layout_below="@+id/et.setmeaning.Note"/>
+    <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:id="@+id/tl.setmeaning.Examples"
+            android:layout_below="@+id/tvExample">
+        <!-- include layout="@layout/example_record" android:id="@+id/et.setmeaning.Example"
+                 android:layout_width="match_parent" android:layout_height="wrap_content"/ -->
+    </TableLayout>
+</RelativeLayout>

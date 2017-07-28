@@ -51,7 +51,7 @@ object Orderings
 
 	implicit object MeaningDefOrdering extends Ordering[MeaningDef]
 	{
-		override def compare(x: MeaningDef, y: MeaningDef): Int = x.desc.compareTo(y.desc)
+		override def compare(x: MeaningDef, y: MeaningDef): Int = x.meaning.compareTo(y.meaning)
 	}
 }
 
