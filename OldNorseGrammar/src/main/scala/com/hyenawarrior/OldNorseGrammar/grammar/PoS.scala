@@ -13,5 +13,5 @@ trait PoS
 
 	def descriptorFlags: List[DescriptorFlag]
 
-	def transformations: List[WordTransformation] = List(U_Umlaut, I_Umlaut)
+	def transformations: List[WordTransformation] = List(U_Umlaut)
 }
