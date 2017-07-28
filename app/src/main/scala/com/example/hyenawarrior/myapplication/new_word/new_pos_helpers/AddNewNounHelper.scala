@@ -183,7 +183,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		.map
 		{
 			case "Undefined" => List()
-			case "Feminine" => List(STRONG_FEMININE_A, STRONG_FEMININE_I, STRONG_FEMININE_R, WEAK_FEMININE_I, WEAK_FEMININE_U)
+			case "Feminine" => List(STRONG_FEMININE_A1, STRONG_FEMININE_A2, STRONG_FEMININE_I, STRONG_FEMININE_R, WEAK_FEMININE_I, WEAK_FEMININE_U)
 			case "Masculine" => List(STRONG_MASCULINE_A, STRONG_MASCULINE_I, STRONG_MASCULINE_R, STRONG_MASCULINE_U, WEAK_MASCULINE_A, WEAK_MASCULINE_R)
 			case "Neuter" => List(STRONG_NEUTER, WEAK_NEUTER_U)
 			case str => NounStemClassEnum.findByName[NounStemClassEnum](str).toList

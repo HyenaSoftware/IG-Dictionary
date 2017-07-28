@@ -67,7 +67,8 @@ object PosType extends EnumLike[Int, PosType]
 
 	// Nouns
 	// - strong nouns
-	val NOUN_STRONG_FEM_A = NounType(10, NounStemClassEnum.STRONG_FEMININE_A)
+	val NOUN_STRONG_FEM_A2 = NounType(10, NounStemClassEnum.STRONG_FEMININE_A1)
+	val NOUN_STRONG_FEM_A1 = NounType(23, NounStemClassEnum.STRONG_FEMININE_A2)
 	val NOUN_STRONG_FEM_I = NounType(11, NounStemClassEnum.STRONG_FEMININE_I)
 	val NOUN_STRONG_FEM_R = NounType(12, NounStemClassEnum.STRONG_FEMININE_R)
 

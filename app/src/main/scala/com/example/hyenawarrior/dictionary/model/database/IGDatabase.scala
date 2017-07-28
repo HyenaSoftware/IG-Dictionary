@@ -93,12 +93,6 @@ class IGDatabase(ctx: Context)
 		langs.flatten
 	}
 
-	private def wordDataToWords(wordData: WordData): Word = wordData.posType match
-	{
-		case _: VerbType => Word(-1, -1, PosType.VERB_STRONG_1ST)
-		case _: NounType => Word(-1, -1, PosType.NOUN_STRONG_FEM_A)
-	}
-
 	def save(wordData: WordData, meanings: List[MeaningDef]) =
 	{
 		val nextWordId = maxIdFor("WordId", "WordForms") + 1
