@@ -150,17 +150,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		case None => ()
 	}
 
-	override def onDeclensionSelected(index: Int): Unit = {
-
-	}
-
-	override def onNounDeclensionSelected(overridingView: View)(item: (GNumber, Case)): Unit = {
-
-
-	}
-
-	override def onTextFormOverride(overridingView: View)(str: String): Unit = {
-
+	override def onTextFormOverride(overridingView: View)(str: String): Unit =
+	{
 		//val (_, givenBaseForm, map) = selectedNounParameters
 
 		//selectedNounParameters = (stemClass, givenBaseForm, map)

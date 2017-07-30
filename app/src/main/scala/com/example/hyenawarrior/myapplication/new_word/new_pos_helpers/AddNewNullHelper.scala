@@ -21,10 +21,6 @@ object AddNewNullHelper extends AddNewPosHelper
 
 	override def onTextFormOverride(overridingView: View)(str: String): Unit = { }
 
-	override def onNounDeclensionSelected(overridingView: View)(item: (GNumber, Case)): Unit = { }
-
-	override def onDeclensionSelected(index: Int): Unit = { }
-
 	override def createOverrideFormSetter(isPrimary: Boolean): View = ???
 
 	override def primaryFromSetter: View = ???

@@ -23,10 +23,8 @@ trait AddNewPosHelper
 	def primaryFromSetter(): View
 	def createOverrideFormSetter(isPrimary: Boolean = false) : View
 
-	def onDeclensionSelected(index: Int): Unit
 	def onStemClassSelected(index: Int): Unit
 	def onTextFormOverride(overridingView: View)(str: String): Unit
-	def onNounDeclensionSelected(overridingView: View)(item: (GNumber, Case)): Unit
 
   def getWordFormsBy(view: View): WordData = null
 }

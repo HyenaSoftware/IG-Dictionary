@@ -113,12 +113,6 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		rowView
 	}
 
-	override def onDeclensionSelected(index: Int): Unit =
-	{
-		// TODO: it's not used
-		onNounDeclensionSelected(AddNewNounHelper.NOUN_DECLENSIONS(index))
-	}
-
 	private def onNounDeclensionSelected(item: NounForm): Unit =
 	{
 		val (stemClass, (_, givenBaseForm), map) = selectedNounParameters
@@ -158,8 +152,6 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		fillNounForms()
 	}
-
-	override def onNounDeclensionSelected(overridingView: View)(item: (GNumber, Case)): Unit = ()
 
 	def onNounDeclensionSelected2(overridingView: View)(item: NounForm): Unit =
 	{
