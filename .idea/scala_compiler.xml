@@ -10,11 +10,11 @@
         <parameter value="-target:jvm-1.7" />
       </parameters>
     </profile>
-    <profile name="Gradle 2" modules="OldNorseGrammar">
+    <profile name="Gradle 2" modules="Persister,OldNorseGrammarEngine">
       <option name="deprecationWarnings" value="true" />
       <option name="uncheckedWarnings" value="true" />
       <parameters>
-        <parameter value="-target:jvm-1.5" />
+        <parameter value="-target:jvm-1.8" />
       </parameters>
     </profile>
   </component>

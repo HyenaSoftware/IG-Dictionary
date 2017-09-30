@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IntelliJ_ScalaAndroid_Test1.iml" filepath="$PROJECT_DIR$/.idea/modules/IntelliJ_ScalaAndroid_Test1.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OldNorseGrammar/OldNorseGrammar.iml" filepath="$PROJECT_DIR$/.idea/modules/OldNorseGrammar/OldNorseGrammar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OldNorseDictionary.iml" filepath="$PROJECT_DIR$/.idea/modules/OldNorseDictionary.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/OldNorseGrammarEngine/OldNorseGrammarEngine.iml" filepath="$PROJECT_DIR$/.idea/modules/OldNorseGrammarEngine/OldNorseGrammarEngine.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" />
     </modules>
   </component>
