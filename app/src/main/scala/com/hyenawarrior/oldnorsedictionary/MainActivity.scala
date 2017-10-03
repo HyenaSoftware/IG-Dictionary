@@ -10,13 +10,14 @@ import android.view.View
 import android.widget.{ListView, SearchView}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{DUAL, PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.{Word => GWord, _}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
-import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.{NounForm, NounType, VerbForm, VerbType}
-import com.hyenawarrior.oldnorsedictionary.model.database.{IGDatabase, SQLDatabaseHelper, Word, WordForm}
+import com.hyenawarrior.oldnorsedictionary.model.database.marshallers._
+import com.hyenawarrior.oldnorsedictionary.model.database.{IGDatabase, SQLDatabaseHelper}
 import com.hyenawarrior.oldnorsedictionary.modelview.DictionaryEntryAdapter
 import com.hyenawarrior.oldnorsedictionary.new_word.AddNewWordActivityPager
-import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
+import com.hyenawarrior.oldnorsedictionary.new_word.pages.{MeaningDef, WordData}
 
 object Orderings
 {
@@ -84,11 +85,45 @@ class MainActivity extends AppCompatActivity
 		}
 	}
 
-	private def toDictionaryEntry(wordForms: (Word, (Seq[WordForm], Seq[MeaningDef]))): DictionaryEntry =
+	private def toDictionaryEntry(wordForms: (WordData, Seq[MeaningDef])): DictionaryEntry =
 	{
-		val words = wordForms._2._1.map
+		/*
+			ablauts of the 7th strong verb class are not stored we have to extract them
+		 */
+
+		val posType = wordForms._1.posType
+
+		val words: Map[GWord, Boolean] = //null
+			Some(posType)
+			.collect { case vt: VerbType => vt.verbClass }
+			.collect { case svc: StrongVerbClassEnum => svc }
+			.map{ svc =>
+
+				val verbForms = wordForms._1.forms.collect { case (vf: VerbForm, str) => vf -> str }
+
+				val forms = verbForms.map {
+
+					case (vf, str) =>	verbs.stemFrom(vf.tense, vf.optPronoun.map(_.number), vf.vtype) -> str
+				}
+					.groupBy(_._1)
+					.map { case(k, v) => k -> v.values.toSeq }
+
+				val optSvd = verbs.getDescOfStrongVerbClassFor(svc, forms)
+
+				val word = optSvd.map(svd => verbForms.map {
+					case (vf, rawStr) =>
+						val verb = verbs.verbFrom(rawStr, svd, (vf.vtype, vf.tense, vf.optPronoun))
+						val isPrimary = vf == VerbForm.VERB_INFINITIVE
+						GWord(verb) -> isPrimary
+				})
+
+				word.getOrElse(Map())
+
+			}.getOrElse(Map())
+
+		/*val words: Map[GWord, Boolean] = forms.map
 		{
-			case WordForm(rawStr, wordId, vf: VerbForm, VerbType(_, verbClass)) =>
+			case WordForm(rawStr, _, vf: VerbForm, VerbType(_, verbClass)) =>
 				val VerbForm(_, mode, optTense, optPronoun) = vf
 				val verb = verbs.verbFrom(rawStr, verbClass, (mode, optTense, optPronoun)).head
 				val isPrimary = vf == VerbForm.VERB_INFINITIVE
@@ -99,15 +134,15 @@ class MainActivity extends AppCompatActivity
 				val isPrimary = nf == NounForm.NOUN_NOM_SG
 				val noun = Noun(str, -1, (num, caze), Root("???"), nounClass.nounStemClass)
 				GWord(noun) -> isPrimary
-		}
+		}*/
 
 		val dictForm = words.find(_._2).map(_._1)
 
 		import Orderings._
 
-		val meanings = wordForms._2._2
+		val meanings = wordForms._2
 
-		DictionaryEntry(words.map(_._1).toList.sorted, dictForm, meanings.toList.sorted)
+		DictionaryEntry(words.keys.toList.sorted, dictForm, meanings.toList.sorted)
 	}
 
 	override protected def onBackPressed()

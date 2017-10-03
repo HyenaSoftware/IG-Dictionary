@@ -6,7 +6,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{StrongVerbStem, VerbStemEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum._
 
 /**
@@ -23,6 +23,19 @@ package object verbs
 		case (PAST, PLURAL)		=> PRETERITE_PLURAL_STEM
 	}
 
+	def stemFrom(optTense: Option[VerbTenseEnum], optNumber: Option[GNumber], mood: VerbModeEnum): VerbStemEnum
+		= (optTense, optNumber, mood) match {
+
+		case (None,						None,		INFINITIVE) => PRESENT_STEM
+		case (Some(PRESENT), 	Some(_),				INDICATIVE | SUBJUNCTIVE) => PRESENT_STEM
+		case (Some(PAST), 		Some(SINGULAR),	INDICATIVE | SUBJUNCTIVE) => PRETERITE_SINGULAR_STEM
+		case (Some(PAST), 		Some(PLURAL),		INDICATIVE | SUBJUNCTIVE) => PRETERITE_PLURAL_STEM
+		case (Some(PRESENT), 	None,		PARTICIPLE) => PRESENT_STEM
+		case (Some(PAST), 		None,		PARTICIPLE) => PERFECT_STEM
+		case (_,							_,			IMPERATIVE) => PRESENT_STEM
+		case _ => ???
+	}
+
 	def stemToTense(stem: VerbStemEnum): (VerbTenseEnum, Option[GNumber]) = stem match	{
 
 		case PRESENT_STEM							=> PRESENT	-> None
@@ -30,39 +43,24 @@ package object verbs
 		case PRETERITE_PLURAL_STEM		=> PAST			-> Some(PLURAL)
 	}
 
-	def verbFrom(text: String, verbClass: VerbClassEnum, verbType: VerbType): Option[Verb] = verbClass match
+	def verbFrom(rawStr: String, verbClassDesc: VerbClassDesc, verbType: VerbType): Verb = verbClassDesc match
 	{
-		case svc: StrongVerbClassEnum => generateStrongVerbFromRawStr(text, svc, verbType)
+		case svd: StrongVerbClassDesc => generateStrongVerbFromRawStr(rawStr, svd, verbType)
 		case _ => ???
 	}
 
-	def generateStrongVerbFromRawStr(rawStr: String, strongVerbClass: StrongVerbClassEnum, verbType: VerbType): Option[StrongVerb] = {
+	def generateStrongVerbFromRawStr(rawStr: String, verbClassDesc: StrongVerbClassDesc, verbType: VerbType): StrongVerb = verbType match
+	{
+		case (mood @ (INDICATIVE | SUBJUNCTIVE | IMPERATIVE), Some(tense), Some(pronoun)) =>
+			FinitiveStrongVerb(rawStr, verbClassDesc, pronoun, tense, mood.asInstanceOf[FinitiveMood])
 
-		def generateNonFinitiveStrongVerb(verbType: NonFinitiveVerbType) = {
+		case (PARTICIPLE, Some(PRESENT),	None) => NonFinitiveStrongVerb(rawStr, verbClassDesc, PRESENT_PARTICIPLE)
 
-			val verbStem = verbType.verbStemBase
+		case (PARTICIPLE, Some(PAST),			None) => NonFinitiveStrongVerb(rawStr, verbClassDesc, PAST_PARTICIPLE)
 
-			getDescOfStrongVerbClassFor(strongVerbClass, Map(verbStem -> Seq(rawStr))).map(NonFinitiveStrongVerb(rawStr, _, verbType))
-		}
+		case (INFINITIVE, None,						None) => NonFinitiveStrongVerb(rawStr, verbClassDesc, NonFinitiveVerbType.INFINITIVE)
 
-		verbType match
-		{
-			case (mood @ (INDICATIVE | SUBJUNCTIVE | IMPERATIVE), Some(tense), Some(pronoun)) => {
-
-					val rawStrPerStem = Map(tenseToStem(tense, pronoun.number) -> Seq(rawStr))
-
-					val optVerbClassDesc = getDescOfStrongVerbClassFor(strongVerbClass, rawStrPerStem)
-
-					optVerbClassDesc.map(verbClassDesc => FinitiveStrongVerb(rawStr, verbClassDesc, pronoun, tense, mood.asInstanceOf[FinitiveMood]))
-				}
-			case (PARTICIPLE, Some(PRESENT),	None) => generateNonFinitiveStrongVerb(PRESENT_PARTICIPLE)
-
-			case (PARTICIPLE, Some(PAST),			None) => generateNonFinitiveStrongVerb(PAST_PARTICIPLE)
-
-			case (INFINITIVE, None,						None) => generateNonFinitiveStrongVerb(NonFinitiveVerbType.INFINITIVE)
-
-			case _ => ???
-		}
+		case _ => ???
 	}
 
 	def getDescOfStrongVerbClassFor(verbClass: StrongVerbClassEnum, verbForms: Map[VerbStemEnum, Seq[String]] = Map()): Option[StrongVerbClassDesc]

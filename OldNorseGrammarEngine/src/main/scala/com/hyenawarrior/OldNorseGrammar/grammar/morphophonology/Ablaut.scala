@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, StrongVerbGenerator}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbGenerator.getAblautGradeFrom
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum._
 
@@ -41,10 +41,15 @@ object CalculatedAblaut extends Ablaut
 
 	def extractAblautFrom(verb: Map[VerbStemEnum, Seq[String]]): Option[StaticAblaut] =
 	{
-		val psSV		= verb(PRESENT_STEM).headOption
-		val ptSgSV	= verb(PRETERITE_SINGULAR_STEM).headOption
-		val ptPlSV	= verb(PRETERITE_PLURAL_STEM).headOption
-		val pfSV		= verb(PERFECT_STEM).headOption
+		val setPsSV		= verb.getOrElse(PRESENT_STEM, 						Seq()).flatMap(s => getAblautGradeFrom(s)).toSet
+		val setPtSgSV	= verb.getOrElse(PRETERITE_SINGULAR_STEM, Seq()).flatMap(s => getAblautGradeFrom(s)).toSet
+		val setPtPlSV	= verb.getOrElse(PRETERITE_PLURAL_STEM,		Seq()).flatMap(s => getAblautGradeFrom(s)).toSet
+		val setPfSV		= verb.getOrElse(PERFECT_STEM,						Seq()).flatMap(s => getAblautGradeFrom(s)).toSet
+
+		val psSV   = if(setPsSV.size == 1) setPsSV.headOption else None
+		val ptSgSV = if(setPtSgSV.size == 1) setPtSgSV.headOption else None
+		val ptPlSV = if(setPtPlSV.size == 1) setPtPlSV.headOption else None
+		val pfSV   = if(setPfSV.size == 1) setPfSV.headOption else None
 
 		// complete missing ablaut-grades
 		val optFixedPsSv		= psSV		orElse pfSV 	orElse ptSgSV	orElse ptPlSV

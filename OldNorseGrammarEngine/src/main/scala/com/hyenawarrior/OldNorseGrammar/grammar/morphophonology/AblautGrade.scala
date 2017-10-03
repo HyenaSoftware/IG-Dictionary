@@ -12,7 +12,7 @@ case class AblautGrade(rootVowel: String)
 
 object AblautGrade
 {
-	implicit def AblautGradeFromStrin(str: String): AblautGrade = AblautGrade(str)
+	implicit def AblautGradeFromString(str: String): AblautGrade = AblautGrade(str)
 }
 
 object AblautTransformation

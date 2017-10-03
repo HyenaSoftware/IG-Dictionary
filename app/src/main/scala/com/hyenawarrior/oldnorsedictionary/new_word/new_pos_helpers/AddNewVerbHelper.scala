@@ -4,13 +4,14 @@ import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
 import android.widget.{EditText, LinearLayout, Spinner}
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, verbs}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StaticAblaut
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{IMPERATIVE, INDICATIVE, PARTICIPLE, SUBJUNCTIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.StrongVerbStemClasses
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.{PosForm, VerbForm, VerbType}
@@ -170,7 +171,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			.toMap
 
 		val wordMaps = sortedListOfVerbClasses
-			.map(vc => generateAllFormsFrom(vc, overridingMap))
+			.flatMap(vc => generateAllFormsFrom(vc, overridingMap))
 			.filter { case (_, forms) => forms.nonEmpty }
 			.map{ case(vcd, verbByForm) => vcd -> verbByForm.map{ case (k,v) => k -> v.strForm } }
 
@@ -184,41 +185,52 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		case _ => ()
 	}
 
-	private def generateAllFormsFrom(verbClass: VerbClassEnum, overrides: Map[VerbForm, String]): (VerbClassDesc, Map[VerbForm, Verb]) = verbClass match {
+	private def generateAllFormsFrom(verbClass: VerbClassEnum, overrides: Map[VerbForm, String]):
+		Option[(VerbClassDesc, Map[VerbForm, Verb])] = verbClass match {
 
 		case svc: StrongVerbClassEnum => generateMissingFormsOfStrongVerbsFrom(svc, overrides)
 		case wvc: WeakVerbClassEnum => ???
 	}
 
-	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, overrides: Map[VerbForm, String]): (StrongVerbClassDesc, Map[VerbForm, StrongVerb]) =	{
+	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, overrides: Map[VerbForm, String]): Option[(StrongVerbClassDesc, Map[VerbForm, StrongVerb])] =	{
 		// exclude the base form definition and the overrides
 		val missingDeclensions = VerbForm.values.filterNot(overrides.contains)
 
-		val givenVerbs: Map[VerbForm, StrongVerb] = overrides
-			.map {
+		def stemFrom(vf: VerbForm): VerbStemEnum = verbs.stemFrom(vf.tense, vf.optPronoun.map(_.number), vf.vtype)
 
-				case (vf, rawStr) => vf -> generateStrongVerbsFromRawString(verbClass, vf, rawStr)
+		val formsPerStem = overrides
+			.map { case (vf, rawStr) => stemFrom(vf) -> rawStr }
+			.groupBy(_._1)
+			.map{ case (k,v) => k -> v.values.toSeq }
+
+		val optVerbClassDesc = getDescOfStrongVerbClassFor(verbClass, formsPerStem)
+
+		optVerbClassDesc.map(verbClassDesc => {
+
+			val givenVerbs: Map[VerbForm, StrongVerb] = overrides.map {
+
+				case (vf, rawStr) => vf -> generateStrongVerbsFromRawString(verbClassDesc, vf, rawStr)
 			}
-		  .collect {
 
-				case (vf, Some(sv)) => vf -> sv
-			}
+			val baseVerbs = givenVerbs
+				.groupBy{ case (vf, sv) => stemFrom(vf) }
+				.map{ case (vf, m) => vf -> m.values.head }
 
-		val firstGivenVerb = givenVerbs.values.head
+			// determine missing stems from existing ones
 
-		// TODO: Word() should be used instead of verb.strForm to handle umlauts and other transformations correctly
-		val knownVerbDescs = givenVerbs.values.map(sv => sv.verbClassDesc).toSet
+			val missingVerbs: Map[VerbForm, StrongVerb] = missingDeclensions
+				.map(vf => vf -> stemFrom(vf))
+				.collect { case (vf, st) if baseVerbs.contains(st) => vf -> baseVerbs(st) }
+				.flatMap { case(vf, sv) => generateStrongVerbFormAnotherAs(sv, verbClassDesc.ablaut, vf).map(vf -> _) }
+				.toMap
 
-		val verbDesc = knownVerbDescs.head
+			val forms = if (missingVerbs.isEmpty) Map[VerbForm, StrongVerb]() else givenVerbs ++ missingVerbs
 
-		val missingVerbs: Map[VerbForm, StrongVerb] = missingDeclensions
-			.flatMap(vf => generateStrongVerbFormAnotherAs(firstGivenVerb, verbDesc.ablaut, vf).map(sv => vf -> sv))
-			.toMap
-
-		verbDesc -> (if(missingVerbs.isEmpty) Map() else	givenVerbs ++ missingVerbs)
+			verbClassDesc -> forms
+		})
 	}
 
-	private def generateStrongVerbsFromRawString(strongVerbClass: StrongVerbClassEnum, verbForm: VerbForm, rawStr: String): Option[StrongVerb] = {
+	private def generateStrongVerbsFromRawString(strongVerbClass: StrongVerbClassDesc, verbForm: VerbForm, rawStr: String): StrongVerb = {
 
 		val VerbForm(_, mood, optTense, optPronoun) = verbForm
 

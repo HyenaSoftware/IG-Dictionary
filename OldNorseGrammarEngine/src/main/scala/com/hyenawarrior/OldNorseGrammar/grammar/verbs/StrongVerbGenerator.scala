@@ -65,12 +65,9 @@ object StrongVerbGenerator
 		case nVerb: NonFinitiveStrongVerb => null
 	}
 
-	def getAblautGradeFrom(verb: StrongVerb): AblautGrade =
-	{
-		getAblautGradeFrom(verb.rawForm)
-	}
+	def getAblautGradeFrom(verb: StrongVerb): Option[AblautGrade] =	getAblautGradeFrom(verb.rawForm)
 
-	def getAblautGradeFrom(rawForm: String): AblautGrade =
+	def getAblautGradeFrom(rawForm: String): Option[AblautGrade] =
 	{
 		val Syllables(syllables) = rawForm
 
@@ -78,7 +75,7 @@ object StrongVerbGenerator
 
 		val nucleus = firstSy.letters.filter(Syllables.isVowel)
 
-		AblautGrade(nucleus)
+		if(nucleus.nonEmpty) Some(AblautGrade(nucleus)) else None
 	}
 
 	def stemFromFinitive(verb: FinitiveStrongVerb, ablaut: StaticAblaut): StrongVerbStem = {

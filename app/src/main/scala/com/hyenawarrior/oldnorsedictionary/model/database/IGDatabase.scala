@@ -202,28 +202,27 @@ class IGDatabase(ctx: Context)
 
 	// (Map[WordForm, Meaning])
 	// * exemplar form
-	def findByStr(str: String): Map[Word, (Seq[WordForm], Seq[MeaningDef])] = if(str.isEmpty) Map() else
+	def findByStr(str: String): Map[WordData, Seq[MeaningDef]] = {
+
+		val allForms: Seq[WordForm] = findWordFormsBy(str)
+
+		val formsByType = allForms.groupBy(_.posType)
+
+		formsByType.map{ case(posType, vfs) =>
+
+			val forms: Map[PosForm, String] = vfs.groupBy(_.posForm).map { case (k, v) => k -> v.head.form }
+
+			val meanings: List[MeaningDef] = List()
+
+			WordData(posType, forms, meanings) -> Seq()
+		}
+	}
+
+	/*def findByStr(str: String): Map[Word, (Seq[WordForm], Seq[MeaningDef])] = if(str.isEmpty) Map() else
 	{
-		val sqlStr = str.map
-		{
-			case '*' => '%'
-			case c => c
-		} + '%'
+		val (words: IndexedSeq[WordForm], abc: Map[PosForm, IndexedSeq[WordForm]]) = findWordFormsBy(str)
 
-		val cr: Cursor  = database.getReadableDatabase.query(
-			WordFormMarshaller.TABLE_NAME,
-			null, //Array("Form", "WordId"), // all columns
-			"Form like ?",	// where caluse
-			Array(sqlStr),			// args for the arguments of the where clause
-			null, // group by
-			null,	// having
-			null	// order by
-		)
-
-		val words = unmarshall[WordForm](cr)
-
-		cr.close()
-
+		//
 		val widPidS = words.groupBy(w => w.wordId -> w.posType)
 
 		val data = widPidS.map
@@ -234,6 +233,32 @@ class IGDatabase(ctx: Context)
 		}
 
 		data
+	}*/
+
+	def findWordFormsBy(str: String): Seq[WordForm] =
+	{
+		val sqlStr = str.map
+		{
+			case '*' => '%'
+			case c => c
+		} + '%'
+
+		val cr: Cursor = database.getReadableDatabase.query(
+			WordFormMarshaller.TABLE_NAME,
+			null, //Array("Form", "WordId"), // all columns
+			"Form like ?", // where caluse
+			Array(sqlStr), // args for the arguments of the where clause
+			null, // group by
+			null, // having
+			null // order by
+		)
+
+		val words = unmarshall[WordForm](cr)
+
+		cr.close()
+
+		//
+		words
 	}
 
 	private def unmarshall[T <: dbrecord](cr: Cursor)(implicit marshaller: TMarshaller[T]): IndexedSeq[T] =
