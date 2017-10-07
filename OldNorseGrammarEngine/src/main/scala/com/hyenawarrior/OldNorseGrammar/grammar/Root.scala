@@ -7,6 +7,9 @@ import com.hyenawarrior.OldNorseGrammar.grammar.Syllables.isVowel
 	*/
 case class Root(word: String)
 {
+	/**
+		.toString() is the way to get the stringrepresentation
+	 */
 	override def toString: String = word
 
 	def rootVowel: String = {

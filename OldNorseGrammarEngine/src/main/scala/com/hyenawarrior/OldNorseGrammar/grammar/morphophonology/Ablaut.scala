@@ -1,16 +1,14 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbGenerator.getAblautGradeFrom
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.VerbStemEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.Syllables
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
 
 /**
 	* Created by HyenaWarrior on 2017.04.25..
 	*/
-trait Ablaut
-
 case class StaticAblaut(presentAblautGrade: AblautGrade, preteriteSingularAblautGrade: AblautGrade
-												, preteritePluralAblautGrade: AblautGrade, perfectAblautGrade: AblautGrade) extends Ablaut
+												, preteritePluralAblautGrade: AblautGrade, perfectAblautGrade: AblautGrade)
 {
 	private val VOWELS = Map(
 		PRESENT_STEM						-> presentAblautGrade,
@@ -19,27 +17,43 @@ case class StaticAblaut(presentAblautGrade: AblautGrade, preteriteSingularAblaut
 		PERFECT_STEM						-> perfectAblautGrade
 	)
 
-	def grades(): Map[VerbStemEnum, AblautGrade] = VOWELS
+	def grades(enumVerbStem: EnumVerbStem): AblautGrade = VOWELS(enumVerbStem)
 
 	override def toString: String	= List(presentAblautGrade, preteriteSingularAblautGrade, preteritePluralAblautGrade, perfectAblautGrade)
 		.mkString("(", " - ", ")")
 }
 
-object CalculatedAblaut extends Ablaut
+object Ablaut
 {
-	/*def extractAblautFrom(verbs: Seq[StrongVerb]): Option[StaticAblaut] =
+	def transform(str: String, srcAblaut: AblautGrade, dstAblaut: AblautGrade): Option[String] =
 	{
-		verbs.map(v => v.verbClassDesc. v.verbClassDesc.ablaut)
+		val where = str.indexOf(srcAblaut.rootVowel)
 
-		val map: Map[VerbStemEnum, Seq[String]] = verb
-			  .map(v => v.stemType -> v.rawForm)
-				.groupBy(_._1)
-		  	.map{case(k, v) => k -> v.map(w => w._2)}
+		if (where != -1)
+		{
 
-		extractAblautFrom(map)
-	}*/
+			val length = srcAblaut.rootVowel.length
 
-	def extractAblautFrom(verb: Map[VerbStemEnum, Seq[String]]): Option[StaticAblaut] =
+			val prefixStr = str.substring(0, where)
+			val suffixStr = str.substring(where + length)
+
+			Some(s"$prefixStr${dstAblaut.rootVowel}$suffixStr")
+
+		} else None
+	}
+
+	def getAblautGradeFrom(rawStr: String): Option[AblautGrade] =
+	{
+		val Syllables(syllables) = rawStr
+
+		val firstSy = syllables.head
+
+		val nucleus = firstSy.letters.filter(Syllables.isVowel)
+
+		if(nucleus.nonEmpty) Some(AblautGrade(nucleus)) else None
+	}
+
+	def extractAblautFrom(verb: Map[EnumVerbStem, Seq[String]]): Option[StaticAblaut] =
 	{
 		val setPsSV		= verb.getOrElse(PRESENT_STEM, 						Seq()).flatMap(s => getAblautGradeFrom(s)).toSet
 		val setPtSgSV	= verb.getOrElse(PRETERITE_SINGULAR_STEM, Seq()).flatMap(s => getAblautGradeFrom(s)).toSet

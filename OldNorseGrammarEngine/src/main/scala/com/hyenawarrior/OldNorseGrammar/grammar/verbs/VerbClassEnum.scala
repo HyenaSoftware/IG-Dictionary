@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{CalculatedAblaut, StaticAblaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StaticAblaut
 import com.hyenawarrior.auxiliary.EnumLike
 
 /**
@@ -14,8 +14,6 @@ class VerbClassEnum(name: String)
 }
 
 case class StrongVerbClassEnum(name: String) extends VerbClassEnum(name)
-
-	//CalculatedAblaut.extractAblautFrom(verb).map(ablaut => StrongVerbClassDesc(this, ablaut))
 
 case class WeakVerbClassEnum(name: String) extends VerbClassEnum(name)
 

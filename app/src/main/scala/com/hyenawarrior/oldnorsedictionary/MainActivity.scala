@@ -10,7 +10,7 @@ import android.view.View
 import android.widget.{ListView, SearchView}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{DUAL, PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, StrongVerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.{Word => GWord, _}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.database.marshallers._
@@ -44,7 +44,6 @@ object Orderings
 		{
 			case (GWord(Noun(_, _, (n1, c1), _, _)), GWord(Noun(_, _, (n2, c2), _, _))) if n1 != n2 => sgnDiff(n1, n2)
 			case (GWord(Noun(_, _, (n1, c1), _, _)), GWord(Noun(_, _, (n2, c2), _, _))) => sgnDiff(c1, c2)
-			//case (Word(VerbForm(_, )), Word())
 			case _ => 0
 		}
 	}
@@ -112,7 +111,8 @@ class MainActivity extends AppCompatActivity
 
 				val word = optSvd.map(svd => verbForms.map {
 					case (vf, rawStr) =>
-						val verb = verbs.verbFrom(rawStr, svd, (vf.vtype, vf.tense, vf.optPronoun))
+					val verb = StrongVerb.fromStringRepr(rawStr, svd.vClass, (vf.vtype, vf.tense, vf.optPronoun))
+						//val verb = verbs.verbFrom(rawStr, svd, (vf.vtype, vf.tense, vf.optPronoun))
 						val isPrimary = vf == VerbForm.VERB_INFINITIVE
 						GWord(verb) -> isPrimary
 				})
@@ -120,21 +120,6 @@ class MainActivity extends AppCompatActivity
 				word.getOrElse(Map())
 
 			}.getOrElse(Map())
-
-		/*val words: Map[GWord, Boolean] = forms.map
-		{
-			case WordForm(rawStr, _, vf: VerbForm, VerbType(_, verbClass)) =>
-				val VerbForm(_, mode, optTense, optPronoun) = vf
-				val verb = verbs.verbFrom(rawStr, verbClass, (mode, optTense, optPronoun)).head
-				val isPrimary = vf == VerbForm.VERB_INFINITIVE
-				GWord(verb) -> isPrimary
-
-			case WordForm(str, wordId, nf: NounForm, NounType(_, nounClass)) =>
-				val NounForm(_, num, caze) = nf
-				val isPrimary = nf == NounForm.NOUN_NOM_SG
-				val noun = Noun(str, -1, (num, caze), Root("???"), nounClass.nounStemClass)
-				GWord(noun) -> isPrimary
-		}*/
 
 		val dictForm = words.find(_._2).map(_._1)
 

@@ -17,4 +17,6 @@ abstract class Verb(val rawForm: String) extends PoS
 	}
 
 	override def descriptorFlags: List[DescriptorFlag] = List()
+
+	override def toString: String = strForm
 }

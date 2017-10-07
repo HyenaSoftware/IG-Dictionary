@@ -4,8 +4,8 @@ import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.{Button, TextView}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun.{unapply => _}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbClassDesc, VerbClassDesc, VerbClassEnum}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.VerbForm
 import com.hyenawarrior.oldnorsedictionary.modelview.CustomAdapter
@@ -38,7 +38,7 @@ object VerbDeclensionAdapter
 	)
 }
 
-class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClassDesc, Map[VerbForm, String])](activity)
+class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClassEnum, Map[VerbForm, String])](activity)
 {
 	override protected def getNewView(i: Int, viewGroup: ViewGroup): View = {
 
@@ -48,7 +48,7 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
 
 		// set declensions
 		val tv_addword_verb_stemName = view.findViewById(R.id.tv_addword_verb_stemName).asInstanceOf[TextView]
-		tv_addword_verb_stemName.setText(vcDesc.className)
+		tv_addword_verb_stemName.setText(vcDesc.toString)
 
 		for ((tvCtrlId, key) <- VerbDeclensionAdapter.VERB_TEXTVIEWS)
 		{
@@ -57,11 +57,7 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
 			tvVerbCtrl.setText(text)
 		}
 
-		val ablautDesc = vcDesc match
-		{
-			case a: StrongVerbClassDesc => a.ablaut.toString
-			case _ => "n/a"
-		}
+		val ablautDesc = "n/a"
 
 		// set ablaut grades
 		val tv_addword_verb_AblautGrades = view.findViewById(R.id.tv_addword_verb_AblautGrades).asInstanceOf[TextView]
@@ -74,9 +70,9 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
 		view
 	}
 
-  def getSelectorTagOf(view: View): Option[VerbClassDesc] = view match
+  def getSelectorTagOf(view: View): Option[VerbClassEnum] = view match
   {
-    case btn: Button => Option(btn.getTag.asInstanceOf[VerbClassDesc])
+    case btn: Button => Option(btn.getTag.asInstanceOf[VerbClassEnum])
     case _ => None
   }
 }

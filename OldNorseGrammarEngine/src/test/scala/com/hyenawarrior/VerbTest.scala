@@ -1,58 +1,62 @@
 package com.hyenawarrior
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StaticAblaut
-import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, Word, verbs}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.StrongVerbStemClasses._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.StrongVerbStemClasses
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.VerbStemClass._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, Root}
 import org.junit.Assert._
-import org.junit.Test
+import org.junit.{Assert, Test}
 
 /**
 	* Created by HyenaWarrior on 2017.06.26..
 	*/
 class VerbTest
 {
-	private def convertTo(sv: StrongVerb, fp: FinitiveVerbDesc) =
-	{
-		StrongVerbStemClasses.convertTo(sv, sv.verbClassDesc.ablaut.asInstanceOf[StaticAblaut], fp)
-	}
-
-	private def convertTo(sv: StrongVerb, nfp: NonFinitiveVerbType) =
-	{
-		StrongVerbStemClasses.convertTo(sv, sv.verbClassDesc.ablaut.asInstanceOf[StaticAblaut], nfp)
-	}
-
 	@Test
 	def testStrong6VerbInflection()
 	{
-		val vcd = verbs.getDescOfStrongVerbClassFor(VerbClassEnum.STRONG_6TH_CLASS)
+		val svStemPR = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRESENT_STEM)
+		val svStemPS = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		val svStemPP = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
+		val svStemPF = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PERFECT_STEM)
 
-		assertTrue(vcd.isDefined)
-
-		val baseVerb = FinitiveStrongVerb("taka", vcd.head, Pronoun.PL_3_NEUT, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE)
 		// NonFinitiveStrongVerb("fara", VerbClassEnum.STRONG_6TH_CLASS, NonFinitiveVerbType.INFINITIVE)
 
-		//assertEquals("farið", 	convertTo(baseVerb, Right(NonFinitiveVerbType.PAST_PARTICIPLE)).get).strForm())
-		assertEquals("takandi", Word(convertTo(baseVerb, NonFinitiveVerbType.PRESENT_PARTICIPLE).get).strForm())
+		assertEquals("takinn", 	verbFrom(svStemPF, NonFinitiveVerbType.PAST_PARTICIPLE).strForm)
+		assertEquals("takandi", verbFrom(svStemPR, NonFinitiveVerbType.PRESENT_PARTICIPLE).strForm)
 
-		assertEquals("tek", 		Word(convertTo(baseVerb, 	(Pronoun.SG_1, 			INDICATIVE, PRESENT)).get).strForm())
-		assertEquals("tekr", 		Word(convertTo(baseVerb, 	(Pronoun.SG_2,			INDICATIVE, PRESENT)).get).strForm())
-		assertEquals("tekr", 		Word(convertTo(baseVerb, 	(Pronoun.SG_3_MASC,	INDICATIVE, PRESENT)).get).strForm())
+		assertEquals("tek", 		verbFrom(svStemPR, Pronoun.SG_1, 			PRESENT,	INDICATIVE).strForm)
+		assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_2,			PRESENT,	INDICATIVE).strForm)
+		assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_3_MASC, PRESENT,	INDICATIVE).strForm)
 
-		assertEquals("tökum", Word(convertTo(baseVerb, (Pronoun.PL_1,				INDICATIVE, PRESENT)).get).strForm())
-		assertEquals("takið", Word(convertTo(baseVerb, (Pronoun.PL_2,				INDICATIVE, PRESENT)).get).strForm())
-		assertEquals("taka",	Word(convertTo(baseVerb, (Pronoun.PL_3_MASC,	INDICATIVE, PRESENT)).get).strForm())
+		assertEquals("tökum", 	verbFrom(svStemPR, Pronoun.PL_1, 			PRESENT,	INDICATIVE).strForm)
+		assertEquals("takið", 	verbFrom(svStemPR, Pronoun.PL_2, 			PRESENT,	INDICATIVE).strForm)
+		assertEquals("taka",		verbFrom(svStemPR, Pronoun.PL_3_MASC,	PRESENT,	INDICATIVE).strForm)
 
-		assertEquals("tók", 		Word(convertTo(baseVerb, (Pronoun.SG_1, 			INDICATIVE, PAST)).get).strForm())
-		assertEquals("tókt" /*"tókst"*/, Word(convertTo(baseVerb, (Pronoun.SG_2,		 		INDICATIVE, PAST)).get).strForm())
-		assertEquals("tók", 	Word(convertTo(baseVerb, (Pronoun.SG_3_MASC,	INDICATIVE, PAST)).get).strForm())
+		assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_1, 			PAST, 		INDICATIVE).strForm)
+		assertEquals("tókt" /*"tókst"*/, verbFrom(svStemPS, Pronoun.SG_2, PAST,	INDICATIVE).strForm)
+		assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_3_MASC, PAST,			INDICATIVE).strForm)
 
-		assertEquals("tókum", Word(convertTo(baseVerb, (Pronoun.PL_1,				INDICATIVE, PAST)).get).strForm())
-		assertEquals("tókuð", Word(convertTo(baseVerb, (Pronoun.PL_2,				INDICATIVE, PAST)).get).strForm())
-		assertEquals("tóku",	Word(convertTo(baseVerb, (Pronoun.PL_3_MASC, 	INDICATIVE, PAST)).get).strForm())
+		assertEquals("tókum",		verbFrom(svStemPP, Pronoun.PL_1, 			PAST,			INDICATIVE).strForm)
+		assertEquals("tókuð",		verbFrom(svStemPP, Pronoun.PL_2,			PAST,			INDICATIVE).strForm)
+		assertEquals("tóku",		verbFrom(svStemPP, Pronoun.PL_3_MASC, PAST,			INDICATIVE).strForm)
+	}
+
+	@Test
+	def sanityCheck() {
+
+		val svStemPR = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRESENT_STEM)
+
+		try {
+
+			verbFrom(svStemPR, NonFinitiveVerbType.PAST_PARTICIPLE)
+
+			Assert.fail("Past participle should not be sonstructible from present stem")
+		}
+		catch {
+			case e: RuntimeException => ()
+		}
 	}
 }

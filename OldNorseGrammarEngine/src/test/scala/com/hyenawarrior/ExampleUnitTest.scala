@@ -1,31 +1,20 @@
 package com.hyenawarrior
 
 import com.hyenawarrior.OldNorseGrammar.grammar._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{AblautGrade, StaticAblaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb.verbFrom
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{apply => _, unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.StrongVerbStemClasses
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.VerbStemClass._
-import org.junit.Assert.{assertEquals, assertNotSame, assertSame, assertTrue}
-import org.junit.{Assert, Test}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
+import org.junit.Assert.{assertEquals, assertNotSame, assertSame}
+import org.junit.Test
 
 /**
   * Created by HyenaWarrior on 2017.04.15..
   */
 class ExampleUnitTest
 {
-	private def convertTo(sv: StrongVerb, fp: FinitiveVerbDesc) =
-	{
-		StrongVerbStemClasses.convertTo(sv, sv.verbClassDesc.ablaut.asInstanceOf[StaticAblaut], fp)
-	}
-
-	private def convertTo(sv: StrongVerb, nfp: NonFinitiveVerbType) =
-	{
-		StrongVerbStemClasses.convertTo(sv, sv.verbClassDesc.ablaut.asInstanceOf[StaticAblaut], nfp)
-	}
-
-
   case class MockPoS(str: String) extends PoS
 	{
     override def strForm: String = str
@@ -70,54 +59,44 @@ class ExampleUnitTest
 	@Test
   def testAblaut()
 	{
-		val vcd = verbs.getDescOfStrongVerbClassFor(VerbClassEnum.STRONG_3RD_CLASS)
+		val stem = StrongVerbStem(Root("brenn"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
-		assertTrue(vcd.isDefined)
+    val givenStrongVerb = FinitiveStrongVerb("brunnum", stem, Pronoun.PL_1, PAST, VerbModeEnum.INDICATIVE)
 
-    val givenStrongVerb = FinitiveStrongVerb("brunnum", vcd.head, Pronoun.PL_1, PAST, VerbModeEnum.INDICATIVE)
+		val strongVerbResult = verbFrom(stem, Pronoun.SG_2, PAST, VerbModeEnum.INDICATIVE)
 
-		val finitiveParams = (Pronoun.SG_2, INDICATIVE, PAST)
-
-    val strongVerbResult = convertTo(givenStrongVerb, finitiveParams)
-
-		strongVerbResult match {
-
-			case Some(FinitiveStrongVerb(str, clazz, pronoun, tense, VerbModeEnum.INDICATIVE)) =>
-				assertEquals("brannt", str)
-				assertEquals(vcd.head, clazz)
-				assertSame(Pronoun.SG_2, pronoun)
-				assertSame(PAST, tense)
-
-			case _ => Assert.fail()
-		}
+		val FinitiveStrongVerb(str, clazz, pronoun, tense, VerbModeEnum.INDICATIVE) = strongVerbResult
+		assertEquals("brannt", str)
+		assertSame(Pronoun.SG_2, pronoun)
+		assertSame(PAST, tense)
   }
 
 	@Test
 	def testStrongVerbInflection()
 	{
-		val vcd = verbs.getDescOfStrongVerbClassFor(VerbClassEnum.STRONG_3RD_CLASS)
+		val stem = StrongVerbStem(Root("brenn"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+		val stemPS = StrongVerbStem(Root("brenn"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		val stemPP = StrongVerbStem(Root("brenn"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
 
-		assertTrue(vcd.isDefined)
+		assertEquals("brennr", verbFrom(stem, Pronoun.SG_2, PRESENT, VerbModeEnum.INDICATIVE).strForm)
 
-		val baseVerb = FinitiveStrongVerb("brennr", vcd.head, Pronoun.SG_2, PRESENT, VerbModeEnum.INDICATIVE)
+		assertEquals("brenna", 		verbFrom(stem, NonFinitiveVerbType.INFINITIVE).strForm)
+		assertEquals("brennandi", verbFrom(stem, NonFinitiveVerbType.PRESENT_PARTICIPLE).strForm)
 
-		assertEquals("brenna", 		convertTo(baseVerb, NonFinitiveVerbType.INFINITIVE).map(_.strForm).orNull)
-		assertEquals("brennandi", convertTo(baseVerb, NonFinitiveVerbType.PRESENT_PARTICIPLE).map(_.strForm).orNull)
+		assertEquals("brenn", 		verbFrom(stem, Pronoun.SG_1, 		PRESENT, INDICATIVE).strForm)
+		assertEquals("brennr", 		verbFrom(stem, Pronoun.SG_2, 		PRESENT, INDICATIVE).strForm)
+		assertEquals("brennr", 		verbFrom(stem, Pronoun.SG_3_MASC, PRESENT,	INDICATIVE).strForm)
 
-		assertEquals("brenn", convertTo(baseVerb, (Pronoun.SG_1, 				INDICATIVE, PRESENT)).map(_.strForm).orNull)
-		assertEquals("brennr", convertTo(baseVerb, (Pronoun.SG_2,				INDICATIVE, PRESENT)).map(_.strForm).orNull)
-		assertEquals("brennr", convertTo(baseVerb, (Pronoun.SG_3_MASC,	INDICATIVE, PRESENT)).map(_.strForm).orNull)
+		assertEquals("brennum", 	verbFrom(stem, Pronoun.PL_1,			 		PRESENT, INDICATIVE).strForm)
+		assertEquals("brennið", 	verbFrom(stem, Pronoun.PL_2,			 		PRESENT, INDICATIVE).strForm)
+		assertEquals("brenna",		verbFrom(stem, Pronoun.PL_3_MASC,  		PRESENT, INDICATIVE).strForm)
 
-		assertEquals("brennum", convertTo(baseVerb, (Pronoun.PL_1,			INDICATIVE, PRESENT)).map(_.strForm).orNull)
-		assertEquals("brennið", convertTo(baseVerb, (Pronoun.PL_2,			INDICATIVE, PRESENT)).map(_.strForm).orNull)
-		assertEquals("brenna",	convertTo(baseVerb, (Pronoun.PL_3_MASC, INDICATIVE, PRESENT)).map(_.strForm).orNull)
+		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_1, 				PAST, INDICATIVE).strForm)
+		assertEquals("brannt", 		verbFrom(stemPS, Pronoun.SG_2,		 		PAST, INDICATIVE).strForm)
+		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_3_MASC,		PAST, INDICATIVE).strForm)
 
-		assertEquals("brann", convertTo(baseVerb, (Pronoun.SG_1, 				INDICATIVE, PAST)).map(_.strForm).orNull)
-		assertEquals("brannt", convertTo(baseVerb, (Pronoun.SG_2,		 		INDICATIVE, PAST)).map(_.strForm).orNull)
-		assertEquals("brann", convertTo(baseVerb, (Pronoun.SG_3_MASC,		INDICATIVE, PAST)).map(_.strForm).orNull)
-
-		assertEquals("brunnum", convertTo(baseVerb, (Pronoun.PL_1,			INDICATIVE, PAST)).map(_.strForm).orNull)
-		assertEquals("brunnuð", convertTo(baseVerb, (Pronoun.PL_2,			INDICATIVE, PAST)).map(_.strForm).orNull)
-		assertEquals("brunnu",	convertTo(baseVerb, (Pronoun.PL_3_MASC, INDICATIVE, PAST)).map(_.strForm).orNull)
+		assertEquals("brunnum", 	verbFrom(stemPP, Pronoun.PL_1,			PAST, INDICATIVE).strForm)
+		assertEquals("brunnuð", 	verbFrom(stemPP, Pronoun.PL_2,			PAST, INDICATIVE).strForm)
+		assertEquals("brunnu",		verbFrom(stemPP, Pronoun.PL_3_MASC, PAST, INDICATIVE).strForm)
 	}
 }
