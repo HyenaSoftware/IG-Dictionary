@@ -42,23 +42,36 @@ object Ablaut
 		} else None
 	}
 
-	def getAblautGradeFrom(rawStr: String): Option[AblautGrade] =
-	{
+	/**
+		*
+		* @param rawStr
+		* @return
+		* @throws RuntimeException if the input string doesn't have vowel
+		*/
+	def getAblautGradeFrom(rawStr: String): AblautGrade = {
+
 		val Syllables(syllables) = rawStr
 
 		val firstSy = syllables.head
 
 		val nucleus = firstSy.letters.filter(Syllables.isVowel)
 
-		if(nucleus.nonEmpty) Some(AblautGrade(nucleus)) else None
+		if (nucleus.nonEmpty) {
+
+			AblautGrade(nucleus)
+
+		} else {
+
+			throw new RuntimeException(String.format("'%s' syllable of '%s' doesn't have any vowel.", firstSy.letters, rawStr))
+		}
 	}
 
 	def extractAblautFrom(verb: Map[EnumVerbStem, Seq[String]]): Option[StaticAblaut] =
 	{
-		val setPsSV		= verb.getOrElse(PRESENT_STEM, 						Seq()).flatMap(s => getAblautGradeFrom(s)).toSet
-		val setPtSgSV	= verb.getOrElse(PRETERITE_SINGULAR_STEM, Seq()).flatMap(s => getAblautGradeFrom(s)).toSet
-		val setPtPlSV	= verb.getOrElse(PRETERITE_PLURAL_STEM,		Seq()).flatMap(s => getAblautGradeFrom(s)).toSet
-		val setPfSV		= verb.getOrElse(PERFECT_STEM,						Seq()).flatMap(s => getAblautGradeFrom(s)).toSet
+		val setPsSV		= verb.getOrElse(PRESENT_STEM, 						Seq()).map(s => getAblautGradeFrom(s)).toSet
+		val setPtSgSV	= verb.getOrElse(PRETERITE_SINGULAR_STEM, Seq()).map(s => getAblautGradeFrom(s)).toSet
+		val setPtPlSV	= verb.getOrElse(PRETERITE_PLURAL_STEM,		Seq()).map(s => getAblautGradeFrom(s)).toSet
+		val setPfSV		= verb.getOrElse(PERFECT_STEM,						Seq()).map(s => getAblautGradeFrom(s)).toSet
 
 		val psSV   = if(setPsSV.size == 1) setPsSV.headOption else None
 		val ptSgSV = if(setPtSgSV.size == 1) setPtSgSV.headOption else None

@@ -22,10 +22,10 @@ class VerbTest
 		val svStemPP = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
 		val svStemPF = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PERFECT_STEM)
 
-		// NonFinitiveStrongVerb("fara", VerbClassEnum.STRONG_6TH_CLASS, NonFinitiveVerbType.INFINITIVE)
+		assertEquals("taka",		verbFrom(svStemPR, None, INFINITIVE).strForm)
 
-		assertEquals("takinn", 	verbFrom(svStemPF, NonFinitiveVerbType.PAST_PARTICIPLE).strForm)
-		assertEquals("takandi", verbFrom(svStemPR, NonFinitiveVerbType.PRESENT_PARTICIPLE).strForm)
+		assertEquals("takinn", 	verbFrom(svStemPF, Some(PAST), 		PARTICIPLE).strForm)
+		assertEquals("takandi", verbFrom(svStemPR, Some(PRESENT), PARTICIPLE).strForm)
 
 		assertEquals("tek", 		verbFrom(svStemPR, Pronoun.SG_1, 			PRESENT,	INDICATIVE).strForm)
 		assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_2,			PRESENT,	INDICATIVE).strForm)
@@ -51,7 +51,7 @@ class VerbTest
 
 		try {
 
-			verbFrom(svStemPR, NonFinitiveVerbType.PAST_PARTICIPLE)
+			verbFrom(svStemPR, Some(PAST), 		PARTICIPLE)
 
 			Assert.fail("Past participle should not be sonstructible from present stem")
 		}

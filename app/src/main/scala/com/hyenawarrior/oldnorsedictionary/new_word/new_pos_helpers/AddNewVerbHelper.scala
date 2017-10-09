@@ -1,12 +1,13 @@
 package com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers
 
+import java.lang.String.format
+
 import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
 import android.widget.{EditText, LinearLayout, Spinner}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{IMPERATIVE, INDICATIVE, PARTICIPLE, SUBJUNCTIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
@@ -88,8 +89,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		tryCompleteForms()
 	}
 
-	override def onRemoveOverride(tableRow: View): Unit =
-	{
+	override def onRemoveOverride(tableRow: View): Unit = {
+
 		selectedVerbParameters = selectedVerbParameters match
 		{
 			case (nc, map) => (nc, map - tableRow)
@@ -120,13 +121,13 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		rowView
 	}
 
-	case class ShowVerbDeclDialogListener(rowView: View) extends View.OnClickListener
-	{
+	case class ShowVerbDeclDialogListener(rowView: View) extends View.OnClickListener {
+
 		override def onClick(view: View): Unit = verbDeclPreferencesDialog.show(onDeclensionSelected(rowView)(_))
 	}
 
-	private def onDeclensionSelected(rowView: View)(verbForm: VerbForm): Unit =
-	{
+	private def onDeclensionSelected(rowView: View)(verbForm: VerbForm): Unit = {
+
 		val (classes, map) = selectedVerbParameters
 
 		val declStr = map.get(rowView).map(e => (verbForm, e._2)).getOrElse((verbForm, None))
@@ -137,8 +138,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		tryCompleteForms()
 	}
 
-	override def onTextFormOverride(rowView: View)(str: String): Unit =
-	{
+	override def onTextFormOverride(rowView: View)(str: String): Unit = {
+
 		val optStr = if(str.isEmpty) None else Some(str)
 
 		val (classes, map) = selectedVerbParameters
@@ -187,39 +188,46 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		case wvc: WeakVerbClassEnum => ???
 	}
 
-	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, overrides: Map[VerbForm, String]): Map[VerbForm, StrongVerb] =	{
-		// exclude the base form definition and the overrides
-		val missingDeclensions = VerbForm.values.filterNot(overrides.contains)
+	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, overrides: Map[VerbForm, String])
+		: Map[VerbForm, StrongVerb] = {
 
-		try {
+		if(overrides.isEmpty) Map() else {
 
-			val givenVerbs: Map[VerbForm, StrongVerb] = overrides.map {
+			// exclude the base form definition and the overrides
+			val missingDeclensions = VerbForm.values.filterNot(overrides.contains)
 
-				case (vf, rawStr) =>
+			try {
+
+				val givenVerbs: Map[VerbForm, StrongVerb] = overrides.map {
+
+					case (vf, rawStr) =>
 					val VerbForm(_, mood, optTense, optPronoun) = vf
 					vf -> StrongVerb.fromStringRepr(rawStr, verbClass, (mood, optTense, optPronoun))
+				}
+
+				//
+				val stems = extractStems(givenVerbs.map { case (k, v) => k -> v.getStem() }, verbClass)
+
+				// determine missing stems from existing ones
+				val missingVerbs: Map[VerbForm, StrongVerb] = missingDeclensions
+					.map(vf => {
+						val expectedStemType = verbs.stemFrom(vf.tense, vf.optPronoun.map(_.number), vf.vtype)
+						val expectedStem = stems(expectedStemType)
+						vf -> StrongVerb.verbFrom(expectedStem, (vf.vtype, vf.tense, vf.optPronoun))
+					})
+					.toMap
+
+				val forms = if (missingVerbs.isEmpty) Map[VerbForm, StrongVerb]() else givenVerbs ++ missingVerbs
+
+				forms
 			}
+			catch {
 
-			//
-			val stems = extractStems(givenVerbs.map { case (k, v) => k -> v.getStem() }, verbClass)
-
-			// determine missing stems from existing ones
-			val missingVerbs: Map[VerbForm, StrongVerb] = missingDeclensions
-				.map(vf => {
-					val expectedStemType = verbs.stemFrom(vf.tense, vf.optPronoun.map(_.number), vf.vtype)
-					vf -> generateStrongVerbFormAnotherAs(stems(expectedStemType), vf)
-				})
-				.collect{ case(k, Some(v)) => k -> v }
-				.toMap
-
-			val forms = if (missingVerbs.isEmpty) Map[VerbForm, StrongVerb]() else givenVerbs ++ missingVerbs
-
-			forms
-		}
-		catch {
-
-			case e: NoSuchElementException => Map()
-			case e: RuntimeException => Map()
+				case e: RuntimeException =>
+				val msg = e.getMessage
+				android.util.Log.w(AddNewVerbHelper.getClass.getSimpleName, msg)
+				Map()
+			}
 		}
 	}
 
@@ -245,6 +253,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		// 1) *** GENERIC *** (1-7)
 
+		// present -> all the other
+
 		// determine the present stem
 		//	a) from the present stem
 		//	b) from the perfect stem
@@ -265,7 +275,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			// 2a) *** Class 1st-6th Specific ***
 			val preteriteSgStem = StrongVerbStem(root, verbClassEnum, PRETERITE_SINGULAR_STEM)
 			val preteritePlStem = StrongVerbStem(root, verbClassEnum, PRETERITE_PLURAL_STEM)
-			val perfectStem = StrongVerbStem(root, verbClassEnum, PRESENT_STEM)
+			val perfectStem = StrongVerbStem(root, verbClassEnum, PERFECT_STEM)
 
 			Map(PRESENT_STEM -> presentStem,
 				PRETERITE_SINGULAR_STEM -> preteriteSgStem,
@@ -316,32 +326,6 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		Map(PRETERITE_SINGULAR_STEM -> preteriteSgStem,
 			PRETERITE_PLURAL_STEM -> preteritePlStem,
 			PERFECT_STEM -> perfectStem)
-	}
-
-	private def generateStrongVerbFormAnotherAs(newStem: CommonStrongVerbStem, targetVerbForm: VerbForm): Option[StrongVerb]
-		= targetVerbForm match {
-		// indicative @ subjunctive
-		case VerbForm(_, mood @ (INDICATIVE | SUBJUNCTIVE | IMPERATIVE), Some(tense), Some(pronoun)) =>
-			Some(StrongVerb.verbFrom(newStem, pronoun, tense, mood.asInstanceOf[FinitiveMood]))
-
-		// participles
-		case VerbForm(_, PARTICIPLE, Some(PAST), 		None) =>
-			Some(StrongVerb.verbFrom(newStem, PAST_PARTICIPLE))
-
-		case VerbForm(_, PARTICIPLE, Some(PRESENT),	None) =>
-			Some(StrongVerb.verbFrom(newStem, PRESENT_PARTICIPLE))
-
-		// infinitive
-		case VerbForm(_, VerbModeEnum.INFINITIVE, None, None) =>
-			Some(StrongVerb.verbFrom(newStem, NonFinitiveVerbType.INFINITIVE))
-
-		// imperative
-		case VerbForm(_, IMPERATIVE, Some(tense), Some(pronoun)) =>
-			//StrongVerbStemClasses.convertTo(sv, Right(NonFinitiveVerbType.IMPERATIVE))
-			//Some(FinitiveStrongVerb(newStem, pronoun, tense, IMPERATIVE))
-			None
-
-		case _ => None
 	}
 
 	private def setInflectedFormsToUI(listOfClassesAndVerbForms: List[(VerbClassEnum, Map[VerbForm, String])]): Unit = {

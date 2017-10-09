@@ -1,5 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem
 
+import java.lang.String.format
+
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, AblautGrade, StaticAblaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbClassEnum
@@ -26,7 +28,7 @@ abstract class CommonStrongVerbStem(root: Root, verbClass: StrongVerbClassEnum, 
 		// present stem is identical to the root
 		val rootRepr = root.toString
 
-		val ablautGradeOfPresentStem = Ablaut.getAblautGradeFrom(rootRepr).get
+		val ablautGradeOfPresentStem = Ablaut.getAblautGradeFrom(rootRepr)
 
 		val myStemRepr = Ablaut.transform(rootRepr, ablautGradeOfPresentStem, getAblautGrade()).get
 
@@ -37,7 +39,7 @@ abstract class CommonStrongVerbStem(root: Root, verbClass: StrongVerbClassEnum, 
 object CommonStrongVerbStem {
 
 	def unapply(strongVerbStem: CommonStrongVerbStem): Option[(Root, StrongVerbClassEnum, EnumVerbStem)]
-	= strongVerbStem match {
+		= strongVerbStem match {
 
 		case svs: StrongVerbStem => Some((svs.root, svs.verbClass, svs.getStemType()))
 		case svs7: StrongVerbStemClass7th => Some((svs7.root, STRONG_7TH_CLASS, svs7.getStemType()))
@@ -91,40 +93,24 @@ object StrongVerbStem {
 		= verbClass match {
 
 		case STRONG_7TH_CLASS =>
-			val ablaut = Ablaut.getAblautGradeFrom(stemStr).get
+			val ablaut = Ablaut.getAblautGradeFrom(stemStr)
 			StrongVerbStemClass7th(Root(stemStr), stemType, ablaut)
 
 		case _ =>
-			val givenSrcAblautGrade = Ablaut.getAblautGradeFrom(stemStr).get
+			val givenSrcAblautGrade = Ablaut.getAblautGradeFrom(stemStr)
 			val expectedSrcAblautGrade = ABLAUTS(verbClass).grades(stemType)
 
-			if(givenSrcAblautGrade != expectedSrcAblautGrade)
-				throw  new RuntimeException()
+			if(givenSrcAblautGrade != expectedSrcAblautGrade) {
 
-			val ablautGradeOfPresentStem = ABLAUTS(verbClass).presentAblautGrade
-			val optRootStrRepr = Ablaut.transform(stemStr, expectedSrcAblautGrade, ablautGradeOfPresentStem)
-
-			optRootStrRepr match {
-
-				case Some(rootStrRepr) => StrongVerbStem(Root(rootStrRepr), verbClass, stemType)
-				case None => throw new RuntimeException()
+				throw new RuntimeException(format(
+					"Cannot create verb stem object from string represantation '%s'. The ablaut of the representation ('%s')" +
+						" is different than the '%s' %s stem ablaut grade of %s",
+					stemStr, givenSrcAblautGrade, expectedSrcAblautGrade, stemType.name, verbClass.name))
 			}
 
-	}
+			val ablautGradeOfPresentStem = ABLAUTS(verbClass).presentAblautGrade
+			val rootStrRepr = Ablaut.transform(stemStr, expectedSrcAblautGrade, ablautGradeOfPresentStem).get
 
-	def stemFromRoot(root: Root, verbStemEnum: EnumVerbStem) = verbStemEnum match {
-
-		case PRESENT_STEM =>
-	}
-
-	// no, it rather related to weak verbs
-	def stemSuffixOf(verbStemEnum: EnumVerbStem) = verbStemEnum match {
-
-		// present stem is identical to the root
-		case PRESENT_STEM => ""
-
-		case PRETERITE_SINGULAR_STEM => ""	// +ablaut
-		case PRETERITE_PLURAL_STEM => ""		// +ablaut
-		case PERFECT_STEM => ""							// +ablaut
+			StrongVerbStem(Root(rootStrRepr), verbClass, stemType)
 	}
 }

@@ -80,8 +80,8 @@ class ExampleUnitTest
 
 		assertEquals("brennr", verbFrom(stem, Pronoun.SG_2, PRESENT, VerbModeEnum.INDICATIVE).strForm)
 
-		assertEquals("brenna", 		verbFrom(stem, NonFinitiveVerbType.INFINITIVE).strForm)
-		assertEquals("brennandi", verbFrom(stem, NonFinitiveVerbType.PRESENT_PARTICIPLE).strForm)
+		assertEquals("brenna", 		verbFrom(stem, None, 					INFINITIVE).strForm)
+		assertEquals("brennandi", verbFrom(stem, Some(PRESENT), PARTICIPLE).strForm)
 
 		assertEquals("brenn", 		verbFrom(stem, Pronoun.SG_1, 		PRESENT, INDICATIVE).strForm)
 		assertEquals("brennr", 		verbFrom(stem, Pronoun.SG_2, 		PRESENT, INDICATIVE).strForm)

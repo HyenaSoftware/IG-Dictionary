@@ -146,9 +146,10 @@ object VerbForm extends EnumLike[Int, VerbForm]
 	val VERB_INFINITIVE							= VerbForm(24, VerbModeEnum.INFINITIVE, None, 												None)
 	val VERB_PRESENT_PARTICIPLE			= VerbForm(25, VerbModeEnum.PARTICIPLE, Some(VerbTenseEnum.PRESENT),	None)
 	val VERB_PAST_PARTICIPLE				= VerbForm(26, VerbModeEnum.PARTICIPLE, Some(VerbTenseEnum.PAST), 		None)
-	val VERB_IMPERATIVE_SG_2ND			= VerbForm(27, VerbModeEnum.IMPERATIVE, None, 												Some(Pronoun.SG_2))
-	val VERB_IMPERATIVE_PL_1ST			= VerbForm(28, VerbModeEnum.IMPERATIVE, None, 												Some(Pronoun.PL_1))
-	val VERB_IMPERATIVE_PL_2ND			= VerbForm(29, VerbModeEnum.IMPERATIVE, None, 												Some(Pronoun.PL_2))
+
+	val VERB_IMPERATIVE_SG_2ND			= VerbForm(27, VerbModeEnum.IMPERATIVE, Some(VerbTenseEnum.PRESENT),	Some(Pronoun.SG_2))
+	val VERB_IMPERATIVE_PL_1ST			= VerbForm(28, VerbModeEnum.IMPERATIVE, Some(VerbTenseEnum.PRESENT),	Some(Pronoun.PL_1))
+	val VERB_IMPERATIVE_PL_2ND			= VerbForm(29, VerbModeEnum.IMPERATIVE, Some(VerbTenseEnum.PRESENT),	Some(Pronoun.PL_2))
 
 	// TODO: reflexive verb forms
 }

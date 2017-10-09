@@ -1,5 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
+import java.lang.String.format
+
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, I_Umlaut, U_Umlaut, WordTransformation}
@@ -42,7 +44,8 @@ case class NonFinitiveStrongVerb(strRepr: String, stem: CommonStrongVerbStem, no
 
 	if(nonFinitiveVerbType.verbStemBase != stem.getStemType()) {
 
-		throw new RuntimeException
+		throw new RuntimeException(format("To create a verb from '%s', a %s stem is expected instead of %s.",
+			strRepr, nonFinitiveVerbType.verbStemBase, stem.getStemType()))
 	}
 
 	override def transformations: List[WordTransformation] = nonFinitiveVerbType match {
@@ -75,20 +78,37 @@ object StrongVerb {
 	def fromStringRepr(verbStrRepr: String, verbClass: StrongVerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum,
 										 mood: FinitiveMood): StrongVerb = {
 
+		val stem: CommonStrongVerbStem = uninflect(verbStrRepr, verbClass, pronoun, tense)
+
+		//FinitiveStrongVerb(verbStrRepr, stem, pronoun, tense, mood)
+		val verb = verbFrom(stem, pronoun, tense, mood)
+
+		// +1 do validation:
+		if(verb.strForm != verbStrRepr) {
+
+			throw new RuntimeException(format("The given '%s' verbform is not correct to be a %s, %s,%s person, %s tense, %s mood verb." +
+				" The verb form should be '%s'.",
+				verbStrRepr, verbClass.name, pronoun.number, pronoun.person, tense.name, mood.name, verb.strForm))
+		}
+
+		verb
+	}
+
+	def uninflect(verbStrRepr: String, verbClass: StrongVerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum): CommonStrongVerbStem = {
+
 		val stemType: EnumVerbStem = FinitiveStrongVerb.tenseAndNumberToStem(tense, pronoun.number)
 
 		// remove I-Umlaut from present/singular verbs
 		val matchAblautGrade = verbClass match {
 			case VerbClassEnum.STRONG_7TH_CLASS => true
 			case _ =>
-				val optGrade = StrongVerbStem.ABLAUTS.get(verbClass)
-				optGrade.get.grades(stemType).occuresIn(verbStrRepr)
+			val optGrade = StrongVerbStem.ABLAUTS.get(verbClass)
+			optGrade.get.grades(stemType).occuresIn(verbStrRepr)
 		}
 
 		val gnum = pronoun.number
 
-		val strReprWithoutIUmlaut = (gnum, tense) match
-		{
+		val strReprWithoutIUmlaut = (gnum, tense) match {
 			case (SINGULAR, PRESENT) if !matchAblautGrade => I_Umlaut.unapply(verbStrRepr)
 			case _ => verbStrRepr
 		}
@@ -98,12 +118,16 @@ object StrongVerb {
 
 		val stemRepr = strReprWithoutIUmlaut stripSuffix inflection
 
-		val stem = StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
+		StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
+	}
 
-		FinitiveStrongVerb(verbStrRepr, stem, pronoun, tense, mood)
+	def verbFrom(stem: CommonStrongVerbStem, verbType: VerbType): StrongVerb = verbType match {
 
-		// +1 do validation:
-		// sv.toString == strRepr
+		case (mood @ (INDICATIVE | SUBJUNCTIVE | IMPERATIVE), Some(tense), Some(pronoun)) =>
+			verbFrom(stem, pronoun, tense, mood.asInstanceOf[FinitiveMood])
+
+		case (mood @ (PARTICIPLE | INFINITIVE), optTense,	None)	=>
+			verbFrom(stem, optTense, mood.asInstanceOf[NonFinitiveMood])
 	}
 
 	/**
@@ -131,16 +155,16 @@ object StrongVerb {
 				Past/Perfect Participle		Perfect Stem
 				Supine										Perfect Stem
 		 */
-	def verbFrom(stem: CommonStrongVerbStem, nonFinitiveForm: NonFinitiveVerbType)
-		: StrongVerb = nonFinitiveForm match {
+	def verbFrom(stem: CommonStrongVerbStem, optTense: Option[VerbTenseEnum], mood: NonFinitiveMood)
+		: StrongVerb = (mood, optTense) match {
 
-		case NonFinitiveVerbType.INFINITIVE	=>	infinitiveVerbFrom(stem)
+		case (VerbModeEnum.INFINITIVE, _)	=>	infinitiveVerbFrom(stem)
 
-		case PRESENT_PARTICIPLE =>
+		case (VerbModeEnum.PARTICIPLE, Some(PRESENT) )=>
 			val strRepr = stem.stringForm + StrongVerb.inflectionFor(Some(VerbTenseEnum.PRESENT), VerbModeEnum.PARTICIPLE)
 			NonFinitiveStrongVerb(strRepr, stem,	PRESENT_PARTICIPLE)
 
-		case PAST_PARTICIPLE 		=>
+		case (VerbModeEnum.PARTICIPLE, Some(PAST))	=>
 			val strRepr = stem.stringForm + StrongVerb.inflectionFor(Some(VerbTenseEnum.PAST), VerbModeEnum.PARTICIPLE)
 			NonFinitiveStrongVerb(strRepr, stem,	PAST_PARTICIPLE)
 	}
@@ -163,14 +187,14 @@ object StrongVerb {
 		* Do not use it:
 		* 	- to create a custom, irregular verb form
 		*
-		* @param strRepr
+		* @param verbStrRepr
 		* @param verbClass
 		* @param optTense
 		* @param mood
 		* @return
 		*/
 
-	def fromStringRepr(strRepr: String, verbClass: StrongVerbClassEnum, optTense: Option[VerbTenseEnum]
+	def fromStringRepr(verbStrRepr: String, verbClass: StrongVerbClassEnum, optTense: Option[VerbTenseEnum]
 		, mood: NonFinitiveMood): StrongVerb = {
 
 		val (verbType, stemType) = (mood, optTense) match {
@@ -180,13 +204,29 @@ object StrongVerb {
 			case (INFINITIVE, None)						=> NonFinitiveVerbType.INFINITIVE					-> EnumVerbStem.PRESENT_STEM
 		}
 
+		val stem: CommonStrongVerbStem = unInflect(verbStrRepr, verbClass, optTense, mood, stemType)
+
+		val verb = verbFrom(stem, optTense, mood)
+
+		// +1 do validation:
+		if(verb.strForm != verbStrRepr) {
+
+			throw new RuntimeException(format("Unable to match the given '%s' verbform to the specifications: %s form of %s." +
+					" The form should be '%s'.",
+				verbStrRepr, verbType.name, verbClass.name, verb.strForm))
+		}
+
+		verb
+	}
+
+	def unInflect(strRepr: String, verbClass: StrongVerbClassEnum, optTense: Option[VerbTenseEnum], mood: NonFinitiveMood, stemType: EnumVerbStem)
+		: CommonStrongVerbStem = {
+
 		val inflection = StrongVerb.inflectionFor(optTense, mood)
 
 		val stemRepr = strRepr stripSuffix inflection
 
-		val stem = StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
-
-		NonFinitiveStrongVerb(strRepr, stem,	verbType)
+		StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
 	}
 
 	def fromStringRepr(strRepr: String, verbClass: StrongVerbClassEnum, verbType: VerbType): StrongVerb = verbType match {

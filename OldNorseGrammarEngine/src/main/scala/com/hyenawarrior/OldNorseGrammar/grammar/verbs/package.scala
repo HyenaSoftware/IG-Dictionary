@@ -39,7 +39,7 @@ package object verbs
 		case (Some(PAST), 		Some(PLURAL),		INDICATIVE | SUBJUNCTIVE) => PRETERITE_PLURAL_STEM
 		case (Some(PRESENT), 	None,		PARTICIPLE) => PRESENT_STEM
 		case (Some(PAST), 		None,		PARTICIPLE) => PERFECT_STEM
-		case (_,							_,			IMPERATIVE) => PRESENT_STEM
+		case (Some(PRESENT),	_,			IMPERATIVE) => PRESENT_STEM
 		case _ => ???
 	}
 
