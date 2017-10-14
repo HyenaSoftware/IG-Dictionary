@@ -4,8 +4,10 @@ import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.{Button, TextView}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun.{unapply => _}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbContext, VerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.VerbForm
 import com.hyenawarrior.oldnorsedictionary.modelview.CustomAdapter
@@ -38,13 +40,13 @@ object VerbDeclensionAdapter
 	)
 }
 
-class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClassEnum, Map[VerbForm, String])](activity)
+class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClassEnum, StrongVerbContext)](activity)
 {
 	override protected def getNewView(i: Int, viewGroup: ViewGroup): View = {
 
 		val view = inflater.inflate(R.layout.verb_declension, viewGroup, false)
 
-		val (vcDesc, map) = itemAt(i)
+		val (vcDesc, strongVerb) = itemAt(i)
 
 		// set declensions
 		val tv_addword_verb_stemName = view.findViewById(R.id.tv_addword_verb_stemName).asInstanceOf[TextView]
@@ -52,12 +54,17 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
 
 		for ((tvCtrlId, key) <- VerbDeclensionAdapter.VERB_TEXTVIEWS)
 		{
+      val VerbForm(_, md, oT, oP) = key
+
 			val tvVerbCtrl = view.findViewById(tvCtrlId).asInstanceOf[TextView]
-			val text = map.getOrElse(key, "...")
+			val text = strongVerb.verbForms.get((md, oT, oP)).map(_.strForm).getOrElse("...")
 			tvVerbCtrl.setText(text)
 		}
 
-		val ablautDesc = "n/a"
+		val ablautDesc =
+      List(PRESENT_STEM, PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM, PERFECT_STEM)
+        .map(strongVerb.ablautGrade)
+        .mkString("(", " - ", ")")
 
 		// set ablaut grades
 		val tv_addword_verb_AblautGrades = view.findViewById(R.id.tv_addword_verb_AblautGrades).asInstanceOf[TextView]

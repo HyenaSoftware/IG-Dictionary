@@ -43,7 +43,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	var selectedVerbParameters: Parameters = (List(), Map())
 
 	// all the generated forms
-	var latestVerbData: Map[VerbClassEnum, Map[VerbForm, String]] = Map()
+	var latestVerbData: Map[VerbClassEnum, StrongVerbContext] = Map()
 
 	val VerbDeclensionAdapter = new VerbDeclensionAdapter(activity)
 
@@ -170,9 +170,9 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			.collect { case (k, Some(v)) => k -> v }
 			.toMap
 
-		val wordMaps: List[(VerbClassEnum, Map[VerbForm, String])] = sortedListOfVerbClasses
-				.map(vc => vc -> generateAllFormsFrom(vc, overridingMap).map { case (k, v) => k -> v.strForm })
-			  .filter{ case (_, forms) => forms.nonEmpty }
+		val wordMaps: List[(VerbClassEnum, StrongVerbContext)] = sortedListOfVerbClasses
+				.map(vc => vc -> generateAllFormsFrom(vc, overridingMap))
+			  .collect{ case (k, Some(sv)) => k -> sv }
 
 		setInflectedFormsToUI(wordMaps)
 
@@ -182,153 +182,37 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	}
 
 	private def generateAllFormsFrom(verbClass: VerbClassEnum, overrides: Map[VerbForm, String]):
-		Map[VerbForm, Verb] = verbClass match {
+		Option[StrongVerbContext] = verbClass match {
 
 		case svc: StrongVerbClassEnum => generateMissingFormsOfStrongVerbsFrom(svc, overrides)
 		case wvc: WeakVerbClassEnum => ???
 	}
 
 	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, overrides: Map[VerbForm, String])
-		: Map[VerbForm, StrongVerb] = {
+		: Option[StrongVerbContext] = {
 
-		if(overrides.isEmpty) Map() else {
+      val givenVerbForms: Map[verbs.VerbType, String] = overrides.map {
 
-			// exclude the base form definition and the overrides
-			val missingDeclensions = VerbForm.values.filterNot(overrides.contains)
+        case (vf, rawStr) =>
+          val VerbForm(_, mood, optTense, optPronoun) = vf
+          (mood, optTense, optPronoun) -> rawStr
+      }
 
-			try {
+      try {
 
-				val givenVerbs: Map[VerbForm, StrongVerb] = overrides.map {
+        Some(StrongVerbContext(verbClass, givenVerbForms))
 
-					case (vf, rawStr) =>
-					val VerbForm(_, mood, optTense, optPronoun) = vf
-					vf -> StrongVerb.fromStringRepr(rawStr, verbClass, (mood, optTense, optPronoun))
-				}
+      } catch {
 
-				//
-				val stems = extractStems(givenVerbs.map { case (k, v) => k -> v.getStem() }, verbClass)
+        case e: RuntimeException =>
+        val msg = e.getMessage
+        android.util.Log.w(AddNewVerbHelper.getClass.getSimpleName, msg)
 
-				// determine missing stems from existing ones
-				val missingVerbs: Map[VerbForm, StrongVerb] = missingDeclensions
-					.map(vf => {
-						val expectedStemType = verbs.stemFrom(vf.tense, vf.optPronoun.map(_.number), vf.vtype)
-						val expectedStem = stems(expectedStemType)
-						vf -> StrongVerb.verbFrom(expectedStem, (vf.vtype, vf.tense, vf.optPronoun))
-					})
-					.toMap
+        None
+      }
+    }
 
-				val forms = if (missingVerbs.isEmpty) Map[VerbForm, StrongVerb]() else givenVerbs ++ missingVerbs
-
-				forms
-			}
-			catch {
-
-				case e: RuntimeException =>
-				val msg = e.getMessage
-				android.util.Log.w(AddNewVerbHelper.getClass.getSimpleName, msg)
-				Map()
-			}
-		}
-	}
-
-	/**
-		*
-		* @param pseudoVerbForms	These are NOT the final verbs as its root might be incorrect
-		* @param verbClassEnum
-		* @return
-		*/
-	def extractStems(pseudoVerbForms: Map[VerbForm, CommonStrongVerbStem], verbClassEnum: StrongVerbClassEnum):
-		Map[EnumVerbStem, CommonStrongVerbStem] = {
-
-		// collect what we have
-		val pseudoFormsToStem: Map[EnumVerbStem, Iterable[CommonStrongVerbStem]] = pseudoVerbForms.map {
-
-				case (vf, stem) =>
-					val stemType = verbs.stemFrom(vf.tense, vf.optPronoun.map(_.number), vf.vtype)
-					StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, stemType)
-			}
-		  .groupBy ( _.getStemType() )
-
-		val pseudoStemsBy: Map[EnumVerbStem, CommonStrongVerbStem] = pseudoFormsToStem.map { case(e, m) => e -> m.head }
-
-		// 1) *** GENERIC *** (1-7)
-
-		// present -> all the other
-
-		// determine the present stem
-		//	a) from the present stem
-		//	b) from the perfect stem
-		//	c) from the either past stem (are these the same always?)
-		val presentStem =	pseudoStemsBy.getOrElse(PRESENT_STEM,
-											pseudoStemsBy.getOrElse(PERFECT_STEM,
-											pseudoStemsBy.getOrElse(PRETERITE_SINGULAR_STEM,
-											pseudoStemsBy(PRETERITE_PLURAL_STEM))))
-
-		// build a root from the present stem
-		val CommonStrongVerbStem(root, _, _) = presentStem
-
-		// now based on StrongVerbClass choose either of:
-		// build stems from the root
-
-		val stemMap: Map[EnumVerbStem, CommonStrongVerbStem] = if(verbClassEnum != STRONG_7TH_CLASS) {
-
-			// 2a) *** Class 1st-6th Specific ***
-			val preteriteSgStem = StrongVerbStem(root, verbClassEnum, PRETERITE_SINGULAR_STEM)
-			val preteritePlStem = StrongVerbStem(root, verbClassEnum, PRETERITE_PLURAL_STEM)
-			val perfectStem = StrongVerbStem(root, verbClassEnum, PERFECT_STEM)
-
-			Map(PRESENT_STEM -> presentStem,
-				PRETERITE_SINGULAR_STEM -> preteriteSgStem,
-				PRETERITE_PLURAL_STEM -> preteritePlStem,
-				PERFECT_STEM -> perfectStem)
-
-		} else {
-
-			// 2b) *** Class 7th Specific ***
-			Map(PRESENT_STEM -> presentStem) ++ extractStemsOfClass7thVerbs(pseudoStemsBy, root)
-		}
-
-		stemMap
-	}
-
-	def extractStemsOfClass7thVerbs(pseudoStemsBy: Map[EnumVerbStem, CommonStrongVerbStem], root: Root): Map[EnumVerbStem, StrongVerbStemClass7th] = {
-		// determine the other (missing) stems:
-		//  a) if the perfect stem is missing than that from the present or past stem
-		//	b) if the past tenses missing then
-		// 		- from the other past tense
-		// 		-	or from the perfect stem
-		//		- from the present stem
-		val perfectStAbGr = pseudoStemsBy.getOrElse(PERFECT_STEM,
-			pseudoStemsBy.getOrElse(PRESENT_STEM,
-				pseudoStemsBy.getOrElse(PRETERITE_SINGULAR_STEM,
-					pseudoStemsBy(PRETERITE_PLURAL_STEM))))
-			.getAblautGrade()
-
-		val perfectStem = StrongVerbStemClass7th(root, PERFECT_STEM, perfectStAbGr)
-
-
-		//
-		val preteriteSgStAbGr = pseudoStemsBy.getOrElse(PRETERITE_SINGULAR_STEM,
-			pseudoStemsBy.getOrElse(PRETERITE_PLURAL_STEM,
-				pseudoStemsBy.getOrElse(PERFECT_STEM,
-					pseudoStemsBy(PRESENT_STEM)))).getAblautGrade()
-
-		val preteriteSgStem = StrongVerbStemClass7th(root, PRETERITE_SINGULAR_STEM, preteriteSgStAbGr)
-
-		//
-		val preteritePlStAbGr = pseudoStemsBy.getOrElse(PRETERITE_SINGULAR_STEM,
-			pseudoStemsBy.getOrElse(PRETERITE_PLURAL_STEM,
-				pseudoStemsBy.getOrElse(PERFECT_STEM,
-					pseudoStemsBy(PRESENT_STEM)))).getAblautGrade()
-
-		val preteritePlStem = StrongVerbStemClass7th(root, PRETERITE_SINGULAR_STEM, preteritePlStAbGr)
-
-		Map(PRETERITE_SINGULAR_STEM -> preteriteSgStem,
-			PRETERITE_PLURAL_STEM -> preteritePlStem,
-			PERFECT_STEM -> perfectStem)
-	}
-
-	private def setInflectedFormsToUI(listOfClassesAndVerbForms: List[(VerbClassEnum, Map[VerbForm, String])]): Unit = {
+  private def setInflectedFormsToUI(listOfClassesAndVerbForms: List[(VerbClassEnum, StrongVerbContext)]): Unit = {
 
 		VerbDeclensionAdapter.resetItems(listOfClassesAndVerbForms)
 
@@ -346,10 +230,10 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		optVerbClassE match
 		{
 			case Some(verbClass) =>
-				val forms = latestVerbData(verbClass).map
-				{
-					case (k,v) => k.asInstanceOf[PosForm] -> v
-				}
+				val forms: Map[PosForm, String] = latestVerbData(verbClass).verbForms.map {
+
+          case ((md, oT, oP), sv) => VerbForm(0, md, oT, oP) -> sv.strForm
+        }
 
 				WordData(VerbType.findByVerbClass(verbClass), forms, List())
 
