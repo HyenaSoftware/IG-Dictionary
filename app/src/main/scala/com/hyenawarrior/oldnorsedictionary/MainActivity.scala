@@ -102,7 +102,7 @@ class MainActivity extends AppCompatActivity
 
 				val forms = verbForms.map {
 
-					case (vf, str) =>	verbs.stemFrom(vf.tense, vf.optPronoun.map(_.number), vf.vtype) -> str
+					case (VerbForm(_, (md, oT, oP)), str) =>	verbs.stemFrom(oT, oP.map(_.number), md) -> str
 				}
 					.groupBy(_._1)
 					.map { case(k, v) => k -> v.values.toSeq }
@@ -110,10 +110,10 @@ class MainActivity extends AppCompatActivity
 				val optSvd = verbs.getDescOfStrongVerbClassFor(svc, forms)
 
 				val word = optSvd.map(svd => verbForms.map {
-					case (vf, rawStr) =>
-					val verb = StrongVerb.fromStringRepr(rawStr, svd.vClass, (vf.vtype, vf.tense, vf.optPronoun))
-						//val verb = verbs.verbFrom(rawStr, svd, (vf.vtype, vf.tense, vf.optPronoun))
-						val isPrimary = vf == VerbForm.VERB_INFINITIVE
+
+					case (VerbForm(_, vt @ (md, oT, oP)), rawStr) =>
+					  val verb = StrongVerb.fromStringRepr(rawStr, svd.vClass, (md, oT, oP))
+						val isPrimary = vt == VerbForm.VERB_INFINITIVE.vtype
 						GWord(verb) -> isPrimary
 				})
 

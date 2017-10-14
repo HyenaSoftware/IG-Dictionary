@@ -54,7 +54,7 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
 
 		for ((tvCtrlId, key) <- VerbDeclensionAdapter.VERB_TEXTVIEWS)
 		{
-      val VerbForm(_, md, oT, oP) = key
+      val VerbForm(_, (md, oT, oP)) = key
 
 			val tvVerbCtrl = view.findViewById(tvCtrlId).asInstanceOf[TextView]
 			val text = strongVerb.verbForms.get((md, oT, oP)).map(_.strForm).getOrElse("...")

@@ -12,7 +12,7 @@ case class WordForm(form: String, wordId: Int, posForm: PosForm, posType: PosTyp
 	def isPrimaryForm: Boolean = posForm match
 	{
 		case NounForm(_, GNumber.SINGULAR, Case.NOMINATIVE) => true
-		case VerbForm(_, VerbModeEnum.INFINITIVE, _, _) => true
+		case VerbForm(_, (VerbModeEnum.INFINITIVE, _, _)) => true
 		case _ => false
 	}
 }

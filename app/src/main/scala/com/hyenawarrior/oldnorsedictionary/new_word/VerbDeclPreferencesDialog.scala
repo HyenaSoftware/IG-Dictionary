@@ -6,7 +6,7 @@ import android.view.{LayoutInflater, View}
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.{AdapterView, ArrayAdapter, Spinner}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbModeEnum, VerbTenseEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbModeEnum, VerbTenseEnum, VerbType}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.VerbForm
 import com.hyenawarrior.oldnorsedictionary.new_word.VerbDeclPreferencesDialog._
@@ -17,61 +17,61 @@ import com.hyenawarrior.oldnorsedictionary.new_word.VerbDeclPreferencesDialog._
 object VerbDeclPreferencesDialog
 {
 	val spinnerItemsIndPresentItem			= List(
-		VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG,
-		VerbForm.VERB_INDICATIVE_PRESENT_2ND_SG,
-		VerbForm.VERB_INDICATIVE_PRESENT_3RD_SG,
+		VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype,
+		VerbForm.VERB_INDICATIVE_PRESENT_2ND_SG.vtype,
+		VerbForm.VERB_INDICATIVE_PRESENT_3RD_SG.vtype,
 
-		VerbForm.VERB_INDICATIVE_PRESENT_1ST_PL,
-		VerbForm.VERB_INDICATIVE_PRESENT_2ND_PL,
-		VerbForm.VERB_INDICATIVE_PRESENT_3RD_PL)
+		VerbForm.VERB_INDICATIVE_PRESENT_1ST_PL.vtype,
+		VerbForm.VERB_INDICATIVE_PRESENT_2ND_PL.vtype,
+		VerbForm.VERB_INDICATIVE_PRESENT_3RD_PL.vtype)
 
 	val spinnerItemsIndPreteriteItem			= List(
-		VerbForm.VERB_INDICATIVE_PAST_1ST_SG,
-		VerbForm.VERB_INDICATIVE_PAST_2ND_SG,
-		VerbForm.VERB_INDICATIVE_PAST_3RD_SG,
+		VerbForm.VERB_INDICATIVE_PAST_1ST_SG.vtype,
+		VerbForm.VERB_INDICATIVE_PAST_2ND_SG.vtype,
+		VerbForm.VERB_INDICATIVE_PAST_3RD_SG.vtype,
 
-		VerbForm.VERB_INDICATIVE_PAST_1ST_PL,
-		VerbForm.VERB_INDICATIVE_PAST_2ND_PL,
-		VerbForm.VERB_INDICATIVE_PAST_3RD_PL)
+		VerbForm.VERB_INDICATIVE_PAST_1ST_PL.vtype,
+		VerbForm.VERB_INDICATIVE_PAST_2ND_PL.vtype,
+		VerbForm.VERB_INDICATIVE_PAST_3RD_PL.vtype)
 
 	val spinnerItemsSubjPresentItem			= List(
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_SG,
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_SG,
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_SG,
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_SG.vtype,
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_SG.vtype,
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_SG.vtype,
 
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_PL,
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_PL,
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_PL)
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_PL.vtype,
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_PL.vtype,
+		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_PL.vtype)
 
 	val spinnerItemsSubjPreteriteItem			= List(
-		VerbForm.VERB_SUBJUNCTIVE_PAST_1ST_SG,
-		VerbForm.VERB_SUBJUNCTIVE_PAST_2ND_SG,
-		VerbForm.VERB_SUBJUNCTIVE_PAST_3RD_SG,
+		VerbForm.VERB_SUBJUNCTIVE_PAST_1ST_SG.vtype,
+		VerbForm.VERB_SUBJUNCTIVE_PAST_2ND_SG.vtype,
+		VerbForm.VERB_SUBJUNCTIVE_PAST_3RD_SG.vtype,
 
-		VerbForm.VERB_SUBJUNCTIVE_PAST_1ST_PL,
-		VerbForm.VERB_SUBJUNCTIVE_PAST_2ND_PL,
-		VerbForm.VERB_SUBJUNCTIVE_PAST_3RD_PL)
+		VerbForm.VERB_SUBJUNCTIVE_PAST_1ST_PL.vtype,
+		VerbForm.VERB_SUBJUNCTIVE_PAST_2ND_PL.vtype,
+		VerbForm.VERB_SUBJUNCTIVE_PAST_3RD_PL.vtype)
 
 	val spinnerItemsNonFinitive		=  List(
-			VerbForm.VERB_INFINITIVE,
-			VerbForm.VERB_PRESENT_PARTICIPLE,
-			VerbForm.VERB_PAST_PARTICIPLE,
-			VerbForm.VERB_IMPERATIVE_SG_2ND,
-			VerbForm.VERB_IMPERATIVE_PL_1ST,
-			VerbForm.VERB_IMPERATIVE_PL_2ND)
+			VerbForm.VERB_INFINITIVE.vtype,
+			VerbForm.VERB_PRESENT_PARTICIPLE.vtype,
+			VerbForm.VERB_PAST_PARTICIPLE.vtype,
+			VerbForm.VERB_IMPERATIVE_SG_2ND.vtype,
+			VerbForm.VERB_IMPERATIVE_PL_1ST.vtype,
+			VerbForm.VERB_IMPERATIVE_PL_2ND.vtype)
 }
 
 class VerbDeclPreferencesDialog(activity: Activity)
 {
 	type State = (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])
 
-	var state = VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG
+	var state = VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype
 	var activeVerbMode = R.id.rbInd
 	var activeVerbTense = R.id.rbPresent
 	var spinnerIndex = 0
 
 	var isReflexive = false
-	var callback: Option[Option[VerbForm] => Unit] = None
+	var callback: Option[Option[VerbType] => Unit] = None
 
 	object DialogOnClickListener extends DialogInterface.OnClickListener
 	{
@@ -142,7 +142,7 @@ class VerbDeclPreferencesDialog(activity: Activity)
 		}
 	}
 
-	def show(callback: VerbForm => Unit)
+	def show(callback: VerbType => Unit)
 	{
 		this.callback = Some
 		{
@@ -153,7 +153,7 @@ class VerbDeclPreferencesDialog(activity: Activity)
 		dialog.show()
 	}
 
-	def showOpt(callback: Option[VerbForm] => Unit)
+	def showOpt(callback: Option[VerbType] => Unit)
 	{
 		this.callback = Some(callback)
 

@@ -1,7 +1,5 @@
 package com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers
 
-import java.lang.String.format
-
 import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
@@ -10,9 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFIN
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem._
-import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, Root, verbs}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, verbs}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.{PosForm, VerbForm, VerbType}
 import com.hyenawarrior.oldnorsedictionary.modelview.EditTextTypeListener
@@ -36,7 +32,7 @@ object AddNewVerbHelper
 
 class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.verb_types)
 {
-	type Override = (VerbForm, Option[String])
+	type Override = (verbs.VerbType, Option[String])
 	type Parameters = (List[VerbClassEnum], Map[View, Override])
 
 	// what we define in the UI
@@ -126,12 +122,12 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		override def onClick(view: View): Unit = verbDeclPreferencesDialog.show(onDeclensionSelected(rowView)(_))
 	}
 
-	private def onDeclensionSelected(rowView: View)(verbForm: VerbForm): Unit = {
+	private def onDeclensionSelected(rowView: View)(verbType: verbs.VerbType): Unit = {
 
 		val (classes, map) = selectedVerbParameters
 
-		val declStr = map.get(rowView).map(e => (verbForm, e._2)).getOrElse((verbForm, None))
-		val newMap = (map - rowView) + ((rowView, declStr))
+		val declStr = map.get(rowView).map(e => verbType -> e._2).getOrElse(verbType -> None)
+		val newMap = (map - rowView) + (rowView -> declStr)
 
 		selectedVerbParameters = (classes, newMap)
 
@@ -144,7 +140,9 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		val (classes, map) = selectedVerbParameters
 
-		val declStr = map.get(rowView).map(e => (e._1, optStr)).getOrElse((VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG, optStr))
+		val declStr = map.get(rowView).map(e => (e._1, optStr))
+      .getOrElse((VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype, optStr))
+
 		val newMap = (map - rowView) + ((rowView, declStr))
 
 		selectedVerbParameters = (classes, newMap)
@@ -156,60 +154,44 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		case (listOfClasses, viewToVerbForms) =>
 
-		val listOfVerbClasses = if(listOfClasses.isEmpty) VerbClassEnum.values else listOfClasses
+      val listOfVerbClasses = if(listOfClasses.isEmpty) VerbClassEnum.values else listOfClasses
 
-		val sortedListOfVerbClasses = listOfVerbClasses
-			.filter
-			{
-				case VerbClassEnum.IRREGULAR | VerbClassEnum.WEAK_A_STEM | VerbClassEnum.WEAK_I_STEM | VerbClassEnum.WEAK_J_STEM => false
-				case _ => true
-			}
-			.sortWith { case (a, b) => a.toString() < b.toString() }
+      val sortedListOfVerbClasses = listOfVerbClasses.sortWith { case (a, b) => a.toString() < b.toString() }
 
-		val overridingMap = viewToVerbForms.values
-			.collect { case (k, Some(v)) => k -> v }
-			.toMap
+      val overridingMap = viewToVerbForms.values
+        .collect { case (k, Some(v)) => k -> v }
+        .toMap
 
-		val wordMaps: List[(VerbClassEnum, StrongVerbContext)] = sortedListOfVerbClasses
-				.map(vc => vc -> generateAllFormsFrom(vc, overridingMap))
-			  .collect{ case (k, Some(sv)) => k -> sv }
+      val wordMaps: List[(VerbClassEnum, StrongVerbContext)] = sortedListOfVerbClasses
+          .map(vc => vc -> generateAllFormsFrom(vc, overridingMap))
+          .collect{ case (k, Some(sv)) => k -> sv }
 
-		setInflectedFormsToUI(wordMaps)
+      setInflectedFormsToUI(wordMaps)
 
-		latestVerbData = wordMaps.toMap
+      latestVerbData = wordMaps.toMap
 
 		case _ => ()
 	}
 
-	private def generateAllFormsFrom(verbClass: VerbClassEnum, overrides: Map[VerbForm, String]):
+	private def generateAllFormsFrom(verbClass: VerbClassEnum, overrides: Map[verbs.VerbType, String]):
 		Option[StrongVerbContext] = verbClass match {
 
 		case svc: StrongVerbClassEnum => generateMissingFormsOfStrongVerbsFrom(svc, overrides)
-		case wvc: WeakVerbClassEnum => ???
+		case wvc: WeakVerbClassEnum => None
 	}
 
-	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, overrides: Map[VerbForm, String])
-		: Option[StrongVerbContext] = {
+	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, givenVerbForms: Map[verbs.VerbType, String])
+		: Option[StrongVerbContext] = try {
 
-      val givenVerbForms: Map[verbs.VerbType, String] = overrides.map {
+      Some(StrongVerbContext(verbClass, givenVerbForms))
 
-        case (vf, rawStr) =>
-          val VerbForm(_, mood, optTense, optPronoun) = vf
-          (mood, optTense, optPronoun) -> rawStr
-      }
+    } catch {
 
-      try {
+      case e: RuntimeException =>
+      val msg = e.getMessage
+      android.util.Log.w(AddNewVerbHelper.getClass.getSimpleName, msg)
 
-        Some(StrongVerbContext(verbClass, givenVerbForms))
-
-      } catch {
-
-        case e: RuntimeException =>
-        val msg = e.getMessage
-        android.util.Log.w(AddNewVerbHelper.getClass.getSimpleName, msg)
-
-        None
-      }
+      None
     }
 
   private def setInflectedFormsToUI(listOfClassesAndVerbForms: List[(VerbClassEnum, StrongVerbContext)]): Unit = {
@@ -232,7 +214,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			case Some(verbClass) =>
 				val forms: Map[PosForm, String] = latestVerbData(verbClass).verbForms.map {
 
-          case ((md, oT, oP), sv) => VerbForm(0, md, oT, oP) -> sv.strForm
+          case (vt, sv) => VerbForm(0, vt) -> sv.strForm
         }
 
 				WordData(VerbType.findByVerbClass(verbClass), forms, List())
