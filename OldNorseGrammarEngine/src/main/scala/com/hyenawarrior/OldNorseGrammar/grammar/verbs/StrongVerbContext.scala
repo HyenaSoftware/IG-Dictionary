@@ -84,18 +84,21 @@ object StrongVerbContext {
 		//	a) from the present stem
 		//	b) from the perfect stem
 		//	c) from the either past stem (are these the same always?)
-		val presentStem =	pseudoStemsBy.getOrElse(PRESENT_STEM,
+		val pseudoPresentStem =	pseudoStemsBy.getOrElse(PRESENT_STEM,
 			pseudoStemsBy.getOrElse(PERFECT_STEM,
 				pseudoStemsBy.getOrElse(PRETERITE_SINGULAR_STEM,
 					pseudoStemsBy(PRETERITE_PLURAL_STEM))))
 
 		// build a root from the present stem
-		val CommonStrongVerbStem(root, _, _) = presentStem
+		val CommonStrongVerbStem(root, _, _) = pseudoPresentStem
 
 		// now based on StrongVerbClass choose either of:
 		// build stems from the root
 
 		val stemMap: Map[EnumVerbStem, CommonStrongVerbStem] = if(verbClassEnum != VerbClassEnum.STRONG_7TH_CLASS) {
+
+      // recreate the present stem
+      val presentStem = StrongVerbStem(root, verbClassEnum, PRESENT_STEM)
 
 			// 2a) *** Class 1st-6th Specific ***
 			val preteriteSgStem = StrongVerbStem(root, verbClassEnum, PRETERITE_SINGULAR_STEM)
@@ -109,6 +112,11 @@ object StrongVerbContext {
 
 		} else {
 
+      val ablautGrade = pseudoPresentStem.getAblautGrade()
+
+      // recreate the present stem
+      val presentStem = StrongVerbStemClass7th(root, PRESENT_STEM, ablautGrade)
+
 			// 2b) *** Class 7th Specific ***
 			Map(PRESENT_STEM -> presentStem) ++ extractStemsOfClass7thVerbs(pseudoStemsBy, root)
 		}
@@ -116,7 +124,9 @@ object StrongVerbContext {
 		stemMap
 	}
 
-	private def extractStemsOfClass7thVerbs(pseudoStemsBy: Map[EnumVerbStem, CommonStrongVerbStem], root: Root): Map[EnumVerbStem, StrongVerbStemClass7th] = {
+	private def extractStemsOfClass7thVerbs(pseudoStemsBy: Map[EnumVerbStem, CommonStrongVerbStem], root: Root)
+  : Map[EnumVerbStem, StrongVerbStemClass7th] = {
+
 		// determine the other (missing) stems:
 		//  a) if the perfect stem is missing than that from the present or past stem
 		//	b) if the past tenses missing then
