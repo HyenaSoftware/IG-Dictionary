@@ -1,6 +1,7 @@
 package com.hyenawarrior
 
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum.STRONG_1ST_CLASS
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
@@ -8,6 +9,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, Strong
 import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, Root}
 import org.junit.Assert._
 import org.junit.{Assert, Test}
+
+import scala.collection.immutable.Map
 
 /**
 	* Created by HyenaWarrior on 2017.06.26..
@@ -43,6 +46,23 @@ class VerbTest
 		assertEquals("tókuð",		verbFrom(svStemPP, Pronoun.PL_2,			PAST,			INDICATIVE).strForm)
 		assertEquals("tóku",		verbFrom(svStemPP, Pronoun.PL_3_MASC, PAST,			INDICATIVE).strForm)
 	}
+
+  @Test
+  def testVerbGenerator(): Unit = try {
+
+    val vfSg1 = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1))
+    val vfSg2 = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_2))
+
+    val verb = StrongVerbContext(STRONG_1ST_CLASS, Map(vfSg2 -> "beit"))
+
+    val verbForm = verb.verbForms(vfSg1)
+
+    assertEquals(verbForm.strForm, "bei")
+
+  } catch {
+
+    case e: RuntimeException => throw e
+  }
 
 	@Test
 	def sanityCheck() {
