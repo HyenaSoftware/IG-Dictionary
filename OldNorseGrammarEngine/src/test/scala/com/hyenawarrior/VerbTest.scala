@@ -64,6 +64,76 @@ class VerbTest
     case e: RuntimeException => throw e
   }
 
+	/*
+		Class 2nd
+		PRESENT		PAST-SG		PAST-PL		PERFECT
+		jú/jó/ú		au				u					o
+
+		*/
+	@Test
+	def class2ndUseJuForPresent(): Unit = {
+
+		val stem = StrongVerbStem.fromStrRepr("kraup", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+
+		val verbform = StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE)
+
+		assertEquals("krjúpa", verbform.strForm)
+	}
+
+	@Test
+	def class2ndChangeToJoForPresent(): Unit = {
+
+		val stem = StrongVerbStem.fromStrRepr("skaut", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+
+		val verbform = StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE)
+
+		assertEquals("skjóta", verbform.strForm)
+	}
+
+	/*
+		Class 3th
+		PRESENT		PAST-SG		PAST-PL		PERFECT
+		e/ja			a					u					o(/u)
+
+		*/
+
+	@Test
+	def class3rdRaising(): Unit = {
+
+		val stem = StrongVerbStem.fromStrRepr("spenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+
+		val verbform = StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE)
+
+		assertEquals("spinna", verbform.strForm)
+	}
+
+	@Test
+	def class3rdNasalAssimilation(): Unit = {
+
+		val stem = StrongVerbStem.fromStrRepr("band", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+
+		val verbform = StrongVerb.verbFrom(stem, Pronoun.SG_1, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE)
+
+		assertEquals("batt", verbform.strForm)
+	}
+
+	@Test
+	def class3rdChangeToJa(): Unit = {
+
+		val stem = StrongVerbStem.fromStrRepr("help", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+
+		assertEquals("hjalpa", 	StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE).strForm)
+		assertEquals("help", 		StrongVerb.verbFrom(stem, Pronoun.SG_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("hjölpum",	StrongVerb.verbFrom(stem, Pronoun.PL_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+	}
+
+	/*
+		Class 4th
+		PRESENT		PAST-SG		PAST-PL		PERFECT
+		e/o				a					á					o
+	 */
+
+
 	@Test
 	def sanityCheck() {
 
