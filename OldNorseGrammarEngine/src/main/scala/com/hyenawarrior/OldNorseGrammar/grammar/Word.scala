@@ -1,6 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowel
 
 /**
 	* Created by HyenaWarrior on 2017.03.01..
@@ -37,9 +38,7 @@ case class Word(pos: PoS)
 
 object Syllables {
 
-	private val VOWELS = "aáeéiíoóöuú"
 
-	def isVowel(c: Char): Boolean = VOWELS.exists(c == _)
 
 	private def split(word: String, i: Int, syllableEnds: Seq[Int]): List[Syllable] = syllableEnds.headOption match
 	{
