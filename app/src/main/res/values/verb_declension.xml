@@ -13,7 +13,8 @@
         <item>Infinitive</item>
         <item>Present Participle</item>
         <item>Perfect Participle</item>
-
+    </string-array>
+    <string-array name="verb_imperative_decls" >
         <item>Imperative 2nd Person Singular</item>
         <item>Imperative 1st Person Plural</item>
         <item>Imperative 2nd Person Plural</item>

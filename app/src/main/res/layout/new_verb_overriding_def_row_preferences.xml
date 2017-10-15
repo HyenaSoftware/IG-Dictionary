@@ -21,19 +21,35 @@
                 android:id="@+id/textView11" android:textAlignment="textStart" android:layout_weight="1"
                 android:layout_gravity="center_vertical" android:singleLine="true"/>
     </LinearLayout>
-    <Spinner android:layout_width="wrap_content" android:layout_height="fill_parent" android:id="@+id/spVerbDeclensions"
+    <Spinner android:layout_width="wrap_content" android:layout_height="0dp" android:id="@+id/spVerbDeclensions"
              android:layout_gravity="center_vertical" android:entries="@array/verb_ind_subj_decls" android:layout_weight="2"
              android:layout_margin="1dp"/>
-    <RadioGroup android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"
-                android:orientation="horizontal" android:layout_margin="1dp" android:id="@+id/rbgModes">
-        <RadioButton android:layout_width="0dp" android:layout_height="fill_parent" android:text="Indicative"
-                     android:id="@+id/rbInd" android:layout_weight="1" android:singleLine="false"
-                     android:checked="true"/>
-        <RadioButton android:layout_width="0dp" android:layout_height="fill_parent" android:text="Subjunctive"
-                     android:id="@+id/rbSubj" android:layout_weight="1"/>
-        <RadioButton android:layout_width="0dp" android:layout_height="fill_parent" android:text="NonFinitive"
-                     android:id="@+id/rbNonFinitive" android:layout_weight="1"/>
-    </RadioGroup>
+    <GridLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:columnCount="2" android:rowCount="3"
+            android:layout_margin="1dp" android:id="@+id/rbgModes">
+        <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Indicative"
+                     android:id="@+id/rbInd" android:singleLine="false"
+                     android:checked="true" android:layout_weight="1" android:clickable="false"
+                     android:layout_column="0" android:layout_row="0"/>
+        <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Subjunctive"
+                     android:id="@+id/rbSubj" android:layout_weight="1" android:clickable="false"
+                     android:layout_column="0" android:layout_row="1"/>
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Imperative"
+                android:id="@+id/rbImperative" android:layout_weight="1" android:clickable="false"
+                android:layout_column="1" android:layout_row="0"/>
+        <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Non Finitive"
+                     android:id="@+id/rbNonFinitive" android:layout_weight="1" android:clickable="false"
+                     android:layout_column="1"/>
+        <!-- RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stem"
+                android:id="@+id/rbStem" android:layout_column="0" android:layout_row="2"/ -->
+    </GridLayout>
     <LinearLayout android:orientation="horizontal" android:layout_width="fill_parent"
                   android:layout_height="wrap_content">
         <RadioGroup android:layout_width="wrap_content" android:layout_height="wrap_content"
