@@ -153,6 +153,8 @@ class VerbDeclPreferencesDialog(activity: Activity)
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 			verbDeclSpinner.setAdapter(adapter)
 
+			spinnerIndex = 0
+
       rbPresent.setEnabled(enableTenseButtons)
 			rbPreterite.setEnabled(enableTenseButtons)
 		}
