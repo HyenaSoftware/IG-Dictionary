@@ -3,9 +3,11 @@ package com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers
 import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
-import android.widget.{EditText, LinearLayout, Spinner}
+import android.widget.{EditText, LinearLayout, Spinner, TextView}
+import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{IMPERATIVE, INDICATIVE, PARTICIPLE, SUBJUNCTIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, verbs}
@@ -14,6 +16,7 @@ import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.{PosForm, 
 import com.hyenawarrior.oldnorsedictionary.modelview.EditTextTypeListener
 import com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
 import com.hyenawarrior.oldnorsedictionary.new_word.VerbDeclPreferencesDialog
+import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.AddNewVerbHelper.{GRAY, RED}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.AddNewWordActivity._
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.WordData
 
@@ -26,6 +29,9 @@ object AddNewVerbHelper
 	val TENSES = List(PRESENT, PAST)
 
 	val ALL_DECLENSION = Pronoun.values.flatMap(p => TENSES.map(t => p -> t))
+
+	val RED = 0xffcc0000
+	val GRAY = 0xffaaaaaa
 
 	type Declension = Either[(Pronoun, VerbTenseEnum), NonFinitiveVerbType]
 }
@@ -119,19 +125,86 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 	case class ShowVerbDeclDialogListener(rowView: View) extends View.OnClickListener {
 
-		override def onClick(view: View): Unit = verbDeclPreferencesDialog.show(onDeclensionSelected(rowView)(_))
-	}
+		var previousMoodLED = R.id.tvVerbInd
+		var currentMoodLED = R.id.tvVerbInd
 
-	private def onDeclensionSelected(rowView: View)(verbType: verbs.VerbType): Unit = {
+		var previousTenseLED: Option[Int] = None
+		var currentTenseLED: Option[Int] = None
 
-		val (classes, map) = selectedVerbParameters
+		// make sure the other fields are already initialized when this method is called
+		onDeclensionSelected(VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype)
 
-		val declStr = map.get(rowView).map(e => verbType -> e._2).getOrElse(verbType -> None)
-		val newMap = (map - rowView) + (rowView -> declStr)
+		override def onClick(view: View): Unit = {
 
-		selectedVerbParameters = (classes, newMap)
+			//
+			val map = selectedVerbParameters._2
+			val myState = map.get(rowView).map(_._1).getOrElse(VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype)
 
-		tryCompleteForms()
+			//
+			verbDeclPreferencesDialog.show(onDeclensionSelected)
+		}
+
+		private def onDeclensionSelected(verbType: verbs.VerbType): Unit = {
+
+			val (classes, map) = selectedVerbParameters
+
+			val declAndStr = map.get(rowView).map(e => verbType -> e._2).getOrElse(verbType -> None)
+			val newMap = (map - rowView) + (rowView -> declAndStr)
+
+			selectedVerbParameters = (classes, newMap)
+
+			updateMoodLED(verbType)
+			updateTenseLED(verbType)
+			updatePronounLED(verbType)
+
+			previousMoodLED = currentMoodLED
+			previousTenseLED = currentTenseLED
+
+			tryCompleteForms()
+		}
+
+		def updatePronounLED(verbType: (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])): Unit = {
+
+			val (clr, text) = verbType match {
+
+				case (_, _, Some(Pronoun(_, _, SINGULAR, str))) =>	RED -> s"S${str.charAt(0)}"
+				case (_, _, Some(Pronoun(_, _, PLURAL, str))) 	=>	RED -> s"P${str.charAt(0)}"
+				case (_, _, None) 															=>	GRAY ->"S1"
+			}
+
+			val tvVerbPronoun = rowView.findViewById(R.id.tvVerbPronoun).asInstanceOf[TextView]
+
+			tvVerbPronoun.setTextColor(clr)
+			tvVerbPronoun.setText(text)
+		}
+
+		def updateTenseLED(verbType: (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])): Unit = {
+
+			currentTenseLED = verbType match {
+
+				case (_, Some(PRESENT), _) => Some(R.id.tvVerbPresent)
+				case (_, Some(PAST), _) => Some(R.id.tvVerbPast)
+				case (_, None, _) => None
+			}
+
+			previousTenseLED.foreach(rowView.findViewById(_).asInstanceOf[TextView].setTextColor(GRAY))
+			currentTenseLED.foreach(rowView.findViewById(_).asInstanceOf[TextView].setTextColor(RED))
+		}
+
+		def updateMoodLED(verbType: (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])): Unit = {
+
+			currentMoodLED = verbType match {
+
+				case (INDICATIVE, _, _) => R.id.tvVerbInd
+				case (SUBJUNCTIVE, _, _) => R.id.tvVerbSubj
+				case (VerbModeEnum.INFINITIVE, _, _) => R.id.tvVerbInfinitive
+				case (PARTICIPLE, _, _) => R.id.tvVerbParticiple
+				case (IMPERATIVE, _, _) => R.id.tvVerbImperative
+			}
+
+			rowView.findViewById(previousMoodLED).asInstanceOf[TextView].setTextColor(GRAY)
+			rowView.findViewById(currentMoodLED).asInstanceOf[TextView].setTextColor(RED)
+		}
 	}
 
 	override def onTextFormOverride(rowView: View)(str: String): Unit = {

@@ -13,31 +13,43 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="IND"
-                android:id="@+id/tvVerbInd" android:background="#ffffff" android:layout_margin="1dp"
-                android:textColor="#ff0000" android:textStyle="bold"/>
+                android:id="@+id/tvVerbInd" android:layout_margin="1dp"
+                android:textColor="@android:color/darker_gray" android:textStyle="bold"/>
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="SUBJ"
-                android:id="@+id/tvVerbSubj" android:background="#ffffff" android:layout_margin="1dp"
-                android:textStyle="bold"/>
+                android:id="@+id/tvVerbSubj" android:layout_margin="1dp"
+                android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="IMP"
+                  android:id="@+id/tvVerbImperative" android:layout_margin="1dp" android:textStyle="bold"
+                  android:textColor="@android:color/darker_gray"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                   android:textAppearance="?android:attr/textAppearanceSmall" android:text="INF"
-                  android:id="@+id/tvInfinitive" android:background="#ffffff" android:layout_margin="1dp"
-                  android:textStyle="bold"/>
+                  android:id="@+id/tvVerbInfinitive" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="PRT"
-                  android:id="@+id/tvParticiple" android:background="#ffffff" android:layout_margin="1dp"
-                  android:textStyle="bold"/>
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="PRTC"
+                  android:id="@+id/tvVerbParticiple" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="SG-1ST"
-                  android:id="@+id/tvMode" android:background="#ffffff" android:layout_margin="1dp"
-                  android:textStyle="bold"/>
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="PRES"
+                  android:id="@+id/tvVerbPresent" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="RFLX"
-                  android:id="@+id/tvVerbReflexive" android:background="#ffffff" android:layout_margin="1dp"
-                  android:textStyle="bold"/>
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="PST"
+                  android:id="@+id/tvVerbPast" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="S1"
+                  android:id="@+id/tvVerbPronoun" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="MDP"
+                  android:id="@+id/tvVerbMedioPassive" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
     </LinearLayout>
     <LinearLayout
             android:orientation="horizontal"
