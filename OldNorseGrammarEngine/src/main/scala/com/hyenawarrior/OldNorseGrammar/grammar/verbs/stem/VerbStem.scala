@@ -103,8 +103,8 @@ object StrongVerbStem {
 			if(givenSrcAblautGrade != expectedSrcAblautGrade) {
 
 				throw new RuntimeException(format(
-					"Cannot create verb stem object from string represantation '%s'. The ablaut of the representation ('%s')" +
-						" is different than the '%s' %s stem ablaut grade of %s",
+					"Cannot create verb stem object from string representation '%s'. The ablaut of the representation '%s'" +
+						" is different than the '%s' %s stem ablaut grade of %s.",
 					stemStr, givenSrcAblautGrade, expectedSrcAblautGrade, stemType.name, verbClass.name))
 			}
 
