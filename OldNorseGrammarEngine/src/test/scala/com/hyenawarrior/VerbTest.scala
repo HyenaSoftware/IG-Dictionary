@@ -47,22 +47,45 @@ class VerbTest
 		assertEquals("tóku",		verbFrom(svStemPP, Pronoun.PL_3_MASC, PAST,			INDICATIVE).strForm)
 	}
 
+	/*
+			Class 1st
+			PRESENT		PAST-SG		PAST-PL		PERFECT
+			i					ei				i					i
+	 */
+
   @Test
-  def testVerbGenerator(): Unit = try {
+  def testClass1stConvertFromPlToSg(): Unit = try {
 
-    val vfSg1 = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1))
-    val vfSg2 = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_2))
+    val srcForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3_FEMN))
+		val trgForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1))
 
-    val verb = StrongVerbContext(STRONG_1ST_CLASS, Map(vfSg2 -> "beit"))
+    val verb = StrongVerbContext(STRONG_1ST_CLASS, Map(srcForm -> "bitu"))
 
-    val verbForm = verb.verbForms(vfSg1)
+    val verbForm = verb.verbForms(trgForm)
 
-    assertEquals(verbForm.strForm, "bei")
+    assertEquals(verbForm.strForm, "beit")
 
   } catch {
 
-    case e: RuntimeException => throw e
+    case e: RuntimeException => fail(e.getMessage)
   }
+
+	@Test
+	def testClass1stConvertFromSgToPl(): Unit = try {
+
+		val srcForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1))
+		val trgForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3_FEMN))
+
+		val verb = StrongVerbContext(STRONG_1ST_CLASS, Map(srcForm -> "beit"))
+
+		val verbForm = verb.verbForms(trgForm)
+
+		assertEquals(verbForm.strForm, "bitu")
+
+	} catch {
+
+		case e: RuntimeException => fail(e.getMessage)
+	}
 
 	/*
 		Class 2nd
