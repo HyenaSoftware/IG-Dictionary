@@ -1,5 +1,6 @@
 package com.hyenawarrior
 
+import com.hyenawarrior.OldNorseGrammar.grammar.morphology.UmlautTest
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
@@ -12,7 +13,8 @@ import org.junit.runners.Suite
 	classOf[ExampleUnitTest],
 	classOf[NounTest],
 	classOf[SoundexTest],
-	classOf[VerbTest]
+	classOf[VerbTest],
+	classOf[UmlautTest]
 ))
 class TestSuite
 {
