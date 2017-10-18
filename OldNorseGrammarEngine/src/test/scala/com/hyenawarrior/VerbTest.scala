@@ -94,7 +94,7 @@ class VerbTest
 
 		*/
 	@Test
-	def class2ndUseJuForPresent(): Unit = {
+	def testClass2ndUseJuForPresent(): Unit = {
 
 		val stem = StrongVerbStem.fromStrRepr("kraup", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
@@ -104,7 +104,7 @@ class VerbTest
 	}
 
 	@Test
-	def class2ndChangeToJoForPresent(): Unit = {
+	def testClass2ndChangeToJoForPresent(): Unit = {
 
 		val stem = StrongVerbStem.fromStrRepr("skaut", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
@@ -121,7 +121,7 @@ class VerbTest
 		*/
 
 	@Test
-	def class3rdRaising(): Unit = {
+	def testClass3rdRaising(): Unit = {
 
 		val stem = StrongVerbStem.fromStrRepr("spenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
@@ -131,7 +131,7 @@ class VerbTest
 	}
 
 	@Test
-	def class3rdNasalAssimilation(): Unit = {
+	def testClass3rdNasalAssimilation(): Unit = {
 
 		val stem = StrongVerbStem.fromStrRepr("band", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
@@ -141,7 +141,7 @@ class VerbTest
 	}
 
 	@Test
-	def class3rdChangeToJa(): Unit = {
+	def testClass3rdChangeToJa(): Unit = {
 
 		val stem = StrongVerbStem.fromStrRepr("help", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
