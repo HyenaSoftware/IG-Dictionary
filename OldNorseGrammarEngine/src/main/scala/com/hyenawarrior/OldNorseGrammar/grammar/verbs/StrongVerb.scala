@@ -4,7 +4,7 @@ import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, I_Umlaut, U_Umlaut, WordTransformation}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut, WordTransformation}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
@@ -109,7 +109,7 @@ object StrongVerb {
 		val gnum = pronoun.number
 
 		val strReprWithoutIUmlaut = (gnum, tense) match {
-			case (SINGULAR, PRESENT) if !matchAblautGrade => I_Umlaut.unapply(verbStrRepr)
+			case (SINGULAR, PRESENT) if !matchAblautGrade => Explicit_I_Umlaut.unapply(verbStrRepr)
 			case _ => verbStrRepr
 		}
 

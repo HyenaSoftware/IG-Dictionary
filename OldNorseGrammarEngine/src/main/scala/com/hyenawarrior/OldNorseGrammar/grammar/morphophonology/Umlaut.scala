@@ -57,7 +57,7 @@ class U_Umlaut extends Umlaut
 
 class I_Umlaut extends Umlaut // 'with Explicit' should be here
 {
-	override val trigger = 'i'	// probably it's also pointless
+	override val trigger = 'i'	// probably it's also pointless. Yeah, as I-umlaut is non-productive
 
 	override val umlautTransformation = Map(
 		'a' -> ('e' -> 'e'),
@@ -73,7 +73,6 @@ class I_Umlaut extends Umlaut // 'with Explicit' should be here
 	override def toString = "I-umlaut"
 }
 
-object I_Umlaut extends I_Umlaut  // it may not be correct, I-umlaut is a non-productive feature of ON
 object U_Umlaut extends U_Umlaut
 object Explicit_I_Umlaut extends I_Umlaut with Explicit
 object Explicit_U_Umlaut extends U_Umlaut with Explicit
