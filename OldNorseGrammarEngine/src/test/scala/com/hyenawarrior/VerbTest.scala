@@ -150,6 +150,21 @@ class VerbTest
 		assertEquals("hjölpum",	StrongVerb.verbFrom(stem, Pronoun.PL_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 	}
 
+	@Test
+	def testClass3rdUUmlaut(): Unit = {
+
+		val presStem = StrongVerbStem.fromStrRepr("sekkv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+
+		assertEquals("søkkr", 	StrongVerb.verbFrom(presStem, Pronoun.SG_3_FEMN, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("søkkva", 	StrongVerb.verbFrom(presStem, Pronoun.PL_3_FEMN, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+
+		val pastSgStem = StrongVerbStem.fromStrRepr("sakkv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		assertEquals("sökk", 	StrongVerb.verbFrom(pastSgStem, Pronoun.SG_3_FEMN, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+
+		val pastPlStem = StrongVerbStem.fromStrRepr("sukk", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
+		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3_FEMN, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+	}
+
 	/*
 		Class 4th
 		PRESENT		PAST-SG		PAST-PL		PERFECT
