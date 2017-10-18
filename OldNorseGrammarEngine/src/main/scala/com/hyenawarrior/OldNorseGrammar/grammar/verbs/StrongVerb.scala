@@ -35,7 +35,7 @@ object FinitiveStrongVerb {
 
 		case (PRESENT,	_) 				=> EnumVerbStem.PRESENT_STEM
 		case (PAST, 		SINGULAR) => EnumVerbStem.PRETERITE_SINGULAR_STEM
-		case (PAST, 		PLURAL)		=> EnumVerbStem.PRETERITE_SINGULAR_STEM
+		case (PAST, 		PLURAL)		=> EnumVerbStem.PRETERITE_PLURAL_STEM
 	}
 }
 
