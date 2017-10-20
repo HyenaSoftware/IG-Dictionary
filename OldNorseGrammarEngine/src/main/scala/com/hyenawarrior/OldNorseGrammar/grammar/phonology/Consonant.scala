@@ -5,10 +5,16 @@ package com.hyenawarrior.OldNorseGrammar.grammar.phonology
 	*/
 object Consonant {
 
+	private val CONSONANTS 		= Set('b', 'd', 'ð', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'x', 'þ')
+
 	private val nasals				= Set('n', 'm')
+
 	private val voicedStop		= Set('b', 'd', 'g')
 	private val voicelessStop = Set('p', 't', 'k')
+
 	private val devoicing 		= Map('b' -> 'p', 'd' -> 't', 'g' -> 'k')
+
+	def isConsonant(c: Char) = CONSONANTS contains c
 
 	def isNasal(c: Char): Boolean = nasals contains c
 

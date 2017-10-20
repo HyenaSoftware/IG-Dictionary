@@ -1,5 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isSemivowel
 import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
 
 /**
@@ -34,7 +35,7 @@ trait Umlaut extends WordTransformation {
 	{
 		val mapping = getMapping(sy.isStressed)
 
-		val nc1 = sy.nucleus
+		val nc1 = sy.nucleus.filterNot(isSemivowel)
 		val nc2 =	mapping.getOrElse(nc1, nc1)
 		val newStr = sy.letters.replace(nc1, nc2)
 
@@ -87,6 +88,8 @@ class I_Umlaut extends Umlaut // 'with Explicit' should be here
 		"ú" -> "ý",
 		"au" -> "ey"
 	)
+
+	override def forceApply(syllables: List[Syllable]): List[Syllable] = super.forceApply(syllables)
 
 	override def toString = "I-umlaut"
 }
