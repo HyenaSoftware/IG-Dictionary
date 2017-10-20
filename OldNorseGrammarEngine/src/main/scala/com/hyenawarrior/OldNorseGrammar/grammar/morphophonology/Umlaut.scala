@@ -89,8 +89,6 @@ class I_Umlaut extends Umlaut // 'with Explicit' should be here
 		"au" -> "ey"
 	)
 
-	override def forceApply(syllables: List[Syllable]): List[Syllable] = super.forceApply(syllables)
-
 	override def toString = "I-umlaut"
 }
 
