@@ -116,7 +116,7 @@ class VerbTest
 	/*
 		Class 3th
 		PRESENT		PAST-SG		PAST-PL		PERFECT
-		e/ja			a					u					o(/u)
+		e/ja/i		a					u					o(/u)
 
 		*/
 
