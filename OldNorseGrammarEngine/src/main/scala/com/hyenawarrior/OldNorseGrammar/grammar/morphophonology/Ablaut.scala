@@ -1,7 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Syllables
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowel
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
 
@@ -55,7 +54,7 @@ object Ablaut
 
 		val firstSy = syllables.head
 
-		val nucleus = firstSy.letters.filter(isVowel)
+		val nucleus = firstSy.nucleus
 
 		if (nucleus.nonEmpty) {
 
