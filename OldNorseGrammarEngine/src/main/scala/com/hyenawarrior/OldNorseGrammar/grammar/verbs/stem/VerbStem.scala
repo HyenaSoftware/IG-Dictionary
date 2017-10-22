@@ -3,7 +3,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem
 import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.EToJa
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, AblautGrade, StaticAblaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
@@ -23,7 +23,13 @@ abstract class CommonStrongVerbStem(root: Root, verbClass: StrongVerbClassEnum, 
 
 	def getAblautGrade(): AblautGrade
 
-	override def stringForm(): String = {
+  private def applyPhonologicalChanges(stemRepr: String): String = verbClass match {
+
+    case STRONG_3RD_CLASS => EToJa(stemRepr)
+    case _ => stemRepr
+  }
+
+  override def stringForm(): String = {
 
 		// present stem is identical to the root
 		val rootRepr = root.toString
@@ -32,8 +38,8 @@ abstract class CommonStrongVerbStem(root: Root, verbClass: StrongVerbClassEnum, 
 
 		val myStemRepr = Ablaut.transform(rootRepr, ablautGradeOfPresentStem, getAblautGrade()).get
 
-		myStemRepr
-	}
+    applyPhonologicalChanges(myStemRepr)
+  }
 }
 
 object CommonStrongVerbStem {

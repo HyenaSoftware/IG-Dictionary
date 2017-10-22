@@ -7,14 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{DescriptorFlag, PoS, Syllables}
 	*/
 abstract class Verb(rawForm: String) extends PoS
 {
-	override def strForm: String =
-	{
-		val Syllables(syllables) = rawForm
-
-		val transformedSyllables = transformations.foldLeft(syllables){ (sys, trn) => trn(sys) }
-
-		Syllables(transformedSyllables)
-	}
+	override def strForm: String = rawForm
 
 	override def descriptorFlags: List[DescriptorFlag] = List()
 

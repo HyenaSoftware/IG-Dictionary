@@ -4,7 +4,8 @@ import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut, WordTransformation}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Explicit_I_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.SemivowelDeletion
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
@@ -20,14 +21,7 @@ abstract class StrongVerb(strRepr: String, stem: CommonStrongVerbStem) extends V
 }
 
 case class FinitiveStrongVerb(strRepr: String, stem: CommonStrongVerbStem, pronoun: Pronoun
-	, tense: VerbTenseEnum, mood: FinitiveMood)	extends StrongVerb(strRepr, stem) {
-
-	override def transformations: List[WordTransformation] = (pronoun.number, tense) match {
-
-		case (SINGULAR, PRESENT) => List(Explicit_I_Umlaut)
-		case _ => List(U_Umlaut)
-	}
-}
+	, tense: VerbTenseEnum, mood: FinitiveMood)	extends StrongVerb(strRepr, stem)
 
 object FinitiveStrongVerb {
 
@@ -46,12 +40,6 @@ case class NonFinitiveStrongVerb(strRepr: String, stem: CommonStrongVerbStem, no
 
 		throw new RuntimeException(format("To create a verb from '%s', a %s stem is expected instead of %s.",
 			strRepr, nonFinitiveVerbType.verbStemBase, stem.getStemType()))
-	}
-
-	override def transformations: List[WordTransformation] = nonFinitiveVerbType match {
-
-		case PRESENT_PARTICIPLE => List()
-		case _ => List()
 	}
 }
 
@@ -113,7 +101,7 @@ object StrongVerb {
 		}
 
 		// remove inflection
-		val inflection = StrongVerb.inflectionFor(pronoun, tense)
+		val inflection = inflectionFor(pronoun, tense)
 
     val stemRepr = uninflect(strReprWithoutIUmlaut, inflection)
 
@@ -139,7 +127,9 @@ object StrongVerb {
 			verbFrom(stem, optTense, mood.asInstanceOf[NonFinitiveMood])
 	}
 
-	/**
+  private def inflect(pronoun: Pronoun, tense: VerbTenseEnum)(str: String): String = str + inflectionFor(pronoun, tense)
+
+  /**
 		* Use it for:
 		* 	- to create an object representation of this verb, and figure out what is its stem
 		*
@@ -152,8 +142,16 @@ object StrongVerb {
 	def verbFrom(stem: CommonStrongVerbStem, pronoun: Pronoun, tense: VerbTenseEnum, mood: FinitiveMood)
 		: FinitiveStrongVerb = {
 
-		val str = stem.stringForm + StrongVerb.inflectionFor(pronoun, tense)
+    val transforms: Seq[String => String] = Seq(
+      inflect(pronoun, tense)
+      // execute custom non-productive transformations
+      , applyNonProductiveRules(pronoun, tense)
+      // execute all productive transformations
+      , applyProductiveTransformations)
 
+    val stemStr = stem.stringForm()
+
+    val str = transforms.foldLeft(stemStr)((s, f) => f(s))
 		FinitiveStrongVerb(str, stem, pronoun, tense, mood)
 	}
 
@@ -283,4 +281,13 @@ object StrongVerb {
 		case (Some(PRESENT),	PARTICIPLE) => "andi"	// -andi + adjectival declension?
 		case (None,			INFINITIVE) => "a"
 	}
+
+  private def applyNonProductiveRules(pronoun: Pronoun, tense: VerbTenseEnum)(str: String): String
+    = (pronoun.number, tense) match {
+
+    case (SINGULAR, PRESENT) => Explicit_I_Umlaut.forceApply(str)
+    case _ => str
+  }
+
+  private def applyProductiveTransformations(str: String): String = SemivowelDeletion(str)
 }
