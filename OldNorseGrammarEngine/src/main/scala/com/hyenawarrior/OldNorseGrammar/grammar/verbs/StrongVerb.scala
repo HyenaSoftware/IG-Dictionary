@@ -78,9 +78,8 @@ object StrongVerb {
 	def fromStringRepr(verbStrRepr: String, verbClass: StrongVerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum,
 										 mood: FinitiveMood): StrongVerb = {
 
-		val stem: CommonStrongVerbStem = uninflect(verbStrRepr, verbClass, pronoun, tense)
+		val stem = uninflect(verbStrRepr, verbClass, pronoun, tense)
 
-		//FinitiveStrongVerb(verbStrRepr, stem, pronoun, tense, mood)
 		val verb = verbFrom(stem, pronoun, tense, mood)
 
 		// +1 do validation:

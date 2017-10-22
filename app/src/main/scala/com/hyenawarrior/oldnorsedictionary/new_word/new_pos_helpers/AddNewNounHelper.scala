@@ -196,7 +196,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			case _ => None
 		}
 
-		val optWordsOfRoot = root.map(r => AddNewNounHelper.NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, -1, (nd.number, nd.caze)).strForm).toMap)
+		val optWordsOfRoot = root.map(r => AddNewNounHelper.NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, (nd.number, nd.caze)).strForm).toMap)
 
 		val wordMap = optWordsOfRoot.getOrElse(Map())
 

@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{I_Umlaut, U_Umlaut, WordTransformation}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, WordTransformation}
 
 /**
 	* Created by HyenaWarrior on 2017.03.20..

@@ -1,8 +1,8 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
+import com.hyenawarrior.OldNorseGrammar.grammar._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.WordTransformation
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar._
 
 /**
 	* Created by HyenaWarrior on 2017.04.09..
@@ -10,10 +10,10 @@ import com.hyenawarrior.OldNorseGrammar.grammar._
 trait NounStemClass
 {
 	// (Root, Number, Case) -> Word
-	def apply(root: Root, meaningId: Int, decl: (GNumber, Case)): Word =
+	def apply(root: Root, decl: (GNumber, Case)): Word =
 	{
 		val str = inflect(root, decl)
-		val nn = new Noun(str, meaningId, decl, root, this)
+		val nn = Noun(str, decl, root, this)
 
 		Word(nn)
 	}

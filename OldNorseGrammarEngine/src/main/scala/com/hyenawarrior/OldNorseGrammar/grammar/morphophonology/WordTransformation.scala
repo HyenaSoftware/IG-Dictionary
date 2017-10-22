@@ -9,15 +9,15 @@ trait WordTransformation {
 
 	final def apply(str: String): String = {
 
-		val Syllables(syllables) = str
+    val Syllables(syllables) = str
 
-		val newSyllables = apply(syllables)
+    val newSyllables = apply(syllables)
 
-		newSyllables.map(_.letters).reduce[String]{ case(a, b) => a + b }
-	}
+    newSyllables.flatMap(_.letters).mkString
+  }
 
-	final def apply(syllables: List[Syllable]): List[Syllable] =
-	{
+	final def apply(syllables: List[Syllable]): List[Syllable] = {
+
 		if(isEligible(syllables)) forceApply(syllables) else syllables
 	}
 
@@ -27,12 +27,12 @@ trait WordTransformation {
 
 		val newSyllables = forceApply(syllables)
 
-		newSyllables.map(_.letters).reduce[String]{ case(a, b) => a + b }
-	}
+    newSyllables.flatMap(_.letters).mkString
+  }
 
 	def forceApply(syllables: List[Syllable]): List[Syllable]
 
-	def isEligible(syllables: List[Syllable]): Boolean
+  def isEligible(syllables: List[Syllable]): Boolean
 }
 
 trait Explicit extends WordTransformation

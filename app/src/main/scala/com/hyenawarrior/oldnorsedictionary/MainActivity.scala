@@ -42,8 +42,8 @@ object Orderings
 	{
 		override def compare(x: GWord, y: GWord): Int = (x, y) match
 		{
-			case (GWord(Noun(_, _, (n1, c1), _, _)), GWord(Noun(_, _, (n2, c2), _, _))) if n1 != n2 => sgnDiff(n1, n2)
-			case (GWord(Noun(_, _, (n1, c1), _, _)), GWord(Noun(_, _, (n2, c2), _, _))) => sgnDiff(c1, c2)
+			case (GWord(Noun(_, (n1, c1), _, _)), GWord(Noun(_, (n2, c2), _, _))) if n1 != n2 => sgnDiff(n1, n2)
+			case (GWord(Noun(_, (n1, c1), _, _)), GWord(Noun(_, (n2, c2), _, _))) => sgnDiff(c1, c2)
 			case _ => 0
 		}
 	}
