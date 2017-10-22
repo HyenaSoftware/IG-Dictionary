@@ -140,15 +140,40 @@ class VerbTest
 		assertEquals("batt", verbform.strForm)
 	}
 
-	@Test
-	def testClass3rdChangeToJa(): Unit = {
+  @Test
+  def testClass3rdFromJaStem(): Unit = {
 
-		val stem = StrongVerbStem.fromStrRepr("help", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stem = StrongVerbStem.fromStrRepr("help", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
 		assertEquals("hjalpa", 	StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE).strForm)
 		assertEquals("help", 		StrongVerb.verbFrom(stem, Pronoun.SG_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 		assertEquals("hjölpum",	StrongVerb.verbFrom(stem, Pronoun.PL_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 	}
+
+  @Test
+  def testClass3rdChangeFromJa(): Unit = {
+
+    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3_FEMN))
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "hjalpa"))
+
+    val verbFormP3 = verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3_FEMN))
+
+    assertEquals("helpr", verbFormP3.strForm)
+  }
+
+
+  @Test
+  def testClass3rdChangeToJa(): Unit = {
+
+    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3_FEMN))
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "helpr"))
+
+    val verbFormP3 = verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3_FEMN))
+
+    assertEquals("hjalpa", verbFormP3.strForm)
+  }
 
 	@Test
 	def testClass3rdUUmlaut(): Unit = {

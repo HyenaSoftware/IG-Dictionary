@@ -19,12 +19,10 @@ class VerbStemTest {
 	}
 
 	@Test
-	def testVerbStemClass3(): Unit = try {
+	def testVerbStemClass3(): Unit = {
 
 		val stemObj = StrongVerbStem.fromStrRepr("hjalp", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
-	} catch {
-
-		case e: RuntimeException => Assert.fail(e.getMessage)
+    Assert.assertEquals("help", stemObj.stringForm())
 	}
 }
