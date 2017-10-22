@@ -3,10 +3,10 @@ package com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem
 import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.EToJa
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, AblautGrade, StaticAblaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
 
 /**
 	* Created by HyenaWarrior on 2017.04.22..
@@ -77,7 +77,7 @@ object StrongVerbStem {
 	)
 
 	/**
-		* Create a stem from a strign representation
+		* Create a stem from a string representation
 		*
 		* Do not use it for:
 		* 	- creating a custom/irregular stem
@@ -90,27 +90,35 @@ object StrongVerbStem {
 		*                          the first syllable
 		*/
 	def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): CommonStrongVerbStem
-		= verbClass match {
+		= (verbClass, stemStr) match {
 
-		case STRONG_7TH_CLASS =>
+		case (STRONG_7TH_CLASS, _) =>
 			val ablaut = Ablaut.getAblautGradeFrom(stemStr)
 			StrongVerbStemClass7th(Root(stemStr), stemType, ablaut)
 
-		case _ =>
-			val givenSrcAblautGrade = Ablaut.getAblautGradeFrom(stemStr)
-			val expectedSrcAblautGrade = ABLAUTS(verbClass).grades(stemType)
+      // normalize stem before processing it
+		case (STRONG_3RD_CLASS, EToJa(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
 
-			if(givenSrcAblautGrade != expectedSrcAblautGrade) {
-
-				throw new RuntimeException(format(
-					"Cannot create verb stem object from string representation '%s'. The ablaut of the representation '%s'" +
-						" is different than the '%s' %s stem ablaut grade of %s.",
-					stemStr, givenSrcAblautGrade, expectedSrcAblautGrade, stemType.name, verbClass.name))
-			}
-
-			val ablautGradeOfPresentStem = ABLAUTS(verbClass).presentAblautGrade
-			val rootStrRepr = Ablaut.transform(stemStr, expectedSrcAblautGrade, ablautGradeOfPresentStem).get
-
-			StrongVerbStem(Root(rootStrRepr), verbClass, stemType)
+    case _ => extractVerbFrom(verbClass, stemType, stemStr)
 	}
+
+  private def extractVerbFrom(verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, stemStr: String): StrongVerbStem
+    = {
+
+    val givenSrcAblautGrade = Ablaut.getAblautGradeFrom(stemStr)
+    val expectedSrcAblautGrade = ABLAUTS(verbClass).grades(stemType)
+
+    if (givenSrcAblautGrade != expectedSrcAblautGrade) {
+
+      throw new RuntimeException(format(
+        "Cannot create verb stem object from string representation '%s'. The ablaut of the representation '%s'" +
+          " is different than the '%s' %s stem ablaut grade of %s.",
+        stemStr, givenSrcAblautGrade, expectedSrcAblautGrade, stemType.name, verbClass.name))
+    }
+
+    val ablautGradeOfPresentStem = ABLAUTS(verbClass).presentAblautGrade
+    val rootStrRepr = Ablaut.transform(stemStr, expectedSrcAblautGrade, ablautGradeOfPresentStem).get
+
+    StrongVerbStem(Root(rootStrRepr), verbClass, stemType)
+  }
 }
