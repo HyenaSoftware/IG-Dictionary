@@ -116,12 +116,22 @@ object StrongVerb {
 		// remove inflection
 		val inflection = StrongVerb.inflectionFor(pronoun, tense)
 
-		val stemRepr = strReprWithoutIUmlaut stripSuffix inflection
+    val stemRepr = uninflect(strReprWithoutIUmlaut, inflection)
 
 		StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
 	}
 
-	def verbFrom(stem: CommonStrongVerbStem, verbType: VerbType): StrongVerb = verbType match {
+  private def uninflect(strRepr: String, inflection: String): String = {
+
+    if (!strRepr.endsWith(inflection)) {
+
+      throw new RuntimeException(format("Word '%s' doesn't end with -%s", strRepr, inflection))
+    }
+
+    strRepr stripSuffix inflection
+  }
+
+  def verbFrom(stem: CommonStrongVerbStem, verbType: VerbType): StrongVerb = verbType match {
 
 		case (mood @ (INDICATIVE | SUBJUNCTIVE | IMPERATIVE), Some(tense), Some(pronoun)) =>
 			verbFrom(stem, pronoun, tense, mood.asInstanceOf[FinitiveMood])
@@ -224,9 +234,9 @@ object StrongVerb {
 
 		val inflection = StrongVerb.inflectionFor(optTense, mood)
 
-		val stemRepr = strRepr stripSuffix inflection
+    val stemRepr = uninflect(strRepr, inflection)
 
-		StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
+    StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
 	}
 
 	def fromStringRepr(strRepr: String, verbClass: StrongVerbClassEnum, verbType: VerbType): StrongVerb = verbType match {
