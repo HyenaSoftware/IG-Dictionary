@@ -2,7 +2,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Ablaut
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem}
 import org.junit.{Assert, Test}
 
 /**
@@ -23,6 +23,11 @@ class VerbStemTest {
 
 		val stemObj = StrongVerbStem.fromStrRepr("hjalp", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
-    Assert.assertEquals("help", stemObj.stringForm())
+    val CommonStrongVerbStem(root, _, _) = stemObj
+
+    Assert.assertEquals("help", root.toString)
+
+    // stem will be decaying to...
+    Assert.assertEquals("hjalp", stemObj.stringForm())
 	}
 }
