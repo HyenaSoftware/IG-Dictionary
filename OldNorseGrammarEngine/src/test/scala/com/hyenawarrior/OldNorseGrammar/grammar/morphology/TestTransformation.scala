@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.SemivowelDeletion
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{SemivowelDeletion, VowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, StemTransform}
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -50,4 +50,10 @@ class TestTransformation {
 
 		assertEquals("geld", stemStr3)
 	}
+
+  @Test
+  def testVowelDeletion(): Unit = {
+
+    assertEquals("fá", VowelDeletion("fáa"))
+  }
 }
