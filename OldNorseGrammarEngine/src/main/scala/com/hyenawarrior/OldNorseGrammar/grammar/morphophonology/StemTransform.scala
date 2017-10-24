@@ -50,4 +50,32 @@ object StemTransform {
 			firstIsLR && secondIsCons
 		}
 	}
+
+  object JuToJo extends Transformation {
+
+    protected val SRC_NUCLEUS: String = "jú"
+    protected val DST_NUCLEUS: String = "jó"
+
+    protected def transform(stemStr: String, nucleus: String, newNucleus: String): String = {
+
+      val idxOfNucleus = stemStr.indexOf(nucleus)
+      val idxOfNucleusEnd = idxOfNucleus + nucleus.length
+
+      if(isEligible(stemStr, idxOfNucleusEnd)) {
+
+        val onset = stemStr.substring(0, idxOfNucleus)
+        val coda  = stemStr.substring(idxOfNucleusEnd)
+
+        onset + newNucleus + coda
+
+      } else stemStr
+    }
+
+    private def isEligible(stemStr: String, idxOfNucleusEnd: Int): Boolean = (stemStr.length > idxOfNucleusEnd) && {
+
+      val nextLetter = stemStr.charAt(idxOfNucleusEnd)
+
+      Consonant.isDental(nextLetter)
+    }
+  }
 }

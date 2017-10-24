@@ -25,6 +25,23 @@ class TestTransformation {
 		assertEquals("fölr", SemivowelDeletion("fölvr"))
 	}
 
+  @Test
+  def testJuToJoAtClass2Verbs(): Unit = {
+
+    assertEquals("brjóta",  StemTransform.JuToJo("brjúta"))
+    assertEquals("ljóta",   StemTransform.JuToJo("ljúta"))
+    assertEquals("skjóta",  StemTransform.JuToJo("skjúta"))
+    assertEquals("bjóða",   StemTransform.JuToJo("bjúða"))
+  }
+
+  @Test
+  def testNotChangeJuToJoAtClass2Verbs(): Unit = {
+
+    assertEquals("fljúga",  StemTransform.JuToJo("fljúga"))
+    assertEquals("smjúga",  StemTransform.JuToJo("smjúga"))
+    assertEquals("krjúpa",  StemTransform.JuToJo("krjúpa"))
+  }
+
 	@Test
 	def testEToJaAtClass3Verbs(): Unit = {
 
