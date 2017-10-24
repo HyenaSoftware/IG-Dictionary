@@ -196,6 +196,13 @@ class VerbTest
 		e/o				a					á					o
 	 */
 
+  @Test
+  def testClass7thVowelDeletion(): Unit = {
+
+    val stem = StrongVerbStem.fromStrRepr("fá", VerbClassEnum.STRONG_7TH_CLASS, EnumVerbStem.PRESENT_STEM)
+
+    assertEquals("fá", verbFrom(stem, None, INFINITIVE).strForm)
+  }
 
 	@Test
 	def sanityCheck() {

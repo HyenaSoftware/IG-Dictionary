@@ -5,7 +5,7 @@ import java.lang.String.format
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Explicit_I_Umlaut
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.SemivowelDeletion
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{SemivowelDeletion, VowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
@@ -183,7 +183,8 @@ object StrongVerb {
       // execute custom non-productive transformations
       , applyNonProductiveRules(verbType)
       // execute all productive transformations
-      , SemivowelDeletion(_))
+      , SemivowelDeletion(_)
+      , VowelDeletion(_))
 
     transforms.foldLeft(stemStr)((s, f) => f(s))
   }
