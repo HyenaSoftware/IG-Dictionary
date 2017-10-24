@@ -7,15 +7,24 @@ import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant
 	*/
 object StemTransform {
 
-  object EToJa {
+  trait Transformation {
+
+    protected val SRC_NUCLEUS: String
+    protected val DST_NUCLEUS: String
+
+    def apply(stemStr: String): String = transform(stemStr, SRC_NUCLEUS, DST_NUCLEUS)
+    def unapply(stemStr: String): Option[String] = Some(transform(stemStr, DST_NUCLEUS, SRC_NUCLEUS))
+
+    protected def transform(stemStr: String, nucleus: String, newNucleus: String): String
+  }
+
+  object EToJa extends Transformation {
 
 		// assume that a stem has only one syllable (?)
+    val SRC_NUCLEUS: String = "e"
+    val DST_NUCLEUS: String = "ja"
 
-		def apply(stemStr: String): String = transform(stemStr, "e", "ja")
-
-		def unapply(stemStr: String): Option[String] = Some(transform(stemStr, "ja", "e"))
-
-		private def transform(stemStr: String, nucleus: String, newNucleus: String): String = {
+		protected def transform(stemStr: String, nucleus: String, newNucleus: String): String = {
 
 			val idxOfJa = stemStr.indexOf(nucleus)
 			val idxOfNucleusEnd = idxOfJa + nucleus.length
