@@ -112,9 +112,9 @@ object StrongVerb {
 		// +1 do validation:
 		if(verb.strForm != verbStrRepr) {
 
-			throw new RuntimeException(format("The given '%s' verbform is not correct to be a %s, %s,%s person, %s tense, %s mood verb." +
+			throw new RuntimeException(format("The given '%s' verbform is not correct to be a %s, %s person, %s tense, %s mood verb." +
 				" The verb form should be '%s'.",
-				verbStrRepr, verbClass.name, pronoun.number, pronoun.person, tense.name, mood.name, verb.strForm))
+				verbStrRepr, verbClass.name, pronoun, tense.name, mood.name, verb.strForm))
 		}
 
 		verb
@@ -265,19 +265,19 @@ object StrongVerb {
 	private def inflectionForPresent(pronoun: Pronoun) = pronoun match {
 
 		case SG_1 => ""
-		case SG_2 | SG_3_FEMN | SG_3_MASC | SG_3_NEUT => "r"
-		case PL_1 | DL_1 => "um"
-		case PL_2 | DL_2 => "ið"
-		case PL_3_FEMN | PL_3_MASC | PL_3_NEUT => "a"
+		case SG_2 | SG_3 => "r"
+		case PL_1 => "um"
+		case PL_2 => "ið"
+		case PL_3 => "a"
 	}
 
 	private def inflectionForPreterite(pronoun: Pronoun) = pronoun match {
 
-		case SG_1 | SG_3_FEMN | SG_3_MASC | SG_3_NEUT => ""
+		case SG_1 | SG_3 => ""
 		case SG_2 => "t"
-		case PL_1 | DL_1 => "um"
-		case PL_2 | DL_2 => "uð"
-		case PL_3_FEMN | PL_3_MASC | PL_3_NEUT => "u"
+		case PL_1 => "um"
+		case PL_2 => "uð"
+		case PL_3 => "u"
 	}
 
 	private def inflectionFor(optTense: Option[VerbTenseEnum], mood: NonFinitiveMood): String = (optTense, mood) match {
@@ -289,7 +289,7 @@ object StrongVerb {
 
   private def applyNonProductiveRules(verbType: VerbType)(str: String): String = verbType match {
 
-    case (INDICATIVE, Some(PRESENT), Some(Pronoun(_, _, SINGULAR, _))) => Explicit_I_Umlaut.forceApply(str)
+    case (INDICATIVE, Some(PRESENT), Some(Pronoun(SINGULAR, _))) => Explicit_I_Umlaut.forceApply(str)
     case _ => str
   }
 

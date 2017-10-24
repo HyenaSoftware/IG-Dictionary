@@ -6,7 +6,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{INDICATIVE, 
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem, StrongVerbStemClass7th}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Root, verbs}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, Root, verbs}
 
 /**
 	* Created by HyenaWarrior on 2017.10.08..
@@ -22,8 +22,7 @@ object VerbContext {
 	val ALL_VERB_FORMS: List[VerbType] = List(INDICATIVE, SUBJUNCTIVE)
 		.flatMap(mood => VerbTenseEnum.values.map(tense => mood -> Some(tense)))
 	  .flatMap{ case (mood, oTense) =>
-      Seq(SG_1, SG_2, SG_3_FEMN, PL_1, PL_2, PL_3_FEMN)
-        .map(pronoun => (mood, oTense, Some(pronoun)))
+      Pronoun.values.map(pronoun => (mood, oTense, Some(pronoun)))
     } ++
     List((INFINITIVE, None, None)) ++
     List((PARTICIPLE, Some(PRESENT), None)) ++

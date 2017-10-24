@@ -167,9 +167,9 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 			val (clr, text) = verbType match {
 
-				case (_, _, Some(Pronoun(_, _, SINGULAR, str))) =>	RED -> s"S${str.charAt(0)}"
-				case (_, _, Some(Pronoun(_, _, PLURAL, str))) 	=>	RED -> s"P${str.charAt(0)}"
-				case (_, _, None) 															=>	GRAY ->"S1"
+				case (_, _, Some(Pronoun(SINGULAR, p))) =>	RED -> s"S$p"
+				case (_, _, Some(Pronoun(PLURAL,   p))) =>	RED -> s"P$p"
+				case (_, _, None) 											=>	GRAY ->"S1"
 			}
 
 			val tvVerbPronoun = rowView.findViewById(R.id.tvVerbPronoun).asInstanceOf[TextView]

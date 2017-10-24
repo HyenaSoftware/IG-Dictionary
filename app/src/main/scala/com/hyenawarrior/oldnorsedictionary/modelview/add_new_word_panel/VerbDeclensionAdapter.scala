@@ -3,11 +3,9 @@ package com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel
 import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.{Button, TextView}
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun.{unapply => _}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbContext, VerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbContext, VerbClassEnum}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.VerbForm
 import com.hyenawarrior.oldnorsedictionary.modelview.CustomAdapter

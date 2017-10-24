@@ -30,21 +30,21 @@ class VerbTest
 		assertEquals("takinn", 	verbFrom(svStemPF, Some(PAST), 		PARTICIPLE).strForm)
 		assertEquals("takandi", verbFrom(svStemPR, Some(PRESENT), PARTICIPLE).strForm)
 
-		assertEquals("tek", 		verbFrom(svStemPR, Pronoun.SG_1, 			PRESENT,	INDICATIVE).strForm)
-		assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_2,			PRESENT,	INDICATIVE).strForm)
-		assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_3_MASC, PRESENT,	INDICATIVE).strForm)
+		assertEquals("tek", 		verbFrom(svStemPR, Pronoun.SG_1, PRESENT,	INDICATIVE).strForm)
+		assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_2, PRESENT,	INDICATIVE).strForm)
+		assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_3, PRESENT,	INDICATIVE).strForm)
 
-		assertEquals("tökum", 	verbFrom(svStemPR, Pronoun.PL_1, 			PRESENT,	INDICATIVE).strForm)
-		assertEquals("takið", 	verbFrom(svStemPR, Pronoun.PL_2, 			PRESENT,	INDICATIVE).strForm)
-		assertEquals("taka",		verbFrom(svStemPR, Pronoun.PL_3_MASC,	PRESENT,	INDICATIVE).strForm)
+		assertEquals("tökum", 	verbFrom(svStemPR, Pronoun.PL_1, PRESENT,	INDICATIVE).strForm)
+		assertEquals("takið", 	verbFrom(svStemPR, Pronoun.PL_2, PRESENT,	INDICATIVE).strForm)
+		assertEquals("taka",		verbFrom(svStemPR, Pronoun.PL_3, PRESENT,	INDICATIVE).strForm)
 
-		assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_1, 			PAST, 		INDICATIVE).strForm)
+		assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_1, PAST, 		INDICATIVE).strForm)
 		assertEquals("tókt" /*"tókst"*/, verbFrom(svStemPS, Pronoun.SG_2, PAST,	INDICATIVE).strForm)
-		assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_3_MASC, PAST,			INDICATIVE).strForm)
+		assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_3, PAST,    INDICATIVE).strForm)
 
-		assertEquals("tókum",		verbFrom(svStemPP, Pronoun.PL_1, 			PAST,			INDICATIVE).strForm)
-		assertEquals("tókuð",		verbFrom(svStemPP, Pronoun.PL_2,			PAST,			INDICATIVE).strForm)
-		assertEquals("tóku",		verbFrom(svStemPP, Pronoun.PL_3_MASC, PAST,			INDICATIVE).strForm)
+		assertEquals("tókum",		verbFrom(svStemPP, Pronoun.PL_1, PAST, INDICATIVE).strForm)
+		assertEquals("tókuð",		verbFrom(svStemPP, Pronoun.PL_2, PAST, INDICATIVE).strForm)
+		assertEquals("tóku",		verbFrom(svStemPP, Pronoun.PL_3, PAST, INDICATIVE).strForm)
 	}
 
 	/*
@@ -56,7 +56,7 @@ class VerbTest
   @Test
   def testClass1stConvertFromPlToSg(): Unit = try {
 
-    val srcForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3_FEMN))
+    val srcForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3))
 		val trgForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1))
 
     val verb = StrongVerbContext(STRONG_1ST_CLASS, Map(srcForm -> "bitu"))
@@ -74,7 +74,7 @@ class VerbTest
 	def testClass1stConvertFromSgToPl(): Unit = try {
 
 		val srcForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1))
-		val trgForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3_FEMN))
+		val trgForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3))
 
 		val verb = StrongVerbContext(STRONG_1ST_CLASS, Map(srcForm -> "beit"))
 
@@ -153,11 +153,11 @@ class VerbTest
   @Test
   def testClass3rdChangeFromJa(): Unit = {
 
-    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3_FEMN))
+    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
 
     val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "hjalpa"))
 
-    val verbFormP3 = verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3_FEMN))
+    val verbFormP3 = verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3))
 
     assertEquals("helpr", verbFormP3.strForm)
   }
@@ -166,11 +166,11 @@ class VerbTest
   @Test
   def testClass3rdChangeToJa(): Unit = {
 
-    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3_FEMN))
+    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3))
 
     val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "helpr"))
 
-    val verbFormP3 = verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3_FEMN))
+    val verbFormP3 = verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
 
     assertEquals("hjalpa", verbFormP3.strForm)
   }
@@ -180,14 +180,14 @@ class VerbTest
 
 		val presStem = StrongVerbStem.fromStrRepr("sekkv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
-		assertEquals("søkkr", 	StrongVerb.verbFrom(presStem, Pronoun.SG_3_FEMN, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
-		assertEquals("søkkva", 	StrongVerb.verbFrom(presStem, Pronoun.PL_3_FEMN, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("søkkr", 	StrongVerb.verbFrom(presStem, Pronoun.SG_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("søkkva", 	StrongVerb.verbFrom(presStem, Pronoun.PL_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 
 		val pastSgStem = StrongVerbStem.fromStrRepr("sakkv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
-		assertEquals("sökk", 	StrongVerb.verbFrom(pastSgStem, Pronoun.SG_3_FEMN, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("sökk", 	StrongVerb.verbFrom(pastSgStem, Pronoun.SG_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 
 		val pastPlStem = StrongVerbStem.fromStrRepr("sukk", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
-		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3_FEMN, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 	}
 
 	/*

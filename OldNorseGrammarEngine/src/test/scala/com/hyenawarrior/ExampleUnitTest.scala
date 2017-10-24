@@ -83,20 +83,20 @@ class ExampleUnitTest
 		assertEquals("brenna", 		verbFrom(stem, None, 					INFINITIVE).strForm)
 		assertEquals("brennandi", verbFrom(stem, Some(PRESENT), PARTICIPLE).strForm)
 
-		assertEquals("brenn", 		verbFrom(stem, Pronoun.SG_1, 		PRESENT, INDICATIVE).strForm)
-		assertEquals("brennr", 		verbFrom(stem, Pronoun.SG_2, 		PRESENT, INDICATIVE).strForm)
-		assertEquals("brennr", 		verbFrom(stem, Pronoun.SG_3_MASC, PRESENT,	INDICATIVE).strForm)
+		assertEquals("brenn", 		verbFrom(stem, Pronoun.SG_1, PRESENT, INDICATIVE).strForm)
+		assertEquals("brennr", 		verbFrom(stem, Pronoun.SG_2, PRESENT, INDICATIVE).strForm)
+		assertEquals("brennr", 		verbFrom(stem, Pronoun.SG_3, PRESENT,	INDICATIVE).strForm)
 
-		assertEquals("brennum", 	verbFrom(stem, Pronoun.PL_1,			 		PRESENT, INDICATIVE).strForm)
-		assertEquals("brennið", 	verbFrom(stem, Pronoun.PL_2,			 		PRESENT, INDICATIVE).strForm)
-		assertEquals("brenna",		verbFrom(stem, Pronoun.PL_3_MASC,  		PRESENT, INDICATIVE).strForm)
+		assertEquals("brennum", 	verbFrom(stem, Pronoun.PL_1,  PRESENT, INDICATIVE).strForm)
+		assertEquals("brennið", 	verbFrom(stem, Pronoun.PL_2,	PRESENT, INDICATIVE).strForm)
+		assertEquals("brenna",		verbFrom(stem, Pronoun.PL_3,  PRESENT, INDICATIVE).strForm)
 
-		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_1, 				PAST, INDICATIVE).strForm)
-		assertEquals("brannt", 		verbFrom(stemPS, Pronoun.SG_2,		 		PAST, INDICATIVE).strForm)
-		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_3_MASC,		PAST, INDICATIVE).strForm)
+		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_1,  PAST, INDICATIVE).strForm)
+		assertEquals("brannt", 		verbFrom(stemPS, Pronoun.SG_2,	PAST, INDICATIVE).strForm)
+		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_3,	PAST, INDICATIVE).strForm)
 
-		assertEquals("brunnum", 	verbFrom(stemPP, Pronoun.PL_1,			PAST, INDICATIVE).strForm)
-		assertEquals("brunnuð", 	verbFrom(stemPP, Pronoun.PL_2,			PAST, INDICATIVE).strForm)
-		assertEquals("brunnu",		verbFrom(stemPP, Pronoun.PL_3_MASC, PAST, INDICATIVE).strForm)
+		assertEquals("brunnum", 	verbFrom(stemPP, Pronoun.PL_1,	PAST, INDICATIVE).strForm)
+		assertEquals("brunnuð", 	verbFrom(stemPP, Pronoun.PL_2,	PAST, INDICATIVE).strForm)
+		assertEquals("brunnu",		verbFrom(stemPP, Pronoun.PL_3,  PAST, INDICATIVE).strForm)
 	}
 }

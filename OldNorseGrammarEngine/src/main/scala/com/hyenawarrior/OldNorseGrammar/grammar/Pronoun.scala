@@ -7,27 +7,27 @@ import com.hyenawarrior.auxiliary.EnumLike
 /**
 	* Created by HyenaWarrior on 2017.03.01..
 	*/
-case class Pronoun(str: String, cs: Case, number: GNumber, person: String)
+case class Pronoun(number: GNumber, person: Int)
 {
-	Pronoun.add(str -> this)
+	Pronoun.add((number, person) -> this)
+
+  override def toString: String = s"$ordinal person $number"
+
+  private def ordinal = person match {
+
+    case 1 => "1st"
+    case 2 => "2nd"
+    case 3 => "3rd"
+  }
 }
 
-object Pronoun extends EnumLike[String, Pronoun]
+object Pronoun extends EnumLike[(GNumber, Int), Pronoun]
 {
-	val SG_1 			= Pronoun("Ek", NOMINATIVE, SINGULAR, "1st")
-	val SG_2			= Pronoun("Þú", NOMINATIVE, SINGULAR, "2nd")
+	val SG_1 = Pronoun(SINGULAR, 1)
+	val SG_2 = Pronoun(SINGULAR, 2)
+	val SG_3 = Pronoun(SINGULAR, 3)
 
-	val SG_3_MASC = Pronoun("Hann", NOMINATIVE, SINGULAR, "3rd")
-	val SG_3_FEMN = Pronoun("Hon", 	NOMINATIVE, SINGULAR, "3rd")
-	val SG_3_NEUT = Pronoun("Þat", 	NOMINATIVE, SINGULAR, "3rd")
-
-	val DL_1 = Pronoun("Vit", NOMINATIVE, PLURAL, "1st")
-	val DL_2 = Pronoun("Þit", NOMINATIVE, PLURAL, "2nd")
-
-	val PL_1 = Pronoun("Vér", NOMINATIVE, PLURAL, "1st")
-	val PL_2 = Pronoun("Þér", NOMINATIVE, PLURAL, "2nd")
-
-	val PL_3_MASC = Pronoun("Þeir", NOMINATIVE, PLURAL, "3rd")
-	val PL_3_FEMN = Pronoun("Þaer", NOMINATIVE, PLURAL, "3rd")
-	val PL_3_NEUT = Pronoun("Þau", 	NOMINATIVE, PLURAL, "3rd")
+	val PL_1 = Pronoun(PLURAL, 1)
+	val PL_2 = Pronoun(PLURAL, 2)
+	val PL_3 = Pronoun(PLURAL, 3)
 }
