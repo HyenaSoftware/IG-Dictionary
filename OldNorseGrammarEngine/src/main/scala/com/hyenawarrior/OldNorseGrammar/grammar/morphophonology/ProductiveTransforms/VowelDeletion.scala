@@ -14,7 +14,7 @@ object VowelDeletion {
 
     val filteredStream = stream.filter {
 
-      case (Vowel(prop, SHORT), Vowel(qroq, LONG)) if prop!=qroq => false
+      case (Vowel(prop, SHORT), Vowel(qroq, LONG)) => prop!=qroq
       case _ => true
     }
 
