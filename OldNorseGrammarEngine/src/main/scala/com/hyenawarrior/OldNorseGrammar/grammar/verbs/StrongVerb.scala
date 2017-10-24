@@ -166,43 +166,29 @@ object StrongVerb {
   def verbFrom(stem: CommonStrongVerbStem, verbType: VerbType): StrongVerb = verbType match {
 
 		case (mood: FinitiveMood, Some(tense), Some(pronoun)) =>
-      val transforms: Seq[String => String] = Seq(
-        inflect(verbType)
-        // execute custom non-productive transformations
-        , applyNonProductiveRules(verbType)
-        // execute all productive transformations
-        , applyProductiveTransformations)
+      val str: String = inflect(verbType, stem.stringForm())
 
-      val stemStr = stem.stringForm()
-
-      val str = transforms.foldLeft(stemStr)((s, f) => f(s))
       FinitiveStrongVerb(str, stem, pronoun, tense, mood)
 
-    case (INFINITIVE, _, None)	=>	infinitiveVerbFrom(stem)
+    case (mood: NonFinitiveMood, optTense, None) =>
+      val strRepr = inflect(verbType, stem.stringForm())
 
-    case (VerbModeEnum.PARTICIPLE, optTense @ Some(_), None) =>
-      val vt = toNonFiniteVerbType(optTense, VerbModeEnum.PARTICIPLE)
-      val stemStr = stem.stringForm()
-      val strRepr = inflect(verbType)(stemStr)
-
-      NonFinitiveStrongVerb(strRepr, stem,	vt)
+      NonFinitiveStrongVerb(strRepr, stem, toNonFiniteVerbType(optTense, mood))
 	}
 
-  private def inflect(verbType: VerbType)(str: String): String = str + inflectionFor(verbType)
+  private def inflect(verbType: VerbType, stemStr: String): String = {
 
-	private def infinitiveVerbFrom(stem: CommonStrongVerbStem): StrongVerb = {
+    val transforms: Seq[String => String] = Seq(
+      s => s + inflectionFor(verbType)
+      // execute custom non-productive transformations
+      , applyNonProductiveRules(verbType)
+      // execute all productive transformations
+      , SemivowelDeletion(_))
 
-		val lastChar = stem.stringForm().last
-		val strRepr = lastChar match
-		{
-			case 'á' => stem.stringForm()
-			case _ => stem.stringForm :+ 'a'
-		}
-
-    NonFinitiveStrongVerb(strRepr, stem, NonFinitiveVerbType.INFINITIVE)
+    transforms.foldLeft(stemStr)((s, f) => f(s))
   }
 
-	private def uninflect(strRepr: String, verbClass: StrongVerbClassEnum, optTense: Option[VerbTenseEnum]
+  private def uninflect(strRepr: String, verbClass: StrongVerbClassEnum, optTense: Option[VerbTenseEnum]
     , mood: NonFinitiveMood, stemType: EnumVerbStem): CommonStrongVerbStem = {
 
 		val inflection = inflectionFor(optTense, mood)
@@ -292,6 +278,4 @@ object StrongVerb {
     case (INDICATIVE, Some(PRESENT), Some(Pronoun(SINGULAR, _))) => Explicit_I_Umlaut.forceApply(str)
     case _ => str
   }
-
-  private def applyProductiveTransformations(str: String): String = SemivowelDeletion(str)
 }
