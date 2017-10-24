@@ -4,7 +4,7 @@ import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, AblautGrade, StaticAblaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, AblautGrade, StaticAblaut, StemTransform}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 
@@ -25,6 +25,7 @@ abstract class CommonStrongVerbStem(root: Root, verbClass: StrongVerbClassEnum, 
 
   private def applyPhonologicalChanges(stemRepr: String): String = verbClass match {
 
+    case STRONG_2ND_CLASS => JuToJo(stemRepr)
     case STRONG_3RD_CLASS => EToJa(stemRepr)
     case _ => stemRepr
   }
@@ -101,6 +102,8 @@ object StrongVerbStem {
 		case (STRONG_7TH_CLASS, _) =>
 			val ablaut = Ablaut.getAblautGradeFrom(stemStr)
 			StrongVerbStemClass7th(Root(stemStr), stemType, ablaut)
+
+    case (STRONG_2ND_CLASS, JuToJo(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
 
       // normalize stem before processing it
 		case (STRONG_3RD_CLASS, EToJa(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)

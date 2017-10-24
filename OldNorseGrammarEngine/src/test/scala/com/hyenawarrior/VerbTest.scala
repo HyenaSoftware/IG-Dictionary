@@ -125,6 +125,18 @@ class VerbTest
 	}
 
   @Test
+  def testClass3rdFromJaStemFromPastTense(): Unit = {
+
+    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3))
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "halp"))
+
+    assertEquals("hjalpa", 	verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
+    assertEquals("help", 		verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("hjölpum",	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.PL_1)).strForm)
+  }
+
+  @Test
   def testClass3rdChangeFromJa(): Unit = {
 
     val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
