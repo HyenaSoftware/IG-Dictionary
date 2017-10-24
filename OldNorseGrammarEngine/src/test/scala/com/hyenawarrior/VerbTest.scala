@@ -66,9 +66,11 @@ class VerbTest
 	@Test
 	def testClass2ndUseJuForPresent(): Unit = {
 
-		val stem = StrongVerbStem.fromStrRepr("kraup", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3))
 
-		val verbform = StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE)
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "kraup"))
+
+		val verbform = verb.verbForms((VerbModeEnum.INFINITIVE, None, None))
 
 		assertEquals("krjúpa", verbform.strForm)
 	}
@@ -76,9 +78,11 @@ class VerbTest
 	@Test
 	def testClass2ndChangeToJoForPresent(): Unit = {
 
-		val stem = StrongVerbStem.fromStrRepr("skaut", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3))
 
-		val verbform = StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE)
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "skaut"))
+
+		val verbform = verb.verbForms((VerbModeEnum.INFINITIVE, None, None))
 
 		assertEquals("skjóta", verbform.strForm)
 	}
