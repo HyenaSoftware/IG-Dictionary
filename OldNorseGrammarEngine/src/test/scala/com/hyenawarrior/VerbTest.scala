@@ -176,6 +176,17 @@ class VerbTest
 		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 	}
 
+  @Test
+  def testClass3rdSongva(): Unit = {
+
+    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "syngva"))
+
+    assertEquals("syngr", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)))
+    assertEquals("sǫng",    verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)))
+  }
+
 	/*
 		Class 4th
 		PRESENT		PAST-SG		PAST-PL		PERFECT

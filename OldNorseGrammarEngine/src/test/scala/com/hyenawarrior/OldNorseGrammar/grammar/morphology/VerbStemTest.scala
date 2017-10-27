@@ -58,4 +58,15 @@ class VerbStemTest {
     // stem will be decaying to...
     Assert.assertEquals("hjalp", stemObj.stringForm())
 	}
+
+  @Test
+  def testVerbStemClass3Songva(): Unit = {
+
+    val stemObj = StrongVerbStem(Root("sengv"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+
+    val StrongVerbStem(root, _, _) = stemObj
+
+    // stem will be decaying to...
+    Assert.assertEquals("singv", stemObj.stringForm())
+  }
 }
