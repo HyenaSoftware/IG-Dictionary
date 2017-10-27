@@ -58,7 +58,7 @@ class U_Umlaut extends Umlaut
 	def getMapping(syllableIsStressed: Boolean) = if(syllableIsStressed) umlautTransformStressed else umlautTransformUnstressed
 
 	private val umlautTransformStressed = Map(
-		"a" -> "ö",
+		"a" -> "ǫ",
 		"e" -> "ø",
 		"é" -> "œ",
 		"i" -> "y",
@@ -83,7 +83,7 @@ class I_Umlaut extends Umlaut // 'with Explicit' should be here
 		"á" -> "æ",
 		"o" -> "ø",
 		"ó" -> "œ",
-		"ö" -> "ø",
+		"ǫ" -> "ø",
 		"u" -> "y",
 		"ú" -> "ý",
 		"au" -> "ey"

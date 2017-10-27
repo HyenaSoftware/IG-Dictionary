@@ -85,8 +85,8 @@ class SoundexTest
 		checkSoundexQuality(Array(
 			"maðr",			"mann",		"manni",		"manns",
 			"maðrinn",	"mannin",	"manninum",	"mannsins",
-			"menn",			"menn",		"mönnum",		"manna",
-			"menninir",	"mennina","mönnunum",	"mannanna")
+			"menn",			"menn",		"mǫnnum",		"manna",
+			"menninir",	"mennina","mǫnnunum",	"mannanna")
 		)
 	}
 
@@ -99,10 +99,10 @@ class SoundexTest
 			"kalla",		"kallandi",	"kallaðr",
 			// ind
 			"kalla",		"kallar",		"kallar",
-			"köllum",		"kallið",		"kalla",
+			"kǫllum",		"kallið",		"kalla",
 			// ind-pret
 			"kallaða",	"kallaðir",	"kallaði",
-			"kölluðum",	"kölluðuð",	"kölluðu",
+			"kǫlluðum",	"kǫlluðuð",	"kǫlluðu",
 			// subj
 			"kalla",		"kallir",		"kallir",
 			"kallim",		"kallið",		"kalli",

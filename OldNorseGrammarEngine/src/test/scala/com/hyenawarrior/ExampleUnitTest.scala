@@ -43,7 +43,7 @@ class ExampleUnitTest
 
     val w = Word(mp)
 
-    assertEquals("kölludu", w.strForm())
+    assertEquals("kǫlludu", w.strForm())
   }
 
 	@Test

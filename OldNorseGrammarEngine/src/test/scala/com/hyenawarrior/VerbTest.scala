@@ -121,7 +121,7 @@ class VerbTest
 
 		assertEquals("hjalpa", 	StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE).strForm)
 		assertEquals("help", 		StrongVerb.verbFrom(stem, Pronoun.SG_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
-		assertEquals("hjölpum",	StrongVerb.verbFrom(stem, Pronoun.PL_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("hjǫlpum",	StrongVerb.verbFrom(stem, Pronoun.PL_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 	}
 
   @Test
@@ -133,7 +133,7 @@ class VerbTest
 
     assertEquals("hjalpa", 	verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
     assertEquals("help", 		verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("hjölpum",	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("hjǫlpum",	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.PL_1)).strForm)
   }
 
   @Test
@@ -170,7 +170,7 @@ class VerbTest
 		assertEquals("søkkva", 	StrongVerb.verbFrom(presStem, Pronoun.PL_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 
 		val pastSgStem = StrongVerbStem.fromStrRepr("sakkv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
-		assertEquals("sökk", 	StrongVerb.verbFrom(pastSgStem, Pronoun.SG_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("sǫkk", 	StrongVerb.verbFrom(pastSgStem, Pronoun.SG_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 
 		val pastPlStem = StrongVerbStem.fromStrRepr("sukk", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
 		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
@@ -199,7 +199,7 @@ class VerbTest
     assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_2, PRESENT,	INDICATIVE).strForm)
     assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_3, PRESENT,	INDICATIVE).strForm)
 
-    assertEquals("tökum", 	verbFrom(svStemPR, Pronoun.PL_1, PRESENT,	INDICATIVE).strForm)
+    assertEquals("tǫkum", 	verbFrom(svStemPR, Pronoun.PL_1, PRESENT,	INDICATIVE).strForm)
     assertEquals("takið", 	verbFrom(svStemPR, Pronoun.PL_2, PRESENT,	INDICATIVE).strForm)
     assertEquals("taka",		verbFrom(svStemPR, Pronoun.PL_3, PRESENT,	INDICATIVE).strForm)
 

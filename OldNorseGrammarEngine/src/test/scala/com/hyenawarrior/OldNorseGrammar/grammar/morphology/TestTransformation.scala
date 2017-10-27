@@ -20,9 +20,9 @@ class TestTransformation {
 		assertEquals("teli", SemivowelDeletion("telji"))
 		assertEquals("ey", SemivowelDeletion("eyj"))
 		assertEquals("stefs", SemivowelDeletion("stefjs"))
-		assertEquals("höggum", SemivowelDeletion("höggvum"))
-		assertEquals("söng", SemivowelDeletion("söngv"))
-		assertEquals("fölr", SemivowelDeletion("fölvr"))
+		assertEquals("hǫggum", SemivowelDeletion("hǫggvum"))
+		assertEquals("sǫng", SemivowelDeletion("sǫngv"))
+		assertEquals("fǫlr", SemivowelDeletion("fǫlvr"))
 	}
 
   @Test

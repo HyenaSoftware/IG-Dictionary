@@ -118,7 +118,7 @@ package object soundex
 		case _ => str
 	}
 
-	private val VOWELS = "aæáeéiíjoœøóöuúyý" // counts half-vowels too
+	private val VOWELS = "aæáeéiíjoœøóǫuúyý" // counts half-vowels too
 
 	private def removeVowels(str: String): String =
 	{
@@ -133,7 +133,7 @@ package object soundex
 	private def alterVowel(c: Char): Char = c match
 	{
 		case 'í' => 'i'
-		case 'u' | 'ú' | 'y' | 'ý' | 'ö' => 'a'
+		case 'u' | 'ú' | 'y' | 'ý' | 'ǫ' => 'a'
 		case _ => c
 	}
 

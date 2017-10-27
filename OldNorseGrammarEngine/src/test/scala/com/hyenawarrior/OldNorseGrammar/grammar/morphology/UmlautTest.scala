@@ -14,7 +14,7 @@ class UmlautTest {
 
 		val umlautedStr = U_Umlaut("tattattu")
 
-		assertEquals("töttuttu", umlautedStr)
+		assertEquals("tǫttuttu", umlautedStr)
 	}
 
 	@Test
@@ -22,7 +22,7 @@ class UmlautTest {
 
 		val umlautedStr = U_Umlaut("tattattv")
 
-		assertEquals("töttuttv", umlautedStr)
+		assertEquals("tǫttuttv", umlautedStr)
 	}
 
 	@Test
