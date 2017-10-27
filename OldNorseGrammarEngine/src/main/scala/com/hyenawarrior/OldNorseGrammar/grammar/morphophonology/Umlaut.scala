@@ -19,7 +19,9 @@ trait Umlaut extends WordTransformation {
 
 	def unapply(syllables: List[Syllable]): List[Syllable] = {
 
-		val mapping = Seq(true, false).map(b => b -> getMapping(b).map{ case (k, v) => v -> k }).toMap
+    val trigger = triggersIn(syllables.last).headOption
+
+		val mapping = Seq(true, false).map(b => b -> getMapping(b, trigger).map{ case (k, v) => v -> k }).toMap
 
 		syllables.map(sy =>
 		{
@@ -33,7 +35,9 @@ trait Umlaut extends WordTransformation {
 
 	override def forceApply(syllables: List[Syllable]): List[Syllable] = syllables.map(sy =>
 	{
-		val mapping = getMapping(sy.isStressed)
+    val trigger = triggersIn(syllables.last).headOption
+
+		val mapping = getMapping(sy.isStressed, trigger)
 
 		val nc1 = sy.nucleus.filterNot(isSemivowel)
 		val nc2 =	mapping.getOrElse(nc1, nc1)
@@ -42,41 +46,51 @@ trait Umlaut extends WordTransformation {
 		Syllable(newStr, sy.isStressed)
 	})
 
-	override def isEligible(syllables: List[Syllable]): Boolean =	{
+	override def isEligible(syllables: List[Syllable]): Boolean = triggersIn(syllables.last).nonEmpty
 
-		val letters = syllables.last.letters
-		triggers.exists(letters.contains(_))
-	}
+  private def triggersIn(syllable: Syllable): Seq[Char] = {
+
+    val letters = syllable.letters
+
+    letters.filter(triggers.contains)
+  }
 
 	protected val triggers: Seq[Char]
 
-	protected def getMapping(syllableIsStressed: Boolean): Map[String, String]
+	protected def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]): Map[String, String]
 }
 
 class U_Umlaut extends Umlaut
 {
-	def getMapping(syllableIsStressed: Boolean) = if(syllableIsStressed) umlautTransformStressed else umlautTransformUnstressed
+	def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]) = if(syllableIsStressed)
+    trigger match {
+      case Some('v') => vAugmentedTransformation
+      case _ => umlautTransformStressed
+    }
+    else umlautTransformUnstressed
 
-	private val umlautTransformStressed = Map(
-		"a" -> "ǫ",
-		"e" -> "ø",
-		"é" -> "œ",
-		"i" -> "y",
-		"í" -> "ý"
-	)
+	protected val umlautTransformStressed = Map("a" -> "ǫ")
 
 	private val umlautTransformUnstressed = Map("a" -> "u")
 
 	override val triggers = Seq('u', 'v')
 
 	override def toString = "U-umlaut"
+
+  private val vAugmentedTransformation = Map(
+    "a" -> "ǫ",
+    "e" -> "ø",
+    "é" -> "œ",
+    "i" -> "y",
+    "í" -> "ý"
+  )
 }
 
-class I_Umlaut extends Umlaut // 'with Explicit' should be here
-{
+object Explicit_I_Umlaut extends Umlaut with Explicit {
+
 	override val triggers = Seq('i', 'j')	// probably it's also pointless. Yeah, as I-umlaut is non-productive
 
-	def getMapping(syllableIsStressed: Boolean) = umlautTransformation
+	def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]) = umlautTransformation
 
 	private val umlautTransformation = Map(
 		"a" -> "e",
@@ -93,5 +107,4 @@ class I_Umlaut extends Umlaut // 'with Explicit' should be here
 }
 
 object U_Umlaut extends U_Umlaut
-object Explicit_I_Umlaut extends I_Umlaut with Explicit
 object Explicit_U_Umlaut extends U_Umlaut with Explicit
