@@ -1,7 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowel
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowelOrSemivowel
 
 /**
 	* Created by HyenaWarrior on 2017.03.01..
@@ -63,7 +63,7 @@ object Syllables {
 
 		// kas-ta, kal-la-ði
 		// 14, 146
-		val vowelIndicies: List[Int] = word.zipWithIndex.filter{ case (c, _) => isVowel(c) }.map(_._2).toList
+		val vowelIndicies: List[Int] = word.zipWithIndex.filter{ case (c, _) => isVowelOrSemivowel(c) }.map(_._2).toList
 
 		// eliminate vowel sequences: haus-t, 23 -> 2
 		val vowelIndiciesReduced = reduce(vowelIndicies)
