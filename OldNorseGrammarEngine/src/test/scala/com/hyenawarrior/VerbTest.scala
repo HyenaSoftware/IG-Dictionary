@@ -124,6 +124,19 @@ class VerbTest
 		assertEquals("hjǫlpum",	StrongVerb.verbFrom(stem, Pronoun.PL_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 	}
 
+  /** Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr. */
+  @Test
+  def testClass3rdFromDoNotChangeStemToJa(): Unit = {
+
+    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3))
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "verðr"))
+
+    assertEquals("verða", verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
+    assertEquals("varð", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("urðu",	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.PL_3)).strForm)
+  }
+
   @Test
   def testClass3rdFromJaStemFromPastTense(): Unit = {
 
@@ -170,10 +183,10 @@ class VerbTest
 		assertEquals("søkkva", 	StrongVerb.verbFrom(presStem, Pronoun.PL_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 
 		val pastSgStem = StrongVerbStem.fromStrRepr("sakkv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
-		assertEquals("sǫkk", 	StrongVerb.verbFrom(pastSgStem, Pronoun.SG_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("sǫkk", 	StrongVerb.verbFrom(pastSgStem, Pronoun.SG_3, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE).strForm)
 
 		val pastPlStem = StrongVerbStem.fromStrRepr("sukk", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
-		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE).strForm)
 	}
 
   @Test

@@ -3,7 +3,8 @@ package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Ablaut
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
+import org.junit.Assert._
 import org.junit.{Assert, Test}
 
 /**
@@ -68,5 +69,14 @@ class VerbStemTest {
 
     // stem will be decaying to...
     Assert.assertEquals("singv", stemObj.stringForm())
+  }
+
+  /** Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr. */
+  @Test
+  def testClass3rdFromDoNotChangeStemToJa(): Unit = {
+
+    val presentStemObj = StrongVerbStem(Root("verð"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+
+    assertEquals("verð", 	presentStemObj.stringForm())
   }
 }
