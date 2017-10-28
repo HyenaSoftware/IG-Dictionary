@@ -8,22 +8,22 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
   */
 trait Umlaut extends WordTransformation {
 
-	def unapply(str: String): String = {
+	def unapply(str: String): Option[String] = {
 
 		val Syllables(syllables) = str
 
-		val newSyllables = unapply(syllables)
+		val optNewSyllables = unapply(syllables)
 
-		newSyllables.map(_.letters).reduce[String]{ case(a, b) => a + b }
+		optNewSyllables.map(_.flatMap(_.letters).mkString)
 	}
 
-	def unapply(syllables: List[Syllable]): List[Syllable] = {
+	def unapply(syllables: List[Syllable]): Option[List[Syllable]] = {
 
     val trigger = triggersIn(syllables.last).headOption
 
 		val mapping = Seq(true, false).map(b => b -> getMapping(b, trigger).map{ case (k, v) => v -> k }).toMap
 
-		syllables.map(sy =>
+		val newSyllables = syllables.map(sy =>
 		{
 			val nc1 = sy.nucleus
 			val nc2 =	mapping(sy.isStressed).getOrElse(nc1, nc1)
@@ -31,9 +31,11 @@ trait Umlaut extends WordTransformation {
 
 			Syllable(newStr, sy.isStressed)
 		})
+
+    Some(newSyllables)
 	}
 
-	override def forceApply(syllables: List[Syllable]): List[Syllable] = syllables.map(sy =>
+	override def apply(syllables: List[Syllable]): List[Syllable] = syllables.map(sy =>
 	{
     val trigger = triggersIn(syllables.last).headOption
 
@@ -46,7 +48,7 @@ trait Umlaut extends WordTransformation {
 		Syllable(newStr, sy.isStressed)
 	})
 
-	override def isEligible(syllables: List[Syllable]): Boolean = triggersIn(syllables.last).nonEmpty
+	override def canTransform(syllables: List[Syllable]): Boolean = triggersIn(syllables.last).nonEmpty
 
   private def triggersIn(syllable: Syllable): Seq[Char] = {
 

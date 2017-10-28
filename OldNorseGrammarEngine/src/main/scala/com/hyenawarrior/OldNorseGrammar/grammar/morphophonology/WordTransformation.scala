@@ -7,7 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
   */
 trait WordTransformation {
 
-	final def apply(str: String): String = {
+	def apply(str: String): String = {
 
     val Syllables(syllables) = str
 
@@ -16,26 +16,19 @@ trait WordTransformation {
     newSyllables.flatMap(_.letters).mkString
   }
 
-	final def apply(syllables: List[Syllable]): List[Syllable] = {
+	def apply(syllables: List[Syllable]): List[Syllable]
 
-		if(isEligible(syllables)) forceApply(syllables) else syllables
-	}
+  def canTransform(str: String): Boolean = {
 
-	final def forceApply(str: String): String = {
+    val Syllables(syllables) = str
 
-		val Syllables(syllables) = str
-
-		val newSyllables = forceApply(syllables)
-
-    newSyllables.flatMap(_.letters).mkString
+    canTransform(syllables)
   }
 
-	def forceApply(syllables: List[Syllable]): List[Syllable]
-
-  def isEligible(syllables: List[Syllable]): Boolean
+  def canTransform(syllables: List[Syllable]): Boolean
 }
 
 trait Explicit extends WordTransformation
 {
-	override def isEligible(syllables: List[Syllable]): Boolean = true
+	override def canTransform(syllables: List[Syllable]): Boolean = true
 }
