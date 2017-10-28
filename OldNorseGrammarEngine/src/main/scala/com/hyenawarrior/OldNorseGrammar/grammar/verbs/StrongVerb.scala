@@ -4,7 +4,7 @@ import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Explicit_I_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{SemivowelDeletion, VowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
@@ -178,13 +178,17 @@ object StrongVerb {
 
   private def inflect(verbType: VerbType, stemStr: String): String = {
 
+    val inflection = inflectionFor(verbType)
+    val isVAugmented = stemStr endsWith "v"
+    val useUUmlaut = (U_Umlaut canTransform inflection) || isVAugmented
+
     val transforms: Seq[String => String] = Seq(
-      s => s + inflectionFor(verbType)
-      // execute custom non-productive transformations
-      , applyNonProductiveRules(verbType)
-      // execute all productive transformations
+      applyNonProductiveRules(verbType)
+      , s => if(useUUmlaut) U_Umlaut(s) else s
+      , _ + inflection
       , SemivowelDeletion(_)
-      , VowelDeletion(_))
+      , VowelDeletion(_)
+    )
 
     transforms.foldLeft(stemStr)((s, f) => f(s))
   }
@@ -212,10 +216,8 @@ object StrongVerb {
         optGrade.get.grades(stemType).occuresIn(verbStrRepr)
     }
 
-    val gnum = pronoun.number
-
-    val strReprWithoutIUmlaut = (gnum, tense) match {
-      case (SINGULAR, PRESENT) if !matchAblautGrade => Explicit_I_Umlaut.unapply(verbStrRepr)
+    val strReprWithoutIUmlaut = (pronoun.number, tense, verbStrRepr) match {
+      case (SINGULAR, PRESENT, Explicit_I_Umlaut(verbStrReprRevI)) if !matchAblautGrade => verbStrReprRevI
       case _ => verbStrRepr
     }
 
@@ -276,7 +278,7 @@ object StrongVerb {
 
   private def applyNonProductiveRules(verbType: VerbType)(str: String): String = verbType match {
 
-    case (INDICATIVE, Some(PRESENT), Some(Pronoun(SINGULAR, _))) => Explicit_I_Umlaut.forceApply(str)
+    case (INDICATIVE, Some(PRESENT), Some(Pronoun(SINGULAR, _))) => Explicit_I_Umlaut(str)
     case _ => str
   }
 }
