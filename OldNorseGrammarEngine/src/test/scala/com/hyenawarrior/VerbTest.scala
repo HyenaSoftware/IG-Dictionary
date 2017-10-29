@@ -204,9 +204,20 @@ class VerbTest
 
     val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "syngva"))
 
-    assertEquals("syngr", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)))
-    assertEquals("sǫng",    verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)))
+		assertEquals("syngva", 	verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
+		assertEquals("syngr", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("sǫng",    verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
   }
+
+	@Test
+	def testClass3rdUmlautedAblautExtraction(): Unit = {
+
+		val verb = StrongVerb.fromStringRepr("syngva", VerbClassEnum.STRONG_3RD_CLASS, (VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3)))
+
+		val StrongVerb(verbStem) = verb
+
+		assertEquals("singv", verbStem.stringForm())
+	}
 
 	/*
 		Class 4th
