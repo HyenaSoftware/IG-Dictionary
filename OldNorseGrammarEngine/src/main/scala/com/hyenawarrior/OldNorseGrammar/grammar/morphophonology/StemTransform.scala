@@ -1,6 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant.isConsonant
 
 /**
 	* Created by HyenaWarrior on 2017.10.20..
@@ -18,36 +19,48 @@ object StemTransform {
     protected def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String]
   }
 
-  object EToJa extends Transformation {
+	object EToJa extends Transformation {
 
 		// assume that a stem has only one syllable (?)
-    val SRC_NUCLEUS: String = "e"
-    val DST_NUCLEUS: String = "ja"
+		val SRC_NUCLEUS: String = "e"
+		val DST_NUCLEUS: String = "ja"
 
 		override def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String] = {
 
-			val idxOfJa = stemStr.indexOf(nucleus)
+			val idxOfJa =	stemStr indexOf nucleus
+			if(idxOfJa == -1) return None
+
 			val idxOfNucleusEnd = idxOfJa + nucleus.length
+			val onset = stemStr.substring(0, idxOfJa)
+			val coda = stemStr substring idxOfNucleusEnd
 
-			if (isEligible(stemStr, idxOfNucleusEnd)) {
+			if (!isEligible(onset, coda)) return None
 
-				val onset = stemStr.substring(0, idxOfJa)
-				val coda = stemStr.substring(idxOfNucleusEnd)
-
-				Some(onset + newNucleus + coda)
-
-			} else None
+			Some(onset + newNucleus + coda)
 		}
 
-		private def isEligible(stemStr: String, idxOfNucleusEnd: Int): Boolean = (stemStr.length > idxOfNucleusEnd + 1) && {
+		/**
+		https://lrc.la.utexas.edu/eieol/norol/20#grammar_1398
+			https://lrc.la.utexas.edu/eieol/norol/60#grammar_1454
 
-			val clusterFirstCons = stemStr.charAt(idxOfNucleusEnd)
-			val clusterSecondCons = stemStr.charAt(idxOfNucleusEnd + 1)
+			> This rule only applies to [the infinitive and present plural forms]* of verbs whose stem ends in
+			a consonant cluster beginning with l or r.
+			> Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr.
 
-			val firstIsLR = "lr" contains clusterFirstCons
-			val secondIsCons = Consonant.isConsonant(clusterSecondCons)
+			* Sg 1-3 has I-umlaut, that reverses -ja- to -e- with the help of semivowel-deletion.
+			  So I assume that it's applied to the whole present stem.
+			*/
+		private def isEligible(onset: String, coda: String): Boolean = {
 
-			firstIsLR && secondIsCons
+			val prevCons = onset.lastOption.getOrElse(' ')
+			val clusterFirstCons = coda.charAt(0)
+			val clusterSecondCons = coda.charAt(1)
+
+			val firstIsVLR = "vlr" contains prevCons
+			val secondIsLR = "lr" contains clusterFirstCons
+			val thirdIsCons = isConsonant(clusterSecondCons)
+
+			!firstIsVLR && secondIsLR && thirdIsCons
 		}
 	}
 
