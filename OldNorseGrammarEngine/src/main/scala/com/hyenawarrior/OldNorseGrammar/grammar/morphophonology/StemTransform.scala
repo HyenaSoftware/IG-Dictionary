@@ -12,10 +12,10 @@ object StemTransform {
     protected val SRC_NUCLEUS: String
     protected val DST_NUCLEUS: String
 
-    def apply(stemStr: String): String = transform(stemStr, SRC_NUCLEUS, DST_NUCLEUS)
-    def unapply(stemStr: String): Option[String] = Some(transform(stemStr, DST_NUCLEUS, SRC_NUCLEUS))
+    final def apply(stemStr: String): Option[String] = transform(stemStr, SRC_NUCLEUS, DST_NUCLEUS)
+    final def unapply(stemStr: String): Option[String] = transform(stemStr, DST_NUCLEUS, SRC_NUCLEUS)
 
-    protected def transform(stemStr: String, nucleus: String, newNucleus: String): String
+    protected def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String]
   }
 
   object EToJa extends Transformation {
@@ -24,7 +24,7 @@ object StemTransform {
     val SRC_NUCLEUS: String = "e"
     val DST_NUCLEUS: String = "ja"
 
-		protected def transform(stemStr: String, nucleus: String, newNucleus: String): String = {
+		override def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String] = {
 
 			val idxOfJa = stemStr.indexOf(nucleus)
 			val idxOfNucleusEnd = idxOfJa + nucleus.length
@@ -34,9 +34,9 @@ object StemTransform {
 				val onset = stemStr.substring(0, idxOfJa)
 				val coda = stemStr.substring(idxOfNucleusEnd)
 
-				onset + newNucleus + coda
+				Some(onset + newNucleus + coda)
 
-			} else stemStr
+			} else None
 		}
 
 		private def isEligible(stemStr: String, idxOfNucleusEnd: Int): Boolean = (stemStr.length > idxOfNucleusEnd + 1) && {
@@ -56,7 +56,7 @@ object StemTransform {
     protected val SRC_NUCLEUS: String = "jú"
     protected val DST_NUCLEUS: String = "jó"
 
-    protected def transform(stemStr: String, nucleus: String, newNucleus: String): String = {
+    protected def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String] = {
 
       val idxOfNucleus = stemStr.indexOf(nucleus)
       val idxOfNucleusEnd = idxOfNucleus + nucleus.length
@@ -66,9 +66,9 @@ object StemTransform {
         val onset = stemStr.substring(0, idxOfNucleus)
         val coda  = stemStr.substring(idxOfNucleusEnd)
 
-        onset + newNucleus + coda
+        Some(onset + newNucleus + coda)
 
-      } else stemStr
+      } else None
     }
 
     private def isEligible(stemStr: String, idxOfNucleusEnd: Int): Boolean = (stemStr.length > idxOfNucleusEnd) && {

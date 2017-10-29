@@ -28,40 +28,40 @@ class TestTransformation {
   @Test
   def testJuToJoAtClass2Verbs(): Unit = {
 
-    assertEquals("brjóta",  StemTransform.JuToJo("brjúta"))
-    assertEquals("ljóta",   StemTransform.JuToJo("ljúta"))
-    assertEquals("skjóta",  StemTransform.JuToJo("skjúta"))
-    assertEquals("bjóða",   StemTransform.JuToJo("bjúða"))
+    assertEquals("brjóta",  StemTransform.JuToJo("brjúta").getOrElse("brjúta"))
+    assertEquals("ljóta",   StemTransform.JuToJo("ljúta").getOrElse("ljúta"))
+    assertEquals("skjóta",  StemTransform.JuToJo("skjúta").getOrElse("skjúta"))
+    assertEquals("bjóða",   StemTransform.JuToJo("bjúða").getOrElse("bjúða"))
   }
 
   @Test
   def testNotChangeJuToJoAtClass2Verbs(): Unit = {
 
-    assertEquals("fljúga",  StemTransform.JuToJo("fljúga"))
-    assertEquals("smjúga",  StemTransform.JuToJo("smjúga"))
-    assertEquals("krjúpa",  StemTransform.JuToJo("krjúpa"))
+    assertEquals("fljúga",  StemTransform.JuToJo("fljúga").getOrElse("fljúga"))
+    assertEquals("smjúga",  StemTransform.JuToJo("smjúga").getOrElse("smjúga"))
+    assertEquals("krjúpa",  StemTransform.JuToJo("krjúpa").getOrElse("krjúpa"))
   }
 
 	@Test
 	def testEToJaAtClass3Verbs(): Unit = {
 
-		assertEquals("gjald", StemTransform.EToJa("geld"))
-		assertEquals("sjarf", StemTransform.EToJa("serf"))
-		assertEquals("gemd", StemTransform.EToJa("gemd"))
+		assertEquals("gjald", StemTransform.EToJa("geld").getOrElse("geld"))
+		assertEquals("sjarf", StemTransform.EToJa("serf").getOrElse("serf"))
+		assertEquals("gemd", StemTransform.EToJa("gemd").getOrElse("gemd"))
 	}
 
 	@Test
 	def testEToJaAtClass3VerbsReverse(): Unit = {
 
-		assertEquals("geld", StemTransform.EToJa.unapply("gjald").get)
-		assertEquals("gerd", StemTransform.EToJa.unapply("gjard").get)
-		assertEquals("gjamd", StemTransform.EToJa.unapply("gjamd").get)
+		assertEquals("geld", StemTransform.EToJa.unapply("gjald").getOrElse("gjald"))
+		assertEquals("gerd", StemTransform.EToJa.unapply("gjard").getOrElse("gjard"))
+		assertEquals("gjamd", StemTransform.EToJa.unapply("gjamd").getOrElse("gjamd"))
 	}
 
 	@Test
 	def testEToJaAndIUmlautInversion(): Unit = {
 
-		val stemStr = StemTransform.EToJa("geld")
+		val stemStr = StemTransform.EToJa("geld").get
 		val stemStr2 = Explicit_I_Umlaut(stemStr)
 		val stemStr3 = SemivowelDeletion(stemStr2)
 
