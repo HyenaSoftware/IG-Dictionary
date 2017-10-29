@@ -216,17 +216,21 @@ object StrongVerb {
         optGrade.get.grades(stemType).occuresIn(verbStrRepr)
     }
 
-    val strReprWithoutIUmlaut = (pronoun.number, tense, verbStrRepr) match {
-      case (SINGULAR, PRESENT, Explicit_I_Umlaut(verbStrReprRevI)) if !matchAblautGrade => verbStrReprRevI
-      case _ => verbStrRepr
-    }
+		val inflection = inflectionFor(pronoun, tense)
 
-    // remove inflection
-    val inflection = inflectionFor(pronoun, tense)
+		// remove inflection
+		val stemRepr = uninflect(verbStrRepr, inflection)
 
-    val stemRepr = uninflect(strReprWithoutIUmlaut, inflection)
+		// unapply U-umlaut
+		val U_Umlaut(stemRepr2) = stemRepr
 
-    StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
+		// remove non-productive changes
+		val stemRepr3 = (pronoun.number, tense, stemRepr2) match {
+			case (SINGULAR, PRESENT, Explicit_I_Umlaut(verbStrReprRevI)) if !matchAblautGrade => verbStrReprRevI
+			case (_, _, sr) => sr
+		}
+
+    StrongVerbStem.fromStrRepr(stemRepr3, verbClass, stemType)
   }
 
   private def uninflect(strRepr: String, inflection: String): String = {
