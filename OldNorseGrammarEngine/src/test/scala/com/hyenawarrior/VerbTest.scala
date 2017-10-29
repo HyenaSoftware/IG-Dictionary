@@ -141,8 +141,9 @@ class VerbTest
     val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "verðr"))
 
     assertEquals("verða", verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
-    assertEquals("varð", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("urðu",	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.PL_3)).strForm)
+		assertEquals("verð", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("varð", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("urðu",	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3)).strForm)
   }
 
   @Test
