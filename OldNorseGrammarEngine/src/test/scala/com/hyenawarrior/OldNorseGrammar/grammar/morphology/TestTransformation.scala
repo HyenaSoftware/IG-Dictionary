@@ -69,6 +69,13 @@ class TestTransformation {
 		assertEquals("geld", stemStr3)
 	}
 
+	/** Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr. */
+	@Test
+	def testDoNotBreak(): Unit = {
+
+		assertEquals("verða", StemTransform.EToJa("verða").getOrElse("verða"))
+	}
+
   @Test
   def testVowelDeletion(): Unit = {
 
