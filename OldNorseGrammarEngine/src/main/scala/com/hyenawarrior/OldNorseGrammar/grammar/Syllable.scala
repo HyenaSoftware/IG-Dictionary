@@ -9,5 +9,5 @@ case class Syllable(letters: String, stressed: Boolean)
 {
 	def isStressed = stressed
 
-	def nucleus: String = letters filter isVowelOrSemivowel
+	def nucleus: String = letters filter isVowelOrSemivowel filter (_!='v')
 }

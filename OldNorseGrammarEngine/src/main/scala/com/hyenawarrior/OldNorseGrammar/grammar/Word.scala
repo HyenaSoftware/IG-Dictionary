@@ -67,7 +67,14 @@ object Syllables {
 
 		// kas-ta, kal-la-ði
 		// 14, 146
-		val vowelIndicies: List[Int] = word.zipWithIndex.filter{ case (c, _) => isVowelOrSemivowel(c) }.map(_._2).toList
+		val vowelIndicies: List[Int] = word.zipWithIndex.filter {
+			/* 	'v' represent both the consonant 'v' and the semivowel 'w' as in 'verða' and 'syngva'
+					but as it never occures as ablaut of strong verbs, and semivowel deletion rule sometimes removes 'v's,
+					which should not be considered semivowels.
+			*/
+			case ('v', _) => false
+			case (c, _) => isVowelOrSemivowel(c)
+		}.map(_._2).toList
 
 		// eliminate vowel sequences: haus-t, 23 -> 2
 		val vowelIndiciesReduced = reduce(vowelIndicies)
