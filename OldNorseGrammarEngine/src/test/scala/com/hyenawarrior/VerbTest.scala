@@ -94,6 +94,14 @@ class VerbTest
 
 		*/
 
+  @Test
+  def testClass3rdRegular(): Unit = {
+
+    val stem = StrongVerbStem.fromStrRepr("bregð", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+
+    assertEquals("bregða", StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE).strForm)
+  }
+
 	@Test
 	def testClass3rdRaising(): Unit = {
 

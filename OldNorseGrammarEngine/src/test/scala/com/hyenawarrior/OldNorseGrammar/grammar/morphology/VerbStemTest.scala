@@ -61,6 +61,16 @@ class VerbStemTest {
 	}
 
   @Test
+  def testVerbStemClass3SongvaExtraction(): Unit = {
+
+    val stemObj = StrongVerbStem.fromStrRepr("singv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+
+    val StrongVerbStem(root, _, _) = stemObj
+
+    Assert.assertEquals("sengv", root.toString)
+  }
+
+  @Test
   def testVerbStemClass3Songva(): Unit = {
 
     val stemObj = StrongVerbStem(Root("sengv"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
@@ -73,7 +83,7 @@ class VerbStemTest {
 
   /** Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr. */
   @Test
-  def testClass3rdFromDoNotChangeStemToJa(): Unit = {
+  def testVerbClass3rdDoNotRaise(): Unit = {
 
     val presentStemObj = StrongVerbStem(Root("verð"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
