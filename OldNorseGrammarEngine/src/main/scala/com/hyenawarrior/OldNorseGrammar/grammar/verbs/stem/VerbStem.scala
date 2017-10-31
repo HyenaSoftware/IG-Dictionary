@@ -7,6 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, AblautGrade, StaticAblaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PRESENT_STEM, PRETERITE_SINGULAR_STEM}
 
 /**
 	* Created by HyenaWarrior on 2017.04.22..
@@ -23,11 +24,12 @@ abstract class CommonStrongVerbStem(root: Root, verbClass: StrongVerbClassEnum, 
 
 	def getAblautGrade(): AblautGrade
 
-  private def applyPhonologicalChanges(stemRepr: String): String = verbClass match {
+  private def applyPhonologicalChanges(stemRepr: String): String = (verbClass, stemType) match {
 
-    case STRONG_2ND_CLASS => JuToJo(stemRepr) getOrElse stemRepr
-    case STRONG_3RD_CLASS => Breaking(stemRepr) orElse Raising(stemRepr) getOrElse stemRepr
-    case _ => stemRepr
+    case (STRONG_2ND_CLASS, PRESENT_STEM) => JuToJo(stemRepr) getOrElse stemRepr
+		case (STRONG_3RD_CLASS, PRESENT_STEM) => Breaking(stemRepr) orElse Raising(stemRepr) getOrElse stemRepr
+		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM) => NasalAssimilation(stemRepr) getOrElse stemRepr
+		case _ => stemRepr
   }
 
   override def stringForm(): String = {
@@ -97,17 +99,18 @@ object StrongVerbStem {
 		*                          the first syllable
 		*/
 	def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): CommonStrongVerbStem
-		= (verbClass, stemStr) match {
+		= (verbClass, stemType, stemStr) match {
 
-		case (STRONG_7TH_CLASS, _) =>
+		case (STRONG_7TH_CLASS, _, _) =>
 			val ablaut = Ablaut.getAblautGradeFrom(stemStr)
 			StrongVerbStemClass7th(Root(stemStr), stemType, ablaut)
 
-    case (STRONG_2ND_CLASS, JuToJo(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
+    case (STRONG_2ND_CLASS, PRESENT_STEM, JuToJo(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
 
       // normalize stem before processing it
-		case (STRONG_3RD_CLASS, Breaking(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
-    case (STRONG_3RD_CLASS, Raising(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
+		case (STRONG_3RD_CLASS, PRESENT_STEM, Breaking(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
+		case (STRONG_3RD_CLASS, PRESENT_STEM, Raising(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
+		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
 
     case _ => extractVerbFrom(verbClass, stemType, stemStr)
 	}

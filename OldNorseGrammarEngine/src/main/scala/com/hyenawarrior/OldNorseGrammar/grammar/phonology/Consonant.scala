@@ -14,7 +14,8 @@ object Consonant {
 
   private val dentals = Set('ð', 'd', 't', 's')
 
-	private val devoicing 		= Map('b' -> 'p', 'd' -> 't', 'g' -> 'k')
+	private val devoicing = Map('b' -> 'p', 'd' -> 't', 'g' -> 'k')
+	private val voicing   = Map('p' -> 'b', 't' -> 'd', 'k' -> 'g')
 
 	def isConsonant(c: Char) = CONSONANTS contains c
 
@@ -27,4 +28,5 @@ object Consonant {
   def isDental(c: Char) = dentals contains c
 
 	def devoice(c: Char): Char = devoicing(c)
+	def voice(c: Char): Char = voicing(c)
 }

@@ -1,7 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant.isConsonant
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant._
 
 /**
 	* Created by HyenaWarrior on 2017.10.20..
@@ -10,16 +10,22 @@ object StemTransform {
 
   trait Transformation {
 
-    protected val SRC_NUCLEUS: String
-    protected val DST_NUCLEUS: String
-
-    final def apply(stemStr: String): Option[String] = transform(stemStr, SRC_NUCLEUS, DST_NUCLEUS)
-    final def unapply(stemStr: String): Option[String] = transform(stemStr, DST_NUCLEUS, SRC_NUCLEUS)
-
-    protected def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String]
+    def apply(stemStr: String): Option[String]
+    def unapply(stemStr: String): Option[String]
   }
 
-	object Breaking extends Transformation {
+	trait NucleusTransformation extends Transformation {
+
+		protected val SRC_NUCLEUS: String
+		protected val DST_NUCLEUS: String
+
+		final def apply(stemStr: String): Option[String] = transform(stemStr, SRC_NUCLEUS, DST_NUCLEUS)
+		final def unapply(stemStr: String): Option[String] = transform(stemStr, DST_NUCLEUS, SRC_NUCLEUS)
+
+		protected def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String]
+	}
+
+	object Breaking extends NucleusTransformation {
 
 		// assume that a stem has only one syllable (?)
 		val SRC_NUCLEUS: String = "e"
@@ -40,7 +46,7 @@ object StemTransform {
 		}
 
 		/**
-		https://lrc.la.utexas.edu/eieol/norol/20#grammar_1398
+		  https://lrc.la.utexas.edu/eieol/norol/20#grammar_1398
 			https://lrc.la.utexas.edu/eieol/norol/60#grammar_1454
 
 			> This rule only applies to [the infinitive and present plural forms]* of verbs whose stem ends in
@@ -64,7 +70,7 @@ object StemTransform {
 		}
 	}
 
-  object JuToJo extends Transformation {
+  object JuToJo extends NucleusTransformation {
 
     protected val SRC_NUCLEUS: String = "jú"
     protected val DST_NUCLEUS: String = "jó"
@@ -92,7 +98,7 @@ object StemTransform {
     }
   }
 
-  object Raising extends Transformation {
+  object Raising extends NucleusTransformation {
 
     val SRC_NUCLEUS: String = "e"
     val DST_NUCLEUS: String = "i"
@@ -112,4 +118,37 @@ object StemTransform {
       } else None
     }
   }
+
+	object NasalAssimilation extends Transformation {
+
+		override def apply(stemStr: String): Option[String] = {
+
+			val (prefix, lastChars) = split(stemStr)
+
+			val newSuffix = lastChars.toSeq match {
+
+				case _ :+ c :+ d if isNasal(c) && isVoicedStop(d) => Some(s"${devoice(d)}" * 2)
+				case _ => None
+			}
+
+			newSuffix.map(prefix + _)
+		}
+
+		private def split(stemStr: String) = stemStr splitAt stemStr.length - 2
+
+		override def unapply(stemStr: String): Option[String] = {
+
+			val (prefix, lastChars) = split(stemStr)
+
+			val suffix = lastChars.toSeq match {
+
+				case _ :+ c :+ d if c==d && isVoicelessStop(c) =>
+					val n = if(c=='p') 'm' else 'n'
+					Some(s"$n${voice(d)}")
+				case _ => None
+			}
+
+			suffix.map(prefix + _)
+		}
+	}
 }
