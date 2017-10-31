@@ -115,11 +115,14 @@ class VerbTest
 	@Test
 	def testClass3rdNasalAssimilation(): Unit = {
 
-		val stem = StrongVerbStem.fromStrRepr("band", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3))
 
-		val verbform = StrongVerb.verbFrom(stem, Pronoun.SG_1, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE)
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "batt"))
 
-		assertEquals("batt", verbform.strForm)
+    assertEquals("binda", verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
+    assertEquals("batt",  verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1)).strForm)
+    assertEquals("batzt", verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_2)).strForm)
+    assertEquals("batt",  verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3)).strForm)
 	}
 
   @Test

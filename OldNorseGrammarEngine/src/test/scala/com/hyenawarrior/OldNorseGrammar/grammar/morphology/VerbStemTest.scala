@@ -89,4 +89,12 @@ class VerbStemTest {
 
     assertEquals("verð", 	presentStemObj.stringForm())
   }
+
+	@Test
+	def testVerbClass3rdNasalAssimilation(): Unit = {
+
+		val presentStemObj = StrongVerbStem(Root("band"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+
+		assertEquals("batt", 	presentStemObj.stringForm())
+	}
 }

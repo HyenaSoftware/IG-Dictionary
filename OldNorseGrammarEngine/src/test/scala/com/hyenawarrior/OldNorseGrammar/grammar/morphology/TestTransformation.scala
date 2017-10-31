@@ -1,7 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{SemivowelDeletion, VowelDeletion}
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.Raising
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{NasalAssimilation, Raising}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, StemTransform}
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -93,4 +93,13 @@ class TestTransformation {
 
     assertEquals("biðja", Raising("beðjan").getOrElse("beðjan"))
   }
+
+	@Test
+	def testNasalAssimilationFor3rdClassVerbs(): Unit = {
+
+		assertEquals("batt", NasalAssimilation("band").getOrElse("band"))
+
+		val NasalAssimilation(word) = "batt"
+		assertEquals("band", word)
+	}
 }
