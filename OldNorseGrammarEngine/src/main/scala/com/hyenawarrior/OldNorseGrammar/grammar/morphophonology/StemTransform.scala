@@ -19,7 +19,7 @@ object StemTransform {
     protected def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String]
   }
 
-	object EToJa extends Transformation {
+	object Breaking extends Transformation {
 
 		// assume that a stem has only one syllable (?)
 		val SRC_NUCLEUS: String = "e"

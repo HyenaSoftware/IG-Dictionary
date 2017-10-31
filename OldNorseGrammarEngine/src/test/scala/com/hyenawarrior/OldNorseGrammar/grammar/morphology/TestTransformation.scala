@@ -46,23 +46,23 @@ class TestTransformation {
 	@Test
 	def testEToJaAtClass3Verbs(): Unit = {
 
-		assertEquals("gjald", StemTransform.EToJa("geld").getOrElse("geld"))
-		assertEquals("sjarf", StemTransform.EToJa("serf").getOrElse("serf"))
-		assertEquals("gemd", StemTransform.EToJa("gemd").getOrElse("gemd"))
+		assertEquals("gjald", StemTransform.Breaking("geld").getOrElse("geld"))
+		assertEquals("sjarf", StemTransform.Breaking("serf").getOrElse("serf"))
+		assertEquals("gemd", StemTransform.Breaking("gemd").getOrElse("gemd"))
 	}
 
 	@Test
 	def testEToJaAtClass3VerbsReverse(): Unit = {
 
-		assertEquals("geld", StemTransform.EToJa.unapply("gjald").getOrElse("gjald"))
-		assertEquals("gerd", StemTransform.EToJa.unapply("gjard").getOrElse("gjard"))
-		assertEquals("gjamd", StemTransform.EToJa.unapply("gjamd").getOrElse("gjamd"))
+		assertEquals("geld", StemTransform.Breaking.unapply("gjald").getOrElse("gjald"))
+		assertEquals("gerd", StemTransform.Breaking.unapply("gjard").getOrElse("gjard"))
+		assertEquals("gjamd", StemTransform.Breaking.unapply("gjamd").getOrElse("gjamd"))
 	}
 
 	@Test
 	def testEToJaAndIUmlautInversion(): Unit = {
 
-		val stemStr = StemTransform.EToJa("geld").get
+		val stemStr = StemTransform.Breaking("geld").get
 		val stemStr2 = Explicit_I_Umlaut(stemStr)
 		val stemStr3 = SemivowelDeletion(stemStr2)
 
@@ -73,7 +73,7 @@ class TestTransformation {
 	@Test
 	def testDoNotBreak(): Unit = {
 
-		assertEquals("verða", StemTransform.EToJa("verða").getOrElse("verða"))
+		assertEquals("verða", StemTransform.Breaking("verða").getOrElse("verða"))
 	}
 
   @Test

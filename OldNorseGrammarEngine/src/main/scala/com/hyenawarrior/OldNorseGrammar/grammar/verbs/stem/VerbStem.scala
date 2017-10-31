@@ -26,7 +26,7 @@ abstract class CommonStrongVerbStem(root: Root, verbClass: StrongVerbClassEnum, 
   private def applyPhonologicalChanges(stemRepr: String): String = verbClass match {
 
     case STRONG_2ND_CLASS => JuToJo(stemRepr) getOrElse stemRepr
-    case STRONG_3RD_CLASS => EToJa(stemRepr) orElse Raising(stemRepr) getOrElse stemRepr
+    case STRONG_3RD_CLASS => Breaking(stemRepr) orElse Raising(stemRepr) getOrElse stemRepr
     case _ => stemRepr
   }
 
@@ -106,7 +106,7 @@ object StrongVerbStem {
     case (STRONG_2ND_CLASS, JuToJo(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
 
       // normalize stem before processing it
-		case (STRONG_3RD_CLASS, EToJa(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
+		case (STRONG_3RD_CLASS, Breaking(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
     case (STRONG_3RD_CLASS, Raising(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
 
     case _ => extractVerbFrom(verbClass, stemType, stemStr)
