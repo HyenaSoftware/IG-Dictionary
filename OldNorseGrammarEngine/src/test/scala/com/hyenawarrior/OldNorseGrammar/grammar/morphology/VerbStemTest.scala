@@ -115,4 +115,22 @@ class VerbStemTest {
 
     Assert.assertEquals("geld", root.toString)
   }
+
+  @Test
+  def testVerbClass5thAblaut(): Unit = {
+
+    val stemObj = StrongVerbStem(Root("baðj"), VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
+
+    assertEquals("biðj", 	stemObj.stringForm())
+  }
+
+  @Test
+  def testVerbClass5thAblautExtract(): Unit = {
+
+    val stemObj = StrongVerbStem.fromStrRepr("biðj", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
+
+    val StrongVerbStem(root, _, _) = stemObj
+
+    Assert.assertEquals("beðj", root.toString)
+  }
 }

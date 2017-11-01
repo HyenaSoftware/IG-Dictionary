@@ -122,7 +122,8 @@ class TestTransformation {
   @Test
   def testRaisingFor5thClassVerbs(): Unit = {
 
-    assertEquals("biðja", Raising("beðjan").getOrElse("beðjan"))
+    assertEquals(Some("biðj"), Raising("beðj"))
+    assertEquals(Some("beðj"), Raising.unapply("biðj"))
   }
 
 	@Test
