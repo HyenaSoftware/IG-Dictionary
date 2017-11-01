@@ -5,7 +5,7 @@ import java.lang.String.format
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{SemivowelDeletion, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion, VowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
@@ -178,7 +178,8 @@ object StrongVerb {
 
   private def inflect(verbType: VerbType, stemStr: String): String = {
 
-    val inflection = inflectionFor(verbType)
+    val inflection = adjustedInflectionFor(verbType, stemStr)
+
     val isVAugmented = stemStr endsWith "v"
     val useUUmlaut = (U_Umlaut canTransform inflection) || isVAugmented
 
@@ -188,17 +189,16 @@ object StrongVerb {
       , _ + inflection
       , SemivowelDeletion(_)
       , VowelDeletion(_)
+      , ConsonantAssimilation(_)
     )
 
     transforms.foldLeft(stemStr)((s, f) => f(s))
   }
 
   private def uninflect(strRepr: String, verbClass: StrongVerbClassEnum, optTense: Option[VerbTenseEnum]
-    , mood: NonFinitiveMood, stemType: EnumVerbStem): CommonStrongVerbStem = {
+                        , mood: NonFinitiveMood, stemType: EnumVerbStem): CommonStrongVerbStem = {
 
-		val inflection = inflectionFor(optTense, mood)
-
-    val stemRepr = uninflect(strRepr, inflection)
+    val stemRepr = uninflect(strRepr, (mood, optTense, None))
 
     StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
 	}
@@ -216,10 +216,10 @@ object StrongVerb {
         optGrade.get.grades(stemType).occuresIn(verbStrRepr)
     }
 
-		val inflection = inflectionFor(pronoun, tense)
+    val ConsonantAssimilation(restoredVerbStrRepr) = verbStrRepr
 
 		// remove inflection
-		val stemRepr = uninflect(verbStrRepr, inflection)
+		val stemRepr = uninflect(restoredVerbStrRepr, (INDICATIVE, Some(tense), Some(pronoun)))
 
 		// unapply U-umlaut
 		val U_Umlaut(stemRepr2) = stemRepr
@@ -233,7 +233,9 @@ object StrongVerb {
     StrongVerbStem.fromStrRepr(stemRepr3, verbClass, stemType)
   }
 
-  private def uninflect(strRepr: String, inflection: String): String = {
+  private def uninflect(strRepr: String, vt: VerbType): String = {
+
+    val inflection = adjustedInflectionFor(vt, strRepr)
 
     if (!strRepr.endsWith(inflection)) {
 
@@ -243,17 +245,18 @@ object StrongVerb {
     strRepr stripSuffix inflection
   }
 
-  private def inflectionFor(verbType: VerbType): String = verbType match {
+  private def adjustedInflectionFor(verbType: VerbType, stemOrVerbStr: String): String = verbType match {
 
-    case (mood: FinitiveMood, Some(tense), Some(pronoun)) => inflectionFor(pronoun, tense)
-    case (mood: NonFinitiveMood, optTense, None) => inflectionFor(optTense, mood)
+    case (_, Some(PAST), Some(SG_2)) if stemOrVerbStr endsWith "t" => "st"
+    case _ => inflectionFor(verbType)
   }
 
-  private def inflectionFor(pronoun: Pronoun, tense: VerbTenseEnum) = tense match {
+  private def inflectionFor(verbType: VerbType): String = verbType match {
 
-		case PRESENT => inflectionForPresent(pronoun)
-		case PAST => inflectionForPreterite(pronoun)
-	}
+    case (mood: FinitiveMood, Some(PRESENT), Some(pronoun)) => inflectionForPresent(pronoun)
+    case (mood: FinitiveMood, Some(PAST),Some(pronoun)) => inflectionForPreterite(pronoun)
+    case (mood: NonFinitiveMood, optTense, None) => inflectionFor(optTense, mood)
+  }
 
 	private def inflectionForPresent(pronoun: Pronoun) = pronoun match {
 
