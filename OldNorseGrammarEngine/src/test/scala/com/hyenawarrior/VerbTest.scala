@@ -271,6 +271,38 @@ class VerbTest
 		e/o				a					á					o
 	 */
 
+  /*
+		Class 5th
+		PRESENT		PAST-SG		PAST-PL		PERFECT
+		e/i				a					á					e
+   */
+  @Test
+  def testClass5thVerbLiggja(): Unit = {
+
+    val srcForm = (INFINITIVE, None, None)
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_5TH_CLASS, Map(srcForm -> "liggja"))
+
+    assertEquals("liggr",   verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("liggjum", verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+
+    assertEquals("lá",      verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_1)).strForm)
+    assertEquals("lát",     verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_2)).strForm)
+    assertEquals("lágum",   verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.PL_1)).strForm)
+    assertEquals("leginn",  verb.verbForms(VerbModeEnum.PARTICIPLE, Some(PAST),    None).strForm)
+  }
+
+  @Test
+  def testClass5thVerbVega(): Unit = {
+
+    val srcForm = (INFINITIVE, None, None)
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_5TH_CLASS, Map(srcForm -> "vega"))
+
+    assertEquals("vegr", verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("vá",   verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
+  }
+
   @Test
   def testClass6VerbInflection() {
 
