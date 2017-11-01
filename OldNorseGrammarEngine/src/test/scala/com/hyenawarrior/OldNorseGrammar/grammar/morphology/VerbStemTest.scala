@@ -97,4 +97,22 @@ class VerbStemTest {
 
 		assertEquals("batt", 	presentStemObj.stringForm())
 	}
+
+  @Test
+  def testVerbClass3rdDevoiceAfterLateral(): Unit = {
+
+    val stemObj = StrongVerbStem(Root("geld"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+
+    assertEquals("galt", 	stemObj.stringForm())
+  }
+
+  @Test
+  def testVerbClass3rdDevoiceAfterLateralExtract(): Unit = {
+
+    val stemObj = StrongVerbStem.fromStrRepr("galt", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+
+    val StrongVerbStem(root, _, _) = stemObj
+
+    Assert.assertEquals("geld", root.toString)
+  }
 }

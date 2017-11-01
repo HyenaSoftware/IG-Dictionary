@@ -28,7 +28,7 @@ abstract class CommonStrongVerbStem(root: Root, verbClass: StrongVerbClassEnum, 
 
     case (STRONG_2ND_CLASS, PRESENT_STEM) => JuToJo(stemRepr) getOrElse stemRepr
 		case (STRONG_3RD_CLASS, PRESENT_STEM) => Breaking(stemRepr) orElse Raising(stemRepr) getOrElse stemRepr
-		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM) => NasalAssimilation(stemRepr) getOrElse stemRepr
+		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM) => NasalAssimilation(stemRepr) orElse DevoiceAfterLateral(stemRepr) getOrElse stemRepr
 		case _ => stemRepr
   }
 
@@ -111,6 +111,7 @@ object StrongVerbStem {
 		case (STRONG_3RD_CLASS, PRESENT_STEM, Breaking(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
 		case (STRONG_3RD_CLASS, PRESENT_STEM, Raising(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
 		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
+		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, DevoiceAfterLateral(origStemStr)) => extractVerbFrom(verbClass, stemType, origStemStr)
 
     case _ => extractVerbFrom(verbClass, stemType, stemStr)
 	}

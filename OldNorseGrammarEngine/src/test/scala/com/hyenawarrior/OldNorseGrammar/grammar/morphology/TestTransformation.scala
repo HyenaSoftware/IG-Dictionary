@@ -1,7 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion, VowelDeletion}
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{NasalAssimilation, Raising}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{DevoiceAfterLateral, NasalAssimilation, Raising}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, StemTransform}
 import org.junit.Assert._
 import org.junit.Test
@@ -133,4 +133,13 @@ class TestTransformation {
 		val NasalAssimilation(word) = "batt"
 		assertEquals("band", word)
 	}
+
+  @Test
+  def testDevoiceAfterLateral3rdClassVerbs(): Unit = {
+
+    assertEquals(Some("galt"), DevoiceAfterLateral("gald"))
+
+    val DevoiceAfterLateral(word) = "galt"
+    assertEquals("gald", word)
+  }
 }

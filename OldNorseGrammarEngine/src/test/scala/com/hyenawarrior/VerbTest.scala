@@ -157,6 +157,15 @@ class VerbTest
 		assertEquals("hjǫlpum",	StrongVerb.verbFrom(stem, Pronoun.PL_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
 	}
 
+  @Test
+  def testClass3rdStemFinalDevoicingAfterL(): Unit = {
+
+    val stem = StrongVerbStem.fromStrRepr("gald", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+
+    assertEquals("galzt", StrongVerb.verbFrom(stem, Pronoun.SG_2, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE).strForm)
+    assertEquals("galt",  StrongVerb.verbFrom(stem, Pronoun.SG_3, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE).strForm)
+  }
+
   /** Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr. */
   @Test
   def testClass3rdFromDoNotChangeStemToJa(): Unit = {
@@ -181,6 +190,7 @@ class VerbTest
     assertEquals("hjalpa", 	verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
     assertEquals("help", 		verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1)).strForm)
     assertEquals("hjǫlpum",	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("halpt", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST),    Some(Pronoun.SG_2)).strForm)
   }
 
   @Test

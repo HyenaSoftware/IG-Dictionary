@@ -151,4 +151,18 @@ object StemTransform {
 			suffix.map(prefix + _)
 		}
 	}
+
+  object DevoiceAfterLateral extends Transformation {
+
+    override def apply(stemStr: String): Option[String] = swap(stemStr, "ld", "lt")
+
+    override def unapply(stemStr: String): Option[String] = swap(stemStr, "lt", "ld")
+
+    private def swap(stemStr: String, from: String, to: String): Option[String] = {
+
+      val (prefix, lastChars) = stemStr splitAt stemStr.length - 2
+
+      if(lastChars == from) Some(prefix + to) else None
+    }
+  }
 }
