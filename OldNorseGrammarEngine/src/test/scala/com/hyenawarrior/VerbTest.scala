@@ -87,6 +87,28 @@ class VerbTest
 		assertEquals("skjóta", verbform.strForm)
 	}
 
+	/**
+			stem		Past S2
+		ON
+			skaut-	skautt
+			braut-	brauzt
+		PGmc
+			skaut-	skaust
+			braut-	braust
+
+			<!> skautt is considered irregular, it need to be overridden manually
+	 */
+	@Test
+	def testClass2ndPastSg2SuffixForTStemEnd(): Unit = {
+
+		val stem = StrongVerbStem.fromStrRepr("braut", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+
+		val verbform = StrongVerb.verbFrom(stem, Pronoun.SG_2, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE)
+
+		assertEquals("brauzt", verbform.strForm)
+	}
+
+
 	/*
 		Class 3th
 		PRESENT		PAST-SG		PAST-PL		PERFECT
@@ -222,6 +244,16 @@ class VerbTest
 
 		assertEquals("singv", verbStem.stringForm())
 	}
+
+  @Test
+  def testClass3rdInflectionCornerCases(): Unit = {
+
+    val verb = StrongVerb.fromStringRepr("batzt", VerbClassEnum.STRONG_3RD_CLASS, (VerbModeEnum.INDICATIVE, Some(PAST), Some(Pronoun.SG_2)))
+
+    val StrongVerb(verbStem) = verb
+
+    assertEquals("batt", verbStem.stringForm())
+  }
 
 	/*
 		Class 4th

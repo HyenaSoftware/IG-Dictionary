@@ -1,9 +1,9 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{SemivowelDeletion, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion, VowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{NasalAssimilation, Raising}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, StemTransform}
-import org.junit.Assert.assertEquals
+import org.junit.Assert._
 import org.junit.Test
 
 /**
@@ -24,6 +24,37 @@ class TestTransformation {
 		assertEquals("hǫggum", SemivowelDeletion("hǫggvum"))
 		assertEquals("sǫng", SemivowelDeletion("sǫngv"))
 		assertEquals("fǫlr", SemivowelDeletion("fǫlvr"))
+	}
+
+	@Test
+	def testConsonantAssimilation(): Unit = {
+
+		assertEquals("batzt", ConsonantAssimilation("battst"))
+		assertEquals("brauzt", ConsonantAssimilation("brautst"))
+		assertEquals("brauzk", ConsonantAssimilation("brautstsk"))
+		assertEquals("kallask", ConsonantAssimilation("kallarsk"))
+		assertEquals("kallizk", ConsonantAssimilation("kalliðsk"))
+	}
+
+	@Test
+	def testConsonantAssimilationReverse(): Unit = {
+
+		assertEquals(Some("battst"), ConsonantAssimilation.unapply("batzt"))
+		assertEquals(Some("brautst"), ConsonantAssimilation.unapply("brauzt"))
+
+		// unpredicateble: when we should double the 'z'-s? (-z- > -zz- > -tsts-)
+    // assertEquals(Some("brautstsk"), ConsonantAssimilation.unapply("brauzk"))
+
+    // -sk also a correct suffix, it's not always correct to restore it
+		// assertEquals(Some("kallarsk"), ConsonantAssimilation.unapply("kallask"))
+
+		assertEquals(Some("kalliðsk"), ConsonantAssimilation.unapply("kalliðsk"))
+	}
+
+	@Test
+	def testConsonantAssimilationShouldIgnore(): Unit = {
+
+		assertEquals("hestr", ConsonantAssimilation("hestr"))
 	}
 
   @Test
