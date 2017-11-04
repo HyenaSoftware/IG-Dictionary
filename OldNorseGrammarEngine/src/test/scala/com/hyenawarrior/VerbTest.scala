@@ -300,6 +300,7 @@ class VerbTest
     val verb = StrongVerbContext(VerbClassEnum.STRONG_5TH_CLASS, Map(srcForm -> "vega"))
 
     assertEquals("vegr", verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("vegum",verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
     assertEquals("vá",   verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
   }
 
