@@ -18,11 +18,10 @@ trait WordTransformation {
 
 	def apply(syllables: List[Syllable]): List[Syllable]
 
-  def canTransform(str: String): Boolean = {
+  def canTransform(str: String): Boolean = str match {
 
-    val Syllables(syllables) = str
-
-    canTransform(syllables)
+    case Syllables(syllables) => canTransform (syllables)
+    case _ => false
   }
 
   def canTransform(syllables: List[Syllable]): Boolean

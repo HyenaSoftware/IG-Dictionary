@@ -25,11 +25,11 @@ trait Umlaut extends WordTransformation {
 
 		val newSyllables = syllables.map(sy =>
 		{
-			val nc1 = sy.nucleus
-			val nc2 =	mapping(sy.isStressed).getOrElse(nc1, nc1)
-			val newStr = sy.letters.replace(nc1, nc2)
+			val Syllable(onset, wholeNucleus, coda, isStressed) = sy
 
-			Syllable(newStr, sy.isStressed)
+			val newNucleus =	mapping(sy.isStressed).getOrElse(wholeNucleus, wholeNucleus)
+
+			Syllable(onset, newNucleus, coda, isStressed)
 		})
 
     Some(newSyllables)
@@ -41,11 +41,11 @@ trait Umlaut extends WordTransformation {
 
 		val mapping = getMapping(sy.isStressed, trigger)
 
-		val nc1 = sy.nucleus.filterNot(isSemivowel)
-		val nc2 =	mapping.getOrElse(nc1, nc1)
-		val newStr = sy.letters.replace(nc1, nc2)
+    val Syllable(onset, wholeNucleus, coda, isStressed) = sy
+		val vowelsOfNucleus = wholeNucleus filterNot isSemivowel
+		val newNucleus =	mapping.getOrElse(vowelsOfNucleus, vowelsOfNucleus)
 
-		Syllable(newStr, sy.isStressed)
+    Syllable(onset, wholeNucleus.replace(vowelsOfNucleus, newNucleus), coda, isStressed)
 	})
 
 	override def canTransform(syllables: List[Syllable]): Boolean = triggersIn(syllables.last).nonEmpty

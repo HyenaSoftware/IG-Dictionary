@@ -1,7 +1,10 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant.isConsonant
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowelOrSemivowel
+
+import scala.language.postfixOps
 
 /**
 	* Created by HyenaWarrior on 2017.03.01..
@@ -37,58 +40,71 @@ case class Word(pos: PoS)
 
 	val traits: List[DescriptorFlag] = pos.descriptorFlags
 
-	override def toString = s"$strForm [$pos + ${POS_DEPENDENT_TRANSFORMATIONS.map(_.toString)}]"
+	override def toString = s"${strForm()} [$pos + ${POS_DEPENDENT_TRANSFORMATIONS.map(_.toString)}]"
 }
 
 object Syllables {
 
+  private def newMapBuffer(): Map[Char, StringBuilder] = Map(
+    'o' -> StringBuilder.newBuilder,
+    'n' -> StringBuilder.newBuilder,
+    'c' -> StringBuilder.newBuilder)
 
+  private def newSyllable(parts: Map[Char, StringBuilder], isStressed: Boolean) = {
 
-	private def split(word: String, i: Int, syllableEnds: Seq[Int]): List[Syllable] = syllableEnds.headOption match
-	{
-		case Some(beforeNextNuc) =>
+    val onset = parts('o').result()
+    val nucleus = parts('n').result()
+    val coda = parts('c').result()
 
-			val syllable = word.substring(i, beforeNextNuc)
-			val otherSyllables = split(word, beforeNextNuc, syllableEnds.tail)
+    Syllable(onset, nucleus, coda, isStressed)
+  }
 
-			Syllable(syllable, i==0) +: otherSyllables
+	private def parseWord(isStressed: Boolean, chars: List[(Char, Char)], parts: Map[Char, StringBuilder])
+	: List[Syllable] = chars match {
 
-		case None => List()
-	}
+    case (t @ ('c' | 'n'), k) :: (tail @ ('o', _) :: _) =>
+      parts(t) += k
+      newSyllable(parts, isStressed) :: parseWord(isStressed = false, tail, newMapBuffer())
 
-	private def reduce(nucleus: List[Int]): List[Int] = nucleus match
-	{
-		case n :: m :: tail if n+1==m => reduce(n::tail)
-		case n :: tail                => n :: reduce(tail)
-		case Nil                      => List()
-	}
+    case (t, k) :: tail =>
+      parts(t) += k
+      parseWord(isStressed, tail, parts)
 
-	def unapply(word: String): Option[List[Syllable]] =	{
+    case Nil => List(newSyllable(parts, isStressed))
+  }
 
-		// kas-ta, kal-la-ði
-		// 14, 146
-		val vowelIndicies: List[Int] = word.zipWithIndex.filter {
-			/* 	'v' represent both the consonant 'v' and the semivowel 'w' as in 'verða' and 'syngva'
-					but as it never occures as ablaut of strong verbs, and semivowel deletion rule sometimes removes 'v's,
-					which should not be considered semivowels.
-			*/
-			case ('v', _) => false
-			case (c, _) => isVowelOrSemivowel(c)
-		}.map(_._2).toList
+  def unapply(word: String): Option[List[Syllable]] =	{
 
-		// eliminate vowel sequences: haus-t, 23 -> 2
-		val vowelIndiciesReduced = reduce(vowelIndicies)
+    val firstOnsetIdx = word.indexWhere(c => isVowelOrSemivowel(c) && c != 'v')
 
-		// (1,3), (4,5)
-		val syllableEnds = vowelIndiciesReduced.drop(1).map(_ - 1) :+ word.length
+    val wordTail = word.toList.drop(firstOnsetIdx)
 
-		val syllables = split(word, 0, syllableEnds)
+    val firstOnset = (1 to firstOnsetIdx).map(_ => 'o').toList
 
-		Some(syllables)
-	}
+    val typesOfLetters = firstOnset ++ wordTail.map {
+      case 'v' => 'c'
+      case v if isVowelOrSemivowel(v) => 'n'
+      case c if isConsonant(c) => 'c'
+    }
 
-	def apply(syllables: List[Syllable]): String = syllables.map(_.letters).reduce((a, b) => a + b)
+    if(typesOfLetters.nonEmpty) {
 
+      val typesOfLetters2 = typesOfLetters.zipAll(typesOfLetters.tail, ' ', ' ').map {
+
+        case ('c', 'n') => 'o'
+        case (a, _) => a
+      }
+
+      val chars = typesOfLetters2 zip word.toList
+
+      val syllables = parseWord(isStressed = true, chars, newMapBuffer())
+
+      Some(syllables)
+    }
+    else None
+  }
+
+  def apply(syllables: List[Syllable]): String = syllables.flatMap(_.letters).mkString
 }
 
 
