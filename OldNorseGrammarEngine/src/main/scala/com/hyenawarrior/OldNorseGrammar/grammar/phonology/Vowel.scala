@@ -23,7 +23,7 @@ case class Vowel(prop: Int, length: Length) {
 
 object Vowel {
 
-  private val SEMIVOWELS = "jv"
+  private val SEMIVOWELS = "jw"
 
   private val raising = Map('e' -> 'i', 'o' -> 'u')
 

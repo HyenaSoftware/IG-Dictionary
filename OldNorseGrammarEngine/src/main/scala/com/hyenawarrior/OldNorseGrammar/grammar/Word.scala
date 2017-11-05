@@ -75,14 +75,13 @@ object Syllables {
 
   def unapply(word: String): Option[List[Syllable]] =	{
 
-    val firstOnsetIdx = word.indexWhere(c => isVowelOrSemivowel(c) && c != 'v')
+    val firstOnsetIdx = word.indexWhere(isVowelOrSemivowel)
 
     val wordTail = word.toList.drop(firstOnsetIdx)
 
     val firstOnset = (1 to firstOnsetIdx).map(_ => 'o').toList
 
     val typesOfLetters = firstOnset ++ wordTail.map {
-      case 'v' => 'c'
       case v if isVowelOrSemivowel(v) => 'n'
       case c if isConsonant(c) => 'c'
     }

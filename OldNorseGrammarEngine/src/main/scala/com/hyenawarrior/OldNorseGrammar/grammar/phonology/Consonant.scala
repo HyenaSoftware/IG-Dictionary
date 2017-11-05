@@ -5,7 +5,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.phonology
 	*/
 object Consonant {
 
-	private val CONSONANTS 		= Set('b', 'd', 'ð', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'x', 'z', 'þ')
+	private val CONSONANTS 		= Set('b', 'd', 'ð', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'x', 'z', 'þ')
 
 	private val nasals				= Set('n', 'm')
 
