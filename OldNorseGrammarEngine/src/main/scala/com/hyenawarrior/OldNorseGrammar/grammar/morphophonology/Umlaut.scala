@@ -52,7 +52,7 @@ trait Umlaut extends WordTransformation {
 
   private def triggersIn(syllable: Syllable): Seq[Char] = {
 
-    val letters = syllable.letters
+    val letters = syllable.nucleus + syllable.coda
 
     letters.filter(triggers.contains)
   }
