@@ -92,7 +92,7 @@ object StrongVerbContext {
 
       // recreate the present stem
 			// 2a) *** Class 1st-6th Specific ***
-      STEM_PREFERENCES.map { case (k, v) => k -> getOrCreateStem(v, pseudoStemsBy, verbClassEnum) }
+      STEM_PREFERENCES.flatMap { case (k, v) => getOrCreateStem(v, pseudoStemsBy, verbClassEnum).map(k -> _) }
 
 		} else {
 
@@ -122,7 +122,7 @@ object StrongVerbContext {
 	}
 
   private def getOrCreateStem(preferences: Seq[EnumVerbStem], pseudoStemsBy: Map[EnumVerbStem, CommonStrongVerbStem]
-                              , verbClassEnum: StrongVerbClassEnum): CommonStrongVerbStem = {
+                              , verbClassEnum: StrongVerbClassEnum): Option[CommonStrongVerbStem] = {
 
     val primaryStem = preferences.head
     val secondaryStems = preferences.tail
@@ -134,11 +134,7 @@ object StrongVerbContext {
         StrongVerbStem.fromRoot(srcStem.getRoot(), verbClassEnum, preferences.head)
     })
 
-    optTransformedClosestStem match {
-
-      case Some(closestStem) => closestStem
-      case None => throw new RuntimeException
-    }
+    optTransformedClosestStem
   }
 
 	private def extractStemsOfClass7thVerbs(pseudoStemsBy: Map[EnumVerbStem, CommonStrongVerbStem], root: Root)
