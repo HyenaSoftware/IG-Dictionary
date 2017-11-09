@@ -279,9 +279,9 @@ class VerbTest
   @Test
   def testClass5thVerbLiggja(): Unit = {
 
-    val srcForm = (INFINITIVE, None, None)
+    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_2))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_5TH_CLASS, Map(srcForm -> "liggja"))
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_5TH_CLASS, Map(srcForm -> "liggr"))
 
     assertEquals("liggr",   verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
     assertEquals("liggjum", verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
@@ -302,15 +302,16 @@ class VerbTest
     assertEquals("vegr", verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
     assertEquals("vegum",verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
     assertEquals("vá",   verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
+    assertEquals("vágum",verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.PL_1)).strForm)
   }
 
   @Test
   def testClass6VerbInflection() {
 
-    val svStemPR = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRESENT_STEM)
-    val svStemPS = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
-    val svStemPP = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
-    val svStemPF = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PERFECT_STEM)
+    val svStemPR = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRESENT_STEM)
+    val svStemPS = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+    val svStemPP = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
+    val svStemPF = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PERFECT_STEM)
 
     assertEquals("taka",		verbFrom(svStemPR, None, INFINITIVE).strForm)
 
@@ -345,7 +346,7 @@ class VerbTest
 	@Test
 	def sanityCheck() {
 
-		val svStemPR = StrongVerbStem(Root("tak"), VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRESENT_STEM)
+		val svStemPR = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRESENT_STEM)
 
 		try {
 

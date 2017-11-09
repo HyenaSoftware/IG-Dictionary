@@ -61,6 +61,13 @@ object StrongVerbContext {
     new StrongVerbContext(verbClass, ablautGrades, verbForms)
   }
 
+  private val STEM_PREFERENCES = Map(
+    PRESENT_STEM ->             Seq(PRESENT_STEM, PERFECT_STEM, PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM),
+    PRETERITE_SINGULAR_STEM ->  Seq(PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM, PERFECT_STEM, PRESENT_STEM),
+    PRETERITE_PLURAL_STEM   ->  Seq(PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM, PERFECT_STEM, PRESENT_STEM),
+    PERFECT_STEM ->             Seq(PERFECT_STEM, PRESENT_STEM, PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM)
+  )
+
 	private def extractStems(pseudoVerbForms: Map[VerbType, CommonStrongVerbStem], verbClassEnum: StrongVerbClassEnum):
 		Map[EnumVerbStem, CommonStrongVerbStem] = {
 
@@ -78,43 +85,34 @@ object StrongVerbContext {
 		val pseudoStemsBy: Map[EnumVerbStem, CommonStrongVerbStem] = pseudoFormsToStem.map { case(e, m) => e -> m.head }
 
 		// 1) *** GENERIC *** (1-7)
-
-		// determine the present stem
-		//	a) from the present stem
-		//	b) from the perfect stem
-		//	c) from the either past stem (are these the same always?)
-		val pseudoPresentStem =	pseudoStemsBy.getOrElse(PRESENT_STEM,
-			pseudoStemsBy.getOrElse(PERFECT_STEM,
-				pseudoStemsBy.getOrElse(PRETERITE_SINGULAR_STEM,
-					pseudoStemsBy(PRETERITE_PLURAL_STEM))))
-
-		// build a root from the present stem
-		val CommonStrongVerbStem(root, _, _) = pseudoPresentStem
-
 		// now based on StrongVerbClass choose either of:
 		// build stems from the root
 
 		val stemMap: Map[EnumVerbStem, CommonStrongVerbStem] = if(verbClassEnum != VerbClassEnum.STRONG_7TH_CLASS) {
 
       // recreate the present stem
-      val presentStem = StrongVerbStem(root, verbClassEnum, PRESENT_STEM)
-
 			// 2a) *** Class 1st-6th Specific ***
-			val preteriteSgStem = StrongVerbStem(root, verbClassEnum, PRETERITE_SINGULAR_STEM)
-			val preteritePlStem = StrongVerbStem(root, verbClassEnum, PRETERITE_PLURAL_STEM)
-			val perfectStem = StrongVerbStem(root, verbClassEnum, PERFECT_STEM)
-
-			Map(PRESENT_STEM -> presentStem,
-				PRETERITE_SINGULAR_STEM -> preteriteSgStem,
-				PRETERITE_PLURAL_STEM -> preteritePlStem,
-				PERFECT_STEM -> perfectStem)
+      STEM_PREFERENCES.map { case (k, v) => k -> getOrCreateStem(v, pseudoStemsBy, verbClassEnum) }
 
 		} else {
+
+      // determine the present stem
+      //	a) from the present stem
+      //	b) from the perfect stem
+      //	c) from the either past stem (are these the same always?)
+      val pseudoPresentStem =	pseudoStemsBy.getOrElse(PRESENT_STEM,
+        pseudoStemsBy.getOrElse(PERFECT_STEM,
+          pseudoStemsBy.getOrElse(PRETERITE_SINGULAR_STEM,
+            pseudoStemsBy(PRETERITE_PLURAL_STEM))))
+
+
+      // build a root from the present stem
+      val CommonStrongVerbStem(root, _, _) = pseudoPresentStem
 
       val ablautGrade = pseudoPresentStem.getAblautGrade()
 
       // recreate the present stem
-      val presentStem = StrongVerbStemClass7th(root, PRESENT_STEM, ablautGrade)
+      val presentStem = StrongVerbStemClass7th(root.word, PRESENT_STEM, ablautGrade)
 
 			// 2b) *** Class 7th Specific ***
 			Map(PRESENT_STEM -> presentStem) ++ extractStemsOfClass7thVerbs(pseudoStemsBy, root)
@@ -122,6 +120,26 @@ object StrongVerbContext {
 
 		stemMap
 	}
+
+  private def getOrCreateStem(preferences: Seq[EnumVerbStem], pseudoStemsBy: Map[EnumVerbStem, CommonStrongVerbStem]
+                              , verbClassEnum: StrongVerbClassEnum): CommonStrongVerbStem = {
+
+    val primaryStem = preferences.head
+    val secondaryStems = preferences.tail
+
+    val optTransformedClosestStem = pseudoStemsBy.get(primaryStem).orElse(secondaryStems.collectFirst {
+
+      case verbStem if pseudoStemsBy.contains(verbStem) =>
+        val srcStem = pseudoStemsBy(verbStem)
+        StrongVerbStem.fromRoot(srcStem.getRoot(), verbClassEnum, preferences.head)
+    })
+
+    optTransformedClosestStem match {
+
+      case Some(closestStem) => closestStem
+      case None => throw new RuntimeException
+    }
+  }
 
 	private def extractStemsOfClass7thVerbs(pseudoStemsBy: Map[EnumVerbStem, CommonStrongVerbStem], root: Root)
   : Map[EnumVerbStem, StrongVerbStemClass7th] = {
@@ -138,7 +156,7 @@ object StrongVerbContext {
 					pseudoStemsBy(PRETERITE_PLURAL_STEM))))
 			.getAblautGrade()
 
-		val perfectStem = StrongVerbStemClass7th(root, PERFECT_STEM, perfectStAbGr)
+		val perfectStem = StrongVerbStemClass7th(root.word, PERFECT_STEM, perfectStAbGr)
 
 		//
 		val preteriteSgStAbGr = pseudoStemsBy.getOrElse(PRETERITE_SINGULAR_STEM,
@@ -146,7 +164,7 @@ object StrongVerbContext {
 				pseudoStemsBy.getOrElse(PERFECT_STEM,
 					pseudoStemsBy(PRESENT_STEM)))).getAblautGrade()
 
-		val preteriteSgStem = StrongVerbStemClass7th(root, PRETERITE_SINGULAR_STEM, preteriteSgStAbGr)
+		val preteriteSgStem = StrongVerbStemClass7th(root.word, PRETERITE_SINGULAR_STEM, preteriteSgStAbGr)
 
 		//
 		val preteritePlStAbGr = pseudoStemsBy.getOrElse(PRETERITE_SINGULAR_STEM,
@@ -154,7 +172,7 @@ object StrongVerbContext {
 				pseudoStemsBy.getOrElse(PERFECT_STEM,
 					pseudoStemsBy(PRESENT_STEM)))).getAblautGrade()
 
-		val preteritePlStem = StrongVerbStemClass7th(root, PRETERITE_SINGULAR_STEM, preteritePlStAbGr)
+		val preteritePlStem = StrongVerbStemClass7th(root.word, PRETERITE_SINGULAR_STEM, preteritePlStAbGr)
 
 		Map(PRETERITE_SINGULAR_STEM -> preteriteSgStem,
 			PRETERITE_PLURAL_STEM -> preteritePlStem,

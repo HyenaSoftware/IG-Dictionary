@@ -3,7 +3,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Ablaut
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem}
 import org.junit.Assert._
 import org.junit.{Assert, Test}
 
@@ -33,7 +33,7 @@ class VerbStemTest {
   @Test
   def testVerbStemClass2(): Unit = {
 
-    val stemObj = StrongVerbStem(Root("skjút"), VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stemObj = StrongVerbStem("skjút", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRESENT_STEM)
 
     // stem will be decaying to...
     Assert.assertEquals("skjót", stemObj.stringForm())
@@ -52,7 +52,7 @@ class VerbStemTest {
 	@Test
 	def testVerbStemClass3(): Unit = {
 
-    val stemObj = StrongVerbStem(Root("help"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stemObj = StrongVerbStem("help", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
     val StrongVerbStem(root, _, _) = stemObj
 
@@ -73,7 +73,7 @@ class VerbStemTest {
   @Test
   def testVerbStemClass3Songva(): Unit = {
 
-    val stemObj = StrongVerbStem(Root("sengv"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stemObj = StrongVerbStem("sengv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
     val StrongVerbStem(root, _, _) = stemObj
 
@@ -85,7 +85,7 @@ class VerbStemTest {
   @Test
   def testVerbClass3rdDoNotRaise(): Unit = {
 
-    val presentStemObj = StrongVerbStem(Root("verð"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+    val presentStemObj = StrongVerbStem("verð", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
     assertEquals("verð", 	presentStemObj.stringForm())
   }
@@ -93,7 +93,7 @@ class VerbStemTest {
 	@Test
 	def testVerbClass3rdNasalAssimilation(): Unit = {
 
-		val presentStemObj = StrongVerbStem(Root("band"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		val presentStemObj = StrongVerbStem("band", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
 		assertEquals("batt", 	presentStemObj.stringForm())
 	}
@@ -101,7 +101,7 @@ class VerbStemTest {
   @Test
   def testVerbClass3rdDevoiceAfterLateral(): Unit = {
 
-    val stemObj = StrongVerbStem(Root("geld"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+    val stemObj = StrongVerbStem("geld", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
     assertEquals("galt", 	stemObj.stringForm())
   }
@@ -111,17 +111,22 @@ class VerbStemTest {
 
     val stemObj = StrongVerbStem.fromStrRepr("galt", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
-    val StrongVerbStem(root, _, _) = stemObj
+    val CommonStrongVerbStem(Root(rootRepr), _, _) = stemObj
 
-    Assert.assertEquals("geld", root.toString)
+    Assert.assertEquals("geld", rootRepr)
   }
 
   @Test
   def testVerbClass5thAblaut(): Unit = {
 
-    val stemObj = StrongVerbStem(Root("baðj"), VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
+    val presentStemObj = StrongVerbStem("beð", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
+    assertEquals("beð", 	presentStemObj.stringForm())
 
-    assertEquals("biðj", 	stemObj.stringForm())
+    val pretSgStemObj = StrongVerbStem("beð", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+    assertEquals("bað", 	pretSgStemObj.stringForm())
+
+    val pretPlStemObj = StrongVerbStem("beð", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
+    assertEquals("báð", 	pretPlStemObj.stringForm())
   }
 
   @Test
@@ -129,8 +134,94 @@ class VerbStemTest {
 
     val stemObj = StrongVerbStem.fromStrRepr("biðj", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
 
-    val StrongVerbStem(root, _, _) = stemObj
+    val CommonStrongVerbStem(Root(root), _, _) = stemObj
 
-    Assert.assertEquals("beðj", root.toString)
+    Assert.assertEquals("beð", root)
+  }
+
+  @Test
+  def testVerbClass5thDoNotRaise(): Unit = {
+
+    val stemObj = StrongVerbStem("veg", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
+    assertEquals("veg", stemObj.stringForm())
+  }
+
+  @Test
+  def testVerbClass5thFinalGReductionAtJAugmentedStems(): Unit = {
+
+    val root = "leg"
+
+    val presentStemObj = StrongVerbStem(root, VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
+    assertEquals("leg", presentStemObj.stringForm())
+
+    val pretSgStemObj = StrongVerbStem(root, VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+    assertEquals("lá", 	pretSgStemObj.stringForm())
+
+    val pretPlStemObj = StrongVerbStem(root, VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
+    assertEquals("lág", pretPlStemObj.stringForm())
+
+    val perfectStemObj = StrongVerbStem(root, VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PERFECT_STEM)
+    assertEquals("leg", perfectStemObj.stringForm())
+  }
+
+  @Test
+  def testVerbClass5thShouldNotFinalGReductionAtJAugmentedStems(): Unit = {
+
+    val normalizedStem = "gef"
+
+    val presentStemObj = StrongVerbStem(normalizedStem, VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
+    assertEquals("gef", presentStemObj.stringForm())
+
+    val pretSgStemObj = StrongVerbStem(normalizedStem, VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+    assertEquals("gaf", 	pretSgStemObj.stringForm())
+
+    val pretPlStemObj = StrongVerbStem(normalizedStem, VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
+    assertEquals("gáf", pretPlStemObj.stringForm())
+
+    val perfectStemObj = StrongVerbStem(normalizedStem, VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PERFECT_STEM)
+    assertEquals("gef", perfectStemObj.stringForm())
+  }
+
+  /*
+      at past forms it's uncertain what would be the correct stem
+
+           verb decayed stem  unstable stem
+      sg3  lá   lá-           laggj-
+      sg3  vá   vá-           vag-
+
+      pl3  lágu lág-          lággj-
+      pl3  vágu vág-          vág-
+
+      Why we have the a) case, but not the b) ?
+
+      a)
+        present stem      infinitive
+        *beðj- > biðj-    biðja
+        *leggj- > liggj-  liggja
+        veg-              vega
+
+      b)
+        beð-              beða
+        leg-              lega
+        *vaggj- > viggj-  viggja
+   */
+  @Test
+  def testVerbClass5thInverseOfFinalGReductionAtJAugmentedStems(): Unit = {
+
+    val presentStemObj = StrongVerbStem.fromStrRepr("liggj", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
+    val CommonStrongVerbStem(Root(r1), _, _) = presentStemObj
+    assertEquals("leg", r1)
+
+    val pretSgStemObj = StrongVerbStem.fromStrRepr("lá", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+    val CommonStrongVerbStem(Root(r2), _, _) = pretSgStemObj
+    assertEquals("leg", 	r2)
+
+    val pretPlStemObj = StrongVerbStem.fromStrRepr("lág", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
+    val CommonStrongVerbStem(Root(r3), _, _) = pretPlStemObj
+    assertEquals("leg", r3)
+
+    val perfectStemObj = StrongVerbStem.fromStrRepr("leg", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PERFECT_STEM)
+    val CommonStrongVerbStem(Root(r4), _, _) = perfectStemObj
+    assertEquals("leg", r4)
   }
 }

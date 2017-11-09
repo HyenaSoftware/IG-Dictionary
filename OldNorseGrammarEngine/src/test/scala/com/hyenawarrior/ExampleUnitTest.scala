@@ -59,7 +59,7 @@ class ExampleUnitTest
 	@Test
   def testAblaut()
 	{
-		val stem = StrongVerbStem(Root("brenn"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		val stem = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
     val givenStrongVerb = FinitiveStrongVerb("brunnum", stem, Pronoun.PL_1, PAST, VerbModeEnum.INDICATIVE)
 
@@ -74,9 +74,9 @@ class ExampleUnitTest
 	@Test
 	def testStrongVerbInflection()
 	{
-		val stem = StrongVerbStem(Root("brenn"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
-		val stemPS = StrongVerbStem(Root("brenn"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
-		val stemPP = StrongVerbStem(Root("brenn"), VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
+		val stem = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+		val stemPS = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		val stemPP = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
 
 		assertEquals("brennr", verbFrom(stem, Pronoun.SG_2, PRESENT, VerbModeEnum.INDICATIVE).strForm)
 
