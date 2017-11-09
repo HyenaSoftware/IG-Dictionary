@@ -1,5 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.VowelLengthening
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant._
 
@@ -11,6 +12,7 @@ object StemTransform {
   trait Transformation {
 
     def apply(stemStr: String): Option[String]
+
     def unapply(stemStr: String): Option[String]
   }
 
@@ -163,6 +165,91 @@ object StemTransform {
       val (prefix, lastChars) = stemStr splitAt stemStr.length - 2
 
       if(lastChars == from) Some(prefix + to) else None
+    }
+  }
+
+  object ReduceStemFinalG extends Transformation {
+
+    private val reduceFinalG = "^(.+?)g$".r
+
+    override def apply(stemStr: String): Option[String] = Some {
+
+      val res = stemStr match {
+
+        case reduceFinalG(reducedStemStr) => reducedStemStr
+        case _ => stemStr
+      }
+
+      VowelLengthening(res)
+    }
+
+    override def unapply(stemStr: String): Option[String] = Some {
+
+      val VowelLengthening(shortenedStemStr) = stemStr
+
+      if (!isConsonant(shortenedStemStr.last))
+        shortenedStemStr + "g"
+      else
+        shortenedStemStr
+    }
+  }
+
+  object JAugment extends Transformation {
+
+    private val singleG = "[^g]g$".r
+    private val doubleG = "gg$".r
+
+    override def apply(stemStr: String): Option[String] = {
+
+      val hasE = stemStr.indexOf('e') != -1
+
+      if(hasE) {
+
+        Some(singleG.replaceFirstIn(stemStr, "gg") + "j")
+
+      } else {
+
+        None
+      }
+    }
+
+    override def unapply(stemStr: String): Option[String] = {
+
+      val hasE = stemStr.indexOf('e') != -1
+
+      if(hasE) {
+
+        val stemStrWithJ = stemStr.stripSuffix("j")
+
+        Some(doubleG.replaceAllIn(stemStrWithJ, "g"))
+
+      } else {
+
+        None
+      }
+    }
+  }
+
+  object FixJAugmentedWord extends Transformation {
+
+    override def apply(stemStr: String): Option[String] = None
+
+    override def unapply(stemStr: String): Option[String] = {
+      // restore to a J-augmented stem
+
+      val hasI = stemStr.exists('i' == _)
+      val endsWithJ = stemStr endsWith "j"
+
+      if(hasI) {
+
+        val origStem = if(endsWithJ) stemStr else stemStr + "j"
+
+        Some(origStem)
+
+      } else {
+
+        None
+      }
     }
   }
 }

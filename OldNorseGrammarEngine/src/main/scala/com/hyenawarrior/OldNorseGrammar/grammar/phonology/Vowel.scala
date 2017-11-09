@@ -27,6 +27,9 @@ object Vowel {
 
   private val raising = Map('e' -> 'i', 'o' -> 'u')
 
+  private val lengthening = Map('a' -> 'á')
+  private val shortening = lengthening.map { case (k, v) => v -> k }
+
   val LOW = 0x0   // also means it's open
   val MID = 0x1
   val HIGH = 0x2
@@ -82,6 +85,9 @@ object Vowel {
   def isHigh(c: Char) = VOWEL_MAP.get(c).exists(_.isHigh)
 
   def apply(c: Char) = VOWEL_MAP(c)
+
+  def lengthen(c: Char) = lengthening(c)
+  def shorten(c: Char) = shortening(c)
 
   def unapply(c: Char): Option[(Int, Length)] = VOWEL_MAP.get(c).map {
 
