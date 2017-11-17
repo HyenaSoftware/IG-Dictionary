@@ -39,7 +39,7 @@ object SQLiteDBLayer extends DBLayer {
       case (Array(seq @ _*), clause) if clause.nonEmpty =>
         val args = whereArgs.foldLeft(clause) {
           case (cl, a: Int) => cl.replace("?", valueOf(a))
-          case (cl, a: String) => cl.replace("?", a)
+          case (cl, a: String) => cl.replace("?", s"'$a'")
         }
         s"where $args"
 

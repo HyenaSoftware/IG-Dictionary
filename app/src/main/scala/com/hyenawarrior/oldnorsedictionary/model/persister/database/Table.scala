@@ -26,7 +26,7 @@ case class Table(tableName: String, columns: IndexedSeq[ColumnDefinition])(impli
     res.flatten
   }
 
-  def select(columnsToQuery: List[String], whereArgs: Array[String], whereClause: String): Seq[List[Any]] = {
+  def select(columnsToQuery: List[String], whereArgs: Array[Any], whereClause: String): Seq[List[Any]] = {
 
     val columnsByName = columns.map(c => c.name -> c).toMap
     val colDefs = columnsToQuery.map(c => columnsByName(c))

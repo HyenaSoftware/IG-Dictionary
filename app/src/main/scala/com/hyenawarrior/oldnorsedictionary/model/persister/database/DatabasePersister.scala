@@ -18,12 +18,12 @@ case class DatabasePersister(dBLayer: DBLayer) extends Persister {
   private object TextInterner extends StringInterner {
 
     override def apply(id: Int): String = Texts
-      .select(List("Text"), Array(id.toString), s"Id = ?")
+      .select(List("Text"), Array(id), s"Id = ?")
       .map { case List(str: String) => str }
       .head
 
     override def indexOf(str: String): Option[Int] = Texts
-      .select(List("Id"), Array(str), s"Text = '?'")
+      .select(List("Id"), Array(str), s"Text = ?")
       .map { case List(id: Int) => id }
       .headOption
 
@@ -54,7 +54,7 @@ case class DatabasePersister(dBLayer: DBLayer) extends Persister {
 
   private object ObjStorage extends SerData {
 
-    override def typeOf(objId: Int): Option[Int] = ObjTypes.select(List("ObjType"), Array(objId.toString), s"ObjId = '?'")
+    override def typeOf(objId: Int): Option[Int] = ObjTypes.select(List("ObjType"), Array(objId), s"ObjId = ?")
       .map { case List(tId: Int) => tId }
       .headOption
 
@@ -78,12 +78,12 @@ case class DatabasePersister(dBLayer: DBLayer) extends Persister {
 
     override def load(objId: Int, typeId: Int): Seq[Int] = {
 
-      val res = ObjTypes.select(List("ObjId"), Array(objId.toString, typeId.toString), s"ObjId = '?' and ObjType = '?'").toList
+      val res = ObjTypes.select(List("ObjId"), Array(objId, typeId), s"ObjId = ? and ObjType = ?").toList
 
       res match {
 
         case List(id: Int) :: Nil =>
-          val records = ObjFields.select(List("FieldIndex", "Rsrc"), Array(objId.toString), s"ObjId = ?")
+          val records = ObjFields.select(List("FieldIndex", "Rsrc"), Array(objId), s"ObjId = ?")
           val fields = records
             .map { case (idx: Int) :: (rsrc: Int) :: Nil => idx -> rsrc }
             .sortBy(_._1)
