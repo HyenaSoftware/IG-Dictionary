@@ -35,19 +35,7 @@ abstract class CommonStrongVerbStem(normalizedStem: String, verbClass: StrongVer
     StrongVerbStem.denormalize(myStemRepr, verbClass, stemType) getOrElse myStemRepr
   }
 
-  def getRoot(): Root = {
-
-    val normalizedStemWithoutJAugment = normalizedStem match {
-
-      case JAugment(s) => s
-      case s => s
-    }
-
-    val ablautGradeOfPresentStem = StrongVerbStem.ABLAUTS(verbClass).presentAblautGrade
-    val rootStrRepr = Ablaut.transform(normalizedStemWithoutJAugment, getAblautGrade(), ablautGradeOfPresentStem).get
-
-    Root(rootStrRepr)
-  }
+  def getRoot(): Root
 }
 
 object CommonStrongVerbStem {
@@ -69,12 +57,28 @@ case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum
 	extends CommonStrongVerbStem(normalizedStem, verbClass, stemType) {
 
 	def getAblautGrade() = StrongVerbStem.ABLAUTS(verbClass).grades(stemType)
+
+  override def getRoot(): Root = {
+
+    val normalizedStemWithoutJAugment = normalizedStem match {
+
+      case JAugment(s) => s
+      case s => s
+    }
+
+    val ablautGradeOfPresentStem = StrongVerbStem.ABLAUTS(verbClass).presentAblautGrade
+    val rootStrRepr = Ablaut.transform(normalizedStemWithoutJAugment, getAblautGrade(), ablautGradeOfPresentStem).get
+
+    Root(rootStrRepr)
+  }
 }
 
 case class StrongVerbStemClass7th(normalizedStem: String, stemType: EnumVerbStem, ablautGrade: AblautGrade)
 	extends CommonStrongVerbStem(normalizedStem, STRONG_7TH_CLASS, stemType) {
 
 	def getAblautGrade() = ablautGrade
+
+  override def getRoot(): Root = Root(normalizedStem)
 }
 
 object StrongVerbStem {
