@@ -5,7 +5,7 @@ import com.hyenawarrior.auxiliary.EnumLike
 /**
 	* Created by HyenaWarrior on 2017.04.19..
 	*/
-object VerbModeEnum extends EnumLike[Int, (String, VerbModeEnum)] {
+object VerbModeEnum extends EnumLike[Int, VerbModeEnum] {
 
 	val INDICATIVE	=	FinitiveMood("Indicative", 0)
 	val SUBJUNCTIVE	= FinitiveMood("Subjunctive", 1)
@@ -16,7 +16,7 @@ object VerbModeEnum extends EnumLike[Int, (String, VerbModeEnum)] {
 
 class VerbModeEnum(name: String, id: Int) {
 
-	VerbModeEnum.add(id -> (name -> this))
+	VerbModeEnum.add(id -> this)
 }
 
 case class FinitiveMood(name: String, id: Int) 		extends VerbModeEnum(name, id)
