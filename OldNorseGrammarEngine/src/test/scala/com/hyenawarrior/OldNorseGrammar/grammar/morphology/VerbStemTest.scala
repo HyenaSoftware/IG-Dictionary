@@ -111,7 +111,7 @@ class VerbStemTest {
 
     val stemObj = StrongVerbStem.fromStrRepr("galt", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
-    val CommonStrongVerbStem(Root(rootRepr), _, _) = stemObj
+    val Root(rootRepr) = stemObj.getRoot()
 
     Assert.assertEquals("geld", rootRepr)
   }
@@ -134,9 +134,9 @@ class VerbStemTest {
 
     val stemObj = StrongVerbStem.fromStrRepr("biðj", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
 
-    val CommonStrongVerbStem(Root(root), _, _) = stemObj
+    val Root(rootRepr) = stemObj.getRoot()
 
-    Assert.assertEquals("beð", root)
+    Assert.assertEquals("beð", rootRepr)
   }
 
   @Test
@@ -209,19 +209,19 @@ class VerbStemTest {
   def testVerbClass5thInverseOfFinalGReductionAtJAugmentedStems(): Unit = {
 
     val presentStemObj = StrongVerbStem.fromStrRepr("liggj", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRESENT_STEM)
-    val CommonStrongVerbStem(Root(r1), _, _) = presentStemObj
+    val Root(r1) = presentStemObj.getRoot()
     assertEquals("leg", r1)
 
     val pretSgStemObj = StrongVerbStem.fromStrRepr("lá", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
-    val CommonStrongVerbStem(Root(r2), _, _) = pretSgStemObj
+    val Root(r2) = pretSgStemObj.getRoot()
     assertEquals("leg", 	r2)
 
     val pretPlStemObj = StrongVerbStem.fromStrRepr("lág", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
-    val CommonStrongVerbStem(Root(r3), _, _) = pretPlStemObj
+    val Root(r3) = pretPlStemObj.getRoot()
     assertEquals("leg", r3)
 
     val perfectStemObj = StrongVerbStem.fromStrRepr("leg", VerbClassEnum.STRONG_5TH_CLASS, EnumVerbStem.PERFECT_STEM)
-    val CommonStrongVerbStem(Root(r4), _, _) = perfectStemObj
+    val Root(r4) = perfectStemObj.getRoot()
     assertEquals("leg", r4)
   }
 }

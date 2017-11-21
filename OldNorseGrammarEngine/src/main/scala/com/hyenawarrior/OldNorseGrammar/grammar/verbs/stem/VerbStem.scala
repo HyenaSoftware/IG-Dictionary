@@ -40,11 +40,11 @@ abstract class CommonStrongVerbStem(normalizedStem: String, verbClass: StrongVer
 
 object CommonStrongVerbStem {
 
-	def unapply(strongVerbStem: CommonStrongVerbStem): Option[(Root, StrongVerbClassEnum, EnumVerbStem)]
+	def unapply(strongVerbStem: CommonStrongVerbStem): Option[(String, StrongVerbClassEnum, EnumVerbStem)]
 		= strongVerbStem match {
 
-		case svs: StrongVerbStem => Some((svs.getRoot(), svs.verbClass, svs.getStemType()))
-		case svs7: StrongVerbStemClass7th => Some((svs7.getRoot(), STRONG_7TH_CLASS, svs7.getStemType()))
+		case svs: StrongVerbStem => Some((svs.normalizedStem, svs.verbClass, svs.getStemType()))
+		case svs7: StrongVerbStemClass7th => Some((svs7.normalizedStem, STRONG_7TH_CLASS, svs7.getStemType()))
 		case _ => None
 	}
 }

@@ -107,7 +107,7 @@ object StrongVerbContext {
 
 
       // build a root from the present stem
-      val CommonStrongVerbStem(root, _, _) = pseudoPresentStem
+      val root = pseudoPresentStem.getRoot()
 
       val ablautGrade = pseudoPresentStem.getAblautGrade()
 
