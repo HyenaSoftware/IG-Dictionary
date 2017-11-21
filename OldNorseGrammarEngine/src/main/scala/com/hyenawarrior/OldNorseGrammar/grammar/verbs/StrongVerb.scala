@@ -6,6 +6,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerb.{moodAndTenseToStem, toNonFiniteVerbType}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
@@ -36,11 +37,29 @@ object FinitiveStrongVerb {
 case class NonFinitiveStrongVerb(strRepr: String, stem: CommonStrongVerbStem, nonFinitiveVerbType: NonFinitiveVerbType)
 	extends StrongVerb(strRepr, stem) {
 
-	if(nonFinitiveVerbType.verbStemBase != stem.getStemType()) {
+  if (nonFinitiveVerbType.verbStemBase != stem.getStemType()) {
 
-		throw new RuntimeException(format("To create a verb from '%s', a %s stem is expected instead of %s.",
-			strRepr, nonFinitiveVerbType.verbStemBase, stem.getStemType()))
-	}
+    throw new RuntimeException(format("To create a verb from '%s', a %s stem is expected instead of %s.",
+      strRepr, nonFinitiveVerbType.verbStemBase, stem.getStemType()))
+  }
+}
+
+object NonFinitiveStrongVerb {
+
+  def toNonFiniteVerbType(optTense: Option[VerbTenseEnum], mood: NonFinitiveMood): NonFinitiveVerbType
+    = (mood, optTense) match {
+
+    case (PARTICIPLE, Some(PRESENT)) => PRESENT_PARTICIPLE
+    case (PARTICIPLE, Some(PAST)) => PAST_PARTICIPLE
+    case (INFINITIVE, None) => NonFinitiveVerbType.INFINITIVE
+  }
+
+  def moodAndTenseToStem(mood: NonFinitiveMood, optTense: Option[VerbTenseEnum]) = (mood, optTense) match {
+
+    case (PARTICIPLE, Some(PRESENT))	=> EnumVerbStem.PRESENT_STEM
+    case (PARTICIPLE, Some(PAST))			=> EnumVerbStem.PERFECT_STEM
+    case (INFINITIVE, None)						=> EnumVerbStem.PRESENT_STEM
+  }
 }
 
 /**
@@ -48,10 +67,10 @@ case class NonFinitiveStrongVerb(strRepr: String, stem: CommonStrongVerbStem, no
 	*/
 object StrongVerb {
 
-	def unapply(sv: StrongVerb): Option[CommonStrongVerbStem] = sv match {
+	def unapply(sv: StrongVerb): Option[(String, CommonStrongVerbStem)] = sv match {
 
-		case FinitiveStrongVerb(_, stem, _, _, _)	=> Some(stem)
-		case NonFinitiveStrongVerb(_, stem, _) 		=> Some(stem)
+		case FinitiveStrongVerb(repr, stem, _, _, _)	=> Some(repr -> stem)
+		case NonFinitiveStrongVerb(repr, stem, _) 		=> Some(repr -> stem)
 	}
 
 	/**
@@ -120,20 +139,7 @@ object StrongVerb {
 		verb
 	}
 
-  private def toNonFiniteVerbType(optTense: Option[VerbTenseEnum], mood: NonFinitiveMood): NonFinitiveVerbType
-    = (mood, optTense) match {
 
-    case (PARTICIPLE, Some(PRESENT)) => PRESENT_PARTICIPLE
-    case (PARTICIPLE, Some(PAST)) => PAST_PARTICIPLE
-    case (INFINITIVE, None) => NonFinitiveVerbType.INFINITIVE
-  }
-
-  private def moodAndTenseToStem(mood: NonFinitiveMood, optTense: Option[VerbTenseEnum]) = (mood, optTense) match {
-
-    case (PARTICIPLE, Some(PRESENT))	=> EnumVerbStem.PRESENT_STEM
-    case (PARTICIPLE, Some(PAST))			=> EnumVerbStem.PERFECT_STEM
-    case (INFINITIVE, None)						=> EnumVerbStem.PRESENT_STEM
-  }
 
   def verbFrom(stem: CommonStrongVerbStem, pronoun: Pronoun, tense: VerbTenseEnum, mood: FinitiveMood): StrongVerb = {
 

@@ -250,7 +250,7 @@ class VerbTest
 
 		val verb = StrongVerb.fromStringRepr("syngva", VerbClassEnum.STRONG_3RD_CLASS, (VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3)))
 
-		val StrongVerb(verbStem) = verb
+		val StrongVerb((_, verbStem)) = verb
 
 		assertEquals("singv", verbStem.stringForm())
 	}
@@ -260,7 +260,7 @@ class VerbTest
 
     val verb = StrongVerb.fromStringRepr("batzt", VerbClassEnum.STRONG_3RD_CLASS, (VerbModeEnum.INDICATIVE, Some(PAST), Some(Pronoun.SG_2)))
 
-    val StrongVerb(verbStem) = verb
+    val StrongVerb((_, verbStem)) = verb
 
     assertEquals("batt", verbStem.stringForm())
   }
