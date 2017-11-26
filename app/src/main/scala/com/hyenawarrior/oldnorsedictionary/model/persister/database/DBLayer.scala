@@ -16,9 +16,9 @@ object DBLayer {
 
 trait DBLayer {
 
-  def select(table: String, colDefs: Seq[ColumnDefinition], whereArgs: Array[Any] = Array(), whereClause: String = ""): Seq[List[Any]]
+  def select(table: String, colDefs: Seq[ColumnDefinition], whereArgs: Array[Any] = Array(), whereClause: String = "", isDictinct: Boolean = false): Seq[List[Any]]
 
-  def insert(tableName: String, record: Array[Any]): Unit
+  def insert(tableName: String, columns: Seq[ColumnDefinition], record: Array[Any]): Unit
 
-  def createTable(name: String, columns: Seq[ColumnDefinition])
+  def createTable(name: String, columns: Seq[ColumnDefinition]) = ()
 }

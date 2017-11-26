@@ -1,19 +1,33 @@
 package com.hyenawarrior.oldnorsedictionary.model.persister.database
 
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.DBLayer.ColumnDefinition
-import com.hyenawarrior.oldnorsedictionary.model.persister.{Persister, SerData, StringInterner}
+import com.hyenawarrior.oldnorsedictionary.model.persister.{Persister, SerData, Serializer, StringInterner}
 import com.hyenawarrior.oldnorsedictionary.model.persister.Serializer._
+import com.hyenawarrior.oldnorsedictionary.model.persister.database.DatabasePersister.{ObjFields, ObjTypes, Texts}
 
 /**
   * Created by HyenaWarrior on 2017.11.16..
   */
-case class DatabasePersister(dBLayer: DBLayer) extends Persister {
+object DatabasePersister {
 
-  private implicit val dbLayer = dBLayer
-
-  private object Texts extends Table("Texts", IndexedSeq(
+  object Texts extends Table("Texts", IndexedSeq(
     ColumnDefinition("Text", ClassOfString),
     ColumnDefinition("Id", ClassOfInt)))
+
+  object ObjFields extends Table("ObjFields", IndexedSeq(
+    ColumnDefinition("ObjId", ClassOfInt),
+    ColumnDefinition("FieldIndex", ClassOfInt),
+    ColumnDefinition("Rsrc", ClassOfInt)))
+
+  object ObjTypes extends Table("ObjType", IndexedSeq(
+    ColumnDefinition("ObjId", ClassOfInt),
+    ColumnDefinition("ObjType", ClassOfInt)))
+}
+
+case class DatabasePersister(dBLayer: DBLayer)(implicit serializers: Map[Class[_], Serializer[_]])
+  extends Persister(serializers) {
+
+  private implicit val dbLayer = dBLayer
 
   private object TextInterner extends StringInterner {
 
@@ -42,15 +56,6 @@ case class DatabasePersister(dBLayer: DBLayer) extends Persister {
       }
     }
   }
-
-  private object ObjFields extends Table("ObjFields", IndexedSeq(
-    ColumnDefinition("ObjId", ClassOfInt),
-    ColumnDefinition("FieldIndex", ClassOfInt),
-    ColumnDefinition("Rsrc", ClassOfInt)))
-
-  private object ObjTypes extends Table("ObjType", IndexedSeq(
-    ColumnDefinition("ObjId", ClassOfInt),
-    ColumnDefinition("ObjType", ClassOfInt)))
 
   private object ObjStorage extends SerData {
 
@@ -82,17 +87,21 @@ case class DatabasePersister(dBLayer: DBLayer) extends Persister {
 
       res match {
 
-        case List(id: Int) :: Nil =>
-          val records = ObjFields.select(List("FieldIndex", "Rsrc"), Array(objId), s"ObjId = ?")
-          val fields = records
-            .map { case (idx: Int) :: (rsrc: Int) :: Nil => idx -> rsrc }
-            .sortBy(_._1)
-            .map(_._2)
-
-          fields
-
+        case ((id: Int) :: Nil) :: Nil if id == objId => load(objId)
+        case ((id: Int) :: Nil) :: Nil => throw new RuntimeException("Type mismatch")
         case _ => Seq()
       }
+    }
+
+    private def load(objId: Int): Seq[Int] = {
+
+      val records = ObjFields.select(List("FieldIndex", "Rsrc"), Array(objId), s"ObjId = ?")
+      val fields = records
+        .map { case (idx: Int) :: (rsrc: Int) :: Nil => idx -> rsrc }
+        .sortBy(_._1)
+        .map(_._2)
+
+      fields
     }
   }
 

@@ -1,6 +1,6 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
-import com.hyenawarrior.oldnorsedictionary.model.persister.database.{DBLayer, DatabasePersister, SQLiteDBLayer}
+import com.hyenawarrior.oldnorsedictionary.model.persister.database.{DatabasePersister, SQLiteDBLayer}
 import com.hyenawarrior.oldnorsedictionary.model.persister.inmemory.InMemoryPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.{Reader, Serializer}
 import org.junit.Assert.assertEquals
@@ -34,9 +34,13 @@ class TestPersister {
   @Test
   def testStore(): Unit = {
 
-    val id = InMemoryPersister.store(TestType(0, "a", List("b", "c")))
+    implicit val map: Map[Class[_], Serializer[Any]] = Map(classOf[TestType] -> TestTypeSerializer.asInstanceOf[Serializer[Any]])
 
-    val obj = InMemoryPersister.load[TestType](id)
+    val persister = InMemoryPersister()
+
+    val id = persister.store(TestType(0, "a", List("b", "c")))
+
+    val obj = persister.load[TestType](id)
 
     assertEquals(0, obj.i)
     assertEquals("a", obj.s)
@@ -45,6 +49,8 @@ class TestPersister {
 
   @Test
   def testDatabaseStore(): Unit = {
+
+    implicit val map: Map[Class[_], Serializer[Any]] = Map(classOf[TestType] -> TestTypeSerializer.asInstanceOf[Serializer[Any]])
 
     val dbp = DatabasePersister(SQLiteDBLayer)
 

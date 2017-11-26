@@ -31,7 +31,7 @@ object SQLiteDBLayer extends DBLayer {
     con.createStatement().executeUpdate(sql)
   }
 
-  override def select(table: String, colDefs: Seq[ColumnDefinition], whereArgs: Array[Any], whereClause: String): Seq[List[Any]] = {
+  override def select(table: String, colDefs: Seq[ColumnDefinition], whereArgs: Array[Any], whereClause: String, isDictinct: Boolean): Seq[List[Any]] = {
 
     val cols = colDefs.map(_.name).mkString(", ")
     val whereExpr = (whereArgs, whereClause) match {
@@ -46,7 +46,9 @@ object SQLiteDBLayer extends DBLayer {
       case (Array(), "") => ""
     }
 
-    val sql = s"select $cols from $table $whereExpr"
+    val optDistinct = if(isDictinct) " DISTINCT " else ""
+
+    val sql = s"select $optDistinct $cols from $table $whereExpr"
 
     val result = con.createStatement().executeQuery(sql)
 
@@ -82,7 +84,7 @@ object SQLiteDBLayer extends DBLayer {
     } finally { result.close() }
   }
 
-  override def insert(tableName: String, record: Array[Any]): Unit = {
+  override def insert(tableName: String, columns: Seq[ColumnDefinition], record: Array[Any]): Unit = {
 
     val vals = record.map {
       case i: Int => valueOf(i)
@@ -92,9 +94,7 @@ object SQLiteDBLayer extends DBLayer {
 
     val sql = s"INSERT INTO $tableName VALUES($vals)"
 
-    val result = con.createStatement().executeUpdate(sql)
-
-    result
+    con.createStatement().executeUpdate(sql)
 
     ()
   }
