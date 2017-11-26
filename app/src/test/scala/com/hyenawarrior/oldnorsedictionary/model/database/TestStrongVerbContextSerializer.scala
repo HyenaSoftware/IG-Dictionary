@@ -9,7 +9,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
-import com.hyenawarrior.oldnorsedictionary.model.persister.{Persister, Reader, SerData, StringInterner}
+import com.hyenawarrior.oldnorsedictionary.model.persister.Reader
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 import org.junit.Assert.assertEquals
 import org.junit.Test

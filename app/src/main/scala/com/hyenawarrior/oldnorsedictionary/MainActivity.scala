@@ -14,7 +14,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.{Word => GWord, _}
-import com.hyenawarrior.oldnorsedictionary.model.database.{IGPersister, SQLDatabaseHelper}
+import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.AndroidSDBLayer
 import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}
 import com.hyenawarrior.oldnorsedictionary.modelview.DictionaryEntryAdapter
@@ -157,7 +157,7 @@ class MainActivity extends AppCompatActivity
 			val sd = "/storage/extSdCard" //Environment.getExternalStorageDirectory
 			val data = Environment.getDataDirectory
 
-			val currentDBPath = "/data/data/" + getPackageName + "/databases/" + SQLDatabaseHelper.DATABASE_NAME
+			val currentDBPath = "/data/data/" + getPackageName + "/databases/" + AndroidSDBLayer.DATABASE_NAME
 			val backupDBPath =  AndroidSDBLayer.DATABASE_NAME + ".db"
 			val currentDB = new File(currentDBPath)
 			val backupDB = new File(sd, backupDBPath)

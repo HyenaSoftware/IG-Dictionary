@@ -1,8 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.model.database.marshallers
 
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbClassEnum, VerbModeEnum, VerbTenseEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbModeEnum, VerbTenseEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber, Pronoun}
 import com.hyenawarrior.auxiliary.EnumLike
 
@@ -10,13 +9,6 @@ import com.hyenawarrior.auxiliary.EnumLike
 /**
   * Created by HyenaWarrior on 2017.05.27..
   */
-trait PosType
-{
-	val id: Int
-
-	PosType.add(id -> this)
-}
-
 trait PosForm
 {
 	val id: Int
@@ -27,87 +19,6 @@ case class VerbForm(id: Int, vtype: (VerbModeEnum, Option[VerbTenseEnum], Option
 
   VerbForm.add(id -> this)
 }
-
-case class VerbType(id: Int, verbClass: VerbClassEnum) extends PosType {
-
-	override def toString: String = verbClass.toString
-}
-
-case class NounType(id: Int, stemClass: NounStemClassEnum) extends PosType {
-
-	override def toString: String = stemClass.name
-}
-
-case class AdjectiveType(id: Int, text: String) extends PosType
-
-// subview of PosType enum
-object VerbType
-{
-	lazy val verbs = PosType.values
-		.flatMap
-		{
-			case e: VerbType => Some(e.asInstanceOf[VerbType])
-			case _ => None
-		}
-		.map(e => e.verbClass -> e).toMap
-
-	def findByVerbClass(verbClassEnum: VerbClassEnum) = verbs(verbClassEnum)
-}
-
-object PosType extends EnumLike[Int, PosType]
-{
-	// Verbs
-	// - strong verbs
-	val VERB_STRONG_1ST = VerbType(0, VerbClassEnum.STRONG_1ST_CLASS)
-	val VERB_STRONG_2ND = VerbType(1, VerbClassEnum.STRONG_2ND_CLASS)
-	val VERB_STRONG_3RD = VerbType(2, VerbClassEnum.STRONG_3RD_CLASS)
-	val VERB_STRONG_4TH = VerbType(3, VerbClassEnum.STRONG_4TH_CLASS)
-	val VERB_STRONG_5TH = VerbType(4, VerbClassEnum.STRONG_5TH_CLASS)
-	val VERB_STRONG_6TH = VerbType(5, VerbClassEnum.STRONG_6TH_CLASS)
-	val VERB_STRONG_7TH = VerbType(6, VerbClassEnum.STRONG_7TH_CLASS)
-
-	// - weak verbs
-
-	// Nouns
-	// - strong nouns
-	val NOUN_STRONG_FEM_A2 = NounType(10, NounStemClassEnum.STRONG_FEMININE_A1)
-	val NOUN_STRONG_FEM_A1 = NounType(23, NounStemClassEnum.STRONG_FEMININE_A2)
-	val NOUN_STRONG_FEM_I = NounType(11, NounStemClassEnum.STRONG_FEMININE_I)
-	val NOUN_STRONG_FEM_R = NounType(12, NounStemClassEnum.STRONG_FEMININE_R)
-
-	val NOUN_STRONG_MASC_A = NounType(13, NounStemClassEnum.STRONG_MASCULINE_A)
-	val NOUN_STRONG_MASC_I = NounType(14, NounStemClassEnum.STRONG_MASCULINE_I)
-	val NOUN_STRONG_MASC_U = NounType(15, NounStemClassEnum.STRONG_MASCULINE_U)
-	val NOUN_STRONG_MASC_R = NounType(16, NounStemClassEnum.STRONG_MASCULINE_R)
-
-	val NOUN_STRONG_NEUT = NounType(17, NounStemClassEnum.STRONG_NEUTER)
-
-	// - weak nouns
-	val NOUN_WEAK_FEM_I = NounType(18, NounStemClassEnum.WEAK_FEMININE_I)
-	val NOUN_WEAK_FEM_U = NounType(19, NounStemClassEnum.WEAK_FEMININE_U)
-
-	val NOUN_WEAK_MASC_A = NounType(20, NounStemClassEnum.WEAK_MASCULINE_A)
-	val NOUN_WEAK_MASC_R = NounType(21, NounStemClassEnum.WEAK_MASCULINE_R)
-
-	val NOUN_WEAK_NEUT_U = NounType(22, NounStemClassEnum.WEAK_NEUTER_U)
-
-	// Adjectives
-	val ADJECTIVE = AdjectiveType(30, "Adjective")
-}
-
-object NounType
-{
-	lazy val nouns = PosType.values
-		.collect
-		{
-			case e: NounType => e.asInstanceOf[NounType]
-		}
-		.map(e => e.stemClass -> e).toMap
-
-	def findByVerbClass(nounStemClassEnum: NounStemClassEnum) = nouns(nounStemClassEnum)
-}
-
-
 
 object VerbForm extends EnumLike[Int, VerbForm]
 {
