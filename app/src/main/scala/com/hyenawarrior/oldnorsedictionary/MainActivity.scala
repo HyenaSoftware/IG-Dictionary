@@ -10,14 +10,16 @@ import android.view.View
 import android.widget.{ListView, SearchView}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{DUAL, PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, StrongVerbClassEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.{Word => GWord, _}
-import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
-import com.hyenawarrior.oldnorsedictionary.model.database.marshallers._
-import com.hyenawarrior.oldnorsedictionary.model.database.{IGDatabase, SQLDatabaseHelper}
+import com.hyenawarrior.oldnorsedictionary.model.database.{IGPersister, SQLDatabaseHelper}
+import com.hyenawarrior.oldnorsedictionary.model.persister.database.AndroidSDBLayer
+import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}
 import com.hyenawarrior.oldnorsedictionary.modelview.DictionaryEntryAdapter
 import com.hyenawarrior.oldnorsedictionary.new_word.AddNewWordActivityPager
-import com.hyenawarrior.oldnorsedictionary.new_word.pages.{MeaningDef, WordData}
+import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 
 object Orderings
 {
@@ -67,70 +69,66 @@ class MainActivity extends AppCompatActivity
 	{
 		override def onQueryTextSubmit(s: String): Boolean = true
 
-		override def onQueryTextChange(s: String): Boolean =
-		{
-			val words = igDatabase.findByStr(s)
+		override def onQueryTextChange(str: String): Boolean = {
 
-			val list: List[DictionaryEntry] = words.map(toDictionaryEntry).toList
+      val entries = if(str.isEmpty) List() else igPersister.lookup(str)
+        .map {
+          case DictionaryEntry(sv: StrongVerbContext, meanings) =>
+            val matchingForms = sv.verbForms.toList.collect {
+              case (k, v) if v.strForm.startsWith(str) => v.strForm -> abbrevationOf(k)
+            }
 
-			val orderedList = list.sortWith
-			{
-				case (a, b) => a.dictWord.map(_.strForm()).getOrElse("") > b.dictWord.map(_.strForm()).getOrElse("")
-			}
+            val priForm = sv.verbForms((INFINITIVE, None, None)).strForm
+            DictionaryListItem(priForm -> "INF", matchingForms, "verb", meanings)
 
-			entryListAdapter resetItems orderedList
+          //case DictionaryEntry(noun, meanings) =>
+        }
+          .toList
+
+			entryListAdapter resetItems entries
 			listView.invalidateViews()
 			true
 		}
 	}
 
-	private def toDictionaryEntry(wordForms: (WordData, Seq[MeaningDef])): DictionaryEntry =
-	{
-		/*
-			ablauts of the 7th strong verb class are not stored we have to extract them
-		 */
+  private def abbrevationOf(form: (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])): String ={
 
-		val posType = wordForms._1.posType
+    val (mood, optTense, optPronoun) = form
 
-		val words: Map[GWord, Boolean] = //null
-			Some(posType)
-			.collect { case vt: VerbType => vt.verbClass }
-			.collect { case svc: StrongVerbClassEnum => svc }
-			.map{ svc =>
+    val md = Some(abbrevationOfMood(mood))
+    val ts = optTense.map(abbrevationOfTense)
+    val pr = optPronoun.map(abbrevationOfPronoun)
 
-				val verbForms = wordForms._1.forms.collect { case (vf: VerbForm, str) => vf -> str }
+    Seq(ts, md, pr).flatten.mkString(" ")
+  }
 
-				val forms = verbForms.map {
+  private def abbrevationOfMood(mood: VerbModeEnum): String = mood match {
 
-					case (VerbForm(_, (md, oT, oP)), str) =>	verbs.stemFrom(oT, oP.map(_.number), md) -> str
-				}
-					.groupBy(_._1)
-					.map { case(k, v) => k -> v.values.toSeq }
+    case INFINITIVE => "INF"
+    case INDICATIVE => "IND"
+    case SUBJUNCTIVE => "SBJV"
+    case IMPERATIVE => "IMP"
+		case PARTICIPLE => "PTCP"
+  }
 
-				val optSvd = verbs.getDescOfStrongVerbClassFor(svc, forms)
+  private def abbrevationOfTense(tense: VerbTenseEnum): String = tense match {
 
-				val word = optSvd.map(svd => verbForms.map {
+    case PRESENT => "PRS"
+    case PAST => "PST"
+  }
 
-					case (VerbForm(_, vt @ (md, oT, oP)), rawStr) =>
-					  val verb = StrongVerb.fromStringRepr(rawStr, svd.vClass, (md, oT, oP))
-						val isPrimary = vt == VerbForm.VERB_INFINITIVE.vtype
-						GWord(verb) -> isPrimary
-				})
+  private def abbrevationOfPronoun(pronoun: Pronoun): String = pronoun match {
 
-				word.getOrElse(Map())
+    case Pronoun.SG_1 => "1SG"
+    case Pronoun.SG_2 => "2SG"
+    case Pronoun.SG_3 => "3SG"
 
-			}.getOrElse(Map())
+    case Pronoun.PL_1 => "1PL"
+    case Pronoun.PL_2 => "2PL"
+    case Pronoun.PL_3 => "3PL"
+  }
 
-		val dictForm = words.find(_._2).map(_._1)
-
-		import Orderings._
-
-		val meanings = wordForms._2
-
-		DictionaryEntry(words.keys.toList.sorted, dictForm, meanings.toList.sorted)
-	}
-
-	override protected def onBackPressed()
+  override protected def onBackPressed()
 	{
 		super.onBackPressed()
 	}
@@ -138,7 +136,7 @@ class MainActivity extends AppCompatActivity
 	lazy val entryListAdapter = new DictionaryEntryAdapter(this)
 	lazy val listView = findViewById(R.id.listView).asInstanceOf[ListView]
 
-	lazy val igDatabase = IGDatabase(getApplicationContext)
+  lazy val igPersister = new IGPersister(getApplicationContext)
 
 	private def installEventHandlers()
 	{
@@ -147,16 +145,9 @@ class MainActivity extends AppCompatActivity
 		sw setOnQueryTextListener TypeListener
 	}
 
-	private def initDatabase(): Unit = {
-
-		igDatabase.addLanguage("Old Norse")
-		igDatabase.addLanguage("English")
-	}
-
 	def clear(view: View)
 	{
-		igDatabase.clear
-		initDatabase()
+		getApplicationContext.deleteDatabase(AndroidSDBLayer.DATABASE_NAME)
 	}
 
 	def backup(view: View)
@@ -167,7 +158,7 @@ class MainActivity extends AppCompatActivity
 			val data = Environment.getDataDirectory
 
 			val currentDBPath = "/data/data/" + getPackageName + "/databases/" + SQLDatabaseHelper.DATABASE_NAME
-			val backupDBPath =  SQLDatabaseHelper.DATABASE_NAME + ".db"
+			val backupDBPath =  AndroidSDBLayer.DATABASE_NAME + ".db"
 			val currentDB = new File(currentDBPath)
 			val backupDB = new File(sd, backupDBPath)
 
@@ -202,38 +193,7 @@ class MainActivity extends AppCompatActivity
 		setContentView(R.layout.activity_main)
 
 		installEventHandlers()
-		//initDatabase
-
-		//igDatabase.clear
-		//val languages = igDatabase.getLangauges
 
 		listView setAdapter entryListAdapter
-
-		//backup
-
-		//val isReadable = Storage.isExternalStorageReadable
-		//val isWriteable = Storage.isExternalStorageWritable
-
-		/*
-		val oldNorseWords = meanings("Old Norse")
-		val englishWords = meanings("English")
-
-		val ws1 = oldNorseWords.map(iw => iw.meaningId -> Meaning(iw._2.head))
-		val ws2 = englishWords.map(id => id.meaningId -> id._2.map(Meaning(_)))
-
-		val list2 = ws1
-			.map(im => DictionaryRow(im._2, ws2.getOrElse(im._1, List.empty)))
-		  .toList
-			.sortBy(_.wordFrom.word)
-		*/
-/*
-		val listView = findViewById(R.id.listView).asInstanceOf[ListView]
-		listView setAdapter new EntryListAdapter(this, list2)
-*/
-	/*List(
-			R.id.row_word -> "ROW_WORD",
-			R.id.row_word_defs -> Range(0, rowView.getCount).map(rowView.getView(_, null, null)).toList //mobileArray // List[View]
-		)*/
-
 	}
 }

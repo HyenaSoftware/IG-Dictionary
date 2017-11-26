@@ -6,4 +6,4 @@ import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.{PosForm, 
   * Created by HyenaWarrior on 2017.04.30..
   */
 
-case class WordData(posType: PosType, forms: Map[PosForm, String], meanings: List[MeaningDef])
+case class WordData(word: AnyRef, meanings: List[MeaningDef])

@@ -4,37 +4,26 @@ import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.TextView
 import com.hyenawarrior.OldNorseGrammar.grammar._
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{FinitiveStrongVerb, NonFinitiveStrongVerb, NonFinitiveVerbType}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType
 import com.hyenawarrior.oldnorsedictionary.R
+import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 
 /**
 	* Created by HyenaWarrior on 2017.04.04..
 	*/
-class WordFormAdapter(activity: Activity) extends CustomAdapter[Word](activity)
+class WordFormAdapter(activity: Activity) extends CustomAdapter[DictionaryListItem.DescedString](activity)
 {
 	override def getNewView(i: Int, viewGroup: ViewGroup): View =
 	{
 		val view = inflater.inflate(R.layout.word_form_entry, viewGroup)
-		//val rootLayout = view.asInstanceOf[GridLayout]
 
-		val item = itemAt(i)
+		val (word, desc) = itemAt(i)
 
 		val tvWordForm = view.findViewById(R.id.tvWordForm).asInstanceOf[TextView]
 		val tvWordDesc = view.findViewById(R.id.tvWordDesc).asInstanceOf[TextView]
 
-		tvWordForm setText item.strForm
-		//tvWordDesc setText formatTraits(item.traits)
-
-		val formDesc = item.pos match
-		{
-			case n: Noun => s"[${shortCut(n.decl._1)}, ${shortCut(n.decl._2)}]"
-			case v: FinitiveStrongVerb => s"[${shortCut(v.pronoun.number)}, ${v.pronoun.person}]"
-			case v: NonFinitiveStrongVerb => s"[${shortCut(v.nonFinitiveVerbType)}]"
-			case _ => "???"
-		}
-
-		tvWordDesc setText formDesc
+		tvWordForm setText word
+		tvWordDesc setText desc
 
 		view
 	}

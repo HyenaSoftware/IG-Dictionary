@@ -8,7 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassE
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 import com.hyenawarrior.oldnorsedictionary.R
-import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.{NounForm, NounType, PosForm}
+import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.NounForm
 import com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel.NounDeclensionAdapter
 import com.hyenawarrior.oldnorsedictionary.modelview.{EditTextTypeListener, ItemListener}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.AddNewWordActivity._
@@ -234,12 +234,8 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
     optNounStemClassE match
     {
       case Some(nounStemClassE) =>
-				val forms = latestNounData(nounStemClassE).map
-				{
-					case (k,v) => k.asInstanceOf[PosForm] -> v
-				}
-
-				WordData(NounType.findByVerbClass(nounStemClassE), forms, List())
+				val selectedForm = latestNounData(nounStemClassE)
+				WordData(selectedForm, List())
 
       case _ => throw new IllegalStateException("Unknown control")
     }

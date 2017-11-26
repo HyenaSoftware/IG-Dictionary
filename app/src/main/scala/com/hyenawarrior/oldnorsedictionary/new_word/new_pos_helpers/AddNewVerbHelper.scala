@@ -285,12 +285,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		optVerbClassE match
 		{
 			case Some(verbClass) =>
-				val forms: Map[PosForm, String] = latestVerbData(verbClass).verbForms.map {
-
-          case (vt, sv) => VerbForm(0, vt) -> sv.strForm
-        }
-
-				WordData(VerbType.findByVerbClass(verbClass), forms, List())
+				val selectedForm = latestVerbData(verbClass)
+				WordData(selectedForm, List())
 
 			case _ => throw new IllegalStateException("Unknown UI control")
 		}

@@ -4,9 +4,10 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbContext, VerbModeEnum}
 import com.hyenawarrior.oldnorsedictionary.R
-import com.hyenawarrior.oldnorsedictionary.model.database.IGDatabase
-import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.{NounForm, NounType, VerbForm, VerbType}
+import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
+import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
 import com.hyenawarrior.oldnorsedictionary.modelview.meaning_panel.MeaningDefListView
 
 /**
@@ -14,9 +15,8 @@ import com.hyenawarrior.oldnorsedictionary.modelview.meaning_panel.MeaningDefLis
 	*/
 object SetMeaningFragment extends Fragment
 {
-	lazy val igDatabase = IGDatabase(getContext)
+  lazy val igPersister = new IGPersister(getContext)
   var optWordData: Option[WordData] = None
-  //var meanings: List[MeaningDef] = List()
 
   class DataContext(val rootView: View)
 	{
@@ -25,7 +25,7 @@ object SetMeaningFragment extends Fragment
 		val meaningDefListView = new MeaningDefListView(getActivity, hostView)
 	}
 
-  var dataContext: DataContext = null
+  var dataContext: DataContext = _
 
 	override def onCreateView(inflater: LayoutInflater, container: ViewGroup, savedInstanceState: Bundle): View =
   {
@@ -40,23 +40,22 @@ object SetMeaningFragment extends Fragment
   {
     optWordData = Option(wordData)
 
-    val posTypeName = wordData.posType match
+    val (posTypeName, posSubType) = wordData.word match
     {
-      case _: VerbType => "verb"
-      case _: NounType => "noun"
-      case _ => "???"
+      case _: StrongVerbContext => "verb" -> "strong"
+      case _ => "???" -> "???"
     }
 
     val tv_setmeaning_PosType = dataContext.rootView.findViewById(R.id.tv_setmeaning_PosType).asInstanceOf[TextView]
     tv_setmeaning_PosType.setText(posTypeName)
 
     val tv_setmeaning_ClassType = dataContext.rootView.findViewById(R.id.tv_setmeaning_ClassType).asInstanceOf[TextView]
-    tv_setmeaning_ClassType.setText(wordData.posType.toString)
+    tv_setmeaning_ClassType.setText(posSubType)
 
     val word = optWordData match
     {
-      case Some(WordData(_: NounType, map, _)) => map.getOrElse(NounForm.NOUN_NOM_SG, "???")
-      case Some(WordData(_: VerbType, map, _)) => map.getOrElse(VerbForm.VERB_INFINITIVE, "???")
+      case Some(WordData(sv: StrongVerbContext, _)) =>
+        sv.verbForms.get((VerbModeEnum.INFINITIVE, None, None)).map(_.strForm).getOrElse("???")
       case _ => "???"
     }
 
@@ -66,7 +65,11 @@ object SetMeaningFragment extends Fragment
 
   def saveDefinitionInto(): Unit = optWordData match
   {
-    case Some(data) => igDatabase.save(data, dataContext.meaningDefListView.fetch())
+
+    case Some(WordData(word, _)) =>
+      val meaning = dataContext.meaningDefListView.fetch()
+      igPersister.save(DictionaryEntry(word, meaning))
+
     case None => ()
   }
 
