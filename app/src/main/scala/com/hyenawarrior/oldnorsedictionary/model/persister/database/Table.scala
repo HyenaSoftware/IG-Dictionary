@@ -30,6 +30,6 @@ case class Table(tableName: String, columns: IndexedSeq[ColumnDefinition]) {
     val columnsByName = columns.map(c => c.name -> c).toMap
     val colDefs = columnsToQuery.map(c => columnsByName(c))
 
-    dbLayer.select(tableName, colDefs, whereArgs, whereClause)
+    dbLayer.select(tableName, colDefs, whereArgs, whereClause, isDictinct)
   }
 }
