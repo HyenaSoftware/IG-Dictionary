@@ -147,6 +147,32 @@ class VerbTest
     assertEquals("batt",  verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3)).strForm)
 	}
 
+  /*
+   The following two test cases are focusing on to use the same properties on the output forms during transformation
+   'e' sometimes changes to 'i' in the 3rd class of verbs, like in the case of "binda", but there are exceptions
+   like "brenna"
+  */
+
+  @Test
+  def testCoTransformation1: Unit = {
+
+    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1))
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "brenn"))
+
+    assertEquals("brennr",  verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3)).strForm)
+  }
+
+  @Test
+  def testCoTransformation2: Unit = {
+
+    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1))
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "bind"))
+
+    assertEquals("bindr",  verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3)).strForm)
+  }
+
   @Test
   def testClass3rdFromJaStem(): Unit = {
 
