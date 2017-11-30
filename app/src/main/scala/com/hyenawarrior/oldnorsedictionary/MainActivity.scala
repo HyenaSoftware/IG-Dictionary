@@ -21,6 +21,8 @@ import com.hyenawarrior.oldnorsedictionary.modelview.DictionaryEntryAdapter
 import com.hyenawarrior.oldnorsedictionary.new_word.AddNewWordActivityPager
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 
+import scala.language.postfixOps
+
 object Orderings
 {
 	def sgnDiff[T](a: T, b: T)(implicit ordering: Ordering[T]): Int = ordering.compare(a, b)
@@ -74,12 +76,25 @@ class MainActivity extends AppCompatActivity
       val entries = if(str.isEmpty) List() else igPersister.lookup(str)
         .map {
           case DictionaryEntry(sv: StrongVerbContext, meanings) =>
-            val matchingForms = sv.verbForms.toList.collect {
-              case (k, v) if v.strForm.startsWith(str) => v.strForm -> abbrevationOf(k)
+
+            val matchingForms = sv.verbForms
+              .filter {
+                case (_, v) if v.strForm.startsWith(str) => true
+                case _ => false
+              }
+
+            val INF_KEY = (INFINITIVE, None, None)
+
+            val priForm = sv.verbForms(INF_KEY)
+
+            val formsToShow = filter(matchingForms) match {
+
+              case Some((INF_KEY, f)) => Seq()
+              case Some((k, v)) => Seq(v.strForm -> abbrevationOf(k))
+              case None => Seq()
             }
 
-            val priForm = sv.verbForms((INFINITIVE, None, None)).strForm
-            DictionaryListItem(priForm -> "INF", matchingForms, "verb", meanings)
+            DictionaryListItem(priForm.strForm -> "INF", formsToShow, "verb", meanings)
 
           //case DictionaryEntry(noun, meanings) =>
         }
@@ -90,6 +105,44 @@ class MainActivity extends AppCompatActivity
 			true
 		}
 	}
+
+  private def filter(forms: Map[VerbType, StrongVerb]): Option[(VerbType, StrongVerb)] = {
+
+    val fs = forms.groupBy { case ((md, _, _), _) => md }
+
+    val inf = fs.get(INFINITIVE).map(_.head)
+		val prtcp = fs.get(PARTICIPLE).map(_.head)
+
+    inf orElse fs.get(INDICATIVE).flatMap(splitByTense) orElse prtcp
+  }
+
+  private def splitByTense(forms: Map[VerbType, StrongVerb]): Option[(VerbType, StrongVerb)] = {
+
+    val fs = forms.groupBy { case ((_, Some(t), _), _) => t }
+
+    val present = fs.get(PRESENT).flatMap(splitByNumber)
+    val past = fs.get(PAST).flatMap(splitByNumber)
+
+    present orElse past
+  }
+
+  private def splitByNumber(forms: Map[VerbType, StrongVerb]): Option[(VerbType, StrongVerb)] = {
+
+    val fs = forms.groupBy { case ((_, _, Some(Pronoun(n, _))), _) => n }
+
+    val sg = fs.get(SINGULAR).flatMap(select)
+    val pl = fs.get(PLURAL).flatMap(select)
+
+    sg orElse pl
+  }
+
+  private def select(forms: Map[VerbType, StrongVerb]): Option[(VerbType, StrongVerb)] = forms
+    .find {
+      case ((_, _, Some(Pronoun(_, 3))), _) => true
+      case _ => false
+    }
+    .orElse(forms.headOption)
+
 
   private def abbrevationOf(form: (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])): String ={
 
