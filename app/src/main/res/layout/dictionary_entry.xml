@@ -6,7 +6,7 @@
               android:columnCount="2"
               android:rowCount="2"
               android:layout_weight="5" android:orientation="vertical"
-              android:baselineAligned="false">
+              android:baselineAligned="false" android:clickable="false" android:onClick="onClickOnAnEntry">
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
@@ -26,5 +26,10 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/llMeanings" android:layout_marginLeft="10dp">
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical" android:layout_width="match_parent"
+                  android:layout_height="wrap_content" android:id="@+id/llFormTable" android:layout_marginLeft="10dp"
+                  android:visibility="gone">
+        <include layout="@layout/verb_conjugation_viewer" />
     </LinearLayout>
 </LinearLayout>

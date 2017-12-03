@@ -240,6 +240,8 @@ class MainActivity extends AppCompatActivity
 		startActivity(intent)
 	}
 
+	def onClickOnAnEntry(view: View): Unit = entryListAdapter onClickOnAnEntry view
+
 	override protected def onCreate(savedInstanceState: Bundle)
 	{
 		super.onCreate(savedInstanceState)
