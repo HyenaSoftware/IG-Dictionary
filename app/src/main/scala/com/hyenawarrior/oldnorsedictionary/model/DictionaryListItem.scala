@@ -11,4 +11,4 @@ object DictionaryListItem {
   type DescedString = (String, String)
 }
 
-case class DictionaryListItem(priForm: DescedString, otherForms: Seq[DescedString], posType: String, meanings: List[MeaningDef])
+case class DictionaryListItem(otherForms: Seq[DescedString], posType: String, posObj: Any, meanings: List[MeaningDef])

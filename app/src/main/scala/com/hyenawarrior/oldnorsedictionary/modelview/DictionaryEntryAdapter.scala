@@ -25,9 +25,8 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 
 		// set words
 		val wordFormAdapter = new WordFormAdapter(activity)
-		val forms = item.priForm +: item.otherForms.toList
 
-		wordFormAdapter resetItems forms
+		wordFormAdapter resetItems item.otherForms.toList
 
 		val llWordForms = view.findViewById(R.id.llWordForms).asInstanceOf[LinearLayout]
 		extractViewsInto(wordFormAdapter, llWordForms)

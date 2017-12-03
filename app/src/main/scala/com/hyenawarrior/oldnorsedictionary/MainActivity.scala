@@ -85,16 +85,16 @@ class MainActivity extends AppCompatActivity
 
             val INF_KEY = (INFINITIVE, None, None)
 
-            val priForm = sv.verbForms(INF_KEY)
+            val priForm = sv.verbForms(INF_KEY).strForm -> abbrevationOf(INF_KEY)
 
             val formsToShow = filter(matchingForms) match {
 
-              case Some((INF_KEY, f)) => Seq()
-              case Some((k, v)) => Seq(v.strForm -> abbrevationOf(k))
+              case Some((INF_KEY, f)) => Seq(priForm)
+              case Some((k, v)) => Seq(priForm, v.strForm -> abbrevationOf(k))
               case None => Seq()
             }
 
-            DictionaryListItem(priForm.strForm -> "INF", formsToShow, "verb", meanings)
+            DictionaryListItem(formsToShow, "verb", sv, meanings)
 
           //case DictionaryEntry(noun, meanings) =>
         }
