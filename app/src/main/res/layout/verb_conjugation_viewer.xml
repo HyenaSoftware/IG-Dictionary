@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/glVerb" android:orientation="vertical"
+              android:background="#fffde5" android:layout_marginBottom="3dp" android:columnCount="3"
+              android:paddingTop="6dp">
+    <TableLayout android:layout_width="match_parent"
+                 android:layout_marginBottom="6dp" android:layout_height="wrap_content">
+        <TableRow android:layout_width="match_parent">
+            <!-- TextView
+                    android:layout_width="0dp"  android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Indicative"
+                    android:textStyle="bold"/ -->
+            <!-- TextView
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_column="1"           android:layout_row="0"
+                    android:layout_weight="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Active"
+                    android:textStyle="bold"/ -->
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Weak I-stem"
+                    android:textAlignment="center" android:id="@+id/tv.addword.verb.stemName"
+                    android:layout_weight="1"/>
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Small Text"
+                    android:id="@+id/tv.addword.verb.AblautGrades" android:layout_weight="1"
+                    android:textAlignment="center"/>
+        </TableRow>
+    </TableLayout>
+    <TableLayout android:layout_width="match_parent"
+                 android:layout_marginBottom="6dp" android:layout_height="wrap_content">
+        <TableRow android:layout_width="match_parent">
+            <TextView android:layout_width="0dp"    android:layout_height="wrap_content"
+                      android:layout_weight="1"     android:text="infinitive"
+                      android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="..." android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.Infinitive"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+            <TextView android:layout_width="0dp"    android:layout_height="wrap_content"
+                      android:layout_weight="1"     android:text="present participle"
+                      android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="..." android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PresPart"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+            <TextView android:layout_width="0dp"    android:layout_height="wrap_content"
+                      android:layout_weight="1"     android:text="past participle"
+                      android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="..." android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PastPart"/>
+        </TableRow>
+    </TableLayout>
+    <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:baselineAligned="false"
+    >
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:weightSum="10">
+            <Space android:layout_width="0dp" android:layout_weight="3.33"
+                   android:layout_height="wrap_content"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Present"
+                      android:layout_weight="3.33"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Past"
+                      android:layout_weight="3.33"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+            <TextView   android:layout_width="0dp"  android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Sg 1st P" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hefi" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PresSg1"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hafða" android:id="@+id/tv.addword.verb.PastSg1" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium" />
+        </TableRow>
+        <TableRow android:layout_width="match_parent"   android:layout_height="match_parent">
+            <TextView   android:layout_width="0dp"      android:layout_height="wrap_content"
+                        android:layout_weight="1"       android:text="Sg 2nd P"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hefir" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PresSg2"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hafðir" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PastSg2"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent"   android:layout_height="match_parent">
+            <TextView   android:layout_width="0dp"      android:layout_height="wrap_content"
+                        android:layout_weight="1"       android:text="Sg 3rd"
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hefir" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PresSg3"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hafði" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PastSg3"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+        >
+            <TextView android:layout_width="0dp"    android:layout_height="wrap_content"
+                      android:layout_weight="1"     android:text="Pl 1st"
+                      android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="höfum" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PresPl1"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="höfðum" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PastPl1"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+        >
+            <TextView android:layout_width="0dp"    android:layout_height="wrap_content"
+                      android:layout_weight="1"     android:text="Pl 2nd"
+                      android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hafið" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PresPl2"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="höfðuð" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PastPl2"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+        >
+            <TextView android:layout_width="0dp"    android:layout_height="wrap_content"
+                      android:layout_weight="1"     android:text="Pl 3rd"
+                      android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hafa" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PresPl3"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="höfðu" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PastPl3"/>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
+
