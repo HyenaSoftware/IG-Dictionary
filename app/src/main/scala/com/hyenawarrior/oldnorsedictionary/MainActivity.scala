@@ -247,6 +247,8 @@ class MainActivity extends AppCompatActivity
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_main)
 
+		Thread setDefaultUncaughtExceptionHandler uncaughtExceptionHandler
+
 		installEventHandlers()
 
 		listView setAdapter entryListAdapter
