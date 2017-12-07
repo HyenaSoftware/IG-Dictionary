@@ -1,5 +1,6 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
+import com.hyenawarrior.oldnorsedictionary.model.persister.database.DatabasePersister.{ObjFields, ObjTypes, Texts}
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.{DatabasePersister, SQLiteDBLayer}
 import com.hyenawarrior.oldnorsedictionary.model.persister.inmemory.InMemoryPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.{Reader, Serializer}
@@ -51,6 +52,10 @@ class TestPersister {
   def testDatabaseStore(): Unit = {
 
     implicit val map: Map[Class[_], Serializer[Any]] = Map(classOf[TestType] -> TestTypeSerializer.asInstanceOf[Serializer[Any]])
+
+    SQLiteDBLayer.createTable(Texts.tableName, Texts.columns)
+    SQLiteDBLayer.createTable(ObjFields.tableName, ObjFields.columns)
+    SQLiteDBLayer.createTable(ObjTypes.tableName, ObjTypes.columns)
 
     val dbp = DatabasePersister(SQLiteDBLayer)
 
