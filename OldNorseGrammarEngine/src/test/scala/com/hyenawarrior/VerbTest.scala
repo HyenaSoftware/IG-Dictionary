@@ -4,13 +4,14 @@ import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.Raising
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.EnabledFor
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum.STRONG_1ST_CLASS
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
 import org.junit.Assert._
-import org.junit.{Assert, Test}
+import org.junit.Test
 
 import scala.collection.immutable.Map
 
@@ -28,8 +29,8 @@ class VerbTest
   @Test
   def testClass1stConvertFromPlToSg(): Unit = try {
 
-    val srcForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3))
-		val trgForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1))
+    val srcForm = (INDICATIVE, Some(PAST), Some(Pronoun.PL_3))
+		val trgForm = (INDICATIVE, Some(PAST), Some(Pronoun.SG_1))
 
     val verb = StrongVerbContext(STRONG_1ST_CLASS, Map(srcForm -> "bitu"))
 
@@ -45,8 +46,8 @@ class VerbTest
 	@Test
 	def testClass1stConvertFromSgToPl(): Unit = try {
 
-		val srcForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1))
-		val trgForm = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3))
+		val srcForm = (INDICATIVE, Some(PAST), Some(Pronoun.SG_1))
+		val trgForm = (INDICATIVE, Some(PAST), Some(Pronoun.PL_3))
 
 		val verb = StrongVerbContext(STRONG_1ST_CLASS, Map(srcForm -> "beit"))
 
@@ -68,11 +69,11 @@ class VerbTest
 	@Test
 	def testClass2ndUseJuForPresent(): Unit = {
 
-    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3))
+    val srcType: VerbType = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
 
     val verb = StrongVerbContext(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "kraup"))
 
-		val verbform = verb.verbForms((VerbModeEnum.INFINITIVE, None, None))
+		val verbform = verb.verbForms((INFINITIVE, None, None))
 
 		assertEquals("krjúpa", verbform.strForm)
 	}
@@ -80,11 +81,11 @@ class VerbTest
 	@Test
 	def testClass2ndChangeToJoForPresent(): Unit = {
 
-    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3))
+    val srcType: VerbType = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
 
     val verb = StrongVerbContext(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "skaut"))
 
-		val verbform = verb.verbForms((VerbModeEnum.INFINITIVE, None, None))
+		val verbform = verb.verbForms((INFINITIVE, None, None))
 
 		assertEquals("skjóta", verbform.strForm)
 	}
@@ -103,9 +104,9 @@ class VerbTest
 	@Test
 	def testClass2ndPastSg2SuffixForTStemEnd(): Unit = {
 
-		val stem = StrongVerbStem.fromStrRepr("braut", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		val stem = StrongVerbStem.fromStrRepr("braut", VerbClassEnum.STRONG_2ND_CLASS, PRETERITE_SINGULAR_STEM)
 
-		val verbform = StrongVerb.verbFrom(stem, Pronoun.SG_2, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE)
+		val verbform = StrongVerb.verbFrom(stem, Pronoun.SG_2, PAST, INDICATIVE)
 
 		assertEquals("brauzt", verbform.strForm)
 	}
@@ -121,34 +122,34 @@ class VerbTest
   @Test
   def testClass3rdRegular(): Unit = {
 
-    val stem = StrongVerbStem.fromStrRepr("bregð", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stem = StrongVerbStem.fromStrRepr("bregð", STRONG_3RD_CLASS, PRESENT_STEM)
 
-    assertEquals("bregða", StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE).strForm)
+    assertEquals("bregða", StrongVerb.verbFrom(stem, None, INFINITIVE).strForm)
   }
 
 	@Test
 	def testClass3rdRaising(): Unit = {
 
-		val stem = StrongVerbStem.fromStrRepr("spinn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+		val stem = StrongVerbStem.fromStrRepr("spinn", STRONG_3RD_CLASS, PRESENT_STEM)
 
     val StrongVerbStem(normalizedStemStr, _, _, EnabledFor(Raising)) = stem
     assertEquals("spenn", normalizedStemStr)
 
-		val verbform = StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE)
+		val verbform = StrongVerb.verbFrom(stem, None, INFINITIVE)
 		assertEquals("spinna", verbform.strForm)
 	}
 
 	@Test
 	def testClass3rdNasalAssimilation(): Unit = {
 
-		val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3))
+		val srcType: VerbType = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "batt"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcType -> "batt"))
 
-    assertEquals("binda", verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
-    assertEquals("batt",  verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("batzt", verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("batt",  verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("binda", verb.verbForms(INFINITIVE, None, None).strForm)
+    assertEquals("batt",  verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
+    assertEquals("batzt", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+    assertEquals("batt",  verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
 	}
 
   /*
@@ -158,69 +159,69 @@ class VerbTest
   */
 
   @Test
-  def testCoTransformation1: Unit = {
+  def testCoTransformation1(): Unit = {
 
-    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1))
+    val srcType: VerbType = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "brenn"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcType -> "brenn"))
 
-    assertEquals("brennr",  verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("brennr",  verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
   }
 
   @Test
-  def testCoTransformation2: Unit = {
+  def testCoTransformation2(): Unit = {
 
-    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1))
+    val srcType: VerbType = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "bind"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcType -> "bind"))
 
-    assertEquals("bindr",  verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("bindr",  verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
   }
 
   @Test
   def testClass3rdFromJaStem(): Unit = {
 
-    val stem = StrongVerbStem.fromStrRepr("hjalp", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stem = StrongVerbStem.fromStrRepr("hjalp", STRONG_3RD_CLASS, PRESENT_STEM)
 
-		assertEquals("hjalpa", 	StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE).strForm)
-		assertEquals("help", 		StrongVerb.verbFrom(stem, Pronoun.SG_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
-		assertEquals("hjǫlpum",	StrongVerb.verbFrom(stem, Pronoun.PL_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("hjalpa", 	StrongVerb.verbFrom(stem, None, INFINITIVE).strForm)
+		assertEquals("help", 		StrongVerb.verbFrom(stem, Pronoun.SG_1, PRESENT, INDICATIVE).strForm)
+		assertEquals("hjǫlpum",	StrongVerb.verbFrom(stem, Pronoun.PL_1, PRESENT, INDICATIVE).strForm)
 	}
 
   @Test
   def testClass3rdStemFinalDevoicingAfterL(): Unit = {
 
-    val stem = StrongVerbStem.fromStrRepr("gald", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+    val stem = StrongVerbStem.fromStrRepr("gald", STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM)
 
-    assertEquals("galzt", StrongVerb.verbFrom(stem, Pronoun.SG_2, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE).strForm)
-    assertEquals("galt",  StrongVerb.verbFrom(stem, Pronoun.SG_3, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE).strForm)
+    assertEquals("galzt", StrongVerb.verbFrom(stem, Pronoun.SG_2, PAST, INDICATIVE).strForm)
+    assertEquals("galt",  StrongVerb.verbFrom(stem, Pronoun.SG_3, PAST, INDICATIVE).strForm)
   }
 
   /** Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr. */
   @Test
   def testClass3rdFromDoNotChangeStemToJa(): Unit = {
 
-    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3))
+    val srcType: VerbType = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "verðr"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcType -> "verðr"))
 
-    assertEquals("verða", verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
-		assertEquals("verð", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("varð", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3)).strForm)
-    assertEquals("urðu",	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("verða", verb.verbForms(INFINITIVE, None, None).strForm)
+		assertEquals("verð", 	verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("varð", 	verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("urðu",	verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
   }
 
   @Test
   def testClass3rdFromJaStemFromPastTense(): Unit = {
 
-    val srcType: VerbType = (VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3))
+    val srcType: VerbType = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcType -> "halp"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcType -> "halp"))
 
-    assertEquals("hjalpa", 	verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
-    assertEquals("help", 		verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("hjǫlpum",	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("halpt", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(VerbTenseEnum.PAST),    Some(Pronoun.SG_2)).strForm)
+    assertEquals("hjalpa", 	verb.verbForms(INFINITIVE, None, None).strForm)
+    assertEquals("help", 		verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("hjǫlpum",	verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("halpt", 	verb.verbForms(INDICATIVE, Some(PAST),    Some(Pronoun.SG_2)).strForm)
   }
 
   @Test
@@ -228,7 +229,7 @@ class VerbTest
 
     val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "hjalpa"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcForm -> "hjalpa"))
 
     val verbFormP3 = verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3))
 
@@ -241,7 +242,7 @@ class VerbTest
 
     val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "helpr"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcForm -> "helpr"))
 
     val verbFormP3 = verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
 
@@ -251,16 +252,16 @@ class VerbTest
 	@Test
 	def testClass3rdUUmlaut(): Unit = {
 
-		val presStem = StrongVerbStem.fromStrRepr("sekkv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+		val presStem = StrongVerbStem.fromStrRepr("sekkv", STRONG_3RD_CLASS, PRESENT_STEM)
 
-		assertEquals("søkkr", 	StrongVerb.verbFrom(presStem, Pronoun.SG_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
-		assertEquals("søkkva", 	StrongVerb.verbFrom(presStem, Pronoun.PL_3, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("søkkr", 	StrongVerb.verbFrom(presStem, Pronoun.SG_3, PRESENT, INDICATIVE).strForm)
+		assertEquals("søkkva", 	StrongVerb.verbFrom(presStem, Pronoun.PL_3, PRESENT, INDICATIVE).strForm)
 
-		val pastSgStem = StrongVerbStem.fromStrRepr("sakkv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
-		assertEquals("sǫkk", 	StrongVerb.verbFrom(pastSgStem, Pronoun.SG_3, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE).strForm)
+		val pastSgStem = StrongVerbStem.fromStrRepr("sakkv", STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM)
+		assertEquals("sǫkk", 	StrongVerb.verbFrom(pastSgStem, Pronoun.SG_3, PAST, INDICATIVE).strForm)
 
-		val pastPlStem = StrongVerbStem.fromStrRepr("sukk", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
-		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE).strForm)
+		val pastPlStem = StrongVerbStem.fromStrRepr("sukk", STRONG_3RD_CLASS, PRETERITE_PLURAL_STEM)
+		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3, PAST, INDICATIVE).strForm)
 	}
 
   @Test
@@ -268,13 +269,13 @@ class VerbTest
 
     val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "søkkva"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcForm -> "søkkva"))
 
-    assertEquals("søkkr", 	verb.verbForms(VerbModeEnum.INDICATIVE,  Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("søkkva", 	verb.verbForms(VerbModeEnum.INDICATIVE,  Some(VerbTenseEnum.PRESENT), Some(Pronoun.PL_3)).strForm)
+    assertEquals("søkkr", 	verb.verbForms(INDICATIVE,  Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("søkkva", 	verb.verbForms(INDICATIVE,  Some(PRESENT), Some(Pronoun.PL_3)).strForm)
 
-    assertEquals("sǫkk", 	  verb.verbForms(VerbModeEnum.INDICATIVE,  Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3)).strForm)
-    assertEquals("sukku",   verb.verbForms(VerbModeEnum.INDICATIVE,  Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("sǫkk", 	  verb.verbForms(INDICATIVE,  Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("sukku",   verb.verbForms(INDICATIVE,  Some(PAST), Some(Pronoun.PL_3)).strForm)
   }
 
   @Test
@@ -282,17 +283,17 @@ class VerbTest
 
     val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "syngva"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcForm -> "syngva"))
 
-		assertEquals("syngva", 	verb.verbForms(VerbModeEnum.INFINITIVE, None, None).strForm)
-		assertEquals("syngr", 	verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("sǫng",    verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
+		assertEquals("syngva", 	verb.verbForms(INFINITIVE, None, None).strForm)
+		assertEquals("syngr", 	verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("sǫng",    verb.verbForms(INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
   }
 
 	@Test
 	def testClass3rdUmlautedAblautExtraction(): Unit = {
 
-		val verb = StrongVerb.fromStringRepr("syngva", VerbClassEnum.STRONG_3RD_CLASS, (VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3)))
+		val verb = StrongVerb.fromStringRepr("syngva", STRONG_3RD_CLASS, (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3)))
 
 		val StrongVerb((_, verbStem)) = verb
 
@@ -302,7 +303,7 @@ class VerbTest
   @Test
   def testClass3rdInflectionCornerCases(): Unit = {
 
-    val verb = StrongVerb.fromStringRepr("batzt", VerbClassEnum.STRONG_3RD_CLASS, (VerbModeEnum.INDICATIVE, Some(PAST), Some(Pronoun.SG_2)))
+    val verb = StrongVerb.fromStringRepr("batzt", STRONG_3RD_CLASS, (INDICATIVE, Some(PAST), Some(Pronoun.SG_2)))
 
     val StrongVerb((_, verbStem)) = verb
 
@@ -325,15 +326,15 @@ class VerbTest
 
     val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_2))
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_5TH_CLASS, Map(srcForm -> "liggr"))
+    val verb = StrongVerbContext(STRONG_5TH_CLASS, Map(srcForm -> "liggr"))
 
-    assertEquals("liggr",   verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("liggjum", verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("liggr",   verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("liggjum", verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
 
-    assertEquals("lá",      verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_1)).strForm)
-    assertEquals("lát",     verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_2)).strForm)
-    assertEquals("lágum",   verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.PL_1)).strForm)
-    assertEquals("leginn",  verb.verbForms(VerbModeEnum.PARTICIPLE, Some(PAST),    None).strForm)
+    assertEquals("lá",      verb.verbForms(INDICATIVE, Some(PAST),    Some(Pronoun.SG_1)).strForm)
+    assertEquals("lát",     verb.verbForms(INDICATIVE, Some(PAST),    Some(Pronoun.SG_2)).strForm)
+    assertEquals("lágum",   verb.verbForms(INDICATIVE, Some(PAST),    Some(Pronoun.PL_1)).strForm)
+    assertEquals("leginn",  verb.verbForms(PARTICIPLE, Some(PAST),    None).strForm)
   }
 
   @Test
@@ -341,21 +342,21 @@ class VerbTest
 
     val srcForm = (INFINITIVE, None, None)
 
-    val verb = StrongVerbContext(VerbClassEnum.STRONG_5TH_CLASS, Map(srcForm -> "vega"))
+    val verb = StrongVerbContext(STRONG_5TH_CLASS, Map(srcForm -> "vega"))
 
-    assertEquals("vegr", verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("vegum",verb.verbForms(VerbModeEnum.INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("vá",   verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
-    assertEquals("vágum",verb.verbForms(VerbModeEnum.INDICATIVE, Some(PAST),    Some(Pronoun.PL_1)).strForm)
+    assertEquals("vegr", verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("vegum",verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("vá",   verb.verbForms(INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
+    assertEquals("vágum",verb.verbForms(INDICATIVE, Some(PAST),    Some(Pronoun.PL_1)).strForm)
   }
 
   @Test
   def testClass6VerbInflection() {
 
-    val svStemPR = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRESENT_STEM)
-    val svStemPS = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
-    val svStemPP = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
-    val svStemPF = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PERFECT_STEM)
+    val svStemPR = StrongVerbStem("tak", STRONG_6TH_CLASS, PRESENT_STEM)
+    val svStemPS = StrongVerbStem("tak", STRONG_6TH_CLASS, PRETERITE_SINGULAR_STEM)
+    val svStemPP = StrongVerbStem("tak", STRONG_6TH_CLASS, PRETERITE_PLURAL_STEM)
+    val svStemPF = StrongVerbStem("tak", STRONG_6TH_CLASS, PERFECT_STEM)
 
     assertEquals("taka",		verbFrom(svStemPR, None, INFINITIVE).strForm)
 
@@ -382,7 +383,7 @@ class VerbTest
   @Test
   def testClass7thVowelDeletion(): Unit = {
 
-    val stem = StrongVerbStem.fromStrRepr("fá", VerbClassEnum.STRONG_7TH_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stem = StrongVerbStem.fromStrRepr("fá", STRONG_7TH_CLASS, PRESENT_STEM)
 
     assertEquals("fá", verbFrom(stem, None, INFINITIVE).strForm)
   }
@@ -390,13 +391,13 @@ class VerbTest
 	@Test
 	def sanityCheck() {
 
-		val svStemPR = StrongVerbStem("tak", VerbClassEnum.STRONG_6TH_CLASS, EnumVerbStem.PRESENT_STEM)
+		val svStemPR = StrongVerbStem("tak", STRONG_6TH_CLASS, PRESENT_STEM)
 
 		try {
 
 			verbFrom(svStemPR, Some(PAST), 		PARTICIPLE)
 
-			Assert.fail("Past participle should not be constructible from present stem")
+			fail("Past participle should not be constructible from present stem")
 		}
 		catch {
 			case e: RuntimeException => ()

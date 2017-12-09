@@ -1,8 +1,8 @@
 package com.hyenawarrior
 
-import org.junit.Test
-import org.junit.Assert.{assertEquals, assertNotSame, assertSame}
 import com.hyenawarrior.OldNorseGrammar.grammar.soundex.soundexCodeOf
+import org.junit.Assert.assertEquals
+import org.junit.Test
 
 /**
 	* Created by HyenaWarrior on 2017.06.21..
@@ -122,7 +122,7 @@ class SoundexTest
 				case (k, v) => println(s"$k -> ${v.mkString("(", ", ", ")")}"); k
 			}
 
-		assertEquals(s"${allForms} must have only one element", 1, allForms.size)
+		assertEquals(s"$allForms must have only one element", 1, allForms.size)
 	}
 
 	def checkSoundexQuality(forms: Array[String]): Unit =
