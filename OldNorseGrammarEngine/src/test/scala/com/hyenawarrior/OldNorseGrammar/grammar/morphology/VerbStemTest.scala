@@ -235,4 +235,12 @@ class VerbStemTest {
     val Root(r4) = perfectStemObj.getRoot()
     assertEquals("leg", r4)
   }
+
+  @Test
+  def testVerbClass7th(): Unit = {
+
+    val presentStemObj = StrongVerbStem.fromStrRepr("heit", STRONG_7_1_CLASS, PRESENT_STEM)
+
+    assertEquals("heit", presentStemObj.stringForm())
+  }
 }

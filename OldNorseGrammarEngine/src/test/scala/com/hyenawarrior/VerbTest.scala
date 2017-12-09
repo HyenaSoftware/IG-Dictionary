@@ -394,6 +394,143 @@ class VerbTest
     assertEquals("fá", verb.verbForms(INFINITIVE, None, None).strForm)
   }
 
+  @Test
+  def testClass71(): Unit = {
+
+    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
+
+    val verb = StrongVerbContext(STRONG_7_1_CLASS, Map(srcForm -> "heita"))
+
+    assertEquals("heita", verb.verbForms(INFINITIVE, None, None).strForm)
+    assertEquals("hézt", 	verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+    assertEquals("hétuð", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
+  }
+
+  @Test
+  def testClass72a(): Unit = {
+
+    val srcForm = (INFINITIVE, None, None)
+
+    val verb = StrongVerbContext(STRONG_7_2A_CLASS, Map(srcForm -> "auka"))
+
+    assertEquals("jók", 	verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
+    assertEquals("jókum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("aukinn",verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
+  }
+
+  @Test
+  def testClass72b(): Unit = {
+
+    val srcForm = (INFINITIVE, None, None)
+
+    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "búa"))
+
+    assertEquals("bjó", 	  verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
+    assertEquals("bjuggum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("búinn",   verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
+  }
+
+  @Test
+  def testClass72bPast(): Unit = {
+
+    val srcForm = (INDICATIVE, Some(PAST), Some(Pronoun.PL_1))
+
+    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "bjuggum"))
+
+    assertEquals("búa", 	  verb.verbForms(INFINITIVE, None, None).strForm)
+    assertEquals("bý", 	    verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("býr", 	  verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("bjuggum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("búinn",   verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
+  }
+
+  @Test
+  def testClass72bHoggva(): Unit = {
+
+    val srcForm = (INFINITIVE, None, None)
+
+    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "hǫggva"))
+
+    assertEquals("hǫggva",  verb.verbForms(INFINITIVE, None, None).strForm)
+    assertEquals("hegg",    verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("hjó",     verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("hjuggum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("hǫggvinn",   verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
+  }
+
+  case class Format[K, V](m: Map[K, V]) {
+
+    override def toString: String = m.toSeq.sortBy(_._1.toString).mkString("\n")
+  }
+
+  @Test
+  def testClass72bHoggvaPast(): Unit = {
+
+    val srcForm = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
+
+    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "hjó"))
+
+    assertEquals("hǫggva",  verb.verbForms(INFINITIVE, None, None).strForm)
+    assertEquals("hegg",    verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("heggr",   verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("hjó",     verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("hjuggum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("hǫggvinn",   verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
+  }
+
+  @Test
+  def testClass73(): Unit = {
+
+    val srcForm = (INFINITIVE, None, None)
+
+    val verb = StrongVerbContext(STRONG_7_3_CLASS, Map(srcForm -> "falla"))
+
+    assertEquals("fell", 	verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
+    assertEquals("fellum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("fallinn",verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
+  }
+
+  @Test
+  def testClass73Past(): Unit = {
+
+    val srcForm = (INDICATIVE, Some(PAST), Some(Pronoun.PL_3))
+
+    val verb = StrongVerbContext(STRONG_7_3_CLASS, Map(srcForm -> "fengu"))
+
+    assertEquals("fekk",    verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("fengum",  verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("fenginn", verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
+  }
+
+  @Test
+  def testClass73PastInverse(): Unit = {
+
+    val srcForm = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
+
+    val verb = StrongVerbContext(STRONG_7_3_CLASS, Map(srcForm -> "fekk"))
+
+    assertEquals("fengu",    verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+  }
+
+  @Test
+  def testClass74Present(): Unit = {
+
+    val srcForm = (INFINITIVE, None, None)
+
+    val verb = StrongVerbContext(STRONG_7_4_CLASS, Map(srcForm -> "fá"))
+
+    assertEquals("fæ", verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("fám", verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+  }
+
+  @Test
+  def testClass74VowelDeletion(): Unit = {
+
+    val stem = StrongVerbStem.fromStrRepr("fá", STRONG_7_4_CLASS, PRESENT_STEM)
+
+    assertEquals("fá", verbFrom(stem, None, INFINITIVE).strForm)
+  }
+
 	@Test
 	def sanityCheck() {
 

@@ -4,7 +4,7 @@ import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, AblautGrade, StaticAblaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.{Disabled, EnabledFor, Undefined}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PRESENT_STEM, PRETERITE_SINGULAR_STEM}
@@ -92,9 +92,15 @@ object StrongVerbStem {
 		STRONG_3RD_CLASS -> StaticAblaut("e", 	"a", 	"u", "o"),
 
 		STRONG_4TH_CLASS -> StaticAblaut("e",	"a", 	"á", "o"),
-		STRONG_5TH_CLASS -> StaticAblaut("e", 	"a", 	"á", "e"),
-		STRONG_6TH_CLASS -> StaticAblaut("a", 	"ó", 	"ó", "a"),
-		STRONG_7TH_CLASS -> null
+		STRONG_5TH_CLASS -> StaticAblaut("e", "a", 	"á", "e"),
+		STRONG_6TH_CLASS -> StaticAblaut("a", "ó", 	"ó", "a"),
+		STRONG_7TH_CLASS -> null,
+    STRONG_7_1_CLASS -> StaticAblaut("ei", "é", "é", "ei"),
+    STRONG_7_2A_CLASS -> StaticAblaut("au", "jó", "jó", "au"),
+    STRONG_7_2B_CLASS -> StaticAblaut("ú", "jó", "ju", "ú"),
+    STRONG_7_3_CLASS -> StaticAblaut("a", "e", "e", "a"),
+    STRONG_7_4_CLASS -> StaticAblaut("á", "é", "é", "á"),
+    STRONG_7_5_CLASS -> StaticAblaut("ó", "é", "é", "ó")
 	)
 
   /**
@@ -173,8 +179,8 @@ object StrongVerbStem {
 
 		case (STRONG_3RD_CLASS,                     PRESENT_STEM,  Breaking(origStemStr))  => EnabledFor(Breaking) -> origStemStr
 		case (STRONG_3RD_CLASS | STRONG_5TH_CLASS,  PRESENT_STEM,  Raising(origStemStr))   => EnabledFor(Raising) -> origStemStr
-		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr))    => EnabledFor(NasalAssimilation) -> origStemStr
-		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, DevoiceAfterLateral(origStemStr))  => EnabledFor(DevoiceAfterLateral) -> origStemStr
+		case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr))    => EnabledFor(NasalAssimilation) -> origStemStr
+		case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, DevoiceAfterLateral(origStemStr))  => EnabledFor(DevoiceAfterLateral) -> origStemStr
 
     case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, ReduceStemFinalG(origStemStr)) => EnabledFor(ReduceStemFinalG) -> origStemStr
 
@@ -187,8 +193,8 @@ object StrongVerbStem {
 
     case (STRONG_2ND_CLASS, PRESENT_STEM, _) => JuToJo(stemRepr)
 
-    case (STRONG_3RD_CLASS, PRESENT_STEM, Undefined | EnabledFor(Breaking | Raising)) => Breaking(stemRepr) orElse Raising(stemRepr)
-    case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, _) => NasalAssimilation(stemRepr) orElse DevoiceAfterLateral(stemRepr)
+    case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRESENT_STEM, Undefined | EnabledFor(Breaking | Raising)) => Breaking(stemRepr) orElse Raising(stemRepr)
+    case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, _)  => NasalAssimilation(stemRepr) orElse DevoiceAfterLateral(stemRepr)
 
     case (STRONG_5TH_CLASS, PRESENT_STEM, _)            => Raising(stemRepr)
     case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, _) => ReduceStemFinalG(stemRepr)

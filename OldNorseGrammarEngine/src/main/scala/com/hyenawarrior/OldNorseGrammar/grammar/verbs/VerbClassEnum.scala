@@ -27,6 +27,13 @@ object VerbClassEnum extends EnumLike[String, VerbClassEnum]
 	val STRONG_6TH_CLASS = StrongVerbClassEnum("Strong 6th class")
 	val STRONG_7TH_CLASS = StrongVerbClassEnum("Strong 7th class")
 
+	val STRONG_7_1_CLASS = StrongVerbClassEnum("Strong 7.1 class")
+	val STRONG_7_2A_CLASS = StrongVerbClassEnum("Strong 7.2a class")
+	val STRONG_7_2B_CLASS = StrongVerbClassEnum("Strong 7.2b class")
+	val STRONG_7_3_CLASS = StrongVerbClassEnum("Strong 7.3 class")
+	val STRONG_7_4_CLASS = StrongVerbClassEnum("Strong 7.4 class")
+	val STRONG_7_5_CLASS = StrongVerbClassEnum("Strong 7.5 class")
+
 	val WEAK_A_STEM = WeakVerbClassEnum("Weak A-stem")
 	val WEAK_I_STEM = WeakVerbClassEnum("Weak I-stem")
 	val WEAK_J_STEM = WeakVerbClassEnum("Weak J-stem")
