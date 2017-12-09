@@ -135,7 +135,9 @@ object StrongVerbStem {
       case _ =>
         val augmentedStem = augment(stemStr, verbClass, stemType)
         val normalizedStemStr = normalize(augmentedStem, verbClass, stemType)
-        extractVerbFrom(verbClass, stemType, normalizedStemStr)
+        validateAblautGrade(verbClass, stemType, normalizedStemStr)
+
+        StrongVerbStem(normalizedStemStr, verbClass, stemType)
     }
   }
 
@@ -184,7 +186,7 @@ object StrongVerbStem {
     case _ => None
   }
 
-  private def extractVerbFrom(verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, stemStr: String): StrongVerbStem = {
+  private def validateAblautGrade(verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, stemStr: String): Unit = {
 
     val givenSrcAblautGrade = Ablaut.getAblautGradeFrom(stemStr)
     val expectedSrcAblautGrade = ABLAUTS(verbClass).grades(stemType)
@@ -196,7 +198,5 @@ object StrongVerbStem {
           " is different than the '%s' %s stem ablaut grade of %s.",
         stemStr, givenSrcAblautGrade, expectedSrcAblautGrade, stemType.name, verbClass.name))
     }
-
-    StrongVerbStem(stemStr, verbClass, stemType)
   }
 }
