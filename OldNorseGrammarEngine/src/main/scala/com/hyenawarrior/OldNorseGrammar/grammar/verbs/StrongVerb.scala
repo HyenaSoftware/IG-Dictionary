@@ -231,12 +231,13 @@ object StrongVerb {
 		val U_Umlaut(stemRepr2) = stemRepr
 
 		// remove non-productive changes
-		val stemRepr3 = (pronoun.number, tense, stemRepr2) match {
-			case (SINGULAR, PRESENT, Explicit_I_Umlaut(verbStrReprRevI)) if !matchAblautGrade => verbStrReprRevI
-			case (_, _, sr) => sr
+    val (stemRepr3, iUmlauted) = (pronoun.number, tense, stemRepr2) match {
+      case (SINGULAR, PRESENT, Explicit_I_Umlaut(verbStrReprRevI)) =>
+        (if (matchAblautGrade) stemRepr2 else verbStrReprRevI) -> true
+      case (_, _, sr) => sr -> false
 		}
 
-    StrongVerbStem.fromStrRepr(stemRepr3, verbClass, stemType)
+    StrongVerbStem.fromStrRepr(stemRepr3, verbClass, stemType, iUmlauted)
   }
 
   private def uninflect(strRepr: String, vt: VerbType): String = {

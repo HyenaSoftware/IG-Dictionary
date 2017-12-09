@@ -2,8 +2,10 @@ package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Ablaut
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.Breaking
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.EnabledFor
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
 import org.junit.Assert._
 import org.junit.{Assert, Test}
 
@@ -25,7 +27,7 @@ class VerbStemTest {
 
     val stemObj = StrongVerbStem.fromStrRepr("skjót", VerbClassEnum.STRONG_2ND_CLASS, EnumVerbStem.PRESENT_STEM)
 
-    val StrongVerbStem(root, _, _) = stemObj
+    val StrongVerbStem(root, _, _, _) = stemObj
 
     Assert.assertEquals("skjút", root.toString)
   }
@@ -44,7 +46,7 @@ class VerbStemTest {
 
     val stemObj = StrongVerbStem.fromStrRepr("hjalp", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
-    val StrongVerbStem(root, _, _) = stemObj
+    val StrongVerbStem(root, _, _, _) = stemObj
 
     Assert.assertEquals("help", root.toString)
   }
@@ -52,9 +54,9 @@ class VerbStemTest {
 	@Test
 	def testVerbStemClass3(): Unit = {
 
-    val stemObj = StrongVerbStem("help", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stemObj = StrongVerbStem("help", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM, EnabledFor(Breaking))
 
-    val StrongVerbStem(root, _, _) = stemObj
+    val StrongVerbStem(root, _, _, _) = stemObj
 
     // stem will be decaying to...
     Assert.assertEquals("hjalp", stemObj.stringForm())
@@ -65,7 +67,7 @@ class VerbStemTest {
 
     val stemObj = StrongVerbStem.fromStrRepr("singv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
-    val StrongVerbStem(root, _, _) = stemObj
+    val StrongVerbStem(root, _, _, _) = stemObj
 
     Assert.assertEquals("sengv", root.toString)
   }
@@ -73,9 +75,9 @@ class VerbStemTest {
   @Test
   def testVerbStemClass3Songva(): Unit = {
 
-    val stemObj = StrongVerbStem("sengv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stemObj = StrongVerbStem("sengv", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM, EnabledFor(Breaking))
 
-    val StrongVerbStem(root, _, _) = stemObj
+    val StrongVerbStem(root, _, _, _) = stemObj
 
     // stem will be decaying to...
     Assert.assertEquals("singv", stemObj.stringForm())
@@ -114,6 +116,18 @@ class VerbStemTest {
     val Root(rootRepr) = stemObj.getRoot()
 
     Assert.assertEquals("geld", rootRepr)
+  }
+
+  @Test
+  def testVerbClass3rdAdaptiveNonProductiveRules(): Unit = {
+
+    val stemObj = StrongVerbStem.fromStrRepr("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+
+    val StrongVerbStem(normalizedStem, VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM, tMode) = stemObj
+    assertEquals("brenn", normalizedStem)
+
+    val stemObj2 = StrongVerbStem(normalizedStem,  VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM, tMode)
+    assertEquals("brenn", stemObj2.stringForm())
   }
 
   @Test

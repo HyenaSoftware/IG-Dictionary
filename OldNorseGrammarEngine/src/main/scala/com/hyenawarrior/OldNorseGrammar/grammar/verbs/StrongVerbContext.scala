@@ -1,12 +1,11 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{INDICATIVE, INFINITIVE, PARTICIPLE, SUBJUNCTIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem, StrongVerbStemClass7th}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, Root, verbs}
+import com.hyenawarrior.OldNorseGrammar.grammar.{GNumber, Pronoun, Root, verbs}
 
 /**
 	* Created by HyenaWarrior on 2017.10.08..
@@ -73,6 +72,9 @@ object StrongVerbContext {
 
 		// collect what we have
 		val pseudoFormsToStem: Map[EnumVerbStem, Iterable[CommonStrongVerbStem]] = pseudoVerbForms.map {
+
+			case ((INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun(GNumber.SINGULAR, _))), stem) =>
+				StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, EnumVerbStem.PRESENT_STEM, subjectOfIUmalut = true)
 
 			case (vt, stem) =>
 				// do a stem -> string -> conversion to force validate the inputs

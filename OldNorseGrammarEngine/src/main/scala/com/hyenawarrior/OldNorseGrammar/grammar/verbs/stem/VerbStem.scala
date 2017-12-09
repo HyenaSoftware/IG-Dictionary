@@ -5,9 +5,10 @@ import java.lang.String.format
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, AblautGrade, StaticAblaut}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.{Disabled, EnabledFor, Undefined}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PRESENT_STEM, PRETERITE_SINGULAR_STEM}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbClassEnum, TransformationMode}
 
 /**
 	* Created by HyenaWarrior on 2017.04.22..
@@ -19,7 +20,8 @@ abstract class VerbStem(stemType: EnumVerbStem) {
 	def getStemType(): EnumVerbStem = stemType
 }
 
-abstract class CommonStrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem)
+abstract class CommonStrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem
+                                    , appliedTransform: TransformationMode = Undefined)
 	extends VerbStem(stemType) {
 
 	def getAblautGrade(): AblautGrade
@@ -32,7 +34,7 @@ abstract class CommonStrongVerbStem(normalizedStem: String, verbClass: StrongVer
 
 		val myStemRepr = Ablaut.transform(normalizedStem, ablautGradeOfPresentStem, getAblautGrade()).get
 
-    StrongVerbStem.denormalize(myStemRepr, verbClass, stemType) getOrElse myStemRepr
+    StrongVerbStem.denormalize(myStemRepr, verbClass, stemType, appliedTransform) getOrElse myStemRepr
   }
 
   def getRoot(): Root
@@ -40,11 +42,11 @@ abstract class CommonStrongVerbStem(normalizedStem: String, verbClass: StrongVer
 
 object CommonStrongVerbStem {
 
-	def unapply(strongVerbStem: CommonStrongVerbStem): Option[(String, StrongVerbClassEnum, EnumVerbStem)]
+	def unapply(strongVerbStem: CommonStrongVerbStem): Option[(String, StrongVerbClassEnum, EnumVerbStem, TransformationMode)]
 		= strongVerbStem match {
 
-		case svs: StrongVerbStem => Some((svs.normalizedStem, svs.verbClass, svs.getStemType()))
-		case svs7: StrongVerbStemClass7th => Some((svs7.normalizedStem, STRONG_7TH_CLASS, svs7.getStemType()))
+		case svs: StrongVerbStem => Some((svs.normalizedStem, svs.verbClass, svs.getStemType(), svs.appliedTransform))
+		case svs7: StrongVerbStemClass7th => Some((svs7.normalizedStem, STRONG_7TH_CLASS, svs7.getStemType(), Undefined))
 		case _ => None
 	}
 }
@@ -53,8 +55,9 @@ object CommonStrongVerbStem {
 // 	+ no need to reset roots
 //	+ no need to have separate class for 7th verbs to represent their ablautGrades
 //	+ for class 1-6, code could do validation
-case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem)
-	extends CommonStrongVerbStem(normalizedStem, verbClass, stemType) {
+case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem
+  , appliedTransform: TransformationMode = Undefined)
+	extends CommonStrongVerbStem(normalizedStem, verbClass, stemType, appliedTransform) {
 
 	def getAblautGrade() = StrongVerbStem.ABLAUTS(verbClass).grades(stemType)
 
@@ -117,14 +120,15 @@ object StrongVerbStem {
 		* Do not use it for:
 		* 	- creating a custom/irregular stem
 		*
-		* @param stemStr
+		* @param stemStr denormalized or decayed string representation
 		* @param verbClass
 		* @param stemType
 		* @return
 		* @throws RuntimeException if the ablaut grade of the strong verb class is not matching on the nucleus of
 		*                          the first syllable
 		*/
-	def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): CommonStrongVerbStem = {
+	def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, subjectOfIUmalut: Boolean = false)
+  : CommonStrongVerbStem = {
 
     verbClass match {
 
@@ -133,56 +137,62 @@ object StrongVerbStem {
         StrongVerbStemClass7th(stemStr, stemType, ablaut)
 
       case _ =>
-        val augmentedStem = augment(stemStr, verbClass, stemType)
-        val normalizedStemStr = normalize(augmentedStem, verbClass, stemType)
+        val augmentedStem = augment(stemStr, verbClass, stemType, subjectOfIUmalut)
+        val (optTransformation, normalizedStemStr) = normalize(augmentedStem, verbClass, stemType)
         validateAblautGrade(verbClass, stemType, normalizedStemStr)
 
-        StrongVerbStem(normalizedStemStr, verbClass, stemType)
+        StrongVerbStem(normalizedStemStr, verbClass, stemType, optTransformation)
     }
   }
+
+  private object InverseBreaking { def unapply(arg: String): Option[String] = Breaking(arg) }
 
   /**
     * verb-form -> non-inflected, non-augmented stem -> denormalized stem
     *
-    * @param stemStr
+    * @param stemStr denormalized or decayed string representation
     * @param verbClass
     * @param stemType
     * @return
     */
-  private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): String
+  private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, subjectOfIUmalut: Boolean): String
     = (verbClass, stemType, stemStr) match {
+
+    // helpr <-[I-umlaut + SVD]-- hjalp- --[braking]-> help-
+    case (STRONG_3RD_CLASS, PRESENT_STEM, InverseBreaking(s)) if subjectOfIUmalut => s
 
     case (STRONG_5TH_CLASS, PRESENT_STEM, FixJAugmentedWord(origStemStr)) => origStemStr
     case _ => stemStr
   }
 
-  private def normalize(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): String
+  private def normalize(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): (TransformationMode, String)
 		= (verbClass, stemType, stemStr) match {
 
     // normalize stem before processing it
-    case (STRONG_2ND_CLASS, PRESENT_STEM, JuToJo(origStemStr)) => origStemStr
+    case (STRONG_2ND_CLASS, PRESENT_STEM, JuToJo(origStemStr)) => EnabledFor(JuToJo) -> origStemStr
 
-		case (STRONG_3RD_CLASS, PRESENT_STEM, Breaking(origStemStr)) => origStemStr
-		case (STRONG_3RD_CLASS | STRONG_5TH_CLASS, PRESENT_STEM, Raising(origStemStr)) => origStemStr
-		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr)) => origStemStr
-		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, DevoiceAfterLateral(origStemStr)) => origStemStr
+		case (STRONG_3RD_CLASS,                     PRESENT_STEM,  Breaking(origStemStr))  => EnabledFor(Breaking) -> origStemStr
+		case (STRONG_3RD_CLASS | STRONG_5TH_CLASS,  PRESENT_STEM,  Raising(origStemStr))   => EnabledFor(Raising) -> origStemStr
+		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr))    => EnabledFor(NasalAssimilation) -> origStemStr
+		case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, DevoiceAfterLateral(origStemStr))  => EnabledFor(DevoiceAfterLateral) -> origStemStr
 
-    //case (STRONG_5TH_CLASS, PRESENT_STEM, Raising(origStemStr)) => origStemStr
-    case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, ReduceStemFinalG(origStemStr)) => origStemStr
+    case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, ReduceStemFinalG(origStemStr)) => EnabledFor(ReduceStemFinalG) -> origStemStr
 
-    case _ => stemStr
+    case _ => Disabled -> stemStr
 	}
 
-  private[stem] def denormalize(stemRepr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): Option[String]
-    = (verbClass, stemType) match {
+  private[stem] def denormalize(stemRepr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem
+                                , allowTransform: TransformationMode): Option[String]
+    = (verbClass, stemType, allowTransform) match {
 
-    case (STRONG_2ND_CLASS, PRESENT_STEM) => JuToJo(stemRepr)
+    case (STRONG_2ND_CLASS, PRESENT_STEM, _) => JuToJo(stemRepr)
 
-    case (STRONG_3RD_CLASS, PRESENT_STEM) => Breaking(stemRepr) orElse Raising(stemRepr)
-    case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM) => NasalAssimilation(stemRepr) orElse DevoiceAfterLateral(stemRepr)
+    case (STRONG_3RD_CLASS, PRESENT_STEM, Undefined | EnabledFor(Breaking | Raising)) => Breaking(stemRepr) orElse Raising(stemRepr)
+    case (STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM, _) => NasalAssimilation(stemRepr) orElse DevoiceAfterLateral(stemRepr)
 
-    case (STRONG_5TH_CLASS, PRESENT_STEM)            => Raising(stemRepr)
-    case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM) => ReduceStemFinalG(stemRepr)
+    case (STRONG_5TH_CLASS, PRESENT_STEM, _)            => Raising(stemRepr)
+    case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, _) => ReduceStemFinalG(stemRepr)
+
     case _ => None
   }
 

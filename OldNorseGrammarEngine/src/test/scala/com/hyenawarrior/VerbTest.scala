@@ -1,7 +1,9 @@
 package com.hyenawarrior
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.Raising
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.EnabledFor
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum.STRONG_1ST_CLASS
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
@@ -129,7 +131,7 @@ class VerbTest
 
 		val stem = StrongVerbStem.fromStrRepr("spinn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
-    val StrongVerbStem(normalizedStemStr, _, _) = stem
+    val StrongVerbStem(normalizedStemStr, _, _, EnabledFor(Raising)) = stem
     assertEquals("spenn", normalizedStemStr)
 
 		val verbform = StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE)
