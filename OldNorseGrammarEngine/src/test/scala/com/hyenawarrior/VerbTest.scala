@@ -386,6 +386,12 @@ class VerbTest
     val stem = StrongVerbStem.fromStrRepr("fá", STRONG_7TH_CLASS, PRESENT_STEM)
 
     assertEquals("fá", verbFrom(stem, None, INFINITIVE).strForm)
+
+
+    val srcForm = (INFINITIVE, None, None)
+    val verb = StrongVerbContext(STRONG_7TH_CLASS, Map(srcForm -> "fá"))
+
+    assertEquals("fá", verb.verbForms(INFINITIVE, None, None).strForm)
   }
 
 	@Test

@@ -246,7 +246,10 @@ object StrongVerb {
 
     if (!strRepr.endsWith(inflection)) {
 
-      throw new RuntimeException(format("Word '%s' doesn't end with -%s", strRepr, inflection))
+      val safeToIgnore = (strRepr endsWith "á") && inflection == "a"
+
+      if(!safeToIgnore)
+        throw new RuntimeException(format("Word '%s' doesn't end with -%s", strRepr, inflection))
     }
 
     strRepr stripSuffix inflection
