@@ -1,12 +1,12 @@
 package com.hyenawarrior
 
+import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum.STRONG_1ST_CLASS
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, Root}
 import org.junit.Assert._
 import org.junit.{Assert, Test}
 
@@ -127,10 +127,12 @@ class VerbTest
 	@Test
 	def testClass3rdRaising(): Unit = {
 
-		val stem = StrongVerbStem.fromStrRepr("spenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+		val stem = StrongVerbStem.fromStrRepr("spinn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+
+    val StrongVerbStem(normalizedStemStr, _, _) = stem
+    assertEquals("spenn", normalizedStemStr)
 
 		val verbform = StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE)
-
 		assertEquals("spinna", verbform.strForm)
 	}
 
@@ -176,7 +178,7 @@ class VerbTest
   @Test
   def testClass3rdFromJaStem(): Unit = {
 
-    val stem = StrongVerbStem.fromStrRepr("help", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+    val stem = StrongVerbStem.fromStrRepr("hjalp", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
 		assertEquals("hjalpa", 	StrongVerb.verbFrom(stem, None, VerbModeEnum.INFINITIVE).strForm)
 		assertEquals("help", 		StrongVerb.verbFrom(stem, Pronoun.SG_1, VerbTenseEnum.PRESENT, VerbModeEnum.INDICATIVE).strForm)
@@ -258,6 +260,20 @@ class VerbTest
 		val pastPlStem = StrongVerbStem.fromStrRepr("sukk", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
 		assertEquals("sukku", StrongVerb.verbFrom(pastPlStem, Pronoun.PL_3, VerbTenseEnum.PAST, VerbModeEnum.INDICATIVE).strForm)
 	}
+
+  @Test
+  def testClass3rdUUmlaut2(): Unit = {
+
+    val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
+
+    val verb = StrongVerbContext(VerbClassEnum.STRONG_3RD_CLASS, Map(srcForm -> "søkkva"))
+
+    assertEquals("søkkr", 	verb.verbForms(VerbModeEnum.INDICATIVE,  Some(VerbTenseEnum.PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("søkkva", 	verb.verbForms(VerbModeEnum.INDICATIVE,  Some(VerbTenseEnum.PRESENT), Some(Pronoun.PL_3)).strForm)
+
+    assertEquals("sǫkk", 	  verb.verbForms(VerbModeEnum.INDICATIVE,  Some(VerbTenseEnum.PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("sukku",   verb.verbForms(VerbModeEnum.INDICATIVE,  Some(VerbTenseEnum.PAST), Some(Pronoun.PL_3)).strForm)
+  }
 
   @Test
   def testClass3rdSongva(): Unit = {
