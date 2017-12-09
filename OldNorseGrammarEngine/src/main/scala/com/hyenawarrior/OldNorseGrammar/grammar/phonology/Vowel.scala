@@ -47,22 +47,31 @@ object Vowel {
 
   private val VOWEL_MAP: Map[Char, Vowel] = Map(
     'a' -> Vowel(LOW  | BACK  | NON_LABIAL, SHORT),
-    'á' -> Vowel(LOW  | BACK  | NON_LABIAL, LONG),
-    'æ' -> Vowel(LOW  | FRONT | NON_LABIAL, SHORT),
+    // The long á was rounded early on, and may be pronounced as a long variant of ǫ (o-ogonek).
+    'á' -> Vowel(LOW  | BACK  | LABIAL, LONG),
+    // The letters æ and œ always represent long vowels, and do not therefore carry an accent mark.
+    'æ' -> Vowel(LOW  | FRONT | NON_LABIAL, LONG),
     'e' -> Vowel(MID  | FRONT | NON_LABIAL, SHORT),
     'é' -> Vowel(MID  | FRONT | NON_LABIAL, LONG),
     'i' -> Vowel(HIGH | FRONT | NON_LABIAL, SHORT),
     'í' -> Vowel(HIGH | FRONT | NON_LABIAL, LONG),
     'o' -> Vowel(MID  | BACK  | LABIAL, SHORT),
     'ó' -> Vowel(MID  | BACK  | LABIAL, LONG),
+    // The letters ø and ǫ (o-ogonek) always represent short vowels.
     'ø' -> Vowel(MID  | FRONT | LABIAL, SHORT),
+    // The letters æ and œ always represent long vowels, and do not therefore carry an accent mark.
     'œ' -> Vowel(MID  | FRONT | LABIAL, LONG),
+    // The letters ø and ǫ (o-ogonek) always represent short vowels.
     'ǫ' -> Vowel(LOW  | BACK  | LABIAL, SHORT),
     'u' -> Vowel(HIGH | BACK  | LABIAL, SHORT),
     'ú' -> Vowel(HIGH | BACK  | LABIAL, LONG),
     'y' -> Vowel(HIGH | FRONT | LABIAL, SHORT),
     'ý' -> Vowel(HIGH | FRONT | LABIAL, LONG)
   )
+
+  def isLong(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isLong)
+
+  def isShort(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isShort)
 
 	def isVowel(c: Char): Boolean = VOWEL_MAP contains c
 
@@ -73,6 +82,8 @@ object Vowel {
 	def raise(c: Char): Char = raising(c)
 
 	def isBackVowel(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isBack)
+
+  def isFrontVowel(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isFront)
 
 	def isLabialVowel(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isLabial)
 

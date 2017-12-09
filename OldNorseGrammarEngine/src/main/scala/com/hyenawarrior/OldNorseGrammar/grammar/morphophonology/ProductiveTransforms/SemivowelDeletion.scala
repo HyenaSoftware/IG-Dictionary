@@ -15,7 +15,7 @@ object SemivowelDeletion {
 
 			case ('j' | 'v', ' ') => false	// end of the word
 			case ('j', next) => isBackVowel(next)
-			case ('v', next) => isVowel(next) && !isLabialVowel(next)
+			case ('v', next) if next != 'á' => isVowel(next) && !isLabialVowel(next)
 			case _ => true
 		}
 
