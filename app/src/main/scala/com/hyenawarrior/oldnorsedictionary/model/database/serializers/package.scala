@@ -63,7 +63,7 @@ package object serializers {
 
       val verbFormsAsListValues: List[String] = fixOrderedVerbForms.map(_._2).flatMap {
 
-        case StrongVerb(repr, CommonStrongVerbStem(stemStr, _, _)) => List(repr, stemStr)
+        case StrongVerb(repr, CommonStrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
 
       }.toList
 
