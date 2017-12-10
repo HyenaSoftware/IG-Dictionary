@@ -100,7 +100,7 @@ class VerbStemTest {
   @Test
   def testVerbClass3rdDevoiceAfterLateral(): Unit = {
 
-    val stemObj = StrongVerbStem("geld",  STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM)
+    val stemObj = StrongVerbStem("gald",  STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM)
 
     assertEquals("galt", 	stemObj.stringForm())
   }
@@ -130,14 +130,14 @@ class VerbStemTest {
   @Test
   def testVerbClass5thAblaut(): Unit = {
 
-    val presentStemObj = StrongVerbStem("beð", STRONG_5TH_CLASS, PRESENT_STEM)
-    assertEquals("beð", 	presentStemObj.stringForm())
+    val presentStemObj = StrongVerbStem("beðj", STRONG_5TH_CLASS, PRESENT_STEM)
+    assertEquals("biðj", 	presentStemObj.stringForm())
 
-    val pretSgStemObj = StrongVerbStem("beð", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
-    assertEquals("bað", 	pretSgStemObj.stringForm())
+    val pretSgStemObj = StrongVerbStem("baðj", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
+    assertEquals("baðj", 	pretSgStemObj.stringForm())
 
-    val pretPlStemObj = StrongVerbStem("beð", STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
-    assertEquals("báð", 	pretPlStemObj.stringForm())
+    val pretPlStemObj = StrongVerbStem("báðj", STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
+    assertEquals("báðj", 	pretPlStemObj.stringForm())
   }
 
   @Test
@@ -160,18 +160,18 @@ class VerbStemTest {
   @Test
   def testVerbClass5thFinalGReductionAtJAugmentedStems(): Unit = {
 
-    val root = "leg"
+    val root = Root("leg")
 
-    val presentStemObj = StrongVerbStem(root, STRONG_5TH_CLASS, PRESENT_STEM)
+    val presentStemObj = StrongVerbStem.fromRoot(root, STRONG_5TH_CLASS, PRESENT_STEM)
     assertEquals("leg", presentStemObj.stringForm())
 
-    val pretSgStemObj = StrongVerbStem(root, STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
+    val pretSgStemObj = StrongVerbStem.fromRoot(root, STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
     assertEquals("lá", 	pretSgStemObj.stringForm())
 
-    val pretPlStemObj = StrongVerbStem(root, STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
+    val pretPlStemObj = StrongVerbStem.fromRoot(root, STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
     assertEquals("lág", pretPlStemObj.stringForm())
 
-    val perfectStemObj = StrongVerbStem(root, STRONG_5TH_CLASS, PERFECT_STEM)
+    val perfectStemObj = StrongVerbStem.fromRoot(root, STRONG_5TH_CLASS, PERFECT_STEM)
     assertEquals("leg", perfectStemObj.stringForm())
   }
 
@@ -183,13 +183,13 @@ class VerbStemTest {
     val presentStemObj = StrongVerbStem(normalizedStem, STRONG_5TH_CLASS, PRESENT_STEM)
     assertEquals("gef", presentStemObj.stringForm())
 
-    val pretSgStemObj = StrongVerbStem(normalizedStem, STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
+    val pretSgStemObj = StrongVerbStem.fromRoot(presentStemObj.getRoot(), STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
     assertEquals("gaf", 	pretSgStemObj.stringForm())
 
-    val pretPlStemObj = StrongVerbStem(normalizedStem, STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
+    val pretPlStemObj = StrongVerbStem.fromRoot(presentStemObj.getRoot(), STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
     assertEquals("gáf", pretPlStemObj.stringForm())
 
-    val perfectStemObj = StrongVerbStem(normalizedStem, STRONG_5TH_CLASS, PERFECT_STEM)
+    val perfectStemObj = StrongVerbStem.fromRoot(presentStemObj.getRoot(), STRONG_5TH_CLASS, PERFECT_STEM)
     assertEquals("gef", perfectStemObj.stringForm())
   }
 

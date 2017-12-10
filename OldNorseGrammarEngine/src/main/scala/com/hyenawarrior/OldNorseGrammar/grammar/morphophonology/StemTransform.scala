@@ -174,13 +174,11 @@ object StemTransform {
 
     override def apply(stemStr: String): Option[String] = Some {
 
-      val res = stemStr match {
+      stemStr match {
 
-        case reduceFinalG(reducedStemStr) => reducedStemStr
+        case reduceFinalG(reducedStemStr) => VowelLengthening(reducedStemStr)
         case _ => stemStr
       }
-
-      VowelLengthening(res)
     }
 
     override def unapply(stemStr: String): Option[String] = Some {

@@ -354,8 +354,8 @@ class VerbTest
   def testClass6VerbInflection() {
 
     val svStemPR = StrongVerbStem("tak", STRONG_6TH_CLASS, PRESENT_STEM)
-    val svStemPS = StrongVerbStem("tak", STRONG_6TH_CLASS, PRETERITE_SINGULAR_STEM)
-    val svStemPP = StrongVerbStem("tak", STRONG_6TH_CLASS, PRETERITE_PLURAL_STEM)
+    val svStemPS = StrongVerbStem("tók", STRONG_6TH_CLASS, PRETERITE_SINGULAR_STEM)
+    val svStemPP = StrongVerbStem("tók", STRONG_6TH_CLASS, PRETERITE_PLURAL_STEM)
     val svStemPF = StrongVerbStem("tak", STRONG_6TH_CLASS, PERFECT_STEM)
 
     assertEquals("taka",		verbFrom(svStemPR, None, INFINITIVE).strForm)
