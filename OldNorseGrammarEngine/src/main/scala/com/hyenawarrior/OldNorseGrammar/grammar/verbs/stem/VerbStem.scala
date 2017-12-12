@@ -7,7 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.{Disabled, EnabledFor, Undefined}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PRESENT_STEM, PRETERITE_SINGULAR_STEM}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_SINGULAR_STEM}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbClassEnum, TransformationMode}
 
 /**
@@ -184,6 +184,8 @@ object StrongVerbStem {
 
     case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, ReduceStemFinalG(origStemStr)) => EnabledFor(ReduceStemFinalG) -> origStemStr
 
+    case (STRONG_6TH_CLASS, PERFECT_STEM, VelarIUmlaut(origStemStr)) => EnabledFor(VelarIUmlaut) -> origStemStr
+
     case _ => Disabled -> stemStr
 	}
 
@@ -198,6 +200,8 @@ object StrongVerbStem {
 
     case (STRONG_5TH_CLASS, PRESENT_STEM, _)            => Raising(stemRepr)
     case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, _) => ReduceStemFinalG(stemRepr)
+
+    case (STRONG_6TH_CLASS, PERFECT_STEM, Undefined | EnabledFor(VelarIUmlaut)) => VelarIUmlaut(stemRepr)
 
     case _ => None
   }

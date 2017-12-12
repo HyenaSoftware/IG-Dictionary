@@ -360,7 +360,7 @@ class VerbTest
 
     assertEquals("taka",		verbFrom(svStemPR, None, INFINITIVE).strForm)
 
-    assertEquals("takinn", 	verbFrom(svStemPF, Some(PAST), 		PARTICIPLE).strForm)
+    assertEquals("tekinn", 	verbFrom(svStemPF, Some(PAST), 		PARTICIPLE).strForm)
     assertEquals("takandi", verbFrom(svStemPR, Some(PRESENT), PARTICIPLE).strForm)
 
     assertEquals("tek", 		verbFrom(svStemPR, Pronoun.SG_1, PRESENT,	INDICATIVE).strForm)
