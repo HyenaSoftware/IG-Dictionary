@@ -179,6 +179,18 @@ class VerbTest
   }
 
   @Test
+  def testClass3rdStems(): Unit = {
+
+    val srcForm = (INFINITIVE, None, None)
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcForm -> "spinna"))
+
+    assertEquals("spann",		verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("spunnu",	verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+
+    assertEquals("spunninn",	verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
+  }
+
+  @Test
   def testClass3rdFromJaStem(): Unit = {
 
     val stem = StrongVerbStem.fromStrRepr("hjalp", STRONG_3RD_CLASS, PRESENT_STEM)
@@ -268,26 +280,32 @@ class VerbTest
   def testClass3rdUUmlaut2(): Unit = {
 
     val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
+    val irregularPerfect = (PARTICIPLE, Some(PAST), None)
 
-    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcForm -> "søkkva"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcForm -> "søkkva", irregularPerfect -> "sokkinn"))
 
     assertEquals("søkkr", 	verb.verbForms(INDICATIVE,  Some(PRESENT), Some(Pronoun.SG_3)).strForm)
     assertEquals("søkkva", 	verb.verbForms(INDICATIVE,  Some(PRESENT), Some(Pronoun.PL_3)).strForm)
 
     assertEquals("sǫkk", 	  verb.verbForms(INDICATIVE,  Some(PAST), Some(Pronoun.SG_3)).strForm)
     assertEquals("sukku",   verb.verbForms(INDICATIVE,  Some(PAST), Some(Pronoun.PL_3)).strForm)
+
+    assertEquals("sokkinn", verb.verbForms(PARTICIPLE, Some(PAST),    None).strForm)
   }
 
   @Test
   def testClass3rdSongva(): Unit = {
 
     val srcForm = (INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3))
+    val irregularPerfect = (PARTICIPLE, Some(PAST), None)
 
-    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcForm -> "syngva"))
+    val verb = StrongVerbContext(STRONG_3RD_CLASS, Map(srcForm -> "syngva", irregularPerfect -> "sunginn"))
 
 		assertEquals("syngva", 	verb.verbForms(INFINITIVE, None, None).strForm)
 		assertEquals("syngr", 	verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
     assertEquals("sǫng",    verb.verbForms(INDICATIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
+
+    assertEquals("sunginn",  verb.verbForms(PARTICIPLE, Some(PAST),    None).strForm)
   }
 
 	@Test

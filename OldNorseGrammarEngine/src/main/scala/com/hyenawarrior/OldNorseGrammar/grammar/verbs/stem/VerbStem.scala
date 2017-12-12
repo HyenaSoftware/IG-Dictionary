@@ -179,6 +179,7 @@ object StrongVerbStem {
 
 		case (STRONG_3RD_CLASS,                     PRESENT_STEM,  Breaking(origStemStr))  => EnabledFor(Breaking) -> origStemStr
 		case (STRONG_3RD_CLASS | STRONG_5TH_CLASS,  PRESENT_STEM,  Raising(origStemStr))   => EnabledFor(Raising) -> origStemStr
+    case (STRONG_3RD_CLASS,  PERFECT_STEM,  PerfectRaising(origStemStr))   => EnabledFor(PerfectRaising) -> origStemStr
 		case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr))    => EnabledFor(NasalAssimilation) -> origStemStr
 		case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, DevoiceAfterLateral(origStemStr))  => EnabledFor(DevoiceAfterLateral) -> origStemStr
 
@@ -197,6 +198,7 @@ object StrongVerbStem {
 
     case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRESENT_STEM, Undefined | EnabledFor(Breaking | Raising)) => Breaking(stemRepr) orElse Raising(stemRepr)
     case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, _)  => NasalAssimilation(stemRepr) orElse DevoiceAfterLateral(stemRepr)
+    case (STRONG_3RD_CLASS,  PERFECT_STEM,  Undefined | EnabledFor(PerfectRaising))   => PerfectRaising(stemRepr)
 
     case (STRONG_5TH_CLASS, PRESENT_STEM, _)            => Raising(stemRepr)
     case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, _) => ReduceStemFinalG(stemRepr)

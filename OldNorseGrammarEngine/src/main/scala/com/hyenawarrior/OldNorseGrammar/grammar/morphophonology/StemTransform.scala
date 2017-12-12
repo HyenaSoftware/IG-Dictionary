@@ -121,6 +121,28 @@ object StemTransform {
     }
   }
 
+  // TODO: make the code generic
+  object PerfectRaising extends NucleusTransformation {
+
+    val SRC_NUCLEUS: String = "o"
+    val DST_NUCLEUS: String = "u"
+
+    override def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String] = {
+
+      val idxOfE = stemStr.indexOf(nucleus)
+
+      val coda = stemStr.substring(idxOfE + nucleus.length)
+
+      if(coda.startsWith("n")) {
+
+        val onset = stemStr.substring(0, idxOfE)
+
+        Some(onset + newNucleus + coda)
+
+      } else None
+    }
+  }
+
 	object NasalAssimilation extends Transformation {
 
 		override def apply(stemStr: String): Option[String] = {

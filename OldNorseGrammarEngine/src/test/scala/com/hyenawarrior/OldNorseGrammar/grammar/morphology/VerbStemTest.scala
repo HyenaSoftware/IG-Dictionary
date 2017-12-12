@@ -62,13 +62,24 @@ class VerbStemTest {
 	}
 
   @Test
+  def testVerbStemClass3Perfect(): Unit = {
+
+    val stemObj = StrongVerbStem.fromStrRepr("spunn", STRONG_3RD_CLASS, PERFECT_STEM)
+
+    val StrongVerbStem(normalizedStem, _, _, _) = stemObj
+
+    assertEquals("sponn", normalizedStem)
+    assertEquals("spunn", stemObj.stringForm())
+  }
+
+  @Test
   def testVerbStemClass3SongvaExtraction(): Unit = {
 
     val stemObj = StrongVerbStem.fromStrRepr("singv", STRONG_3RD_CLASS, PRESENT_STEM)
 
-    val StrongVerbStem(root, _, _, _) = stemObj
+    val StrongVerbStem(normalizedStem, _, _, _) = stemObj
 
-    assertEquals("sengv", root.toString)
+    assertEquals("sengv", normalizedStem)
   }
 
   @Test
