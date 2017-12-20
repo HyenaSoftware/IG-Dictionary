@@ -104,7 +104,7 @@ object StrongVerb {
 
     val stemType = moodAndTenseToStem(mood, optTense)
 
-    val stem: CommonStrongVerbStem = uninflect(verbStrRepr, verbClass, optTense, mood, stemType)
+    val stem: CommonStrongVerbStem = uninflect(verbStrRepr, verbClass, (mood, optTense, None))
 
     val verb = verbFrom(stem, optTense, mood)
 
@@ -124,7 +124,7 @@ object StrongVerb {
 	private def fromStringRepr(verbStrRepr: String, verbClass: StrongVerbClassEnum, pronoun: Pronoun, tense: VerbTenseEnum,
 										 mood: FinitiveMood): StrongVerb = {
 
-		val stem = uninflect(verbStrRepr, verbClass, pronoun, tense)
+		val stem = uninflect(verbStrRepr, verbClass, (mood, Some(tense), Some(pronoun)))
 
 		val verb = verbFrom(stem, pronoun, tense, mood)
 
@@ -201,18 +201,10 @@ object StrongVerb {
     transforms.foldLeft(stemStr)((s, f) => f(s))
   }
 
-  private def uninflect(strRepr: String, verbClass: StrongVerbClassEnum, optTense: Option[VerbTenseEnum]
-                        , mood: NonFinitiveMood, stemType: EnumVerbStem): CommonStrongVerbStem = {
+  private def uninflect(verbStrRepr: String, verbClass: StrongVerbClassEnum, vt: VerbType): CommonStrongVerbStem = {
 
-    val stemRepr = uninflect(strRepr, (mood, optTense, None))
-
-    StrongVerbStem.fromStrRepr(stemRepr, verbClass, stemType)
-	}
-
-  private def uninflect(verbStrRepr: String, verbClass: StrongVerbClassEnum, pronoun: Pronoun
-                        , tense: VerbTenseEnum): CommonStrongVerbStem = {
-
-    val stemType: EnumVerbStem = FinitiveStrongVerb.tenseAndNumberToStem(tense, pronoun.number)
+    val (mood, optTense, optPronoun) = vt
+    val stemType: EnumVerbStem = stemFrom(optTense, optPronoun.map(_.number), mood)
 
     // remove I-Umlaut from present/singular verbs
     val matchAblautGrade = verbClass match {
@@ -225,14 +217,14 @@ object StrongVerb {
     val ConsonantAssimilation(restoredVerbStrRepr) = verbStrRepr
 
 		// remove inflection
-		val stemRepr = uninflect(restoredVerbStrRepr, (INDICATIVE, Some(tense), Some(pronoun)))
+		val stemRepr = uninflect(restoredVerbStrRepr, vt)
 
 		// unapply U-umlaut
 		val U_Umlaut(stemRepr2) = stemRepr
 
 		// remove non-productive changes
-    val (stemRepr3, iUmlauted) = (pronoun.number, tense, stemRepr2) match {
-      case (SINGULAR, PRESENT, Explicit_I_Umlaut(verbStrReprRevI)) =>
+    val (stemRepr3, iUmlauted) = (optPronoun.map(_.number), optTense, stemRepr2) match {
+      case (Some(SINGULAR), Some(PRESENT), Explicit_I_Umlaut(verbStrReprRevI)) =>
         (if (matchAblautGrade) stemRepr2 else verbStrReprRevI) -> true
       case (_, _, sr) => sr -> false
 		}
