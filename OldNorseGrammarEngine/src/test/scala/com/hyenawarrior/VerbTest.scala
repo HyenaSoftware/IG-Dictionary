@@ -440,10 +440,15 @@ class VerbTest
   def testClass72b(): Unit = {
 
     val srcForm = (INFINITIVE, None, None)
+    val irregularPastPlural = (INDICATIVE, Some(PAST), Some(Pronoun.PL_3))
 
-    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "búa"))
+    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "búa", irregularPastPlural -> "bjuggu"))
 
+    // past-plural stem has preference over the present stem for past-single stem
     assertEquals("bjó", 	  verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
+
+    // impossible to compute this form: the ancestor PGmc verb was a weak verb, probably its dental suffix
+    //  changed as *būdēdum > bjuggum
     assertEquals("bjuggum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
     assertEquals("búinn",   verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
   }
@@ -451,9 +456,13 @@ class VerbTest
   @Test
   def testClass72bPast(): Unit = {
 
-    val srcForm = (INDICATIVE, Some(PAST), Some(Pronoun.PL_1))
+    val srcForm = (INDICATIVE, Some(PAST), Some(Pronoun.SG_1))
+    val irregularPastPlural = (INDICATIVE, Some(PAST), Some(Pronoun.PL_1))
 
-    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "bjuggum"))
+    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "bjó", irregularPastPlural -> "bjuggum"))
+
+    // as bjuggum is not a regular form of the verb búa, it's not expectad that
+    // the engine can compute forms other than past plural
 
     assertEquals("búa", 	  verb.verbForms(INFINITIVE, None, None).strForm)
     assertEquals("bý", 	    verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
@@ -470,6 +479,7 @@ class VerbTest
     val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "hǫggva"))
 
     assertEquals("hǫggva",  verb.verbForms(INFINITIVE, None, None).strForm)
+    // FIXME: haggv -> heggv -> høggv, should both of I and U umlaut applied ?
     assertEquals("hegg",    verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
     assertEquals("hjó",     verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
     assertEquals("hjuggum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
@@ -484,9 +494,10 @@ class VerbTest
   @Test
   def testClass72bHoggvaPast(): Unit = {
 
-    val srcForm = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
+    val presentS3 = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3))
+    val pastS3    = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
 
-    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(srcForm -> "hjó"))
+    val verb = StrongVerbContext(STRONG_7_2B_CLASS, Map(presentS3 -> "heggr", pastS3 -> "hjó"))
 
     assertEquals("hǫggva",  verb.verbForms(INFINITIVE, None, None).strForm)
     assertEquals("hegg",    verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)

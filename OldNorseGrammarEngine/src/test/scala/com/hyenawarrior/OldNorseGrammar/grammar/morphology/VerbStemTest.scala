@@ -254,4 +254,24 @@ class VerbStemTest {
 
     assertEquals("heit", presentStemObj.stringForm())
   }
+
+  @Test
+  def testVerbClass72bVAugmetedGG(): Unit = {
+
+    val presentStemObj = StrongVerbStem.fromStrRepr("hǫggv", STRONG_7_2B_CLASS, PRESENT_STEM)
+    val Root(r1) = presentStemObj.getRoot()
+    assertEquals("haggv", r1)
+
+    val pretSgStemObj = StrongVerbStem.fromStrRepr("hjó", STRONG_7_2B_CLASS, PRETERITE_SINGULAR_STEM)
+    val Root(r2) = pretSgStemObj.getRoot()
+    assertEquals("ha", 	r2)
+
+    val pretPlStemObj = StrongVerbStem.fromStrRepr("hjuggv", STRONG_7_2B_CLASS, PRETERITE_PLURAL_STEM)
+    val Root(r3) = pretPlStemObj.getRoot()
+    assertEquals("hjuggv", r3)
+
+    val perfectStemObj = StrongVerbStem.fromStrRepr("hǫggv", STRONG_7_2B_CLASS, PERFECT_STEM)
+    val Root(r4) = perfectStemObj.getRoot()
+    assertEquals("hag", r4)
+  }
 }

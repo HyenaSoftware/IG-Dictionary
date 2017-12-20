@@ -59,11 +59,12 @@ class ExampleUnitTest
 	@Test
   def testAblaut()
 	{
-		val stem = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		val stem = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
 
     val givenStrongVerb = FinitiveStrongVerb("brunnum", stem, Pronoun.PL_1, PAST, VerbModeEnum.INDICATIVE)
 
 		val strongVerbResult = verbFrom(stem, Pronoun.SG_2, PAST, VerbModeEnum.INDICATIVE)
+		assertEquals("brannt", strongVerbResult.strForm)
 
 		val FinitiveStrongVerb(str, clazz, pronoun, tense, VerbModeEnum.INDICATIVE) = strongVerbResult
 		assertEquals("brannt", str)
