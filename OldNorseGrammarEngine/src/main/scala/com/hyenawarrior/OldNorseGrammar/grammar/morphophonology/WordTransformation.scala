@@ -7,16 +7,16 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
   */
 trait WordTransformation {
 
-	def apply(str: String): String = {
+	def apply(str: String): Option[String] = {
 
     val Syllables(syllables) = str
 
     val newSyllables = apply(syllables)
 
-    newSyllables.flatMap(_.letters).mkString
+    newSyllables.map(_.flatMap(_.letters).mkString)
   }
 
-	def apply(syllables: List[Syllable]): List[Syllable]
+	def apply(syllables: List[Syllable]): Option[List[Syllable]]
 
   def canTransform(str: String): Boolean = str match {
 

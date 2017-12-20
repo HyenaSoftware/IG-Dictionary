@@ -35,18 +35,23 @@ trait Umlaut extends WordTransformation {
     Some(newSyllables)
 	}
 
-	override def apply(syllables: List[Syllable]): List[Syllable] = syllables.map(sy =>
-	{
-    val trigger = triggersIn(syllables.last).headOption
+	override def apply(syllables: List[Syllable]): Option[List[Syllable]] = {
 
-		val mapping = getMapping(sy.isStressed, trigger)
+		val trigger = triggersIn(syllables.last).headOption
 
-    val Syllable(onset, wholeNucleus, coda, isStressed) = sy
-		val vowelsOfNucleus = wholeNucleus filterNot isSemivowel
-		val newNucleus =	mapping.getOrElse(vowelsOfNucleus, vowelsOfNucleus)
+		syllables.foldLeft[Option[List[Syllable]]](Some(List())) {
 
-    Syllable(onset, wholeNucleus.replace(vowelsOfNucleus, newNucleus), coda, isStressed)
-	})
+			case (Some(l), Syllable(onset, wholeNucleus, coda, isStressed)) =>
+				val mapping = getMapping(isStressed, trigger)
+
+				val vowelsOfNucleus = wholeNucleus filterNot isSemivowel
+				val optNewNucleus = mapping.get(vowelsOfNucleus)
+
+				optNewNucleus.map(s => l :+ Syllable(onset, wholeNucleus.replace(vowelsOfNucleus, s), coda, isStressed))
+
+			case (None, _) => None
+		}
+	}
 
 	override def canTransform(syllables: List[Syllable]): Boolean = triggersIn(syllables.last).nonEmpty
 

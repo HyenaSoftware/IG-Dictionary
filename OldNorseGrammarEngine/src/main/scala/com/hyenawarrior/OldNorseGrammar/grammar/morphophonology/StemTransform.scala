@@ -277,7 +277,7 @@ object StemTransform {
 
     private def stemEndsInVelar(stemStr: String) = Consonant isVelar stemStr.last
 
-    override def apply(stemStr: String): Option[String] = if(stemEndsInVelar(stemStr)) Some(Explicit_I_Umlaut(stemStr)) else None
+    override def apply(stemStr: String): Option[String] = if(stemEndsInVelar(stemStr)) Explicit_I_Umlaut(stemStr) else None
 
     override def unapply(stemStr: String): Option[String] = stemStr match {
 

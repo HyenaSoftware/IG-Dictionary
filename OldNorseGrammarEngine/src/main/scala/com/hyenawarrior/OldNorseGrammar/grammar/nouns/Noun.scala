@@ -15,7 +15,7 @@ case class Noun(str: String, decl: (GNumber, Case), root: Root, stemClass: NounS
 	{
 		val Syllables(syllables) = str
 
-		val transformedSyllables = transformations.foldLeft(syllables){ (sys, trn) => trn(sys) }
+		val transformedSyllables = transformations.foldLeft(syllables){ (sys, trn) => trn(sys).get }
 
 		Syllables(transformedSyllables)
 	}

@@ -24,7 +24,7 @@ case class Word(pos: PoS)
 		val allTransformations = POS_DEPENDENT_TRANSFORMATIONS ++ DEFAULT_TRANSFORMATIONS
 		val transformedSyllables = allTransformations.foldLeft(syllables) {
 
-      case (sys, trn) if trn canTransform sys => trn(sys)
+      case (sys, trn) if trn canTransform sys => trn(sys).get
       case (sys, _) => sys
     }
 

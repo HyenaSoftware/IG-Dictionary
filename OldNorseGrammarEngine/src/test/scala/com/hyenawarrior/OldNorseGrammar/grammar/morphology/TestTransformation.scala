@@ -94,7 +94,7 @@ class TestTransformation {
 	def testEToJaAndIUmlautInversion(): Unit = {
 
 		val stemStr = StemTransform.Breaking("geld").get
-		val stemStr2 = Explicit_I_Umlaut(stemStr)
+		val stemStr2 = Explicit_I_Umlaut(stemStr).get
 		val stemStr3 = SemivowelDeletion(stemStr2)
 
 		assertEquals("geld", stemStr3)
