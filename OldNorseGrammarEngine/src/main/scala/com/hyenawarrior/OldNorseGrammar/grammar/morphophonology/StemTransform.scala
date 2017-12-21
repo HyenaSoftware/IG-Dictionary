@@ -1,5 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
+import com.hyenawarrior.OldNorseGrammar.grammar.Syllables
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.VowelLengthening
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant._
@@ -250,26 +251,23 @@ object StemTransform {
     }
   }
 
-  object FixJAugmentedWord extends Transformation {
+  object FixStemAugmentation extends Transformation {
 
+    // implementation is pointless, SVD, etc. do the same
     override def apply(stemStr: String): Option[String] = None
 
     override def unapply(stemStr: String): Option[String] = {
       // restore to a J-augmented stem
 
-      val hasI = stemStr.exists('i' == _)
-      val endsWithJ = stemStr endsWith "j"
+      val Syllables(sy :: _) = stemStr
 
-      if(hasI) {
-
-        val origStem = if(endsWithJ) stemStr else stemStr + "j"
-
-        Some(origStem)
-
-      } else {
-
-        None
+      val augment = sy.nucleus match {
+        case "i" => Some("j")
+        case "a" => Some("v")
+        case _ => None
       }
+
+      augment.map(a => stemStr + (if(stemStr endsWith a) "" else a))
     }
   }
 

@@ -167,7 +167,19 @@ object StrongVerbStem {
     // helpr <-[I-umlaut + SVD]-- hjalp- --[braking]-> help-
     case (STRONG_3RD_CLASS, PRESENT_STEM, InverseBreaking(s)) if subjectOfIUmalut => s
 
-    case (STRONG_5TH_CLASS, PRESENT_STEM, FixJAugmentedWord(origStemStr)) => origStemStr
+      /* do not fix the augmentation in any other cases:
+        lá  -> lág-      -> liggj-
+        bjó -> bjó-     -> bú-
+        hjó -> hjóggv-  -> haggv-
+
+        West Germanic gemination
+          * does lágum (past) have only one 'g', because past stem is not J-augmented?
+          *
+          * https://lrc.la.utexas.edu/eieol/norol/70
+          * The augment does not appear in the past forms; the past stems ended in a single consonant,
+           * which disappeared in the singular forms by the time of the ON texts.
+      */
+    case (STRONG_5TH_CLASS | STRONG_7_2B_CLASS, PRESENT_STEM, FixStemAugmentation(origStemStr)) => origStemStr
     case _ => stemStr
   }
 
