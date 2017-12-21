@@ -190,8 +190,7 @@ object StrongVerb {
     val useUUmlaut = (U_Umlaut canTransform inflection) || isVAugmented
 
     val transforms: Seq[String => String] = Seq(
-      s => applyNonProductiveRules(verbType)(s).getOrElse(s)
-      , s => if(useUUmlaut) U_Umlaut(s).getOrElse(s) else s
+      s => applyNonProductiveRules(verbType)(s).orElse(if(useUUmlaut) U_Umlaut(s) else None).getOrElse(s)
       , _ + inflection
       , SemivowelDeletion(_)
       , VowelDeletion(_)
