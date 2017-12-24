@@ -215,9 +215,10 @@ object StemTransform {
     }
   }
 
+  // root <-> stem
   object JAugment extends Transformation {
 
-    private val singleG = "[^g]g$".r
+    private val singleG = "(?<!g)g$".r
     private val doubleG = "gg$".r
 
     override def apply(stemStr: String): Option[String] = {
@@ -226,7 +227,9 @@ object StemTransform {
 
       if(hasE) {
 
-        Some(singleG.replaceFirstIn(stemStr, "gg") + "j")
+        val augmentedStem = singleG.replaceFirstIn(stemStr, "gg") + "j"
+
+        Raising(augmentedStem)
 
       } else {
 
@@ -234,20 +237,15 @@ object StemTransform {
       }
     }
 
-    override def unapply(stemStr: String): Option[String] = {
+    override def unapply(stemStr: String): Option[String] = stemStr match {
 
-      val hasE = stemStr.indexOf('e') != -1
+      case Raising(unRaisedStemStr) =>
 
-      if(hasE) {
+        val withOutAugment = unRaisedStemStr stripSuffix "j"
 
-        val stemStrWithJ = stemStr.stripSuffix("j")
+        Some(doubleG.replaceAllIn(withOutAugment, "g"))
 
-        Some(doubleG.replaceAllIn(stemStrWithJ, "g"))
-
-      } else {
-
-        None
-      }
+      case _ => None
     }
   }
 

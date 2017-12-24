@@ -2,7 +2,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Ablaut
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.Breaking
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{Breaking, JAugment}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.EnabledFor
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
@@ -141,14 +141,14 @@ class VerbStemTest {
   @Test
   def testVerbClass5thAblaut(): Unit = {
 
-    val presentStemObj = StrongVerbStem("beðj", STRONG_5TH_CLASS, PRESENT_STEM)
+    val presentStemObj = StrongVerbStem("beð", STRONG_5TH_CLASS, PRESENT_STEM, EnabledFor(JAugment))
     assertEquals("biðj", 	presentStemObj.stringForm())
 
-    val pretSgStemObj = StrongVerbStem("baðj", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
-    assertEquals("baðj", 	pretSgStemObj.stringForm())
+    val pretSgStemObj = StrongVerbStem("bað", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, EnabledFor(JAugment))
+    assertEquals("bað", 	pretSgStemObj.stringForm())
 
-    val pretPlStemObj = StrongVerbStem("báðj", STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
-    assertEquals("báðj", 	pretPlStemObj.stringForm())
+    val pretPlStemObj = StrongVerbStem("báð", STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM, EnabledFor(JAugment))
+    assertEquals("báð", 	pretPlStemObj.stringForm())
   }
 
   @Test
@@ -169,20 +169,18 @@ class VerbStemTest {
   }
 
   @Test
-  def testVerbClass5thFinalGReductionAtJAugmentedStems(): Unit = {
+  def testVerbClass5thJAugmentedStems(): Unit = {
 
-    val root = Root("leg")
+    val presentStemObj = StrongVerbStem("leg", STRONG_5TH_CLASS, PRESENT_STEM, EnabledFor(JAugment))
+    assertEquals("liggj", presentStemObj.stringForm())
 
-    val presentStemObj = StrongVerbStem.fromRoot(root, STRONG_5TH_CLASS, PRESENT_STEM)
-    assertEquals("leg", presentStemObj.stringForm())
-
-    val pretSgStemObj = StrongVerbStem.fromRoot(root, STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
+    val pretSgStemObj = StrongVerbStem("lág", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, EnabledFor(JAugment))
     assertEquals("lá", 	pretSgStemObj.stringForm())
 
-    val pretPlStemObj = StrongVerbStem.fromRoot(root, STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
+    val pretPlStemObj = StrongVerbStem("lág", STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM, EnabledFor(JAugment))
     assertEquals("lág", pretPlStemObj.stringForm())
 
-    val perfectStemObj = StrongVerbStem.fromRoot(root, STRONG_5TH_CLASS, PERFECT_STEM)
+    val perfectStemObj = StrongVerbStem("leg", STRONG_5TH_CLASS, PERFECT_STEM, EnabledFor(JAugment))
     assertEquals("leg", perfectStemObj.stringForm())
   }
 

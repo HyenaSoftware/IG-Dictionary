@@ -189,15 +189,15 @@ object StrongVerbStem {
     // normalize stem before processing it
     case (STRONG_2ND_CLASS, PRESENT_STEM, JuToJo(origStemStr)) => EnabledFor(JuToJo) -> origStemStr
 
-		case (STRONG_3RD_CLASS,                     PRESENT_STEM,  Breaking(origStemStr))  => EnabledFor(Breaking) -> origStemStr
-		case (STRONG_3RD_CLASS | STRONG_5TH_CLASS,  PRESENT_STEM,  Raising(origStemStr))   => EnabledFor(Raising) -> origStemStr
+		case (STRONG_3RD_CLASS,  PRESENT_STEM,  Breaking(origStemStr))  => EnabledFor(Breaking) -> origStemStr
+		case (STRONG_3RD_CLASS,  PRESENT_STEM,  Raising(origStemStr))   => EnabledFor(Raising) -> origStemStr
     case (STRONG_3RD_CLASS,  PERFECT_STEM,  PerfectRaising(origStemStr))   => EnabledFor(PerfectRaising) -> origStemStr
 		case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr))    => EnabledFor(NasalAssimilation) -> origStemStr
 		case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, DevoiceAfterLateral(origStemStr))  => EnabledFor(DevoiceAfterLateral) -> origStemStr
 
-    case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, ReduceStemFinalG(origStemStr)) => EnabledFor(ReduceStemFinalG) -> origStemStr
+    case (STRONG_5TH_CLASS | STRONG_7_2B_CLASS, PRESENT_STEM, JAugment(origStemStr)) => EnabledFor(JAugment) -> origStemStr
 
-    case (STRONG_6TH_CLASS, PERFECT_STEM, VelarIUmlaut(origStemStr)) => EnabledFor(VelarIUmlaut) -> origStemStr
+    case (STRONG_6TH_CLASS | STRONG_7_3_CLASS, PERFECT_STEM, VelarIUmlaut(origStemStr)) => EnabledFor(VelarIUmlaut) -> origStemStr
 
     case _ => Disabled -> stemStr
 	}
@@ -212,10 +212,10 @@ object StrongVerbStem {
     case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, _)  => NasalAssimilation(stemRepr) orElse DevoiceAfterLateral(stemRepr)
     case (STRONG_3RD_CLASS,  PERFECT_STEM,  Undefined | EnabledFor(PerfectRaising))   => PerfectRaising(stemRepr)
 
-    case (STRONG_5TH_CLASS, PRESENT_STEM, _)            => Raising(stemRepr)
-    case (STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM, _) => ReduceStemFinalG(stemRepr)
+    case (STRONG_5TH_CLASS, PRESENT_STEM, EnabledFor(JAugment))             => JAugment(stemRepr)
+    case (STRONG_5TH_CLASS | STRONG_7_2B_CLASS, PRETERITE_SINGULAR_STEM, _) => ReduceStemFinalG(stemRepr)
 
-    case (STRONG_6TH_CLASS, PERFECT_STEM, Undefined | EnabledFor(VelarIUmlaut)) => VelarIUmlaut(stemRepr)
+    case (STRONG_6TH_CLASS | STRONG_7_3_CLASS, PERFECT_STEM, Undefined | EnabledFor(VelarIUmlaut)) => VelarIUmlaut(stemRepr)
 
     case _ => None
   }
