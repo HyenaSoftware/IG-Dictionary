@@ -112,7 +112,7 @@ object StemTransform {
 
       val coda = stemStr.substring(idxOfE + nucleus.length)
 
-      if(coda.startsWith("n") || coda.endsWith("j")) {
+      if(idxOfE > 0 && (coda.startsWith("n") || coda.endsWith("j"))) {
 
         val onset = stemStr.substring(0, idxOfE)
 
@@ -134,7 +134,7 @@ object StemTransform {
 
       val coda = stemStr.substring(idxOfE + nucleus.length)
 
-      if(coda.startsWith("n")) {
+      if(idxOfE > 0 && coda.startsWith("n")) {
 
         val onset = stemStr.substring(0, idxOfE)
 
