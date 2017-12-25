@@ -4,8 +4,8 @@ import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerb.{moodAndTenseToStem, toNonFiniteVerbType}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
@@ -218,17 +218,20 @@ object StrongVerb {
 		// remove inflection
 		val stemRepr = uninflect(restoredVerbStrRepr, vt)
 
-		// unapply U-umlaut
-		val U_Umlaut(stemRepr2) = stemRepr
-
 		// remove non-productive changes
-    val (stemRepr3, iUmlauted) = (optPronoun.map(_.number), optTense, stemRepr2) match {
-      case (Some(SINGULAR), Some(PRESENT), Explicit_I_Umlaut(verbStrReprRevI)) =>
-        (if (matchAblautGrade) stemRepr2 else verbStrReprRevI) -> true
+    val (stemReprWithoutUmlaut, iUmlauted) = (optPronoun.map(_.number), optTense, stemRepr) match {
+
+      case (Some(SINGULAR), Some(PRESENT), Explicit_I_Umlaut(verbStrReprRevI)) if !matchAblautGrade =>
+        verbStrReprRevI -> true
+
+      case (Some(SINGULAR), Some(PRESENT), _) if matchAblautGrade => stemRepr -> false
+
+      case (_, _, U_Umlaut(unUmlautedStr)) => unUmlautedStr -> false
+
       case (_, _, sr) => sr -> false
 		}
 
-    StrongVerbStem.fromStrRepr(stemRepr3, verbClass, stemType, iUmlauted)
+    StrongVerbStem.fromStrRepr(stemReprWithoutUmlaut, verbClass, stemType, iUmlauted)
   }
 
   private def uninflect(strRepr: String, vt: VerbType): String = {
