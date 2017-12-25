@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, Explicit_U_Umlaut, U_Umlaut}
 import org.junit.Assert._
 import org.junit.Test
 
@@ -14,35 +14,43 @@ class UmlautTest {
 
 		val umlautedStr = U_Umlaut("tattattu")
 
-		assertEquals("tǫttuttu", umlautedStr)
+		assertEquals(Some("tǫttuttu"), umlautedStr)
 	}
 
 	@Test
 	def testBasicUUmlautWithVTrigger() {
 
-		assertEquals("tǫttuttv", U_Umlaut("tattattv"))
-    assertEquals("tøttittv", U_Umlaut("tettittv"))
-    assertEquals("tyttyttv", U_Umlaut("tittyttv"))
+		assertEquals(Some("tǫttuttv"), U_Umlaut("tattattv"))
+    assertEquals(Some("tøttittv"), U_Umlaut("tettittv"))
+    assertEquals(Some("tyttyttv"), U_Umlaut("tittyttv"))
 	}
 
 	@Test
 	def testUUmlautWithoutChange() {
 
-		assertEquals("tettittu", U_Umlaut("tettittu"))
-		assertEquals("tottettu", U_Umlaut("tottettu"))
-		assertEquals("tittyttu", U_Umlaut("tittyttu"))
+		assertEquals(None, U_Umlaut("tettittu"))
+		assertEquals(None, U_Umlaut("tottettu"))
+		assertEquals(None, U_Umlaut("tittyttu"))
 	}
 
 	@Test
 	def testBasicIUmlaut() {
 
-		assertEquals("tet", Explicit_I_Umlaut("tat"))
-		assertEquals("tæt", Explicit_I_Umlaut("tát"))
+		assertEquals(Some("tet"), Explicit_I_Umlaut("tat"))
+		assertEquals(Some("tæt"), Explicit_I_Umlaut("tát"))
 
-		assertEquals("tøt", Explicit_I_Umlaut("tot"))
-		assertEquals("tœt", Explicit_I_Umlaut("tót"))
+		assertEquals(Some("tøt"), Explicit_I_Umlaut("tot"))
+		assertEquals(Some("tœt"), Explicit_I_Umlaut("tót"))
 
-		assertEquals("tyt", Explicit_I_Umlaut("tut"))
-		assertEquals("týt", Explicit_I_Umlaut("tút"))
+		assertEquals(Some("tyt"), Explicit_I_Umlaut("tut"))
+		assertEquals(Some("týt"), Explicit_I_Umlaut("tút"))
+	}
+
+	@Test
+	def testReverseUUmlaut(): Unit = {
+
+		val Explicit_U_Umlaut(strSyngva) = "syngv"
+
+		assertEquals("singv", strSyngva)
 	}
 }

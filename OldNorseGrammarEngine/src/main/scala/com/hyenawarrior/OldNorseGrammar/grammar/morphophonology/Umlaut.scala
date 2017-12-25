@@ -37,20 +37,29 @@ trait Umlaut extends WordTransformation {
 
 	override def apply(syllables: List[Syllable]): Option[List[Syllable]] = {
 
-		val trigger = triggersIn(syllables.last).headOption
+		implicit val trigger = triggersIn(syllables.last).headOption
 
-		syllables.foldLeft[Option[List[Syllable]]](Some(List())) {
+		val (first :: second, others) = syllables.splitAt(2)
 
-			case (Some(l), Syllable(onset, wholeNucleus, coda, isStressed)) =>
-				val mapping = getMapping(isStressed, trigger)
+		(transform(first), second.headOption.flatMap(transform)) match {
 
-				val vowelsOfNucleus = wholeNucleus filterNot isSemivowel
-				val optNewNucleus = mapping.get(vowelsOfNucleus)
-
-				optNewNucleus.map(s => l :+ Syllable(onset, wholeNucleus.replace(vowelsOfNucleus, s), coda, isStressed))
-
-			case (None, _) => None
+			case (Some(firstTr), None)					 => Some(firstTr +: second ::: others)
+			case (Some(firstTr), Some(secondTr)) => Some(firstTr :: secondTr :: others)
+			case _ => None
 		}
+	}
+
+	private def transform(syllable: Syllable)(implicit trigger: Option[Char]): Option[Syllable] = {
+
+		val Syllable(onset, nucleus, coda, isStressed) = syllable
+		val mapping = getMapping(isStressed, trigger)
+
+		val vowelsOfNucleus = nucleus filterNot isSemivowel
+		val optNewNucleus = mapping
+			.get(vowelsOfNucleus)
+			.map(nucleus.replace(vowelsOfNucleus, _))
+
+		optNewNucleus.map(s => Syllable(onset, s, coda, isStressed))
 	}
 
 	override def canTransform(syllables: List[Syllable]): Boolean = triggersIn(syllables.last).nonEmpty
@@ -69,12 +78,13 @@ trait Umlaut extends WordTransformation {
 
 class U_Umlaut extends Umlaut
 {
-	def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]) = if(syllableIsStressed)
-    trigger match {
-      case Some('v') => vAugmentedTransformation
-      case _ => umlautTransformStressed
-    }
-    else umlautTransformUnstressed
+	def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]) = (syllableIsStressed, trigger) match {
+
+    case (true,  Some('u')) => umlautTransformStressed
+		case (true,  None     ) => umlautTransformStressed
+		case (false, _        ) => umlautTransformUnstressed
+		case (true,  Some('v')) => vAugmentedTransformation
+	}
 
 	protected val umlautTransformStressed = Map("a" -> "ǫ")
 
