@@ -97,8 +97,8 @@ object Vowel {
 
   def apply(c: Char) = VOWEL_MAP(c)
 
-  def lengthen(c: Char) = lengthening(c)
-  def shorten(c: Char) = shortening(c)
+  def lengthen(c: Char) = lengthening.getOrElse(c, c)
+  def shorten(c: Char) = shortening.getOrElse(c, c)
 
   def unapply(c: Char): Option[(Int, Length)] = VOWEL_MAP.get(c).map {
 
