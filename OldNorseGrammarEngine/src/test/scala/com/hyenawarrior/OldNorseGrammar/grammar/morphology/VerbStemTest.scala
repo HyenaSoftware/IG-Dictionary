@@ -91,6 +91,13 @@ class VerbStemTest {
     assertEquals("singv", stemObj.stringForm())
   }
 
+  @Test
+  def testVerbClass3VAugmentRestore(): Unit = {
+
+    val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("sing", STRONG_3RD_CLASS, PRESENT_STEM)
+    assertEquals("sengv", normalizedPresentStem)
+  }
+
   /** Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr. */
   @Test
   def testVerbClass3rdDoNotRaise(): Unit = {
@@ -157,7 +164,6 @@ class VerbStemTest {
     val stemObj = StrongVerbStem.fromStrRepr("biðj", STRONG_5TH_CLASS, PRESENT_STEM)
 
     val Root(rootRepr) = stemObj.getRoot()
-
     assertEquals("beð", rootRepr)
   }
 
@@ -205,7 +211,7 @@ class VerbStemTest {
   /*
       at past forms it's uncertain what would be the correct stem
 
-           verb decayed stem  unstable stem
+           verb decayed stem  normalized stem
       sg3  lá   lá-           laggj-
       sg3  vá   vá-           vag-
 
@@ -226,23 +232,27 @@ class VerbStemTest {
         *vaggj- > viggj-  viggja
    */
   @Test
-  def testVerbClass5thInverseOfFinalGReductionAtJAugmentedStems(): Unit = {
+  def testVerbClass5thInverseJAugmentedStem(): Unit = {
 
-    val presentStemObj = StrongVerbStem.fromStrRepr("liggj", STRONG_5TH_CLASS, PRESENT_STEM)
+    val presentStemObj @ StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("liggj", STRONG_5TH_CLASS, PRESENT_STEM)
     val Root(r1) = presentStemObj.getRoot()
     assertEquals("leg", r1)
+    assertEquals("leg", normalizedPresentStem)
 
-    val pretSgStemObj = StrongVerbStem.fromStrRepr("lá", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
+    val pretSgStemObj @ StrongVerbStem(normalizedPastSgStem, _, _, _) = StrongVerbStem.fromStrRepr("lág", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
     val Root(r2) = pretSgStemObj.getRoot()
     assertEquals("leg", 	r2)
+    assertEquals("lág", normalizedPastSgStem)
 
-    val pretPlStemObj = StrongVerbStem.fromStrRepr("lág", STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
+    val pretPlStemObj @ StrongVerbStem(normalizedPastPlStem, _, _, _) = StrongVerbStem.fromStrRepr("lág", STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
     val Root(r3) = pretPlStemObj.getRoot()
     assertEquals("leg", r3)
+    assertEquals("lág", normalizedPastPlStem)
 
-    val perfectStemObj = StrongVerbStem.fromStrRepr("leg", STRONG_5TH_CLASS, PERFECT_STEM)
+    val perfectStemObj @ StrongVerbStem(normalizedPerfectSgStem, _, _, _) = StrongVerbStem.fromStrRepr("leg", STRONG_5TH_CLASS, PERFECT_STEM)
     val Root(r4) = perfectStemObj.getRoot()
     assertEquals("leg", r4)
+    assertEquals("leg", normalizedPerfectSgStem)
   }
 
   @Test
@@ -254,22 +264,46 @@ class VerbStemTest {
   }
 
   @Test
-  def testVerbClass72bVAugmetedGG(): Unit = {
+  def testVerbClass72bVAugmented(): Unit = {
 
-    val presentStemObj = StrongVerbStem.fromStrRepr("hǫggv", STRONG_7_2B_CLASS, PRESENT_STEM)
-    val Root(r1) = presentStemObj.getRoot()
-    assertEquals("haggv", r1)
+    val presentStemObj = StrongVerbStem("haggv", STRONG_7_2B_CLASS, PRESENT_STEM)
+    assertEquals("haggv", presentStemObj.stringForm())
 
-    val pretSgStemObj = StrongVerbStem.fromStrRepr("hjó", STRONG_7_2B_CLASS, PRETERITE_SINGULAR_STEM)
-    val Root(r2) = pretSgStemObj.getRoot()
-    assertEquals("ha", 	r2)
+    val pretSgStemObj = StrongVerbStem.fromStrRepr("hjóggv", STRONG_7_2B_CLASS, PRETERITE_SINGULAR_STEM)
+    assertEquals("hjóggv", pretSgStemObj.stringForm())
 
     val pretPlStemObj = StrongVerbStem.fromStrRepr("hjuggv", STRONG_7_2B_CLASS, PRETERITE_PLURAL_STEM)
-    val Root(r3) = pretPlStemObj.getRoot()
-    assertEquals("hjuggv", r3)
+    assertEquals("hjuggv", pretPlStemObj.stringForm())
 
-    val perfectStemObj = StrongVerbStem.fromStrRepr("hǫggv", STRONG_7_2B_CLASS, PERFECT_STEM)
-    val Root(r4) = perfectStemObj.getRoot()
-    assertEquals("hag", r4)
+    val perfectStemObj = StrongVerbStem.fromStrRepr("haggv", STRONG_7_2B_CLASS, PERFECT_STEM)
+    assertEquals("haggv", perfectStemObj.stringForm())
+  }
+
+  @Test
+  def testVerbClass72bVAugmentRestore(): Unit = {
+
+    val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("hagg", STRONG_7_2B_CLASS, PRESENT_STEM)
+    assertEquals("haggv", normalizedPresentStem)
+  }
+
+  @Test
+  def testVerbClass72bReverseVAugmented(): Unit = {
+
+    val presentStemObj @ StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("haggv", STRONG_7_2B_CLASS, PRESENT_STEM)
+    assertEquals(Root("húggv"), presentStemObj.getRoot())
+    assertEquals("haggv", normalizedPresentStem)
+
+    val pretSgStemObj @ StrongVerbStem(normalizedPastSgStem, _, _, _) = StrongVerbStem.fromStrRepr("hjó", STRONG_7_2B_CLASS, PRETERITE_SINGULAR_STEM)
+    assertEquals(Root("hú"), 	pretSgStemObj.getRoot())
+    // not sure how to reconstruct this form
+    //assertEquals("hjóggv", normalizedPastSgStem)
+
+    val pretPlStemObj @ StrongVerbStem(normalizedPastPlStem, _, _, _) = StrongVerbStem.fromStrRepr("hjuggv", STRONG_7_2B_CLASS, PRETERITE_PLURAL_STEM)
+    assertEquals(Root("húggv"), pretPlStemObj.getRoot())
+    assertEquals("hjuggv", normalizedPastPlStem)
+
+    val perfectStemObj @ StrongVerbStem(normalizedPerfectSgStem, _, _, _) = StrongVerbStem.fromStrRepr("haggv", STRONG_7_2B_CLASS, PERFECT_STEM)
+    assertEquals(Root("húggv"), perfectStemObj.getRoot())
+    assertEquals("haggv", normalizedPerfectSgStem)
   }
 }
