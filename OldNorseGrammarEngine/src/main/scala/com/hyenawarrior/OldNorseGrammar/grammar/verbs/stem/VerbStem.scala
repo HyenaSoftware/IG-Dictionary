@@ -26,15 +26,30 @@ abstract class CommonStrongVerbStem(normalizedStem: String, verbClass: StrongVer
 
 	def getAblautGrade(): AblautGrade
 
+  /**
+    * stem is regular if
+    * - its ablaut is matching to the ablaut grade of its verb class
+    *
+    * @return
+    */
+  def isRegular: Boolean = {
+
+    val currentAblautGrade = Ablaut.getAblautGradeFrom(normalizedStem)
+    val ablautGradeOfPresentStem = StrongVerbStem.ABLAUTS(verbClass).presentAblautGrade
+
+    currentAblautGrade == ablautGradeOfPresentStem
+  }
+
   // get the denormalized stem
   override def stringForm(): String = {
 
-		// present stem is identical to the root
-		val ablautGradeOfPresentStem = Ablaut.getAblautGradeFrom(normalizedStem)
+    /*
+      if the current stem is
+      - present stem and it's regular: just validate the ablaut
+      - irregular: ignore the ablaut
+    */
 
-		val myStemRepr = Ablaut.transform(normalizedStem, ablautGradeOfPresentStem, getAblautGrade()).get
-
-    StrongVerbStem.denormalize(myStemRepr, verbClass, stemType, appliedTransform) getOrElse myStemRepr
+    StrongVerbStem.denormalize(normalizedStem, verbClass, stemType, appliedTransform) getOrElse normalizedStem
   }
 
   def getRoot(): Root
@@ -59,18 +74,47 @@ case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum
   , appliedTransform: TransformationMode = Undefined)
 	extends CommonStrongVerbStem(normalizedStem, verbClass, stemType, appliedTransform) {
 
-	def getAblautGrade() = StrongVerbStem.ABLAUTS(verbClass).grades(stemType)
+  /**
+    * @return Ablaut grade of the stem, that can be irregular.
+    */
+	def getAblautGrade() = Ablaut.getAblautGradeFrom(normalizedStem)
 
+  /**
+    * Be aware: it can't reflect the ablaut of an irregular present stem
+    * @return
+    */
   override def getRoot(): Root = {
+      /*
+                                  (stem relative root)
+        (denormalized/decayed)    (normalized)   (root)   (ablaut)
+        liggj-                    leg-           leg-
+        lá-                       lág-           leg-
+        lág-                      lág-           leg-
 
-    val normalizedStemWithoutJAugment = normalizedStem match {
+        hǫggv-                    haggv-         hag- ?
+        hjógv-                    hjóggv-        hag- ?
 
-      case JAugment(s) => s
-      case s => s
-    }
+        normalized stem:
+          - doesn't have stem transformations, like:
+            - root vowel doesn't change; e.g. breaking (as these interfere with ablaut changing)
+            - nasal assimilation; ng -> kk
+            - lt -> lt
+            - J-augmentation; it affects only present stems, but other stems can be flagged
+            - umlauts, as these interfere with ablaut changing
+          - although it *does* have
+            - V-augmentation as it appears also in past and perfect stems next to the present stem
 
+        denormalized stem:
+          - does *not* have I/U-umlauts, as these can interfere with I/U-umlauts of verb conjugation
+              - in present singular, that's incorrect: haggv- -> hǫggv-(u) -> høggr(i)
+              - the correct form is: haggv- -> heggr(i)
+          - J/V-augmentations only have their markers at the end of the stem
+          - stem transformations, and their vowel transformations
+        */
+
+    // present stem is identical to the root
     val ablautGradeOfPresentStem = StrongVerbStem.ABLAUTS(verbClass).presentAblautGrade
-    val rootStrRepr = Ablaut.transform(normalizedStemWithoutJAugment, getAblautGrade(), ablautGradeOfPresentStem).get
+    val rootStrRepr = Ablaut.transform(normalizedStem, getAblautGrade(), ablautGradeOfPresentStem).get
 
     Root(rootStrRepr)
   }
@@ -117,6 +161,9 @@ object StrongVerbStem {
 
     val myStemRepr = Ablaut.transform(rootRepr, ablautGradeOfPresentStem, targetAblautGrade).get
 
+    // TODO: do we need to do V/J augmentation here?
+    //  like: lágum (past) -> leg (root) -> leggj (present)
+
     StrongVerbStem(myStemRepr, verbClass, stemType)
   }
 
@@ -126,9 +173,9 @@ object StrongVerbStem {
 		* Do not use it for:
 		* 	- creating a custom/irregular stem
 		*
-		* @param stemStr denormalized or decayed string representation
-		* @param verbClass
-		* @param stemType
+		* @param stemStr    denormalized or decayed string representation
+		* @param verbClass  class of the current verb stem
+		* @param stemType   it's corresponding with the ablaut grades
 		* @return
 		* @throws RuntimeException if the ablaut grade of the strong verb class is not matching on the nucleus of
 		*                          the first syllable
@@ -145,7 +192,7 @@ object StrongVerbStem {
       case _ =>
         val augmentedStem = augment(stemStr, verbClass, stemType, subjectOfIUmalut)
         val (optTransformation, normalizedStemStr) = normalize(augmentedStem, verbClass, stemType)
-        validateAblautGrade(verbClass, stemType, normalizedStemStr)
+        //validateAblautGrade(verbClass, stemType, normalizedStemStr)
 
         StrongVerbStem(normalizedStemStr, verbClass, stemType, optTransformation)
     }
@@ -155,20 +202,18 @@ object StrongVerbStem {
 
   /**
     * verb-form -> non-inflected, non-augmented stem -> denormalized stem
-    *
-    * @param stemStr denormalized or decayed string representation
-    * @param verbClass
-    * @param stemType
-    * @return
     */
   private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, subjectOfIUmalut: Boolean): String
     = (verbClass, stemType, stemStr) match {
 
-    // helpr <-[I-umlaut + SVD]-- hjalp- --[braking]-> help-
+      // helpr <-[I-umlaut + SVD]-- hjalp- --[braking]-> help-
+      // the effect of the next line is inverted back during the stem normalization, but the normalization also add a flag
+      //  to indicate that this stem does have breaking - so, yes, it's redundant but it's important to have the flag
     case (STRONG_3RD_CLASS, PRESENT_STEM, InverseBreaking(s)) if subjectOfIUmalut => s
 
       /* do not fix the augmentation in any other cases:
-        lá  -> lág-      -> liggj-
+        FIN    PST-STEM    PRS-STEM
+        lá  -> lág-     -> liggj-
         bjó -> bjó-     -> bú-
         hjó -> hjóggv-  -> haggv-
 
@@ -220,6 +265,7 @@ object StrongVerbStem {
     case _ => None
   }
 
+  // TODO: check that it's really needed or delete it if not
   private def validateAblautGrade(verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, stemStr: String): Unit = {
 
     val givenSrcAblautGrade = Ablaut.getAblautGradeFrom(stemStr)
