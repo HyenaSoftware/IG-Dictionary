@@ -130,6 +130,9 @@ case class StrongVerbStemClass7th(normalizedStem: String, stemType: EnumVerbStem
 
 object StrongVerbStem {
 
+  val IRREGULAR_VERB_CLASSES = Set(STRONG_7_1_CLASS, STRONG_7_2A_CLASS, STRONG_7_2B_CLASS
+    , STRONG_7_3_CLASS, STRONG_7_4_CLASS, STRONG_7_5_CLASS)
+
 	val ABLAUTS: Map[StrongVerbClassEnum, StaticAblaut] = Map(
 		STRONG_1ST_CLASS -> StaticAblaut("í",	"ei", "i", "i"),
 		STRONG_2ND_CLASS -> StaticAblaut("jú", "au", "u", "o"),
@@ -192,7 +195,7 @@ object StrongVerbStem {
       case _ =>
         val augmentedStem = augment(stemStr, verbClass, stemType, subjectOfIUmalut)
         val (optTransformation, normalizedStemStr) = normalize(augmentedStem, verbClass, stemType)
-        //validateAblautGrade(verbClass, stemType, normalizedStemStr)
+        validateAblautGrade(verbClass, stemType, normalizedStemStr)
 
         StrongVerbStem(normalizedStemStr, verbClass, stemType, optTransformation)
     }
@@ -271,7 +274,7 @@ object StrongVerbStem {
     val givenSrcAblautGrade = Ablaut.getAblautGradeFrom(stemStr)
     val expectedSrcAblautGrade = ABLAUTS(verbClass).grades(stemType)
 
-    if (givenSrcAblautGrade != expectedSrcAblautGrade) {
+    if (givenSrcAblautGrade != expectedSrcAblautGrade && !IRREGULAR_VERB_CLASSES.contains(verbClass)) {
 
       throw new RuntimeException(format(
         "Cannot create verb stem object from string representation '%s'. The ablaut of the representation '%s'" +
