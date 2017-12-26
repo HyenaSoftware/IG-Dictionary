@@ -239,10 +239,10 @@ class VerbStemTest {
     assertEquals("leg", r1)
     assertEquals("leg", normalizedPresentStem)
 
-    val pretSgStemObj @ StrongVerbStem(normalizedPastSgStem, _, _, _) = StrongVerbStem.fromStrRepr("lág", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
+    val pretSgStemObj @ StrongVerbStem(normalizedPastSgStem, _, _, _) = StrongVerbStem.fromStrRepr("lag", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM)
     val Root(r2) = pretSgStemObj.getRoot()
     assertEquals("leg", 	r2)
-    assertEquals("lág", normalizedPastSgStem)
+    assertEquals("lag", normalizedPastSgStem)
 
     val pretPlStemObj @ StrongVerbStem(normalizedPastPlStem, _, _, _) = StrongVerbStem.fromStrRepr("lág", STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM)
     val Root(r3) = pretPlStemObj.getRoot()
