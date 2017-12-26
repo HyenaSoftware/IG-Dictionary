@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbContext, VerbModeEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbModeEnum}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
@@ -42,7 +42,7 @@ object SetMeaningFragment extends Fragment
 
     val (posTypeName, posSubType) = wordData.word match
     {
-      case _: StrongVerbContext => "verb" -> "strong"
+      case _: StrongVerb => "verb" -> "strong"
       case _ => "???" -> "???"
     }
 
@@ -54,7 +54,7 @@ object SetMeaningFragment extends Fragment
 
     val word = optWordData match
     {
-      case Some(WordData(sv: StrongVerbContext, _)) =>
+      case Some(WordData(sv: StrongVerb, _)) =>
         sv.verbForms.get((VerbModeEnum.INFINITIVE, None, None)).map(_.strForm).getOrElse("???")
       case _ => "???"
     }

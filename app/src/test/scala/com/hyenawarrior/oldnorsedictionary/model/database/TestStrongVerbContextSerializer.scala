@@ -21,10 +21,10 @@ import scala.reflect.ClassTag
   */
 class TestStrongVerbContextSerializer {
 
-  private def toKeyValuePair(sv: StrongVerb): (VerbType, StrongVerb) = sv match {
+  private def toKeyValuePair(sv: StrongVerbForm): (VerbType, StrongVerbForm) = sv match {
 
-    case fsv: FinitiveStrongVerb => (fsv.mood, Some(fsv.tense), Some(fsv.pronoun)) -> fsv
-    case nsv: NonFinitiveStrongVerb =>
+    case fsv: FinitiveStrongVerbForm => (fsv.mood, Some(fsv.tense), Some(fsv.pronoun)) -> fsv
+    case nsv: NonFinitiveStrongVerbForm =>
       val optTense = nsv.nonFinitiveVerbType match {
         case NonFinitiveVerbType(_, PRESENT_STEM, INFINITIVE) => None
         case NonFinitiveVerbType(_, PRESENT_STEM, PARTICIPLE) => Some(PRESENT)
@@ -52,17 +52,17 @@ class TestStrongVerbContextSerializer {
       PERFECT_STEM -> AblautGrade("e")
     )
 
-    val VERB_FORMS: Map[VerbType, StrongVerb] = Map(
+    val VERB_FORMS: Map[VerbType, StrongVerbForm] = Map(
 
-      toKeyValuePair(NonFinitiveStrongVerb("liggja",StrongVerbStem("leg", STRONG_5TH_CLASS, PRESENT_STEM), NonFinitiveVerbType.INFINITIVE)),
-      toKeyValuePair(NonFinitiveStrongVerb("leginn",StrongVerbStem("leg", STRONG_5TH_CLASS, PERFECT_STEM), NonFinitiveVerbType.PAST_PARTICIPLE)),
-      toKeyValuePair(FinitiveStrongVerb("ligg", StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_1, PRESENT, INDICATIVE)),
-      toKeyValuePair(FinitiveStrongVerb("liggr",StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_3, PRESENT, INDICATIVE)),
-      toKeyValuePair(FinitiveStrongVerb("lá",   StrongVerbStem("la", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM),Pronoun.SG_3, PAST, INDICATIVE)),
-      toKeyValuePair(FinitiveStrongVerb("lágum",StrongVerbStem("lág",STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM),  Pronoun.PL_1, PAST, INDICATIVE))
+      toKeyValuePair(NonFinitiveStrongVerbForm("liggja",StrongVerbStem("leg", STRONG_5TH_CLASS, PRESENT_STEM), NonFinitiveVerbType.INFINITIVE)),
+      toKeyValuePair(NonFinitiveStrongVerbForm("leginn",StrongVerbStem("leg", STRONG_5TH_CLASS, PERFECT_STEM), NonFinitiveVerbType.PAST_PARTICIPLE)),
+      toKeyValuePair(FinitiveStrongVerbForm("ligg", StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_1, PRESENT, INDICATIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("liggr",StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_3, PRESENT, INDICATIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("lá",   StrongVerbStem("la", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM),Pronoun.SG_3, PAST, INDICATIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("lágum",StrongVerbStem("lág",STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM),  Pronoun.PL_1, PAST, INDICATIVE))
     )
 
-    val verb = StrongVerbContext(STRONG_5TH_CLASS, ABLAUT_GRADES, VERB_FORMS)
+    val verb = StrongVerb(STRONG_5TH_CLASS, ABLAUT_GRADES, VERB_FORMS)
     val data = serializer.marshall(verb)
 
     val sameVerb = serializer.unmarshall(MyReader(data))
@@ -78,7 +78,7 @@ class TestStrongVerbContextSerializer {
     val serializer = serializers.DictionaryEntryMarshaller
 
     val meanings = List(MeaningDef("m1", "n1", Seq("e1", "e2")))
-    val de = DictionaryEntry(StrongVerbContext(STRONG_5TH_CLASS, Map(), Map()), meanings)
+    val de = DictionaryEntry(StrongVerb(STRONG_5TH_CLASS, Map(), Map()), meanings)
 
     val data = serializer.marshall(de)
 

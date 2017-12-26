@@ -3,7 +3,7 @@ package com.hyenawarrior.oldnorsedictionary.modelview
 import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbContext
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
@@ -64,7 +64,7 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 
         view.getTag match {
 
-          case sv: StrongVerbContext => setDeclensionsTo(sv, view)
+          case sv: StrongVerb => setDeclensionsTo(sv, view)
         }
     }
   }

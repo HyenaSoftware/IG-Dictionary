@@ -4,14 +4,14 @@ import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.Button
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbContext, VerbClassEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbClassEnum}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.modelview._
 
 /**
 	* Created by HyenaWarrior on 2017.04.22..
 	*/
-class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClassEnum, StrongVerbContext)](activity)
+class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClassEnum, StrongVerb)](activity)
 {
 	override protected def getNewView(i: Int, viewGroup: ViewGroup): View = {
 

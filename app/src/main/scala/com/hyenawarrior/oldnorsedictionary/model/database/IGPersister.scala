@@ -1,7 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
 import android.content.Context
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbContext
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.INFINITIVE
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.SupportedLanguages.OldNorse
@@ -54,7 +54,7 @@ class IGPersister(ctx: Context) {
 
   private def addLookupTexts(de: DictionaryEntry, objId: Int): Unit = de.word match {
 
-    case sv: StrongVerbContext =>
+    case sv: StrongVerb =>
       val strIds = sv.verbForms
         .map {
           case ((INFINITIVE, None, None), v) => v -> true

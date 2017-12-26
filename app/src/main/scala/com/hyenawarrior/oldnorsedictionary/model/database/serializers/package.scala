@@ -2,8 +2,8 @@ package com.hyenawarrior.oldnorsedictionary.model.database
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.FinitiveStrongVerb.tenseAndNumberToStem
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerb.{moodAndTenseToStem, toNonFiniteVerbType}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.FinitiveStrongVerbForm.tenseAndNumberToStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.{moodAndTenseToStem, toNonFiniteVerbType}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
@@ -18,7 +18,7 @@ import scala.language.postfixOps
 package object serializers {
 
   implicit val ALL_SERIALIZER: Map[Class[_], Serializer[_]] = Map(
-    classOf[StrongVerbContext] -> StrongVerbContextMarshaller,
+    classOf[StrongVerb] -> StrongVerbContextMarshaller,
     classOf[DictionaryEntry] -> DictionaryEntryMarshaller,
     classOf[MeaningDef] -> MeaningDefMarshaller)
 
@@ -33,11 +33,11 @@ package object serializers {
     }
   }
 
-  implicit object StrongVerbContextMarshaller extends Serializer[StrongVerbContext] {
+  implicit object StrongVerbContextMarshaller extends Serializer[StrongVerb] {
 
     override val typeId: Int = 2
 
-    override def marshall(obj: StrongVerbContext): List[Any] = {
+    override def marshall(obj: StrongVerb): List[Any] = {
 
       val vceId = VerbClassEnum idOf obj.verbClass
 
@@ -62,14 +62,14 @@ package object serializers {
 
       val verbFormsAsListValues: List[String] = fixOrderedVerbForms.map(_._2).flatMap {
 
-        case StrongVerb(repr, StrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
+        case StrongVerbForm(repr, StrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
 
       }.toList
 
       List(vceId, ablautMapLength, formsLength) ++ ablautMapAsList ++ verbFormsAsListKeys ++ verbFormsAsListValues
     }
 
-    override def unmarshall(reader: Reader): StrongVerbContext = {
+    override def unmarshall(reader: Reader): StrongVerb = {
 
       val verbClassEnum: StrongVerbClassEnum = (VerbClassEnum fromId reader[Int](0) get).asInstanceOf[StrongVerbClassEnum]
 
@@ -110,30 +110,30 @@ package object serializers {
           (verbRepr, rootRepr)
         })
 
-      val verbForms: Map[VerbType, StrongVerb] = (verbFormKeys zip verbFormRawVals).map {
+      val verbForms: Map[VerbType, StrongVerbForm] = (verbFormKeys zip verbFormRawVals).map {
 
         case (k, (vR, rR)) => k -> generateStrongVerbFrom(verbClassEnum, ablautGrades, k, vR, rR)
 
       }.toMap
 
-      StrongVerbContext(verbClassEnum, ablautGrades, verbForms)
+      StrongVerb(verbClassEnum, ablautGrades, verbForms)
     }
 
     private def generateStrongVerbFrom(verbClassEnum: StrongVerbClassEnum, ablautGrades: Map[EnumVerbStem, AblautGrade]
-      , verbType: VerbType, verbRepr: String, rootRepr: String): StrongVerb = verbType match {
+      , verbType: VerbType, verbRepr: String, rootRepr: String): StrongVerbForm = verbType match {
 
       case (k @ (mood: FinitiveMood, Some(tense), Some(pronoun))) =>
         val stemType = tenseAndNumberToStem(tense, pronoun.number)
         val stem = StrongVerbStem(rootRepr, verbClassEnum, stemType)
 
-        FinitiveStrongVerb(verbRepr, stem, pronoun, tense, mood)
+        FinitiveStrongVerbForm(verbRepr, stem, pronoun, tense, mood)
 
       case (k @ (mood: NonFinitiveMood, optTense, None)) =>
         val stemType = moodAndTenseToStem(mood, optTense)
         val verbType = toNonFiniteVerbType(optTense, mood)
         val stem = StrongVerbStem(rootRepr, verbClassEnum, stemType)
 
-        NonFinitiveStrongVerb(verbRepr, stem, verbType)
+        NonFinitiveStrongVerbForm(verbRepr, stem, verbType)
     }
   }
 

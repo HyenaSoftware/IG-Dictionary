@@ -12,7 +12,7 @@ object VerbStemClass
 	type FinitiveVerbDesc = (Pronoun, FinitiveMood, VerbTenseEnum)
 }
 
-trait VerbStemClass[+V <: Verb]
+trait VerbStemClass[+V <: VerbForm]
 {
-	def convertTo(verb: StrongVerb, verbClass: VerbClassEnum, targetForm: Either[FinitiveVerbDesc, NonFinitiveVerbType]): Option[V]
+	def convertTo(verb: StrongVerbForm, verbClass: VerbClassEnum, targetForm: Either[FinitiveVerbDesc, NonFinitiveVerbType]): Option[V]
 }

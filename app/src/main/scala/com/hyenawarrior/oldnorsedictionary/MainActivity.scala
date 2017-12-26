@@ -77,7 +77,7 @@ class MainActivity extends AppCompatActivity
 
       val entries = if(fixedStr.isEmpty) List() else igPersister.lookup(fixedStr)
         .map {
-          case DictionaryEntry(sv: StrongVerbContext, meanings) =>
+          case DictionaryEntry(sv: StrongVerb, meanings) =>
 
             val matchingForms = sv.verbForms
               .filter {
@@ -108,7 +108,7 @@ class MainActivity extends AppCompatActivity
 		}
 	}
 
-  private def filter(forms: Map[VerbType, StrongVerb]): Option[(VerbType, StrongVerb)] = {
+  private def filter(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
 
     val fs = forms.groupBy { case ((md, _, _), _) => md }
 
@@ -118,7 +118,7 @@ class MainActivity extends AppCompatActivity
     inf orElse fs.get(INDICATIVE).flatMap(splitByTense) orElse prtcp
   }
 
-  private def splitByTense(forms: Map[VerbType, StrongVerb]): Option[(VerbType, StrongVerb)] = {
+  private def splitByTense(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
 
     val fs = forms.groupBy { case ((_, Some(t), _), _) => t }
 
@@ -128,7 +128,7 @@ class MainActivity extends AppCompatActivity
     present orElse past
   }
 
-  private def splitByNumber(forms: Map[VerbType, StrongVerb]): Option[(VerbType, StrongVerb)] = {
+  private def splitByNumber(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
 
     val fs = forms.groupBy { case ((_, _, Some(Pronoun(n, _))), _) => n }
 
@@ -138,7 +138,7 @@ class MainActivity extends AppCompatActivity
     sg orElse pl
   }
 
-  private def select(forms: Map[VerbType, StrongVerb]): Option[(VerbType, StrongVerb)] = forms
+  private def select(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = forms
     .find {
       case ((_, _, Some(Pronoun(_, 3))), _) => true
       case _ => false

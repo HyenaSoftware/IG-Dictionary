@@ -45,7 +45,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	var selectedVerbParameters: Parameters = (List(), Map())
 
 	// all the generated forms
-	var latestVerbData: Map[VerbClassEnum, StrongVerbContext] = Map()
+	var latestVerbData: Map[VerbClassEnum, StrongVerb] = Map()
 
 	val VerbDeclensionAdapter = new VerbDeclensionAdapter(activity)
 
@@ -242,7 +242,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
         .collect { case (k, Some(v)) => k -> v }
         .toMap
 
-      val wordMaps: List[(VerbClassEnum, StrongVerbContext)] = sortedListOfVerbClasses
+      val wordMaps: List[(VerbClassEnum, StrongVerb)] = sortedListOfVerbClasses
           .map(vc => vc -> generateAllFormsFrom(vc, overridingMap))
           .collect{ case (k, Some(sv)) => k -> sv }
 
@@ -254,16 +254,16 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	}
 
 	private def generateAllFormsFrom(verbClass: VerbClassEnum, overrides: Map[verbs.VerbType, String]):
-		Option[StrongVerbContext] = verbClass match {
+		Option[StrongVerb] = verbClass match {
 
 		case svc: StrongVerbClassEnum => generateMissingFormsOfStrongVerbsFrom(svc, overrides)
 		case wvc: WeakVerbClassEnum => None
 	}
 
 	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, givenVerbForms: Map[verbs.VerbType, String])
-		: Option[StrongVerbContext] = try {
+		: Option[StrongVerb] = try {
 
-      Some(StrongVerbContext(verbClass, givenVerbForms))
+      Some(StrongVerb(verbClass, givenVerbForms))
 
     } catch {
 
@@ -274,7 +274,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
       None
     }
 
-  private def setInflectedFormsToUI(listOfClassesAndVerbForms: List[(VerbClassEnum, StrongVerbContext)]): Unit = {
+  private def setInflectedFormsToUI(listOfClassesAndVerbForms: List[(VerbClassEnum, StrongVerb)]): Unit = {
 
 		VerbDeclensionAdapter.resetItems(listOfClassesAndVerbForms)
 

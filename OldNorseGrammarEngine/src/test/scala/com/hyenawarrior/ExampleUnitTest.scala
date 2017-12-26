@@ -2,7 +2,7 @@ package com.hyenawarrior
 
 import com.hyenawarrior.OldNorseGrammar.grammar._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb.verbFrom
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbForm.verbFrom
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{apply => _, unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
@@ -61,12 +61,12 @@ class ExampleUnitTest
 	{
 		val stem = StrongVerbStem("brann", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
-    val givenStrongVerb = FinitiveStrongVerb("brunnum", stem, Pronoun.PL_1, PAST, VerbModeEnum.INDICATIVE)
+    val givenStrongVerb = FinitiveStrongVerbForm("brunnum", stem, Pronoun.PL_1, PAST, VerbModeEnum.INDICATIVE)
 
 		val strongVerbResult = verbFrom(stem, Pronoun.SG_2, PAST, VerbModeEnum.INDICATIVE)
 		assertEquals("brannt", strongVerbResult.strForm)
 
-		val FinitiveStrongVerb(str, stemResult, pronoun, tense, VerbModeEnum.INDICATIVE) = strongVerbResult
+		val FinitiveStrongVerbForm(str, stemResult, pronoun, tense, VerbModeEnum.INDICATIVE) = strongVerbResult
 		assertEquals("brannt", str)
 		assertSame(Pronoun.SG_2, pronoun)
 		assertSame(PAST, tense)
