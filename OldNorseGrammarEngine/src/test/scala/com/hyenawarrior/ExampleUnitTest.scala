@@ -59,14 +59,14 @@ class ExampleUnitTest
 	@Test
   def testAblaut()
 	{
-		val stem = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
+		val stem = StrongVerbStem("brann", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
     val givenStrongVerb = FinitiveStrongVerb("brunnum", stem, Pronoun.PL_1, PAST, VerbModeEnum.INDICATIVE)
 
 		val strongVerbResult = verbFrom(stem, Pronoun.SG_2, PAST, VerbModeEnum.INDICATIVE)
 		assertEquals("brannt", strongVerbResult.strForm)
 
-		val FinitiveStrongVerb(str, clazz, pronoun, tense, VerbModeEnum.INDICATIVE) = strongVerbResult
+		val FinitiveStrongVerb(str, stemResult, pronoun, tense, VerbModeEnum.INDICATIVE) = strongVerbResult
 		assertEquals("brannt", str)
 		assertSame(Pronoun.SG_2, pronoun)
 		assertSame(PAST, tense)
@@ -76,21 +76,21 @@ class ExampleUnitTest
 	def testStrongVerbInflection()
 	{
 		val stem = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRESENT_STEM)
-		val stemPS = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
-		val stemPP = StrongVerbStem("brenn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
+		val stemPS = StrongVerbStem("brann", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
+		val stemPP = StrongVerbStem("brunn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
 
-		assertEquals("brennr", verbFrom(stem, Pronoun.SG_2, PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		// "brinn-" is incorrect but regular, "brenn-" is correct, but not regular
+		assertEquals("brinnr", verbFrom(stem, Pronoun.SG_2, PRESENT, VerbModeEnum.INDICATIVE).strForm)
+		assertEquals("brinna", 		verbFrom(stem, None, 					INFINITIVE).strForm)
+		assertEquals("brinnandi", verbFrom(stem, Some(PRESENT), PARTICIPLE).strForm)
 
-		assertEquals("brenna", 		verbFrom(stem, None, 					INFINITIVE).strForm)
-		assertEquals("brennandi", verbFrom(stem, Some(PRESENT), PARTICIPLE).strForm)
+		assertEquals("brinn", 		verbFrom(stem, Pronoun.SG_1, PRESENT, INDICATIVE).strForm)
+		assertEquals("brinnr", 		verbFrom(stem, Pronoun.SG_2, PRESENT, INDICATIVE).strForm)
+		assertEquals("brinnr", 		verbFrom(stem, Pronoun.SG_3, PRESENT,	INDICATIVE).strForm)
 
-		assertEquals("brenn", 		verbFrom(stem, Pronoun.SG_1, PRESENT, INDICATIVE).strForm)
-		assertEquals("brennr", 		verbFrom(stem, Pronoun.SG_2, PRESENT, INDICATIVE).strForm)
-		assertEquals("brennr", 		verbFrom(stem, Pronoun.SG_3, PRESENT,	INDICATIVE).strForm)
-
-		assertEquals("brennum", 	verbFrom(stem, Pronoun.PL_1,  PRESENT, INDICATIVE).strForm)
-		assertEquals("brennið", 	verbFrom(stem, Pronoun.PL_2,	PRESENT, INDICATIVE).strForm)
-		assertEquals("brenna",		verbFrom(stem, Pronoun.PL_3,  PRESENT, INDICATIVE).strForm)
+		assertEquals("brinnum", 	verbFrom(stem, Pronoun.PL_1,  PRESENT, INDICATIVE).strForm)
+		assertEquals("brinnið", 	verbFrom(stem, Pronoun.PL_2,	PRESENT, INDICATIVE).strForm)
+		assertEquals("brinna",		verbFrom(stem, Pronoun.PL_3,  PRESENT, INDICATIVE).strForm)
 
 		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_1,  PAST, INDICATIVE).strForm)
 		assertEquals("brannt", 		verbFrom(stemPS, Pronoun.SG_2,	PAST, INDICATIVE).strForm)
