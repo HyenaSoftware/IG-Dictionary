@@ -4,9 +4,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.FinitiveStrongVerb.tenseAndNumberToStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerb.{moodAndTenseToStem, toNonFiniteVerbType}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum.STRONG_7TH_CLASS
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem, StrongVerbStemClass7th}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.persister.{Reader, Serializer}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
@@ -125,23 +124,16 @@ package object serializers {
 
       case (k @ (mood: FinitiveMood, Some(tense), Some(pronoun))) =>
         val stemType = tenseAndNumberToStem(tense, pronoun.number)
-        val stem = generateStemFrom(verbClassEnum, ablautGrades(stemType), rootRepr, stemType)
+        val stem = StrongVerbStem(rootRepr, verbClassEnum, stemType)
 
         FinitiveStrongVerb(verbRepr, stem, pronoun, tense, mood)
 
       case (k @ (mood: NonFinitiveMood, optTense, None)) =>
         val stemType = moodAndTenseToStem(mood, optTense)
         val verbType = toNonFiniteVerbType(optTense, mood)
-        val stem = generateStemFrom(verbClassEnum, ablautGrades(stemType), rootRepr, stemType)
+        val stem = StrongVerbStem(rootRepr, verbClassEnum, stemType)
 
         NonFinitiveStrongVerb(verbRepr, stem, verbType)
-    }
-
-    private def generateStemFrom(verbClassEnum: StrongVerbClassEnum, ablautGrade: AblautGrade, rootRepr: String, stemType: EnumVerbStem)
-      = verbClassEnum match {
-
-      case STRONG_7TH_CLASS => StrongVerbStemClass7th(rootRepr, stemType, ablautGrade)
-      case _ => StrongVerbStem(rootRepr, verbClassEnum, stemType)
     }
   }
 

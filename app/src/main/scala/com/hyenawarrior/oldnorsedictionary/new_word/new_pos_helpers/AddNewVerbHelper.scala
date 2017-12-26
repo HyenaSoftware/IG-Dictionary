@@ -60,7 +60,6 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			case "Undefined" => List()
 			case "Strong" => List(STRONG_1ST_CLASS, STRONG_2ND_CLASS, STRONG_3RD_CLASS, STRONG_4TH_CLASS, STRONG_5TH_CLASS
 				, STRONG_6TH_CLASS
-				, STRONG_7TH_CLASS
 				, STRONG_7_1_CLASS
 				, STRONG_7_2A_CLASS
 				, STRONG_7_2B_CLASS
