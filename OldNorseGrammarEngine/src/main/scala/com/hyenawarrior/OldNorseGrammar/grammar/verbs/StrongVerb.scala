@@ -10,18 +10,18 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerb.{moo
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.{GNumber, Pronoun}
 
 /**
 	* Created by HyenaWarrior on 2017.04.19..
 	*/
-abstract class StrongVerb(strRepr: String, stem: CommonStrongVerbStem) extends Verb(strRepr) {
+abstract class StrongVerb(strRepr: String, stem: StrongVerbStem) extends Verb(strRepr) {
 
-	def getStem(): CommonStrongVerbStem = stem
+	def getStem(): StrongVerbStem = stem
 }
 
-case class FinitiveStrongVerb(strRepr: String, stem: CommonStrongVerbStem, pronoun: Pronoun
+case class FinitiveStrongVerb(strRepr: String, stem: StrongVerbStem, pronoun: Pronoun
 	, tense: VerbTenseEnum, mood: FinitiveMood)	extends StrongVerb(strRepr, stem)
 
 object FinitiveStrongVerb {
@@ -34,7 +34,7 @@ object FinitiveStrongVerb {
 	}
 }
 
-case class NonFinitiveStrongVerb(strRepr: String, stem: CommonStrongVerbStem, nonFinitiveVerbType: NonFinitiveVerbType)
+case class NonFinitiveStrongVerb(strRepr: String, stem: StrongVerbStem, nonFinitiveVerbType: NonFinitiveVerbType)
 	extends StrongVerb(strRepr, stem) {
 
   if (nonFinitiveVerbType.verbStemBase != stem.getStemType()) {
@@ -67,7 +67,7 @@ object NonFinitiveStrongVerb {
 	*/
 object StrongVerb {
 
-	def unapply(sv: StrongVerb): Option[(String, CommonStrongVerbStem)] = sv match {
+	def unapply(sv: StrongVerb): Option[(String, StrongVerbStem)] = sv match {
 
 		case FinitiveStrongVerb(repr, stem, _, _, _)	=> Some(repr -> stem)
 		case NonFinitiveStrongVerb(repr, stem, _) 		=> Some(repr -> stem)
@@ -104,7 +104,7 @@ object StrongVerb {
 
     val stemType = moodAndTenseToStem(mood, optTense)
 
-    val stem: CommonStrongVerbStem = uninflect(verbStrRepr, verbClass, (mood, optTense, None))
+    val stem = uninflect(verbStrRepr, verbClass, (mood, optTense, None))
 
     val verb = verbFrom(stem, optTense, mood)
 
@@ -141,14 +141,14 @@ object StrongVerb {
 
 
 
-  def verbFrom(stem: CommonStrongVerbStem, pronoun: Pronoun, tense: VerbTenseEnum, mood: FinitiveMood): StrongVerb = {
+  def verbFrom(stem: StrongVerbStem, pronoun: Pronoun, tense: VerbTenseEnum, mood: FinitiveMood): StrongVerb = {
 
     val verbType: VerbType = (mood, Some(tense), Some(pronoun))
 
     verbFrom(stem, verbType)
   }
 
-  def verbFrom(stem: CommonStrongVerbStem, optTense: Option[VerbTenseEnum], mood: NonFinitiveMood): StrongVerb = {
+  def verbFrom(stem: StrongVerbStem, optTense: Option[VerbTenseEnum], mood: NonFinitiveMood): StrongVerb = {
 
     val verbType: VerbType = (mood, optTense, None)
 
@@ -169,7 +169,7 @@ object StrongVerb {
     *		Past/Perfect Participle		Perfect Stem
     *		Supine										Perfect Stem
     */
-  def verbFrom(stem: CommonStrongVerbStem, verbType: VerbType): StrongVerb = verbType match {
+  def verbFrom(stem: StrongVerbStem, verbType: VerbType): StrongVerb = verbType match {
 
 		case (mood: FinitiveMood, Some(tense), Some(pronoun)) =>
       val str: String = inflect(verbType, stem.stringForm())
@@ -200,18 +200,13 @@ object StrongVerb {
     transforms.foldLeft(stemStr)((s, f) => f(s))
   }
 
-  private def uninflect(verbStrRepr: String, verbClass: StrongVerbClassEnum, vt: VerbType): CommonStrongVerbStem = {
+  private def uninflect(verbStrRepr: String, verbClass: StrongVerbClassEnum, vt: VerbType): StrongVerbStem = {
 
     val (mood, optTense, optPronoun) = vt
     val stemType: EnumVerbStem = stemFrom(optTense, optPronoun.map(_.number), mood)
 
     // remove I-Umlaut from present/singular verbs
-    val matchAblautGrade = verbClass match {
-      case VerbClassEnum.STRONG_7TH_CLASS => true
-      case _ =>
-        val optGrade = StrongVerbStem.ABLAUTS.get(verbClass)
-        optGrade.get.grades(stemType).occuresIn(verbStrRepr)
-    }
+    val matchAblautGrade = StrongVerbStem.ABLAUTS(verbClass).grades(stemType).occuresIn(verbStrRepr)
 
     val ConsonantAssimilation(restoredVerbStrRepr) = verbStrRepr
 

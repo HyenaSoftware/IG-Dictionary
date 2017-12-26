@@ -5,7 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.FinitiveStrongVerb.tenseAndNumberToStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerb.{moodAndTenseToStem, toNonFiniteVerbType}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{CommonStrongVerbStem, EnumVerbStem, StrongVerbStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.persister.{Reader, Serializer}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
@@ -62,7 +62,7 @@ package object serializers {
 
       val verbFormsAsListValues: List[String] = fixOrderedVerbForms.map(_._2).flatMap {
 
-        case StrongVerb(repr, CommonStrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
+        case StrongVerb(repr, StrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
 
       }.toList
 

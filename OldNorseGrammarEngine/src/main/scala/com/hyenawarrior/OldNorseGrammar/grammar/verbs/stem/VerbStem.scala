@@ -20,11 +20,12 @@ abstract class VerbStem(stemType: EnumVerbStem) {
 	def getStemType(): EnumVerbStem = stemType
 }
 
-abstract class CommonStrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem
-                                    , appliedTransform: TransformationMode = Undefined)
-	extends VerbStem(stemType) {
-
-	def getAblautGrade(): AblautGrade
+// instead of using the root string representation, it may have its own string representation
+// 	+ no need to reset roots
+//	+ no need to have separate class for 7th verbs to represent their ablautGrades
+//	+ for class 1-6, code can do the validation
+case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem
+  , appliedTransform: TransformationMode = Undefined) extends VerbStem(stemType) {
 
   /**
     * stem is regular if
@@ -52,28 +53,6 @@ abstract class CommonStrongVerbStem(normalizedStem: String, verbClass: StrongVer
     StrongVerbStem.denormalize(normalizedStem, verbClass, stemType, appliedTransform) getOrElse normalizedStem
   }
 
-  def getRoot(): Root
-}
-
-object CommonStrongVerbStem {
-
-	def unapply(strongVerbStem: CommonStrongVerbStem): Option[(String, StrongVerbClassEnum, EnumVerbStem, TransformationMode)]
-		= strongVerbStem match {
-
-		case svs: StrongVerbStem => Some((svs.normalizedStem, svs.verbClass, svs.getStemType(), svs.appliedTransform))
-		case svs7: StrongVerbStemClass7th => Some((svs7.normalizedStem, STRONG_7TH_CLASS, svs7.getStemType(), Undefined))
-		case _ => None
-	}
-}
-
-// instead of root it may have its string representation
-// 	+ no need to reset roots
-//	+ no need to have separate class for 7th verbs to represent their ablautGrades
-//	+ for class 1-6, code could do validation
-case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem
-  , appliedTransform: TransformationMode = Undefined)
-	extends CommonStrongVerbStem(normalizedStem, verbClass, stemType, appliedTransform) {
-
   /**
     * @return Ablaut grade of the stem, that can be irregular.
     */
@@ -83,7 +62,7 @@ case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum
     * Be aware: it can't reflect the ablaut of an irregular present stem
     * @return
     */
-  override def getRoot(): Root = {
+  def getRoot(): Root = {
       /*
                                   (stem relative root)
         (denormalized/decayed)    (normalized)   (root)   (ablaut)
@@ -120,14 +99,6 @@ case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum
   }
 }
 
-case class StrongVerbStemClass7th(normalizedStem: String, stemType: EnumVerbStem, ablautGrade: AblautGrade)
-	extends CommonStrongVerbStem(normalizedStem, STRONG_7TH_CLASS, stemType) {
-
-	def getAblautGrade() = ablautGrade
-
-  override def getRoot(): Root = Root(normalizedStem)
-}
-
 object StrongVerbStem {
 
   val IRREGULAR_VERB_CLASSES = Set(STRONG_7_1_CLASS, STRONG_7_2A_CLASS, STRONG_7_2B_CLASS
@@ -141,7 +112,7 @@ object StrongVerbStem {
 		STRONG_4TH_CLASS -> StaticAblaut("e",	"a", 	"á", "o"),
 		STRONG_5TH_CLASS -> StaticAblaut("e", "a", 	"á", "e"),
 		STRONG_6TH_CLASS -> StaticAblaut("a", "ó", 	"ó", "a"),
-		STRONG_7TH_CLASS -> null,
+
     STRONG_7_1_CLASS -> StaticAblaut("ei", "é", "é", "ei"),
     STRONG_7_2A_CLASS -> StaticAblaut("au", "jó", "jó", "au"),
     STRONG_7_2B_CLASS -> StaticAblaut("ú", "jó", "ju", "ú"),
@@ -184,21 +155,13 @@ object StrongVerbStem {
 		*                          the first syllable
 		*/
 	def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, subjectOfIUmalut: Boolean = false)
-  : CommonStrongVerbStem = {
+  : StrongVerbStem = {
 
-    verbClass match {
+    val augmentedStem = augment(stemStr, verbClass, stemType, subjectOfIUmalut)
+    val (optTransformation, normalizedStemStr) = normalize(augmentedStem, verbClass, stemType)
+    validateAblautGrade(verbClass, stemType, normalizedStemStr)
 
-      case STRONG_7TH_CLASS =>
-        val ablaut = Ablaut.getAblautGradeFrom(stemStr)
-        StrongVerbStemClass7th(stemStr, stemType, ablaut)
-
-      case _ =>
-        val augmentedStem = augment(stemStr, verbClass, stemType, subjectOfIUmalut)
-        val (optTransformation, normalizedStemStr) = normalize(augmentedStem, verbClass, stemType)
-        validateAblautGrade(verbClass, stemType, normalizedStemStr)
-
-        StrongVerbStem(normalizedStemStr, verbClass, stemType, optTransformation)
-    }
+    StrongVerbStem(normalizedStemStr, verbClass, stemType, optTransformation)
   }
 
   private object InverseBreaking { def unapply(arg: String): Option[String] = Breaking(arg) }

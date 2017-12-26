@@ -25,7 +25,6 @@ object VerbClassEnum extends EnumLike[String, VerbClassEnum]
 	val STRONG_4TH_CLASS = StrongVerbClassEnum("Strong 4th class")
 	val STRONG_5TH_CLASS = StrongVerbClassEnum("Strong 5th class")
 	val STRONG_6TH_CLASS = StrongVerbClassEnum("Strong 6th class")
-	val STRONG_7TH_CLASS = StrongVerbClassEnum("Strong 7th class")
 
 	val STRONG_7_1_CLASS = StrongVerbClassEnum("Strong 7.1 class")
 	val STRONG_7_2A_CLASS = StrongVerbClassEnum("Strong 7.2a class")

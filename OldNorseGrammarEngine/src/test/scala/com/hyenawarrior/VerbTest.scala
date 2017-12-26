@@ -410,15 +410,14 @@ class VerbTest
   }
 
   @Test
-  def testClass7thVowelDeletion(): Unit = {
+  def testClass73VowelDeletion(): Unit = {
 
-    val stem = StrongVerbStem.fromStrRepr("fá", STRONG_7TH_CLASS, PRESENT_STEM)
-
+    val stem = StrongVerbStem.fromStrRepr("fá", STRONG_7_3_CLASS, PRESENT_STEM)
     assertEquals("fá", verbFrom(stem, None, INFINITIVE).strForm)
 
 
     val srcForm = (INFINITIVE, None, None)
-    val verb = StrongVerbContext(STRONG_7TH_CLASS, Map(srcForm -> "fá"))
+    val verb = StrongVerbContext(STRONG_7_3_CLASS, Map(srcForm -> "fá"))
 
     assertEquals("fá", verb.verbForms(INFINITIVE, None, None).strForm)
   }
