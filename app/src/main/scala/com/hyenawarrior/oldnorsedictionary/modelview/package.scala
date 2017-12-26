@@ -45,6 +45,7 @@ package object modelview {
       val ablautDesc = Seq(PRESENT_STEM, PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM, PERFECT_STEM)
         .map(ablautGrade)
         .mkString("(", " - ", ")")
+        .replace("ǫ", "ö")
 
       // set ablaut grades
       val tv_addword_verb_AblautGrades = targetView.findViewById(R.id.tv_addword_verb_AblautGrades).asInstanceOf[TextView]
@@ -54,7 +55,7 @@ package object modelview {
 
         val f = verbForms(vt)
         val tv = targetView.findViewById(id).asInstanceOf[TextView]
-        tv.setText(f.strForm)
+        tv.setText(f.strForm.replace("ǫ", "ö"))
       }
   }
 }

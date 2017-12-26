@@ -216,7 +216,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 	override def onTextFormOverride(rowView: View)(str: String): Unit = {
 
-		val optStr = if(str.isEmpty) None else Some(str)
+		val optStr = if(str.isEmpty) None else Some(str.replace("ö", "ǫ"))
 
 		val (classes, map) = selectedVerbParameters
 

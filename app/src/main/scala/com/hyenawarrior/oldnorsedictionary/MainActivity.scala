@@ -73,13 +73,15 @@ class MainActivity extends AppCompatActivity
 
 		override def onQueryTextChange(str: String): Boolean = {
 
-      val entries = if(str.isEmpty) List() else igPersister.lookup(str)
+      val fixedStr = str.replace("ö", "ǫ")
+
+      val entries = if(fixedStr.isEmpty) List() else igPersister.lookup(fixedStr)
         .map {
           case DictionaryEntry(sv: StrongVerbContext, meanings) =>
 
             val matchingForms = sv.verbForms
               .filter {
-                case (_, v) if v.strForm.startsWith(str) => true
+                case (_, v) if v.strForm.startsWith(fixedStr) => true
                 case _ => false
               }
 
