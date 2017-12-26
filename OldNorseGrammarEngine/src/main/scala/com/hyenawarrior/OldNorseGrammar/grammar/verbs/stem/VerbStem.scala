@@ -17,7 +17,7 @@ abstract class VerbStem(stemType: EnumVerbStem) {
 
 	def stringForm(): String
 
-	def getStemType(): EnumVerbStem = stemType
+	def getStemType: EnumVerbStem = stemType
 }
 
 // instead of using the root string representation, it may have its own string representation
@@ -56,13 +56,13 @@ case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum
   /**
     * @return Ablaut grade of the stem, that can be irregular.
     */
-	def getAblautGrade() = Ablaut.getAblautGradeFrom(normalizedStem)
+	def getAblautGrade = Ablaut.getAblautGradeFrom(normalizedStem)
 
   /**
     * Be aware: it can't reflect the ablaut of an irregular present stem
     * @return
     */
-  def getRoot(): Root = {
+  def getRoot: Root = {
       /*
                                   (stem relative root)
         (denormalized/decayed)    (normalized)   (root)   (ablaut)
@@ -93,7 +93,7 @@ case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum
 
     // present stem is identical to the root
     val ablautGradeOfPresentStem = StrongVerbStem.ABLAUTS(verbClass).presentAblautGrade
-    val rootStrRepr = Ablaut.transform(normalizedStem, getAblautGrade(), ablautGradeOfPresentStem).get
+    val rootStrRepr = Ablaut.transform(normalizedStem, getAblautGrade, ablautGradeOfPresentStem).get
 
     Root(rootStrRepr)
   }

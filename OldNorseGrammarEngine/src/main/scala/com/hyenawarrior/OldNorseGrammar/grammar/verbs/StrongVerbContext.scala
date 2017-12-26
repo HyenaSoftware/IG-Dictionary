@@ -40,9 +40,9 @@ object StrongVerbContext {
       case (vt, rawStr) => vt -> StrongVerb.fromStringRepr(rawStr, verbClass, vt)
     }
 
-    val stems = extractStems(givenVerbForms.map { case (k, v) => k -> v.getStem() }, verbClass)
+    val stems = extractStems(givenVerbForms.map { case (k, v) => k -> v.getStem }, verbClass)
 
-    val ablautGrades = stems.map{ case (k, v) => k -> v.getAblautGrade() }
+    val ablautGrades = stems.map{ case (k, v) => k -> v.getAblautGrade }
 
     // exclude the base form definition and the overrides
     val missingDeclensions = VerbContext.ALL_VERB_FORMS.filterNot(givenVerbForms.contains)
@@ -82,7 +82,7 @@ object StrongVerbContext {
 				val stemType = verbs.stemFrom(vt._2, vt._3.map(_.number), vt._1)
 				StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, stemType)
 		}
-			.groupBy ( _.getStemType() )
+			.groupBy ( _.getStemType )
 
 		val pseudoStemsBy: Map[EnumVerbStem, StrongVerbStem] = pseudoFormsToStem.map { case(e, m) => e -> m.head }
 
@@ -109,7 +109,7 @@ object StrongVerbContext {
 
       case verbStem if pseudoStemsBy.contains(verbStem) =>
         val srcStem = pseudoStemsBy(verbStem)
-        StrongVerbStem.fromRoot(srcStem.getRoot(), verbClassEnum, preferences.head)
+        StrongVerbStem.fromRoot(srcStem.getRoot, verbClassEnum, preferences.head)
     })
 
     optTransformedClosestStem

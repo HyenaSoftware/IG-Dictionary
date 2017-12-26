@@ -6,7 +6,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion, VowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerb.{moodAndTenseToStem, toNonFiniteVerbType}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerb.toNonFiniteVerbType
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
@@ -18,7 +18,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{GNumber, Pronoun}
 	*/
 abstract class StrongVerb(strRepr: String, stem: StrongVerbStem) extends Verb(strRepr) {
 
-	def getStem(): StrongVerbStem = stem
+	def getStem: StrongVerbStem = stem
 }
 
 case class FinitiveStrongVerb(strRepr: String, stem: StrongVerbStem, pronoun: Pronoun
@@ -37,10 +37,10 @@ object FinitiveStrongVerb {
 case class NonFinitiveStrongVerb(strRepr: String, stem: StrongVerbStem, nonFinitiveVerbType: NonFinitiveVerbType)
 	extends StrongVerb(strRepr, stem) {
 
-  if (nonFinitiveVerbType.verbStemBase != stem.getStemType()) {
+  if (nonFinitiveVerbType.verbStemBase != stem.getStemType) {
 
     throw new RuntimeException(format("To create a verb from '%s', a %s stem is expected instead of %s.",
-      strRepr, nonFinitiveVerbType.verbStemBase, stem.getStemType()))
+      strRepr, nonFinitiveVerbType.verbStemBase, stem.getStemType))
   }
 }
 
@@ -101,8 +101,6 @@ object StrongVerb {
 
   private def fromStringRepr(verbStrRepr: String, verbClass: StrongVerbClassEnum, optTense: Option[VerbTenseEnum]
                              , mood: NonFinitiveMood): StrongVerb = {
-
-    val stemType = moodAndTenseToStem(mood, optTense)
 
     val stem = uninflect(verbStrRepr, verbClass, (mood, optTense, None))
 
