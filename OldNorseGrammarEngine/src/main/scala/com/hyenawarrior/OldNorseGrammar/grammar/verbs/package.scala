@@ -28,6 +28,7 @@ package object verbs
 		case (PAST, PLURAL)		=> PRETERITE_PLURAL_STEM
 	}
 
+	// FIXME: refactor it to use the regular 'VerbType' type, instead of this
 	def stemFrom(optTense: Option[VerbTenseEnum], optNumber: Option[GNumber], mood: VerbModeEnum): EnumVerbStem
 		= (optTense, optNumber, mood) match {
 

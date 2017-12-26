@@ -129,7 +129,11 @@ object StrongVerbContext {
     val primaryStem = preferences.head
     val secondaryStems = preferences.tail
 
-    val optTransformedClosestStem = pseudoStemsBy.get(primaryStem).orElse(secondaryStems.collectFirst {
+    val optTransformedClosestStem = pseudoStemsBy
+			// use the primary form
+			.get(primaryStem)
+			// or create it from another form
+			.orElse(secondaryStems.collectFirst {
 
       case verbStem if pseudoStemsBy.contains(verbStem) =>
         val srcStem = pseudoStemsBy(verbStem)

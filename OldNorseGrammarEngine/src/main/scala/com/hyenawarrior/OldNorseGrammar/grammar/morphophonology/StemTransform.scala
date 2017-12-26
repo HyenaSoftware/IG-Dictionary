@@ -73,6 +73,7 @@ object StemTransform {
 		}
 	}
 
+  // TODO: Should it be renamed as A-mutation?
   object JuToJo extends NucleusTransformation {
 
     protected val SRC_NUCLEUS: String = "jú"
