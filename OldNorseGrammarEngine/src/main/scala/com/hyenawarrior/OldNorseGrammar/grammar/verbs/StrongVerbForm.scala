@@ -4,7 +4,7 @@ import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, Gemination, SemivowelDeletion, VowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.toNonFiniteVerbType
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
@@ -189,7 +189,7 @@ object StrongVerbForm {
 
     val transforms: Seq[String => String] = Seq(
       s => applyNonProductiveRules(verbType)(s).orElse(if(useUUmlaut) U_Umlaut(s) else None).getOrElse(s)
-      , _ + inflection
+      , Gemination(_, inflection)
       , SemivowelDeletion(_)
       , VowelDeletion(_)
       , ConsonantAssimilation(_)

@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, Gemination, SemivowelDeletion, VowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{DevoiceAfterLateral, JAugment, NasalAssimilation, Raising}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, StemTransform}
 import org.junit.Assert._
@@ -55,6 +55,16 @@ class TestTransformation {
 	def testConsonantAssimilationShouldIgnore(): Unit = {
 
 		assertEquals("hestr", ConsonantAssimilation("hestr"))
+	}
+
+	@Test
+	def testGemination(): Unit = {
+
+		assertEquals("nýtt", 	Gemination("ný", "t"))
+		assertEquals("fárri", Gemination("fá", "ri"))
+
+		assertEquals("létum", Gemination("lét", "um"))
+		assertEquals("Cás", 	Gemination("Cá", "s"))
 	}
 
   @Test

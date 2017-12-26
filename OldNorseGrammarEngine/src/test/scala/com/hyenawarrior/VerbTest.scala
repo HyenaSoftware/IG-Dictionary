@@ -476,7 +476,7 @@ class VerbTest
 
     assertEquals("búa", 	  verb.verbForms(INFINITIVE, None, None).strForm)
     assertEquals("bý", 	    verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("býr", 	  verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("býrr", 	  verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
     assertEquals("bjuggum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
     assertEquals("búinn",   verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
   }
