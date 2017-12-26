@@ -154,10 +154,10 @@ object StrongVerbStem {
 		* @throws RuntimeException if the ablaut grade of the strong verb class is not matching on the nucleus of
 		*                          the first syllable
 		*/
-	def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, subjectOfIUmalut: Boolean = false)
+	def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, appliedUmlaut: Option[Umlaut] = None)
   : StrongVerbStem = {
 
-    val augmentedStem = augment(stemStr, verbClass, stemType, subjectOfIUmalut)
+    val augmentedStem = augment(stemStr, verbClass, stemType, appliedUmlaut)
     val (optTransformation, normalizedStemStr) = normalize(augmentedStem, verbClass, stemType)
     validateAblautGrade(verbClass, stemType, normalizedStemStr)
 
@@ -169,13 +169,13 @@ object StrongVerbStem {
   /**
     * verb-form -> non-inflected, non-augmented stem -> denormalized stem
     */
-  private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, subjectOfIUmalut: Boolean): String
-    = (verbClass, stemType, stemStr) match {
+  private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, appliedUmlaut: Option[Umlaut]): String
+    = (verbClass, stemType, stemStr, appliedUmlaut) match {
 
       // helpr <-[I-umlaut + SVD]-- hjalp- --[braking]-> help-
       // the effect of the next line is inverted back during the stem normalization, but the normalization also add a flag
       //  to indicate that this stem does have breaking - so, yes, it's redundant but it's important to have the flag
-    case (STRONG_3RD_CLASS, PRESENT_STEM, InverseBreaking(s)) if subjectOfIUmalut => s
+    case (STRONG_3RD_CLASS, PRESENT_STEM, InverseBreaking(s), Some(Explicit_I_Umlaut)) => s
 
       /* do not fix the augmentation in any other cases:
         FIN    PST-STEM    PRS-STEM

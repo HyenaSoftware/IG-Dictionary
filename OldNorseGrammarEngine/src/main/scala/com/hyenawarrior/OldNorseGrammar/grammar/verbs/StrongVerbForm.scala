@@ -212,19 +212,19 @@ object StrongVerbForm {
 		val stemRepr = uninflect(restoredVerbStrRepr, vt)
 
 		// remove non-productive changes
-    val (stemReprWithoutUmlaut, iUmlauted) = (optPronoun.map(_.number), optTense, stemRepr) match {
+    val (stemReprWithoutUmlaut, appliedUmlaut) = (optPronoun.map(_.number), optTense, stemRepr) match {
 
       case (Some(SINGULAR), Some(PRESENT), Explicit_I_Umlaut(verbStrReprRevI)) if !matchAblautGrade =>
-        verbStrReprRevI -> true
+        verbStrReprRevI -> Some(Explicit_I_Umlaut)
 
-      case (Some(SINGULAR), Some(PRESENT), _) if matchAblautGrade => stemRepr -> false
+      case (Some(SINGULAR), Some(PRESENT), _) if matchAblautGrade => stemRepr -> None
 
-      case (_, _, U_Umlaut(unUmlautedStr)) => unUmlautedStr -> false
+      case (_, _, U_Umlaut(unUmlautedStr)) => unUmlautedStr -> Some(U_Umlaut)
 
-      case (_, _, sr) => sr -> false
+      case (_, _, sr) => sr -> None
 		}
 
-    StrongVerbStem.fromStrRepr(stemReprWithoutUmlaut, verbClass, stemType, iUmlauted)
+    StrongVerbStem.fromStrRepr(stemReprWithoutUmlaut, verbClass, stemType, appliedUmlaut)
   }
 
   private def uninflect(strRepr: String, vt: VerbType): String = {

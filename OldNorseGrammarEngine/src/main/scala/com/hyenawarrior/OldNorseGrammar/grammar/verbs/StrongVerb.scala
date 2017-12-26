@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{AblautGrade, Explicit_I_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{INDICATIVE, INFINITIVE, PARTICIPLE, SUBJUNCTIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
@@ -74,7 +74,7 @@ object StrongVerb {
 		val pseudoFormsToStem: Map[EnumVerbStem, Iterable[StrongVerbStem]] = pseudoVerbForms.map {
 
 			case ((INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun(GNumber.SINGULAR, _))), stem) =>
-				StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, EnumVerbStem.PRESENT_STEM, subjectOfIUmalut = true)
+				StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, EnumVerbStem.PRESENT_STEM, Some(Explicit_I_Umlaut))
 
 			case (vt, stem) =>
 				// do a stem -> string -> conversion to force validate the inputs

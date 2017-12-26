@@ -1,7 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Ablaut
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{Breaking, JAugment}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.EnabledFor
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
@@ -94,7 +94,7 @@ class VerbStemTest {
   @Test
   def testVerbClass3VAugmentRestore(): Unit = {
 
-    val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("sing", STRONG_3RD_CLASS, PRESENT_STEM)
+    val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("sing", STRONG_3RD_CLASS, PRESENT_STEM, Some(U_Umlaut))
     assertEquals("sengv", normalizedPresentStem)
   }
 
@@ -282,7 +282,7 @@ class VerbStemTest {
   @Test
   def testVerbClass72bVAugmentRestore(): Unit = {
 
-    val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("hagg", STRONG_7_2B_CLASS, PRESENT_STEM)
+    val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("hagg", STRONG_7_2B_CLASS, PRESENT_STEM, Some(U_Umlaut))
     assertEquals("haggv", normalizedPresentStem)
   }
 
