@@ -98,6 +98,19 @@ class VerbStemTest {
     assertEquals("sengv", normalizedPresentStem)
   }
 
+  @Test
+  def testVerbClass3SkipVAugmentation(): Unit = {
+
+    val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("spring", STRONG_3RD_CLASS, PRESENT_STEM)
+    assertEquals("spreng", normalizedPresentStem)
+
+    val StrongVerbStem(normalizedPastSingularStem, _, _, _) = StrongVerbStem.fromStrRepr("sprakk", STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM)
+    assertEquals("sprang", normalizedPastSingularStem)
+
+    val StrongVerbStem(normalizedPastPluralStem, _, _, _) = StrongVerbStem.fromStrRepr("sprung", STRONG_3RD_CLASS, PRETERITE_PLURAL_STEM)
+    assertEquals("sprung", normalizedPastPluralStem)
+  }
+
   /** Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr. */
   @Test
   def testVerbClass3rdDoNotRaise(): Unit = {

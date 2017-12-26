@@ -183,6 +183,11 @@ object StrongVerbStem {
         bjó -> bjó-     -> bú-
         hjó -> hjóggv-  -> haggv-
 
+        FIN        denomarlized stem  umlaut
+        spring  -> spring-            none
+        heggr   -> haggv-             I-umlaut faded the effect of U-umlaut
+        syngr   -> singv-             U-umlaut
+
         West Germanic gemination
           * does lágum (past) have only one 'g', because past stem is not J-augmented?
           *
@@ -190,7 +195,9 @@ object StrongVerbStem {
           * The augment does not appear in the past forms; the past stems ended in a single consonant,
            * which disappeared in the singular forms by the time of the ON texts.
       */
-    case (STRONG_5TH_CLASS | STRONG_7_2B_CLASS, PRESENT_STEM, FixStemAugmentation(origStemStr)) => origStemStr
+    case (STRONG_3RD_CLASS | STRONG_7_2B_CLASS, _, FixVAugmentation(augmentedStemStr), Some(_)) => augmentedStemStr
+    case (STRONG_5TH_CLASS, PRESENT_STEM, FixJAugmentation(augmentedStemStr), Some(Explicit_I_Umlaut)) => augmentedStemStr
+
     case _ => stemStr
   }
 

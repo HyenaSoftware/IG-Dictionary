@@ -250,23 +250,44 @@ object StemTransform {
     }
   }
 
-  object FixStemAugmentation extends Transformation {
+  /**
+    *  restore the J-augmented stem
+    *  The only purpose of it, is to undo the semivowel deletion
+    */
+  object FixJAugmentation {
 
-    // implementation is pointless, SVD, etc. do the same
-    override def apply(stemStr: String): Option[String] = None
-
-    override def unapply(stemStr: String): Option[String] = {
-      // restore to a J-augmented stem
+    def unapply(stemStr: String): Option[String] = {
 
       val Syllables(sy :: _) = stemStr
 
-      val augment = sy.nucleus match {
-        case "i" => Some("j")
-        case "a" => Some("v")
+      sy.nucleus match {
+        case "i" => Some(if(stemStr endsWith "j") stemStr else stemStr + "j")
         case _ => None
       }
+    }
+  }
 
-      augment.map(a => stemStr + (if(stemStr endsWith a) "" else a))
+  /**
+    * restore the V-augmented stem
+    * The only purpose of it, is to undo the semivowel deletion
+    */
+  object FixVAugmentation {
+
+    // this regex also prevent to add a final -v to a stem that already has augmentation
+    private val velarEnd = "^(.+(?:ng|gg|kk))$".r
+
+    def unapply(stemStr: String): Option[String] = stemStr match {
+
+      case velarEnd(_) =>
+
+        val Syllables(sy :: _) = stemStr
+
+        sy.nucleus match {
+          case "a" | "ǫ" | "i" | "y" => Some(stemStr + "v")
+          case _ => None
+        }
+
+      case _ => None
     }
   }
 
