@@ -92,13 +92,6 @@ class VerbStemTest {
   }
 
   @Test
-  def testVerbClass3VAugmentRestore(): Unit = {
-
-    val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("sing", STRONG_3RD_CLASS, PRESENT_STEM, Some(U_Umlaut))
-    assertEquals("sengv", normalizedPresentStem)
-  }
-
-  @Test
   def testVerbClass3SkipVAugmentation(): Unit = {
 
     val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("spring", STRONG_3RD_CLASS, PRESENT_STEM)
@@ -290,13 +283,6 @@ class VerbStemTest {
 
     val perfectStemObj = StrongVerbStem.fromStrRepr("haggv", STRONG_7_2B_CLASS, PERFECT_STEM)
     assertEquals("haggv", perfectStemObj.stringForm())
-  }
-
-  @Test
-  def testVerbClass72bVAugmentRestore(): Unit = {
-
-    val StrongVerbStem(normalizedPresentStem, _, _, _) = StrongVerbStem.fromStrRepr("hagg", STRONG_7_2B_CLASS, PRESENT_STEM, Some(U_Umlaut))
-    assertEquals("haggv", normalizedPresentStem)
   }
 
   @Test
