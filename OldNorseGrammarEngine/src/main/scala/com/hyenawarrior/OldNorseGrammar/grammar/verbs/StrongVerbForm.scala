@@ -5,13 +5,18 @@ import java.lang.String.format
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, Gemination, SemivowelDeletion, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{Breaking, FixJAugmentation, FixVAugmentation}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.toNonFiniteVerbType
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem.fromStrRepr
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.{GNumber, Pronoun}
+import com.hyenawarrior.auxiliary.TryExtract
 
 /**
 	* Created by HyenaWarrior on 2017.04.19..
@@ -66,6 +71,8 @@ object NonFinitiveStrongVerbForm {
 	* Meta-class of object representation
 	*/
 object StrongVerbForm {
+
+  private object InverseBreaking { def unapply(arg: String): Option[String] = Breaking(arg) }
 
 	def unapply(sv: StrongVerbForm): Option[(String, StrongVerbStem)] = sv match {
 
@@ -203,28 +210,63 @@ object StrongVerbForm {
     val (mood, optTense, optPronoun) = vt
     val stemType: EnumVerbStem = stemFrom(optTense, optPronoun.map(_.number), mood)
 
-    // remove I-Umlaut from present/singular verbs
-    val matchAblautGrade = StrongVerbStem.ABLAUTS(verbClass).grades(stemType).occuresIn(verbStrRepr)
-
     val ConsonantAssimilation(restoredVerbStrRepr) = verbStrRepr
 
 		// remove inflection
 		val stemRepr = uninflect(restoredVerbStrRepr, vt)
 
-		// remove non-productive changes
-    val (stemReprWithoutUmlaut, appliedUmlaut) = (optPronoun.map(_.number), optTense, stemRepr) match {
+    // undo SemivowelDeletion
+    val stemStrAugFixed = augment(stemRepr, verbClass, stemType)
 
-      case (Some(SINGULAR), Some(PRESENT), Explicit_I_Umlaut(verbStrReprRevI)) if !matchAblautGrade =>
-        verbStrReprRevI -> Some(Explicit_I_Umlaut)
+    val createStemByFrontMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(Explicit_I_Umlaut)))
+    val createStemByBackMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(U_Umlaut)))
+    val createStem              = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, None))
 
-      case (Some(SINGULAR), Some(PRESENT), _) if matchAblautGrade => stemRepr -> None
 
-      case (_, _, U_Umlaut(unUmlautedStr)) => unUmlautedStr -> Some(U_Umlaut)
+    // remove non-productive changes
+    (optPronoun.map(_.number), optTense, stemStrAugFixed) match {
 
-      case (_, _, sr) => sr -> None
+      case (Some(SINGULAR), Some(PRESENT), Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
+
+      case (_,              _,             U_Umlaut(createStemByBackMutation(stem))) => stem
+
+      case (_,              _,             createStem(stem)) => stem
 		}
+  }
 
-    StrongVerbStem.fromStrRepr(stemReprWithoutUmlaut, verbClass, stemType, appliedUmlaut)
+  /**
+    * verb-form -> non-inflected, non-augmented stem -> denormalized stem
+    */
+  private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): String
+    = (verbClass, stemType, stemStr) match {
+
+    // helpr <-[I-umlaut + SVD]-- hjalp- --[braking]-> help-
+    // the effect of the next line is inverted back during the stem normalization, but the normalization also add a flag
+    //  to indicate that this stem does have breaking - so, yes, it's redundant but it's important to have the flag
+    case (STRONG_3RD_CLASS, PRESENT_STEM, InverseBreaking(s)) => s
+
+    /* do not fix the augmentation in any other cases:
+      FIN    PST-STEM    PRS-STEM
+      lá  -> lág-     -> liggj-
+      bjó -> bjó-     -> bú-
+      hjó -> hjóggv-  -> haggv-
+
+      FIN        denomarlized stem  umlaut
+      spring  -> spring-            none
+      heggr   -> haggv-             I-umlaut faded the effect of U-umlaut
+      syngr   -> singv-             U-umlaut
+
+      West Germanic gemination
+        * does lágum (past) have only one 'g', because past stem is not J-augmented?
+        *
+        * https://lrc.la.utexas.edu/eieol/norol/70
+        * The augment does not appear in the past forms; the past stems ended in a single consonant,
+         * which disappeared in the singular forms by the time of the ON texts.
+    */
+    case (STRONG_3RD_CLASS | STRONG_7_2B_CLASS, _,            FixVAugmentation(augmentedStemStr)) => augmentedStemStr
+    case (STRONG_5TH_CLASS,                     PRESENT_STEM, FixJAugmentation(augmentedStemStr)) => augmentedStemStr
+
+    case _ => stemStr
   }
 
   private def uninflect(strRepr: String, vt: VerbType): String = {

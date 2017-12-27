@@ -283,7 +283,7 @@ object StemTransform {
         val Syllables(sy :: _) = stemStr
 
         sy.nucleus match {
-          case "a" | "ǫ" | "i" | "y" => Some(stemStr + "v")
+          case "a" | "ǫ" | "i" | "y" | "e" => Some(stemStr + "v")
           case _ => None
         }
 

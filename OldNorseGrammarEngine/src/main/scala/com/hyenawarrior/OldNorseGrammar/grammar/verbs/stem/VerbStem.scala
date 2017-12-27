@@ -157,48 +157,10 @@ object StrongVerbStem {
 	def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, appliedUmlaut: Option[Umlaut] = None)
   : StrongVerbStem = {
 
-    val augmentedStem = augment(stemStr, verbClass, stemType, appliedUmlaut)
-    val (optTransformation, normalizedStemStr) = normalize(augmentedStem, verbClass, stemType)
+    val (optTransformation, normalizedStemStr) = normalize(stemStr, verbClass, stemType)
     validateAblautGrade(verbClass, stemType, normalizedStemStr)
 
     StrongVerbStem(normalizedStemStr, verbClass, stemType, optTransformation)
-  }
-
-  private object InverseBreaking { def unapply(arg: String): Option[String] = Breaking(arg) }
-
-  /**
-    * verb-form -> non-inflected, non-augmented stem -> denormalized stem
-    */
-  private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, appliedUmlaut: Option[Umlaut]): String
-    = (verbClass, stemType, stemStr, appliedUmlaut) match {
-
-      // helpr <-[I-umlaut + SVD]-- hjalp- --[braking]-> help-
-      // the effect of the next line is inverted back during the stem normalization, but the normalization also add a flag
-      //  to indicate that this stem does have breaking - so, yes, it's redundant but it's important to have the flag
-    case (STRONG_3RD_CLASS, PRESENT_STEM, InverseBreaking(s), Some(Explicit_I_Umlaut)) => s
-
-      /* do not fix the augmentation in any other cases:
-        FIN    PST-STEM    PRS-STEM
-        lá  -> lág-     -> liggj-
-        bjó -> bjó-     -> bú-
-        hjó -> hjóggv-  -> haggv-
-
-        FIN        denomarlized stem  umlaut
-        spring  -> spring-            none
-        heggr   -> haggv-             I-umlaut faded the effect of U-umlaut
-        syngr   -> singv-             U-umlaut
-
-        West Germanic gemination
-          * does lágum (past) have only one 'g', because past stem is not J-augmented?
-          *
-          * https://lrc.la.utexas.edu/eieol/norol/70
-          * The augment does not appear in the past forms; the past stems ended in a single consonant,
-           * which disappeared in the singular forms by the time of the ON texts.
-      */
-    case (STRONG_3RD_CLASS | STRONG_7_2B_CLASS, _, FixVAugmentation(augmentedStemStr), Some(_)) => augmentedStemStr
-    case (STRONG_5TH_CLASS, PRESENT_STEM, FixJAugmentation(augmentedStemStr), Some(Explicit_I_Umlaut)) => augmentedStemStr
-
-    case _ => stemStr
   }
 
   private def normalize(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): (TransformationMode, String)
