@@ -60,11 +60,11 @@ class TestTransformation {
 	@Test
 	def testGemination(): Unit = {
 
-		assertEquals("nýtt", 	Gemination("ný", "t"))
-		assertEquals("fárri", Gemination("fá", "ri"))
+		assertEquals("ný" -> "tt", 	Gemination("ný", "t"))
+		assertEquals("fá" -> "rri", Gemination("fá", "ri"))
 
-		assertEquals("létum", Gemination("lét", "um"))
-		assertEquals("Cás", 	Gemination("Cá", "s"))
+		assertEquals("lét" -> "um", Gemination("lét", "um"))
+		assertEquals("Cá" -> "s", 	Gemination("Cá", "s"))
 	}
 
   @Test

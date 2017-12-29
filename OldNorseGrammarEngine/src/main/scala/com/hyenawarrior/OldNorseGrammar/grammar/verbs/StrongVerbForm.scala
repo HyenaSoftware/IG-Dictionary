@@ -4,7 +4,7 @@ import java.lang.String.format
 
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, Gemination, SemivowelDeletion, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{Breaking, FixJAugmentation, FixVAugmentation}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.toNonFiniteVerbType
@@ -194,15 +194,16 @@ object StrongVerbForm {
     val isVAugmented = stemStr endsWith "v"
     val useUUmlaut = (U_Umlaut canTransform inflection) || isVAugmented
 
-    val transforms: Seq[String => String] = Seq(
-      s => applyNonProductiveRules(verbType)(s).orElse(if(useUUmlaut) U_Umlaut(s) else None).getOrElse(s)
-      , Gemination(_, inflection)
-      , SemivowelDeletion(_)
-      , VowelDeletion(_)
-      , ConsonantAssimilation(_)
-    )
+    val inflectedStem = Some((stemStr, inflection))
+      .map { case (s, infl) => applyNonProductiveRules(verbType)(s).orElse(if (useUUmlaut) U_Umlaut(s) else None).getOrElse(s) -> infl }
+      .map { case (s, infl) => Gemination(s, infl) }
+      .map { case (s, infl) => s + infl }
+      .map(SemivowelDeletion(_))
+      .map(VowelDeletion(_))
+      .map(ConsonantAssimilation(_))
+      .get
 
-    transforms.foldLeft(stemStr)((s, f) => f(s))
+    inflectedStem
   }
 
   private def uninflect(verbStrRepr: String, verbClass: StrongVerbClassEnum, vt: VerbType): StrongVerbStem = {
@@ -231,7 +232,7 @@ object StrongVerbForm {
       case (_,              _,             U_Umlaut(createStemByBackMutation(stem))) => stem
 
       case (_,              _,             createStem(stem)) => stem
-		}
+    }
   }
 
   /**
