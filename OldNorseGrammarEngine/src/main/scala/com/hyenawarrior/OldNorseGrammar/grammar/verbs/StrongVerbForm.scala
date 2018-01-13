@@ -193,11 +193,19 @@ object StrongVerbForm {
 
     val isVAugmented = stemStr endsWith "v"
     val useUUmlaut = (U_Umlaut canTransform inflection) || isVAugmented
+    val isPastSingular = verbType match {
+      case (INDICATIVE, Some(PAST), Some(Pronoun(SINGULAR, _))) => true
+      case _ => false
+    }
 
     val inflectedStem = Some((stemStr, inflection))
       .map { case (s, infl) => applyNonProductiveRules(verbType)(s).orElse(if (useUUmlaut) U_Umlaut(s) else None).getOrElse(s) -> infl }
-      .map { case (s, infl) => Gemination(s, infl) }
-      .map { case (s, infl) => s + infl }
+      .map { case (s, infl) => VowelLengthening(s) -> infl}
+      .map {
+        case (s, infl) if isPastSingular => Gemination(s, infl)
+        case a => a
+      }
+      .map { case (s, infl) => StressShift(s + infl, infl.length)._1 }
       .map(SemivowelDeletion(_))
       .map(VowelDeletion(_))
       .map(ConsonantAssimilation(_))
@@ -232,6 +240,8 @@ object StrongVerbForm {
       case (_,              _,             U_Umlaut(createStemByBackMutation(stem))) => stem
 
       case (_,              _,             createStem(stem)) => stem
+
+      case (_,              _,             VowelLengthening(createStem(stem))) => stem
     }
   }
 
@@ -274,15 +284,14 @@ object StrongVerbForm {
 
     val inflection = inflectionFor(vt, strRepr)
 
-    if (!strRepr.endsWith(inflection)) {
+    (strRepr, inflection.length) match {
 
-      val safeToIgnore = (strRepr endsWith "á") && inflection == "a"
+      case _ if strRepr endsWith inflection => strRepr dropRight inflection.length
+      case StressShift(prevStrRepr, `inflection`) => prevStrRepr dropRight inflection.length
 
-      if(!safeToIgnore)
-        throw new RuntimeException(format("Word '%s' doesn't end with -%s", strRepr, inflection))
+        // fá -> fá + a
+      case (_, 1) if strRepr endsWith "á" => strRepr
     }
-
-    strRepr stripSuffix inflection
   }
 
   private def inflectionFor(verbType: VerbType, stemOrVerbStr: String): String = verbType match {
