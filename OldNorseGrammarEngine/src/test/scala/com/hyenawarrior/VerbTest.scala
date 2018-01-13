@@ -380,6 +380,29 @@ class VerbTest
   }
 
   @Test
+  def testClass5thVerbStressShift(): Unit = {
+
+    val inf = (VerbModeEnum.INFINITIVE, None, None)
+
+    val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "sjá"))
+
+    assertEquals("sé",  verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("sér", verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    // [sé + um] -> [sj + óum] -> [sj + áum] -> sjáum --(vowel-deletion)-> sjám
+    // [sé + um] ---> [sj + áum] -> sjáa --(vowel-deletion)-> sjá
+    //assertEquals("sjám", verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+
+    assertEquals("sátt", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+    assertEquals("sá", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("sám", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    // 'sá' or 'sáu'
+    val pastP3 = verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_3)).strForm
+    assertTrue(pastP3 == "sáu" || pastP3 == "sá")
+
+    assertEquals("sénn",  verb.verbForms(PARTICIPLE, Some(PAST),    None).strForm)
+  }
+
+  @Test
   def testClass6VerbInflection() {
 
     val svStemPR = StrongVerbStem("tak", STRONG_6TH_CLASS, PRESENT_STEM)
@@ -451,8 +474,9 @@ class VerbTest
 
     val srcForm = (INFINITIVE, None, None)
     val irregularPastPlural = (INDICATIVE, Some(PAST), Some(Pronoun.PL_3))
+    val irregularPastSingular = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
 
-    val verb = StrongVerb(STRONG_7_2B_CLASS, Map(srcForm -> "búa", irregularPastPlural -> "bjuggu"))
+    val verb = StrongVerb(STRONG_7_2B_CLASS, Map(srcForm -> "búa", irregularPastPlural -> "bjuggu", irregularPastSingular -> "bjó"))
 
     // past-plural stem has preference over the present stem for past-single stem
     assertEquals("bjó", 	  verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
@@ -476,7 +500,8 @@ class VerbTest
 
     assertEquals("búa", 	  verb.verbForms(INFINITIVE, None, None).strForm)
     assertEquals("bý", 	    verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("býrr", 	  verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("býr", 	  verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("bjótt",   verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
     assertEquals("bjuggum", verb.verbForms(INDICATIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
     assertEquals("búinn",   verb.verbForms(PARTICIPLE, Some(PAST), None).strForm)
   }
@@ -507,8 +532,10 @@ class VerbTest
 
     val presentS3 = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3))
     val pastS3    = (INDICATIVE, Some(PAST), Some(Pronoun.SG_3))
+    val pastP3    = (INDICATIVE, Some(PAST), Some(Pronoun.PL_3))
+    val perf      = (PARTICIPLE, Some(PAST), None)
 
-    val verb = StrongVerb(STRONG_7_2B_CLASS, Map(presentS3 -> "heggr", pastS3 -> "hjó"))
+    val verb = StrongVerb(STRONG_7_2B_CLASS, Map(presentS3 -> "heggr", pastS3 -> "hjó", pastP3 -> "hjuggu", perf -> "hǫggvinn"))
 
     assertEquals("hǫggva",  verb.verbForms(INFINITIVE, None, None).strForm)
     assertEquals("hegg",    verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)

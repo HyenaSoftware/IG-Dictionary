@@ -1,5 +1,6 @@
 package com.hyenawarrior
 
+import com.hyenawarrior.OldNorseGrammar.grammar.SubjVerbTest
 import com.hyenawarrior.OldNorseGrammar.grammar.morphology.{TestTransformation, UmlautTest, VerbStemTest}
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.TestVowels
 import org.junit.runner.RunWith
@@ -18,6 +19,7 @@ import org.junit.runners.Suite
   classOf[TestVowels],
 	classOf[VerbStemTest],
 	classOf[VerbTest],
+	classOf[SubjVerbTest],
 	classOf[UmlautTest]
 ))
 class TestSuite
