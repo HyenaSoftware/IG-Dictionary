@@ -27,7 +27,7 @@ object Vowel {
 
   private val raising = Map('e' -> 'i', 'o' -> 'u')
 
-  private val lengthening = Map('a' -> 'á')
+  private val lengthening = Map('a' -> 'á', 'e' -> 'é', 'u' -> 'ú')
   private val shortening = lengthening.map { case (k, v) => v -> k }
 
   val LOW = 0x0   // also means it's open

@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, Gemination, SemivowelDeletion, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{StressShift, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{DevoiceAfterLateral, JAugment, NasalAssimilation, Raising}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, StemTransform}
 import org.junit.Assert._
@@ -121,6 +121,7 @@ class TestTransformation {
   def testVowelDeletion(): Unit = {
 
     assertEquals("fá", VowelDeletion("fáa"))
+		assertEquals("ám", VowelDeletion("áum"))
   }
 
   @Test
@@ -161,5 +162,29 @@ class TestTransformation {
 
     val JAugment(str) = "liggj"
     assertEquals("leg", str)
+	}
+
+  @Test
+	def testStressShift(): Unit = {
+
+		assertEquals("fjár" -> "ár", StressShift("féar", 2))
+		assertEquals("sjúm" -> "úm", StressShift("séum", 2))
+    assertEquals("sjá"  -> "á",  StressShift("séa", 1))
+	}
+
+	@Test
+	def testStressShiftInv(): Unit = {
+
+    assertEquals(Some("féar" -> "ar"), StressShift unapply "fjár" -> 2)
+
+    assertEquals(Some("séum" -> "um"), StressShift unapply "sjúm" -> 2)
+
+    assertEquals(Some("séa" -> "a"), StressShift unapply "sjá" -> 1)
+	}
+
+	@Test
+	def testNoStressShift(): Unit = {
+
+		assertEquals(None, StressShift unapply "fá" -> 1)
 	}
 }
