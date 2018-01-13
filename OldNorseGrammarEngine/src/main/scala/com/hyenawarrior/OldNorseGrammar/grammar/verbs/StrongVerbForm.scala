@@ -189,7 +189,7 @@ object StrongVerbForm {
 
   private def inflect(verbType: VerbType, stemStr: String): String = {
 
-    val inflection = adjustedInflectionFor(verbType, stemStr)
+    val inflection = inflectionFor(verbType, stemStr)
 
     val isVAugmented = stemStr endsWith "v"
     val useUUmlaut = (U_Umlaut canTransform inflection) || isVAugmented
@@ -272,7 +272,7 @@ object StrongVerbForm {
 
   private def uninflect(strRepr: String, vt: VerbType): String = {
 
-    val inflection = adjustedInflectionFor(vt, strRepr)
+    val inflection = inflectionFor(vt, strRepr)
 
     if (!strRepr.endsWith(inflection)) {
 
@@ -285,35 +285,26 @@ object StrongVerbForm {
     strRepr stripSuffix inflection
   }
 
-  private def adjustedInflectionFor(verbType: VerbType, stemOrVerbStr: String): String = verbType match {
+  private def inflectionFor(verbType: VerbType, stemOrVerbStr: String): String = verbType match {
 
-    case (_, Some(PAST), Some(SG_2)) if stemOrVerbStr endsWith "t" => "st"
-    case _ => inflectionFor(verbType)
-  }
-
-  private def inflectionFor(verbType: VerbType): String = verbType match {
-
-    case (mood: FinitiveMood, Some(PRESENT), Some(pronoun)) => inflectionForPresent(pronoun)
-    case (mood: FinitiveMood, Some(PAST),Some(pronoun)) => inflectionForPreterite(pronoun)
+    case (INDICATIVE | SUBJUNCTIVE, Some(tense), Some(pronoun)) => inflectionForFinitive(tense, pronoun, stemOrVerbStr)
     case (mood: NonFinitiveMood, optTense, None) => inflectionFor(optTense, mood)
   }
 
-	private def inflectionForPresent(pronoun: Pronoun) = pronoun match {
+	private def inflectionForFinitive(tense: VerbTenseEnum, pronoun: Pronoun, stemOrVerbStr: String) = (tense, pronoun) match {
 
-		case SG_1 => ""
-		case SG_2 | SG_3 => "r"
-		case PL_1 => "um"
-		case PL_2 => "ið"
-		case PL_3 => "a"
-	}
+		case (PRESENT, SG_1) => ""
+		case (PRESENT, SG_2 | SG_3) => "r"
+		case (PRESENT, PL_1) => "um"
+		case (PRESENT, PL_2) => "ið"
+		case (PRESENT, PL_3) => "a"
 
-	private def inflectionForPreterite(pronoun: Pronoun) = pronoun match {
-
-		case SG_1 | SG_3 => ""
-		case SG_2 => "t"
-		case PL_1 => "um"
-		case PL_2 => "uð"
-		case PL_3 => "u"
+		case (PAST, SG_1 | SG_3) => ""
+		case (PAST, SG_2) if stemOrVerbStr endsWith "t" => "st"
+		case (PAST, SG_2)  => "t"
+		case (PAST, PL_1) => "um"
+		case (PAST, PL_2) => "uð"
+		case (PAST, PL_3) => "u"
 	}
 
 	private def inflectionFor(optTense: Option[VerbTenseEnum], mood: NonFinitiveMood): String = (optTense, mood) match {
