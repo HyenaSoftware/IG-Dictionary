@@ -217,7 +217,7 @@ object StrongVerbForm {
   private def uninflect(verbStrRepr: String, verbClass: StrongVerbClassEnum, vt: VerbType): StrongVerbStem = {
 
     val (mood, optTense, optPronoun) = vt
-    val stemType: EnumVerbStem = stemFrom(optTense, optPronoun.map(_.number), mood)
+    val stemType: EnumVerbStem = stemFrom(vt)
 
     val ConsonantAssimilation(restoredVerbStrRepr) = verbStrRepr
 

@@ -47,11 +47,10 @@ object StrongVerb {
     // exclude the base form definition and the overrides
     val missingDeclensions = VerbContext.ALL_VERB_FORMS.filterNot(givenVerbForms.contains)
 
-    val missingVerbForms = missingDeclensions
-      .map {
-        case vt@(mood, optTense, optPronoun) =>
-          val expectedStemType = verbs.stemFrom(optTense, optPronoun.map(_.number), mood)
-          vt -> StrongVerbForm.verbFrom(stems(expectedStemType), vt)
+    val missingVerbForms = missingDeclensions.map { vt =>
+
+        val expectedStemType = verbs.stemFrom(vt)
+        vt -> StrongVerbForm.verbFrom(stems(expectedStemType), vt)
       }
       .toMap
 
@@ -79,7 +78,7 @@ object StrongVerb {
 			case (vt, stem) =>
 				// do a stem -> string -> conversion to force validate the inputs
 				//	TODO: is this double conversion really necessary?
-				val stemType = verbs.stemFrom(vt._2, vt._3.map(_.number), vt._1)
+				val stemType = verbs.stemFrom(vt)
 				StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, stemType)
 		}
 			.groupBy ( _.getStemType )

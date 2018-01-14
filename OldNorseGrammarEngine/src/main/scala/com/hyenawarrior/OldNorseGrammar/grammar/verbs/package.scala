@@ -28,19 +28,18 @@ package object verbs
 		case (PAST, PLURAL)		=> PRETERITE_PLURAL_STEM
 	}
 
-	// FIXME: refactor it to use the regular 'VerbType' type, instead of this
-	def stemFrom(optTense: Option[VerbTenseEnum], optNumber: Option[GNumber], mood: VerbModeEnum): EnumVerbStem
-		= (optTense, optNumber, mood) match {
+  // FIXME: refactor it to use the regular 'VerbType' type, instead of this
+  def stemFrom(verbType: VerbType): EnumVerbStem = verbType match {
 
-		case (None,						None,		INFINITIVE) => PRESENT_STEM
-		case (Some(PRESENT), 	Some(_),				INDICATIVE | SUBJUNCTIVE) => PRESENT_STEM
-		case (Some(PAST), 		Some(SINGULAR),	INDICATIVE | SUBJUNCTIVE) => PRETERITE_SINGULAR_STEM
-		case (Some(PAST), 		Some(PLURAL),		INDICATIVE | SUBJUNCTIVE) => PRETERITE_PLURAL_STEM
-		case (Some(PRESENT), 	None,		PARTICIPLE) => PRESENT_STEM
-		case (Some(PAST), 		None,		PARTICIPLE) => PERFECT_STEM
-		case (Some(PRESENT),	_,			IMPERATIVE) => PRESENT_STEM
-		case _ => ???
-	}
+    case (INFINITIVE,               None,          None   ) => PRESENT_STEM
+    case (INDICATIVE | SUBJUNCTIVE, Some(PRESENT), Some(_)) => PRESENT_STEM
+    case (INDICATIVE | SUBJUNCTIVE, Some(PAST),    Some(Pronoun(SINGULAR, _))) => PRETERITE_SINGULAR_STEM
+    case (INDICATIVE | SUBJUNCTIVE, Some(PAST),    Some(Pronoun(PLURAL,   _))) => PRETERITE_PLURAL_STEM
+    case (PARTICIPLE,               Some(PRESENT), None) => PRESENT_STEM
+    case (PARTICIPLE,               Some(PAST),    None) => PERFECT_STEM
+    case (IMPERATIVE,               Some(PRESENT), _   ) => PRESENT_STEM
+    case _ => ???
+  }
 
 	def stemToTense(stem: EnumVerbStem): (VerbTenseEnum, Option[GNumber]) = stem match	{
 
