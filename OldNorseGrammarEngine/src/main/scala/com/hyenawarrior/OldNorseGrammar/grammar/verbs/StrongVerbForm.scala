@@ -233,15 +233,14 @@ object StrongVerbForm {
 
 
     // remove non-productive changes
-    (optPronoun.map(_.number), optTense, stemStrAugFixed) match {
+    (mood, optPronoun, optTense, stemStrAugFixed) match {
 
-      case (Some(SINGULAR), Some(PRESENT), Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
+      case (INDICATIVE,   Some(Pronoun(SINGULAR, _)), Some(PRESENT), Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
+      case (SUBJUNCTIVE,  Some(_),                    Some(PAST),    Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
 
-      case (_,              _,             U_Umlaut(createStemByBackMutation(stem))) => stem
-
-      case (_,              _,             createStem(stem)) => stem
-
-      case (_,              _,             VowelLengthening(createStem(stem))) => stem
+      case (_, _, _, U_Umlaut(createStemByBackMutation(stem))) => stem
+      case (_, _, _, createStem(stem)) => stem
+      case (_, _, _, VowelLengthening(createStem(stem))) => stem
     }
   }
 
@@ -296,7 +295,8 @@ object StrongVerbForm {
 
   private def inflectionFor(verbType: VerbType, stemOrVerbStr: String): String = verbType match {
 
-    case (INDICATIVE | SUBJUNCTIVE, Some(tense), Some(pronoun)) => inflectionForFinitive(tense, pronoun, stemOrVerbStr)
+    case (INDICATIVE, Some(tense), Some(pronoun)) => inflectionForFinitive(tense, pronoun, stemOrVerbStr)
+    case (SUBJUNCTIVE, Some(tense), Some(pronoun)) => inflectionForSubj(tense, pronoun, stemOrVerbStr)
     case (mood: NonFinitiveMood, optTense, None) => inflectionFor(optTense, mood)
   }
 
@@ -316,6 +316,23 @@ object StrongVerbForm {
 		case (PAST, PL_3) => "u"
 	}
 
+  private def inflectionForSubj(tense: VerbTenseEnum, pronoun: Pronoun, stemOrVerbStr: String) = (tense, pronoun) match {
+
+    case (PRESENT, SG_1) => "a"
+    case (PRESENT, SG_2) => "ir"
+    case (PRESENT, SG_3) => "i"
+    case (PRESENT, PL_1) => "im"
+    case (PRESENT, PL_2) => "ið"
+    case (PRESENT, PL_3) => "i"
+
+    case (PAST, SG_1) => "a"
+    case (PAST, SG_2)  => "ir"
+    case (PAST, SG_3)  => "i"
+    case (PAST, PL_1) => "im"
+    case (PAST, PL_2) => "ið"
+    case (PAST, PL_3) => "i"
+  }
+
 	private def inflectionFor(optTense: Option[VerbTenseEnum], mood: NonFinitiveMood): String = (optTense, mood) match {
 
 		case (Some(PAST),			PARTICIPLE) => "inn"	// adjectival declension
@@ -325,7 +342,10 @@ object StrongVerbForm {
 
   private def applyNonProductiveRules(verbType: VerbType)(str: String): Option[String] = verbType match {
 
-    case (INDICATIVE, Some(PRESENT), Some(Pronoun(SINGULAR, _))) => Explicit_I_Umlaut(str)
+    case (INDICATIVE,  Some(PRESENT), Some(Pronoun(SINGULAR, _))) => Explicit_I_Umlaut(str)
+
+    case (SUBJUNCTIVE, Some(PAST),    Some(_)) => Explicit_I_Umlaut(str)
+
     // FIXME: apply U-umlaut here, to avoid interference with I-umlaut
     case _ => None
   }

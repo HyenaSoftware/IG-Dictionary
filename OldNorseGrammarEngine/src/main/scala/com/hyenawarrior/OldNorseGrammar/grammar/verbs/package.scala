@@ -33,9 +33,10 @@ package object verbs
 
     case (INFINITIVE,               None,          None   ) => PRESENT_STEM
     case (INDICATIVE | SUBJUNCTIVE, Some(PRESENT), Some(_)) => PRESENT_STEM
-    case (INDICATIVE | SUBJUNCTIVE, Some(PAST),    Some(Pronoun(SINGULAR, _))) => PRETERITE_SINGULAR_STEM
-    case (INDICATIVE | SUBJUNCTIVE, Some(PAST),    Some(Pronoun(PLURAL,   _))) => PRETERITE_PLURAL_STEM
-    case (PARTICIPLE,               Some(PRESENT), None) => PRESENT_STEM
+    case (INDICATIVE,  Some(PAST), Some(Pronoun(SINGULAR, _))) => PRETERITE_SINGULAR_STEM
+    case (INDICATIVE,  Some(PAST), Some(Pronoun(PLURAL,   _))) => PRETERITE_PLURAL_STEM
+		case (SUBJUNCTIVE, Some(PAST), Some(Pronoun(_,        _))) => PRETERITE_PLURAL_STEM
+		case (PARTICIPLE,               Some(PRESENT), None) => PRESENT_STEM
     case (PARTICIPLE,               Some(PAST),    None) => PERFECT_STEM
     case (IMPERATIVE,               Some(PRESENT), _   ) => PRESENT_STEM
     case _ => ???
