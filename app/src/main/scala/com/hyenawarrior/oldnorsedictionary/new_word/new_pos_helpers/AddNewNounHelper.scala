@@ -43,7 +43,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
   var latestNounData: Map[NounStemClassEnum, Map[NounForm, String]] = Map()
 
 	val NounDeclensionAdapter = new NounDeclensionAdapter(activity)
-	val LL_DECL_LIST = rootView.findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
+	val LL_DECL_LIST = rootView.findViewById(R.id.llNounDeclensionList).asInstanceOf[LinearLayout]
 
 	//
 	override def activate(): Unit =
@@ -81,8 +81,6 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		fillNounForms()
 	}
-
-	private def makeFormOverrideTextListener(view: View) = new EditTextTypeListener(onTextFormOverride(view))
 
 	override def createOverrideFormSetter(isPrimary: Boolean): View =
 	{

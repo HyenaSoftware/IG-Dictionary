@@ -27,10 +27,7 @@ object AddNewWordActivity extends Fragment
 		val addNewNounHelper = new AddNewNounHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
 		val addNewVerbHelper = new AddNewVerbHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
 
-		//val NounDeclensionAdapter = new NounDeclensionAdapter(outer.getActivity)
-
 		val POS_TYPES = Vector(addNewNounHelper, addNewVerbHelper, AddNewNullHelper)
-		//val LL_DECL_LIST = rootView.findViewById(R.id.llDeclensionList).asInstanceOf[LinearLayout]
 	}
 
 	var postInitContext: LazyPostInit = null
@@ -49,9 +46,6 @@ object AddNewWordActivity extends Fragment
 		rootView
   }
 
-	//
-	private def makeFormOverrideTextListener(view: View) = new EditTextTypeListener(onTextFormOverride(view))
-
 	// forwarders
 	def onRemoveOverride(view: View) = view.getTag match
 	{
@@ -61,8 +55,6 @@ object AddNewWordActivity extends Fragment
 
 		case _ => ()
 	}
-
-	private def onTextFormOverride(overridingView: View)(str: String): Unit = currentPosHelper.onTextFormOverride(overridingView)(str)
 
 	// router
 	private def onPosTypeSelected(newPosType: AddNewPosHelper) {
