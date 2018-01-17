@@ -85,6 +85,27 @@
                     android:layout_height="wrap_content" android:id="@+id/llVerbDeclensions"
                     android:visibility="gone"
                     android:layout_marginBottom="3dp">
+                <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:background="#fffcbb"
+                        android:layout_marginBottom="3dp" android:orientation="horizontal"
+                        android:id="@+id/rbgVerbMood">
+                    <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Indicative"
+                            android:id="@+id/rbInd" android:layout_weight="1" android:checked="true"/>
+                    <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Subjunctive"
+                            android:id="@+id/rbSubj" android:layout_weight="1"/>
+                </RadioGroup>
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" android:id="@+id/llVerbDeclensionList">
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -3,7 +3,7 @@ package com.hyenawarrior.oldnorsedictionary
 import android.view.View
 import android.widget.TextView
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{FinitiveMood, StrongVerb}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
@@ -36,7 +36,7 @@ package object modelview {
     (PARTICIPLE, Some(PAST), None) -> R.id.tv_addword_verb_PastPart
   )
 
-  def setDeclensionsTo(sv: StrongVerb, targetView: View): Unit = sv match {
+  def setDeclensionsTo(sv: StrongVerb, targetView: View, mood: FinitiveMood): Unit = sv match {
     case StrongVerb(cl, ablautGrade, verbForms) =>
 
       val stemName = targetView.findViewById(R.id.tv_addword_verb_stemName).asInstanceOf[TextView]
@@ -53,7 +53,13 @@ package object modelview {
 
       for((vt, id) <- VERB_TEXTVIEWS) {
 
-        val f = verbForms(vt)
+        val wt = vt match {
+
+          case (INDICATIVE, oT, oP) => (mood, oT, oP)
+          case a => a
+        }
+
+        val f = verbForms(wt)
         val tv = targetView.findViewById(id).asInstanceOf[TextView]
         tv.setText(f.strForm.replace("ǫ", "ö"))
       }

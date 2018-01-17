@@ -3,7 +3,7 @@ package com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers
 import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
-import android.widget.{EditText, LinearLayout, Spinner, TextView}
+import android.widget._
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
@@ -51,6 +51,10 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 	// panel for showing the verb forms
 	val LL_DECL_LIST = rootView.findViewById(R.id.llVerbDeclensions).asInstanceOf[LinearLayout]
+
+	val RBG_MOOD = rootView.findViewById(R.id.rbgVerbMood).asInstanceOf[RadioGroup]
+	RBG_MOOD findViewById R.id.rbInd setOnClickListener MoodSelector
+	RBG_MOOD findViewById R.id.rbSubj setOnClickListener MoodSelector
 
 	// verb class spinner in the UI
 	val LOAD_STEM_CLASS_ENUMS: Vector[List[VerbClassEnum]] = activity.getResources
@@ -214,6 +218,17 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		}
 	}
 
+  object MoodSelector extends View.OnClickListener {
+
+    override def onClick(v: View): Unit = VerbDeclensionAdapter setFinitiveMood moodOf(v)
+
+    private def moodOf(v: View): FinitiveMood = v.getId match {
+
+      case R.id.rbInd => INDICATIVE
+      case R.id.rbSubj => SUBJUNCTIVE
+    }
+  }
+
 	override def onTextFormOverride(rowView: View)(str: String): Unit = {
 
 		val optStr = if(str.isEmpty) None else Some(str.replace("ö", "ǫ"))
@@ -278,11 +293,13 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		VerbDeclensionAdapter.resetItems(listOfClassesAndVerbForms)
 
-		LL_DECL_LIST.removeAllViews()
+		val declensionList = LL_DECL_LIST.findViewById(R.id.llVerbDeclensionList).asInstanceOf[LinearLayout]
+
+		declensionList.removeAllViews()
 
 		Range(0, VerbDeclensionAdapter.getCount)
-			.map(i => VerbDeclensionAdapter.getView(i, null, LL_DECL_LIST))
-			.foreach(v => LL_DECL_LIST.addView(v))
+			.map(i => VerbDeclensionAdapter.getView(i, null, declensionList))
+			.foreach(v => declensionList.addView(v))
 	}
 
 	override def getWordFormsBy(view: View): WordData = {
