@@ -85,10 +85,22 @@ class VerbTest
 
     val verb = StrongVerb(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "skaut"))
 
-		val verbform = verb.verbForms((INFINITIVE, None, None))
+		assertEquals("skjóta", verb.verbForms(INFINITIVE, None, None).strForm)
 
-		assertEquals("skjóta", verbform.strForm)
+    assertEquals("skýt",   verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
 	}
+
+  @Test
+  def testClass2ndChangeToJoForPresentInverse(): Unit = {
+
+    val srcType: VerbType = (INDICATIVE, Some(PRESENT), Some(Pronoun.SG_3))
+
+    val verb = StrongVerb(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "skýtr"))
+
+    assertEquals("skjóta", verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+
+    assertEquals("skýt",   verb.verbForms(INDICATIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+  }
 
 	/**
 			stem		Past S2

@@ -6,6 +6,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{Breaking, FixJAugmentation, FixVAugmentation}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.specialtransforms.StrongVerbSecondClassIUmlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.toNonFiniteVerbType
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
@@ -177,17 +178,17 @@ object StrongVerbForm {
   def verbFrom(stem: StrongVerbStem, verbType: VerbType): StrongVerbForm = verbType match {
 
 		case (mood: FinitiveMood, Some(tense), Some(pronoun)) =>
-      val str: String = inflect(verbType, stem.stringForm())
+      val str: String = inflect(verbType, stem.stringForm(), stem.verbClass)
 
       FinitiveStrongVerbForm(str, stem, pronoun, tense, mood)
 
     case (mood: NonFinitiveMood, optTense, None) =>
-      val strRepr = inflect(verbType, stem.stringForm())
+      val strRepr = inflect(verbType, stem.stringForm(), stem.verbClass)
 
       NonFinitiveStrongVerbForm(strRepr, stem, toNonFiniteVerbType(optTense, mood))
 	}
 
-  private def inflect(verbType: VerbType, stemStr: String): String = {
+  private def inflect(verbType: VerbType, stemStr: String, verbClass: VerbClassEnum): String = {
 
     val inflection = inflectionFor(verbType, stemStr)
 
@@ -199,7 +200,11 @@ object StrongVerbForm {
     }
 
     val inflectedStem = Some((stemStr, inflection))
-      .map { case (s, infl) => applyNonProductiveRules(verbType)(s).orElse(if (useUUmlaut) U_Umlaut(s) else None).getOrElse(s) -> infl }
+      .map {
+        case (s, infl) => applyNonProductiveRules(verbType, verbClass)(s)
+          .orElse(if (useUUmlaut) U_Umlaut(s) else None)
+          .getOrElse(s) -> infl
+      }
       .map { case (s, infl) => VowelLengthening(s) -> infl}
       .map {
         case (s, infl) if isPastSingular => Gemination(s, infl)
@@ -231,12 +236,15 @@ object StrongVerbForm {
     val createStemByBackMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(U_Umlaut)))
     val createStem              = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, None))
 
-
     // remove non-productive changes
     (mood, optPronoun, optTense, stemStrAugFixed) match {
 
-      case (INDICATIVE,   Some(Pronoun(SINGULAR, _)), Some(PRESENT), Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
-      case (SUBJUNCTIVE,  Some(_),                    Some(PAST),    Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
+      case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _))
+        , StrongVerbSecondClassIUmlaut(createStemByFrontMutation(stem))) if verbClass == STRONG_2ND_CLASS => stem
+      case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _))
+        , Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
+      case (SUBJUNCTIVE,  Some(PAST),    Some(_)
+        , Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
 
       case (_, _, _, U_Umlaut(createStemByBackMutation(stem))) => stem
       case (_, _, _, createStem(stem)) => stem
@@ -340,9 +348,19 @@ object StrongVerbForm {
 		case (None,			INFINITIVE) => "a"
 	}
 
-  private def applyNonProductiveRules(verbType: VerbType)(str: String): Option[String] = verbType match {
+  private def applyNonProductiveRules(verbType: VerbType, verbClass: VerbClassEnum)(str: String): Option[String]
+    = verbType match {
 
-    case (INDICATIVE,  Some(PRESENT), Some(Pronoun(SINGULAR, _))) => Explicit_I_Umlaut(str)
+    case (INDICATIVE,  Some(PRESENT), Some(Pronoun(SINGULAR, _))) =>
+
+      if(verbClass == STRONG_2ND_CLASS) {
+
+        StrongVerbSecondClassIUmlaut(str)
+
+      } else {
+
+        Explicit_I_Umlaut(str)
+      }
 
     case (SUBJUNCTIVE, Some(PAST),    Some(_)) => Explicit_I_Umlaut(str)
 
