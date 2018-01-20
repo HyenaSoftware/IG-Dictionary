@@ -105,8 +105,23 @@ class VerbTest
 
 		assertEquals("skjóta", verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
 
-    assertEquals("skýt",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-	}
+    assertEquals("skýt",    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("skýtr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_2)).strForm)
+    assertEquals("skýtr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+
+    assertEquals("skjótum", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("skjótið", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_2)).strForm)
+    assertEquals("skjóta",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+
+    assertEquals("skaut",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
+    assertEquals("skauzt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+    assertEquals("skaut",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+
+    assertEquals("skutum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("skutuð",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
+    assertEquals("skutu",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+
+  }
 
   @Test
   def testClass2ndChangeToJoForPresentInverse(): Unit = {
