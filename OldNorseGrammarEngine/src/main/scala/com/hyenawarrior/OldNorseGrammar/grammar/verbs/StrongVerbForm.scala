@@ -237,7 +237,7 @@ object StrongVerbForm {
     val createStem              = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, None))
 
     // remove non-productive changes
-    (mood, optPronoun, optTense, stemStrAugFixed) match {
+    (mood, optTense, optPronoun, stemStrAugFixed) match {
 
       case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _))
         , StrongVerbSecondClassIUmlaut(createStemByFrontMutation(stem))) if verbClass == STRONG_2ND_CLASS => stem
