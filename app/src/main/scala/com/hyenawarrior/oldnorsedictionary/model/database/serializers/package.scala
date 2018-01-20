@@ -37,6 +37,8 @@ package object serializers {
 
     override val typeId: Int = 2
 
+    private val VERB_FORM_KEY_SIZE = 4
+
     override def marshall(obj: StrongVerb): List[Any] = {
 
       val vceId = VerbClassEnum idOf obj.verbClass
@@ -53,11 +55,11 @@ package object serializers {
 
       val verbFormsAsListKeys: List[Int] = fixOrderedVerbForms.map(_._1).flatMap {
 
-        case (md, ot, op) =>
+        case (md, voice, ot, op) =>
+          val v = VerbVoice idOf voice
           val t = ot.map(VerbTenseEnum.idOf(_) + 1).getOrElse(0)
           val p = op.map(Pronoun.idOf(_) + 1).getOrElse(0)
-          List(VerbModeEnum idOf md, t, p)
-
+          List(VerbModeEnum idOf md, v, t, p)
       }.toList
 
       val verbFormsAsListValues: List[String] = fixOrderedVerbForms.map(_._2).flatMap {
@@ -87,18 +89,19 @@ package object serializers {
         .toMap
 
       val VERB_FORMS_KEYS_OFFSET = ABLAUT_MAP_KEYS_OFFSET + 2 * ablautMapSize
-      val VERB_FORMS_VALS_OFFSET = VERB_FORMS_KEYS_OFFSET + 3 * verbFormsCount
-      val verbFormKeys: Seq[VerbType] = (VERB_FORMS_KEYS_OFFSET until VERB_FORMS_VALS_OFFSET by 3)
+      val VERB_FORMS_VALS_OFFSET = VERB_FORMS_KEYS_OFFSET + VERB_FORM_KEY_SIZE * verbFormsCount
+      val verbFormKeys: Seq[VerbType] = (VERB_FORMS_KEYS_OFFSET until VERB_FORMS_VALS_OFFSET by VERB_FORM_KEY_SIZE)
         .map(i => {
 
           val mood = VerbModeEnum fromId reader[Int](i) get
-          val oti = reader[Int](i + 1)
-          val opi = reader[Int](i + 2)
+          val voice = VerbVoice fromId reader[Int](i + 1) get
+          val oti = reader[Int](i + 2)
+          val opi = reader[Int](i + 3)
 
           val ot = if(oti == 0) None else Some(VerbTenseEnum fromId (oti - 1) get)
           val op = if(opi == 0) None else Some(Pronoun fromId (opi - 1) get)
 
-          (mood, ot, op)
+          (mood, voice, ot, op)
         })
 
       val VERB_FORMS_END_OF_MAP_OFFSET = VERB_FORMS_VALS_OFFSET + 2 * verbFormsCount
@@ -112,7 +115,7 @@ package object serializers {
 
       val verbForms: Map[VerbType, StrongVerbForm] = (verbFormKeys zip verbFormRawVals).map {
 
-        case (k, (vR, rR)) => k -> generateStrongVerbFrom(verbClassEnum, ablautGrades, k, vR, rR)
+        case (vt, (vR, rR)) => vt -> generateStrongVerbFrom(verbClassEnum, ablautGrades, vt, vR, rR)
 
       }.toMap
 
@@ -122,18 +125,18 @@ package object serializers {
     private def generateStrongVerbFrom(verbClassEnum: StrongVerbClassEnum, ablautGrades: Map[EnumVerbStem, AblautGrade]
       , verbType: VerbType, verbRepr: String, rootRepr: String): StrongVerbForm = verbType match {
 
-      case (k @ (mood: FinitiveMood, Some(tense), Some(pronoun))) =>
+      case (k @ (mood: FinitiveMood, voice, Some(tense), Some(pronoun))) =>
         val stemType = tenseAndNumberToStem(tense, pronoun.number)
         val stem = StrongVerbStem(rootRepr, verbClassEnum, stemType)
 
-        FinitiveStrongVerbForm(verbRepr, stem, pronoun, tense, mood)
+        FinitiveStrongVerbForm(verbRepr, stem, pronoun, tense, mood, voice)
 
-      case (k @ (mood: NonFinitiveMood, optTense, None)) =>
+      case (k @ (mood: NonFinitiveMood, voice, optTense, None)) =>
         val stemType = moodAndTenseToStem(mood, optTense)
         val verbType = toNonFiniteVerbType(optTense, mood)
         val stem = StrongVerbStem(rootRepr, verbClassEnum, stemType)
 
-        NonFinitiveStrongVerbForm(verbRepr, stem, verbType)
+        NonFinitiveStrongVerbForm(verbRepr, stem, verbType, voice)
     }
   }
 

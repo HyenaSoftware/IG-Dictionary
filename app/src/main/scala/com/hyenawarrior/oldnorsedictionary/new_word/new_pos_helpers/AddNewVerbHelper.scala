@@ -9,6 +9,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFIN
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{IMPERATIVE, INDICATIVE, PARTICIPLE, SUBJUNCTIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, verbs}
 import com.hyenawarrior.oldnorsedictionary.R
@@ -38,7 +39,7 @@ object AddNewVerbHelper
 
 class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.verb_types)
 {
-	type Override = (verbs.VerbType, Option[String])
+	type Override = (VerbType, Option[String])
 	type Parameters = (List[VerbClassEnum], Map[View, Override])
 
 	// what we define in the UI
@@ -155,7 +156,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			verbDeclPreferencesDialog.show(onDeclensionSelected)
 		}
 
-		private def onDeclensionSelected(verbType: verbs.VerbType): Unit = {
+		private def onDeclensionSelected(verbType: VerbType): Unit = {
 
 			val (classes, map) = selectedVerbParameters
 
@@ -174,13 +175,13 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			tryCompleteForms()
 		}
 
-		def updatePronounLED(verbType: (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])): Unit = {
+		def updatePronounLED(verbType: VerbType): Unit = {
 
 			val (clr, text) = verbType match {
 
-				case (_, _, Some(Pronoun(SINGULAR, p))) =>	RED -> s"S$p"
-				case (_, _, Some(Pronoun(PLURAL,   p))) =>	RED -> s"P$p"
-				case (_, _, None) 											=>	GRAY ->"S1"
+				case (_, _, _, Some(Pronoun(SINGULAR, p))) =>	RED -> s"S$p"
+				case (_, _, _, Some(Pronoun(PLURAL,   p))) =>	RED -> s"P$p"
+				case (_, _, _, None) 											=>	GRAY ->"S1"
 			}
 
 			val tvVerbPronoun = rowView.findViewById(R.id.tvVerbPronoun).asInstanceOf[TextView]
@@ -189,28 +190,28 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			tvVerbPronoun.setText(text)
 		}
 
-		def updateTenseLED(verbType: (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])): Unit = {
+		def updateTenseLED(verbType: VerbType): Unit = {
 
 			currentTenseLED = verbType match {
 
-				case (_, Some(PRESENT), _) => Some(R.id.tvVerbPresent)
-				case (_, Some(PAST), _) => Some(R.id.tvVerbPast)
-				case (_, None, _) => None
+				case (_, _, Some(PRESENT), _) => Some(R.id.tvVerbPresent)
+				case (_, _, Some(PAST), _) => Some(R.id.tvVerbPast)
+				case (_, _, None, _) => None
 			}
 
 			previousTenseLED.foreach(rowView.findViewById(_).asInstanceOf[TextView].setTextColor(GRAY))
 			currentTenseLED.foreach(rowView.findViewById(_).asInstanceOf[TextView].setTextColor(RED))
 		}
 
-		def updateMoodLED(verbType: (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])): Unit = {
+		def updateMoodLED(verbType: VerbType): Unit = {
 
 			currentMoodLED = verbType match {
 
-				case (INDICATIVE, _, _) => R.id.tvVerbInd
-				case (SUBJUNCTIVE, _, _) => R.id.tvVerbSubj
-				case (VerbModeEnum.INFINITIVE, _, _) => R.id.tvVerbInfinitive
-				case (PARTICIPLE, _, _) => R.id.tvVerbParticiple
-				case (IMPERATIVE, _, _) => R.id.tvVerbImperative
+				case (INDICATIVE, _, _, _) => R.id.tvVerbInd
+				case (SUBJUNCTIVE, _, _, _) => R.id.tvVerbSubj
+				case (VerbModeEnum.INFINITIVE, _, _, _) => R.id.tvVerbInfinitive
+				case (PARTICIPLE, _, _, _) => R.id.tvVerbParticiple
+				case (IMPERATIVE, _, _, _) => R.id.tvVerbImperative
 			}
 
 			rowView.findViewById(previousMoodLED).asInstanceOf[TextView].setTextColor(GRAY)
@@ -268,14 +269,14 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		case _ => ()
 	}
 
-	private def generateAllFormsFrom(verbClass: VerbClassEnum, overrides: Map[verbs.VerbType, String]):
-		Option[StrongVerb] = verbClass match {
+  private def generateAllFormsFrom(verbClass: VerbClassEnum, overrides: Map[VerbType, String])
+    : Option[StrongVerb] = verbClass match {
 
 		case svc: StrongVerbClassEnum => generateMissingFormsOfStrongVerbsFrom(svc, overrides)
 		case wvc: WeakVerbClassEnum => None
 	}
 
-	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, givenVerbForms: Map[verbs.VerbType, String])
+	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, givenVerbForms: Map[VerbType, String])
 		: Option[StrongVerb] = try {
 
       Some(StrongVerb(verbClass, givenVerbForms))

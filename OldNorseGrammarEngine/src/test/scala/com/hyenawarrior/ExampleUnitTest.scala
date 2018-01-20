@@ -5,6 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbForm.verbFrom
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{apply => _, unapply => _, _}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
 import org.junit.Assert.{assertEquals, assertNotSame, assertSame}
@@ -61,12 +62,12 @@ class ExampleUnitTest
 	{
 		val stem = StrongVerbStem("brann", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_SINGULAR_STEM)
 
-    val givenStrongVerb = FinitiveStrongVerbForm("brunnum", stem, Pronoun.PL_1, PAST, VerbModeEnum.INDICATIVE)
+    val givenStrongVerb = FinitiveStrongVerbForm("brunnum", stem, Pronoun.PL_1, PAST, INDICATIVE, ACTIVE)
 
-		val strongVerbResult = verbFrom(stem, Pronoun.SG_2, PAST, VerbModeEnum.INDICATIVE)
+		val strongVerbResult = verbFrom(stem, Pronoun.SG_2, PAST, INDICATIVE, ACTIVE)
 		assertEquals("brannt", strongVerbResult.strForm)
 
-		val FinitiveStrongVerbForm(str, stemResult, pronoun, tense, VerbModeEnum.INDICATIVE) = strongVerbResult
+		val FinitiveStrongVerbForm(str, stemResult, pronoun, tense, INDICATIVE, ACTIVE) = strongVerbResult
 		assertEquals("brannt", str)
 		assertSame(Pronoun.SG_2, pronoun)
 		assertSame(PAST, tense)
@@ -80,24 +81,24 @@ class ExampleUnitTest
 		val stemPP = StrongVerbStem("brunn", VerbClassEnum.STRONG_3RD_CLASS, EnumVerbStem.PRETERITE_PLURAL_STEM)
 
 		// "brinn-" is incorrect but regular, "brenn-" is correct, but not regular
-		assertEquals("brinnr", verbFrom(stem, Pronoun.SG_2, PRESENT, VerbModeEnum.INDICATIVE).strForm)
-		assertEquals("brinna", 		verbFrom(stem, None, 					INFINITIVE).strForm)
-		assertEquals("brinnandi", verbFrom(stem, Some(PRESENT), PARTICIPLE).strForm)
+		assertEquals("brinnr", verbFrom(stem, Pronoun.SG_2, PRESENT, INDICATIVE, ACTIVE).strForm)
+		assertEquals("brinna", 		verbFrom(stem, None, 					INFINITIVE, ACTIVE).strForm)
+		assertEquals("brinnandi", verbFrom(stem, Some(PRESENT), PARTICIPLE, ACTIVE).strForm)
 
-		assertEquals("brinn", 		verbFrom(stem, Pronoun.SG_1, PRESENT, INDICATIVE).strForm)
-		assertEquals("brinnr", 		verbFrom(stem, Pronoun.SG_2, PRESENT, INDICATIVE).strForm)
-		assertEquals("brinnr", 		verbFrom(stem, Pronoun.SG_3, PRESENT,	INDICATIVE).strForm)
+		assertEquals("brinn", 		verbFrom(stem, Pronoun.SG_1, PRESENT, INDICATIVE, ACTIVE).strForm)
+		assertEquals("brinnr", 		verbFrom(stem, Pronoun.SG_2, PRESENT, INDICATIVE, ACTIVE).strForm)
+		assertEquals("brinnr", 		verbFrom(stem, Pronoun.SG_3, PRESENT,	INDICATIVE, ACTIVE).strForm)
 
-		assertEquals("brinnum", 	verbFrom(stem, Pronoun.PL_1,  PRESENT, INDICATIVE).strForm)
-		assertEquals("brinnið", 	verbFrom(stem, Pronoun.PL_2,	PRESENT, INDICATIVE).strForm)
-		assertEquals("brinna",		verbFrom(stem, Pronoun.PL_3,  PRESENT, INDICATIVE).strForm)
+		assertEquals("brinnum", 	verbFrom(stem, Pronoun.PL_1,  PRESENT, INDICATIVE, ACTIVE).strForm)
+		assertEquals("brinnið", 	verbFrom(stem, Pronoun.PL_2,	PRESENT, INDICATIVE, ACTIVE).strForm)
+		assertEquals("brinna",		verbFrom(stem, Pronoun.PL_3,  PRESENT, INDICATIVE, ACTIVE).strForm)
 
-		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_1,  PAST, INDICATIVE).strForm)
-		assertEquals("brannt", 		verbFrom(stemPS, Pronoun.SG_2,	PAST, INDICATIVE).strForm)
-		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_3,	PAST, INDICATIVE).strForm)
+		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_1,  PAST, INDICATIVE, ACTIVE).strForm)
+		assertEquals("brannt", 		verbFrom(stemPS, Pronoun.SG_2,	PAST, INDICATIVE, ACTIVE).strForm)
+		assertEquals("brann", 		verbFrom(stemPS, Pronoun.SG_3,	PAST, INDICATIVE, ACTIVE).strForm)
 
-		assertEquals("brunnum", 	verbFrom(stemPP, Pronoun.PL_1,	PAST, INDICATIVE).strForm)
-		assertEquals("brunnuð", 	verbFrom(stemPP, Pronoun.PL_2,	PAST, INDICATIVE).strForm)
-		assertEquals("brunnu",		verbFrom(stemPP, Pronoun.PL_3,  PAST, INDICATIVE).strForm)
+		assertEquals("brunnum", 	verbFrom(stemPP, Pronoun.PL_1,	PAST, INDICATIVE, ACTIVE).strForm)
+		assertEquals("brunnuð", 	verbFrom(stemPP, Pronoun.PL_2,	PAST, INDICATIVE, ACTIVE).strForm)
+		assertEquals("brunnu",		verbFrom(stemPP, Pronoun.PL_3,  PAST, INDICATIVE, ACTIVE).strForm)
 	}
 }

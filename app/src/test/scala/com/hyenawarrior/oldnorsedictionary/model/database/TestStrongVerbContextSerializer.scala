@@ -5,6 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum.STRONG_5TH_CLASS
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{INDICATIVE, INFINITIVE, PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
@@ -23,14 +24,14 @@ class TestStrongVerbContextSerializer {
 
   private def toKeyValuePair(sv: StrongVerbForm): (VerbType, StrongVerbForm) = sv match {
 
-    case fsv: FinitiveStrongVerbForm => (fsv.mood, Some(fsv.tense), Some(fsv.pronoun)) -> fsv
+    case fsv: FinitiveStrongVerbForm => (fsv.mood, fsv.voice, Some(fsv.tense), Some(fsv.pronoun)) -> fsv
     case nsv: NonFinitiveStrongVerbForm =>
       val optTense = nsv.nonFinitiveVerbType match {
         case NonFinitiveVerbType(_, PRESENT_STEM, INFINITIVE) => None
         case NonFinitiveVerbType(_, PRESENT_STEM, PARTICIPLE) => Some(PRESENT)
         case NonFinitiveVerbType(_, PERFECT_STEM, PARTICIPLE) => Some(VerbTenseEnum.PAST)
       }
-      (nsv.nonFinitiveVerbType.mood, optTense, None) -> nsv
+      (nsv.nonFinitiveVerbType.mood, nsv.voice, optTense, None) -> nsv
   }
 
   case class MyReader(data: List[Any]) extends Reader {
@@ -54,12 +55,12 @@ class TestStrongVerbContextSerializer {
 
     val VERB_FORMS: Map[VerbType, StrongVerbForm] = Map(
 
-      toKeyValuePair(NonFinitiveStrongVerbForm("liggja",StrongVerbStem("leg", STRONG_5TH_CLASS, PRESENT_STEM), NonFinitiveVerbType.INFINITIVE)),
-      toKeyValuePair(NonFinitiveStrongVerbForm("leginn",StrongVerbStem("leg", STRONG_5TH_CLASS, PERFECT_STEM), NonFinitiveVerbType.PAST_PARTICIPLE)),
-      toKeyValuePair(FinitiveStrongVerbForm("ligg", StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_1, PRESENT, INDICATIVE)),
-      toKeyValuePair(FinitiveStrongVerbForm("liggr",StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_3, PRESENT, INDICATIVE)),
-      toKeyValuePair(FinitiveStrongVerbForm("lá",   StrongVerbStem("la", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM),Pronoun.SG_3, PAST, INDICATIVE)),
-      toKeyValuePair(FinitiveStrongVerbForm("lágum",StrongVerbStem("lág",STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM),  Pronoun.PL_1, PAST, INDICATIVE))
+      toKeyValuePair(NonFinitiveStrongVerbForm("liggja",StrongVerbStem("leg", STRONG_5TH_CLASS, PRESENT_STEM), NonFinitiveVerbType.INFINITIVE, ACTIVE)),
+      toKeyValuePair(NonFinitiveStrongVerbForm("leginn",StrongVerbStem("leg", STRONG_5TH_CLASS, PERFECT_STEM), NonFinitiveVerbType.PAST_PARTICIPLE, ACTIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("ligg", StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_1, PRESENT, INDICATIVE, ACTIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("liggr",StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_3, PRESENT, INDICATIVE, ACTIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("lá",   StrongVerbStem("la", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM),Pronoun.SG_3, PAST, INDICATIVE, ACTIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("lágum",StrongVerbStem("lág",STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM),  Pronoun.PL_1, PAST, INDICATIVE, ACTIVE))
     )
 
     val verb = StrongVerb(STRONG_5TH_CLASS, ABLAUT_GRADES, VERB_FORMS)
@@ -69,7 +70,7 @@ class TestStrongVerbContextSerializer {
 
     assertEquals(verb.verbClass, sameVerb.verbClass)
     assertEquals(verb.ablautGrade, sameVerb.ablautGrade)
-    assertEquals(verb.verbForms.toSeq.map(_._2.getStem()), sameVerb.verbForms.toSeq.map(_._2.getStem()))
+    assertEquals(verb.verbForms.toSeq.map(_._2.getStem), sameVerb.verbForms.toSeq.map(_._2.getStem))
   }
 
   @Test

@@ -3,7 +3,7 @@ package com.hyenawarrior.oldnorsedictionary
 import android.view.View
 import android.widget.TextView
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{FinitiveMood, StrongVerb}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{FinitiveMood, StrongVerb, VerbVoice}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
@@ -36,7 +36,7 @@ package object modelview {
     (PARTICIPLE, Some(PAST), None) -> R.id.tv_addword_verb_PastPart
   )
 
-  def setDeclensionsTo(sv: StrongVerb, targetView: View, mood: FinitiveMood): Unit = sv match {
+  def setDeclensionsTo(sv: StrongVerb, targetView: View, mood: FinitiveMood, voice: VerbVoice): Unit = sv match {
     case StrongVerb(cl, ablautGrade, verbForms) =>
 
       val stemName = targetView.findViewById(R.id.tv_addword_verb_stemName).asInstanceOf[TextView]
@@ -55,8 +55,8 @@ package object modelview {
 
         val wt = vt match {
 
-          case (INDICATIVE, oT, oP) => (mood, oT, oP)
-          case a => a
+          case (INDICATIVE, oT, oP) => (mood, voice, oT, oP)
+          case (m,          oT, oP) => (m,    voice, oT, oP)
         }
 
         val f = verbForms(wt)

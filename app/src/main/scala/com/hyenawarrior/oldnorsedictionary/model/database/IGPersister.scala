@@ -3,6 +3,7 @@ package com.hyenawarrior.oldnorsedictionary.model.database
 import android.content.Context
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.INFINITIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.SupportedLanguages.OldNorse
 import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister.lookupTable
@@ -57,7 +58,7 @@ class IGPersister(ctx: Context) {
     case sv: StrongVerb =>
       val strIds = sv.verbForms
         .map {
-          case ((INFINITIVE, None, None), v) => v -> true
+          case ((INFINITIVE, ACTIVE, None, None), v) => v -> true
           case (_, v) => v -> false
         }
         .map { case(v, p) => persister.stringInterner.getOrStore(v.strForm) -> p }

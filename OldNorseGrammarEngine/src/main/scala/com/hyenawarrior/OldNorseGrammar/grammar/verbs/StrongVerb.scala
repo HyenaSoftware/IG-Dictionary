@@ -16,16 +16,15 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{GNumber, Pronoun, verbs}
 
 object VerbContext {
 
-	//def product[T, U](seq: Seq[T], seq2: Seq[U]) = seq.flatMap(e => seq2.map(???))
-
-	val ALL_VERB_FORMS: List[VerbType] = List(INDICATIVE, SUBJUNCTIVE)
-		.flatMap(mood => VerbTenseEnum.values.map(tense => mood -> Some(tense)))
+	val ALL_VERB_FORMS: List[VerbType] = (List(INDICATIVE, SUBJUNCTIVE)
+		.flatMap{ mood => VerbTenseEnum.values.map(tense => mood -> Some(tense)) }
 	  .flatMap{ case (mood, oTense) =>
       Pronoun.values.map(pronoun => (mood, oTense, Some(pronoun)))
     } ++
     List((INFINITIVE, None, None)) ++
     List((PARTICIPLE, Some(PRESENT), None)) ++
-    List((PARTICIPLE, Some(PAST), None))
+    List((PARTICIPLE, Some(PAST), None)))
+    .flatMap { case (m, oT, oP) => VerbVoice.values.map(v => (m, v, oT, oP)) }
 }
 
 case class StrongVerb(verbClass: StrongVerbClassEnum, ablautGrade: Map[EnumVerbStem, AblautGrade]
@@ -72,7 +71,7 @@ object StrongVerb {
 		// collect what we have
 		val pseudoFormsToStem: Map[EnumVerbStem, Iterable[StrongVerbStem]] = pseudoVerbForms.map {
 
-			case ((INDICATIVE, Some(VerbTenseEnum.PRESENT), Some(Pronoun(GNumber.SINGULAR, _))), stem) =>
+			case ((INDICATIVE, _, Some(VerbTenseEnum.PRESENT), Some(Pronoun(GNumber.SINGULAR, _))), stem) =>
 				StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, EnumVerbStem.PRESENT_STEM, Some(Explicit_I_Umlaut))
 
 			case (vt, stem) =>

@@ -12,6 +12,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{DUAL, PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.{Word => GWord, _}
 import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
@@ -85,7 +86,7 @@ class MainActivity extends AppCompatActivity
                 case _ => false
               }
 
-            val INF_KEY = (INFINITIVE, None, None)
+            val INF_KEY = (INFINITIVE, ACTIVE, None, None)
 
             val priForm = sv.verbForms(INF_KEY).strForm -> abbrevationOf(INF_KEY)
 
@@ -110,7 +111,7 @@ class MainActivity extends AppCompatActivity
 
   private def filter(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
 
-    val fs = forms.groupBy { case ((md, _, _), _) => md }
+    val fs = forms.groupBy { case ((md, _, _, _), _) => md }
 
     val inf = fs.get(INFINITIVE).map(_.head)
 		val prtcp = fs.get(PARTICIPLE).map(_.head)
@@ -120,7 +121,7 @@ class MainActivity extends AppCompatActivity
 
   private def splitByTense(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
 
-    val fs = forms.groupBy { case ((_, Some(t), _), _) => t }
+    val fs = forms.groupBy { case ((_, _, Some(t), _), _) => t }
 
     val present = fs.get(PRESENT).flatMap(splitByNumber)
     val past = fs.get(PAST).flatMap(splitByNumber)
@@ -130,7 +131,7 @@ class MainActivity extends AppCompatActivity
 
   private def splitByNumber(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
 
-    val fs = forms.groupBy { case ((_, _, Some(Pronoun(n, _))), _) => n }
+    val fs = forms.groupBy { case ((_, _, _, Some(Pronoun(n, _))), _) => n }
 
     val sg = fs.get(SINGULAR).flatMap(select)
     val pl = fs.get(PLURAL).flatMap(select)
@@ -140,21 +141,22 @@ class MainActivity extends AppCompatActivity
 
   private def select(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = forms
     .find {
-      case ((_, _, Some(Pronoun(_, 3))), _) => true
+      case ((_, _, _, Some(Pronoun(_, 3))), _) => true
       case _ => false
     }
     .orElse(forms.headOption)
 
 
-  private def abbrevationOf(form: (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])): String ={
+  private def abbrevationOf(form: VerbType): String ={
 
-    val (mood, optTense, optPronoun) = form
+    val (mood, voice, optTense, optPronoun) = form
 
     val md = Some(abbrevationOfMood(mood))
+    val vc = Some(abbrevationOf(voice))
     val ts = optTense.map(abbrevationOfTense)
     val pr = optPronoun.map(abbrevationOfPronoun)
 
-    Seq(ts, md, pr).flatten.mkString(" ")
+    Seq(ts, md, pr, vc).flatten.mkString(" ")
   }
 
   private def abbrevationOfMood(mood: VerbModeEnum): String = mood match {
@@ -164,6 +166,12 @@ class MainActivity extends AppCompatActivity
     case SUBJUNCTIVE => "SBJV"
     case IMPERATIVE => "IMP"
 		case PARTICIPLE => "PTCP"
+  }
+
+  private def abbrevationOf(voice: VerbVoice): String = voice match {
+
+    case ACTIVE => "ACT"
+    case MEDIO_PASSIVE => "REFL"
   }
 
   private def abbrevationOfTense(tense: VerbTenseEnum): String = tense match {

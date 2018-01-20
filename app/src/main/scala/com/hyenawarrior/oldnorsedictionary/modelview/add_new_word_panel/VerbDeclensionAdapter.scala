@@ -4,7 +4,8 @@ import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.Button
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{FinitiveMood, StrongVerb, VerbClassEnum, VerbModeEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.modelview._
 
@@ -41,7 +42,7 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
     val (vcDesc, strongVerb) = itemAt(i)
 
 		// set declensions
-		setDeclensionsTo(strongVerb, view, currentMood)
+		setDeclensionsTo(strongVerb, view, currentMood, ACTIVE)
 
     // tag the select button
     val tv_addword_verb_Select = view.findViewById(R.id.tv_addword_verb_Select).asInstanceOf[Button]
