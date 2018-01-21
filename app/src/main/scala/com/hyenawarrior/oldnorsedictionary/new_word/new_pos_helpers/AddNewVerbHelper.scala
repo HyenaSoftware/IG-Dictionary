@@ -166,6 +166,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			selectedVerbParameters = (classes, newMap)
 
 			updateMoodLED(verbType)
+      updateVoiceLED(verbType)
 			updateTenseLED(verbType)
 			updatePronounLED(verbType)
 
@@ -217,6 +218,17 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			rowView.findViewById(previousMoodLED).asInstanceOf[TextView].setTextColor(GRAY)
 			rowView.findViewById(currentMoodLED).asInstanceOf[TextView].setTextColor(RED)
 		}
+
+    def updateVoiceLED(verbType: VerbType): Unit = {
+
+      val colour = verbType match {
+
+        case (_, ACTIVE,        _, _) => GRAY
+        case (_, MEDIO_PASSIVE, _, _) => RED
+      }
+
+      rowView.findViewById(R.id.tvVerbMedioPassive).asInstanceOf[TextView].setTextColor(colour)
+    }
 	}
 
   object MoodSelector extends View.OnClickListener {
