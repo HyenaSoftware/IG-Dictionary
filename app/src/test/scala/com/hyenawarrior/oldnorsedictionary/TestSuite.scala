@@ -10,6 +10,7 @@ import org.junit.runners.Suite
 @RunWith(classOf[Suite])
 @Suite.SuiteClasses(Array(
   classOf[TestPersister],
-  classOf[TestStrongVerbContextSerializer]
+  classOf[TestStrongVerbContextSerializer],
+  classOf[TestSerializable]
 ))
 class TestSuite

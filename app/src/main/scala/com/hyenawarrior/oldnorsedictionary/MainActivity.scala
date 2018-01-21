@@ -19,7 +19,7 @@ import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.AndroidSDBLayer
 import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}
 import com.hyenawarrior.oldnorsedictionary.modelview.DictionaryEntryAdapter
-import com.hyenawarrior.oldnorsedictionary.new_word.AddNewWordActivityPager
+import com.hyenawarrior.oldnorsedictionary.new_word.{AddNewWordActivityPager, DetailedDictionaryEntry}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 
 import scala.language.postfixOps
@@ -250,7 +250,17 @@ class MainActivity extends AppCompatActivity
 		startActivity(intent)
 	}
 
-	def onClickOnAnEntry(view: View): Unit = entryListAdapter onClickOnAnEntry view
+  def onClickOnAnEntry(view: View): Unit = {
+
+    val clazz = classOf[DetailedDictionaryEntry]
+    val intent = new Intent(this, clazz)
+
+    val obj = view.getTag.asInstanceOf[Serializable]
+
+    intent.putExtra("entry", obj)
+
+    startActivity(intent)
+  }
 
 	override protected def onCreate(savedInstanceState: Bundle)
 	{

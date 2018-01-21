@@ -5,7 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.Tr
 /**
   * Created by HyenaWarrior on 2017.12.08..
   */
-abstract class TransformationMode
+abstract class TransformationMode extends Serializable
 
 object TransformationMode {
 

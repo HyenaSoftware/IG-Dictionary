@@ -6,7 +6,7 @@ import com.hyenawarrior.auxiliary.EnumLike
 /**
 	* Created by HyenaWarrior on 2017.04.17..
 	*/
-class VerbClassEnum(name: String)
+class VerbClassEnum(name: String) extends Serializable
 {
 	VerbClassEnum.add(name -> this)
 

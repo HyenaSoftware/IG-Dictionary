@@ -14,7 +14,7 @@ object VerbModeEnum extends EnumLike[Int, VerbModeEnum] {
 	val PARTICIPLE 	= NonFinitiveMood("Participle", 4)
 }
 
-class VerbModeEnum(name: String, id: Int) {
+class VerbModeEnum(name: String, id: Int) extends Serializable {
 
 	VerbModeEnum.add(id -> this)
 }

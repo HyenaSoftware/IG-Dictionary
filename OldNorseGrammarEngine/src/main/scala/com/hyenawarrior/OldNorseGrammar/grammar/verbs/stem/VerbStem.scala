@@ -13,7 +13,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbClassEnum, Tran
 /**
 	* Created by HyenaWarrior on 2017.04.22..
 	*/
-abstract class VerbStem(stemType: EnumVerbStem) {
+abstract class VerbStem(stemType: EnumVerbStem) extends Serializable {
 
 	def stringForm(): String
 

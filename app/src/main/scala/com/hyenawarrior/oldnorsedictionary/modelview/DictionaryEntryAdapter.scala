@@ -25,7 +25,7 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 		tvDesc setText text
 
 		// set metadata
-		view setTag item.posObj
+		view setTag item
 
 		// set words
 		val wordFormAdapter = new WordFormAdapter(activity)
@@ -64,7 +64,8 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 
         view.getTag match {
 
-          case sv: StrongVerb => setDeclensionsTo(sv, view, VerbModeEnum.INDICATIVE, VerbVoice.ACTIVE)
+          case DictionaryListItem(sv: StrongVerb, _, _, _) =>
+            setDeclensionsTo(sv, view, VerbModeEnum.INDICATIVE, VerbVoice.ACTIVE)
         }
     }
   }
