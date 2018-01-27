@@ -5,8 +5,11 @@ import com.hyenawarrior.oldnorsedictionary.model.persister.{Persister, Serialize
 /**
   * Created by HyenaWarrior on 2017.11.16..
   */
-case class InMemoryPersister(implicit serializers: Map[Class[_], Serializer[Any]]) extends Persister(serializers) {
+class InMemoryPersister(implicit serializers: Map[Class[_], Serializer[Any]]) extends Persister(serializers) {
 
-  override def stringInterner = InMemoryStringInterner
-  override def serData = InMemorySerData
+  private val myserData = new InMemorySerData
+  private val myStringInterner = new InMemoryStringInterner
+
+  override def stringInterner = myStringInterner
+  override def serData = myserData
 }

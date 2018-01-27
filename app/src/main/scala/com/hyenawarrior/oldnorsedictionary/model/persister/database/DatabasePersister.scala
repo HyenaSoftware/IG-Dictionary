@@ -1,9 +1,13 @@
 package com.hyenawarrior.oldnorsedictionary.model.persister.database
 
-import com.hyenawarrior.oldnorsedictionary.model.persister.database.DBLayer.ColumnDefinition
-import com.hyenawarrior.oldnorsedictionary.model.persister.{Persister, SerData, Serializer, StringInterner}
+import java.io.{ByteArrayInputStream, DataInputStream}
+
 import com.hyenawarrior.oldnorsedictionary.model.persister.Serializer._
-import com.hyenawarrior.oldnorsedictionary.model.persister.database.DatabasePersister.{ObjFields, ObjTypes, Texts}
+import com.hyenawarrior.oldnorsedictionary.model.persister.database.DBLayer.ColumnDefinition
+import com.hyenawarrior.oldnorsedictionary.model.persister.database.DatabasePersister.{ObjTypes, Objects, Texts}
+import com.hyenawarrior.oldnorsedictionary.model.persister.{Persister, SerData, Serializer, StringInterner}
+
+import scala.language.postfixOps
 
 /**
   * Created by HyenaWarrior on 2017.11.16..
@@ -14,10 +18,9 @@ object DatabasePersister {
     ColumnDefinition("Text", ClassOfString),
     ColumnDefinition("Id", ClassOfInt)))
 
-  object ObjFields extends Table("ObjFields", IndexedSeq(
+  object Objects extends Table("Objects", IndexedSeq(
     ColumnDefinition("ObjId", ClassOfInt),
-    ColumnDefinition("FieldIndex", ClassOfInt),
-    ColumnDefinition("Rsrc", ClassOfInt)))
+    ColumnDefinition("RawData", ClassOfBlob)))
 
   object ObjTypes extends Table("ObjType", IndexedSeq(
     ColumnDefinition("ObjId", ClassOfInt),
@@ -63,25 +66,21 @@ case class DatabasePersister(dBLayer: DBLayer)(implicit serializers: Map[Class[_
       .map { case List(tId: Int) => tId }
       .headOption
 
-    override def store(typeId: Int, data: Seq[Int]): Int = {
+    override def store(typeId: Int, byteArray: Array[Byte]): Int = {
 
       // BlobId, BlobType, FieldIndex, Rsrc
       // new      given    1..         given
 
       val blobId = ObjTypes.max[Int]("ObjId").getOrElse(-1) + 1
-      val records = data.zipWithIndex.map{ case (d, i) => Array[Any](blobId, i, d)}
 
       ObjTypes.insert(Array(blobId, typeId))
 
-      for(r <- records) {
-
-        ObjFields.insert(r)
-      }
+      Objects.insert(Array[Any](blobId, byteArray))
 
       blobId
     }
 
-    override def load(objId: Int, typeId: Int): Seq[Int] = {
+    override def load(objId: Int, typeId: Int): DataInputStream = {
 
       val res = ObjTypes.select(List("ObjId"), Array(objId, typeId), s"ObjId = ? and ObjType = ?").toList
 
@@ -89,19 +88,21 @@ case class DatabasePersister(dBLayer: DBLayer)(implicit serializers: Map[Class[_
 
         case ((id: Int) :: Nil) :: Nil if id == objId => load(objId)
         case ((id: Int) :: Nil) :: Nil => throw new RuntimeException("Type mismatch")
-        case _ => Seq()
+        case _ => throw new RuntimeException(s"Unknown object id $objId")
       }
     }
 
-    private def load(objId: Int): Seq[Int] = {
+    private def load(objId: Int): DataInputStream = {
 
-      val records = ObjFields.select(List("FieldIndex", "Rsrc"), Array(objId), s"ObjId = ?")
-      val fields = records
-        .map { case (idx: Int) :: (rsrc: Int) :: Nil => idx -> rsrc }
-        .sortBy(_._1)
-        .map(_._2)
+      val records = Objects.select(List("RawData"), Array(objId), "ObjId = ?")
 
-      fields
+      records match {
+
+        case Seq(List(a: Array[Byte])) =>
+          new DataInputStream(new ByteArrayInputStream(a))
+
+        case _ => throw new RuntimeException("Unexpected result from the database")
+      }
     }
   }
 

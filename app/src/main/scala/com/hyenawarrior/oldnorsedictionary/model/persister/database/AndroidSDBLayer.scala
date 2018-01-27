@@ -16,7 +16,7 @@ import com.hyenawarrior.oldnorsedictionary.model.persister.database.DBLayer.Colu
 object AndroidSDBLayer {
 
   val DATABASE_NAME = "ig-dictionary"
-  val DATABASE_VERSION = 7
+  val DATABASE_VERSION = 8
 
 }
 
@@ -34,7 +34,7 @@ class AndroidSDBLayer (ctx: Context) extends DBLayer {
 
       createTable(sqLiteDatabase, IGPersister.lookupTable)
       createTable(sqLiteDatabase, DatabasePersister.Texts)
-      createTable(sqLiteDatabase, DatabasePersister.ObjFields)
+      createTable(sqLiteDatabase, DatabasePersister.Objects)
       createTable(sqLiteDatabase, DatabasePersister.ObjTypes)
     }
 
@@ -47,6 +47,7 @@ class AndroidSDBLayer (ctx: Context) extends DBLayer {
 
           case ColumnDefinition(c, ClassOfInt | ClassOfBoolean) => s"$c INTEGER"
           case ColumnDefinition(c, ClassOfString) => s"$c TEXT"
+          case ColumnDefinition(c, ClassOfBlob) => s"$c BLOB"
         }
         .mkString(", ")
 
@@ -79,6 +80,7 @@ class AndroidSDBLayer (ctx: Context) extends DBLayer {
           cr.moveToNext
 
           val cv = new ContentValues
+          // find a better way to read data by avoiding to convert everything to strings
           DatabaseUtils.cursorRowToContentValues(cr, cv)
           cv
         })
@@ -94,6 +96,7 @@ class AndroidSDBLayer (ctx: Context) extends DBLayer {
     case ColumnDefinition(name, ClassOfInt) => cv.getAsInteger(name)
     case ColumnDefinition(name, ClassOfString) => cv.getAsString(name)
     case ColumnDefinition(name, ClassOfBoolean) => cv.getAsBoolean(name)
+    case ColumnDefinition(name, ClassOfBlob) => cv.getAsByteArray(name)
   }
 
   override def insert(tableName: String, columns: Seq[ColumnDefinition], record: Array[Any]): Unit = {
@@ -105,6 +108,7 @@ class AndroidSDBLayer (ctx: Context) extends DBLayer {
       case (ColumnDefinition(name, ClassOfInt), v: Int) => values.put(name, v: jint)
       case (ColumnDefinition(name, ClassOfBoolean), v: Boolean) => values.put(name, v)
       case (ColumnDefinition(name, ClassOfString), v: String) => values.put(name, v)
+      case (ColumnDefinition(name, ClassOfBlob),   blob: Array[Byte]) => values.put(name, blob)
       case _ => throw new RuntimeException("Column type / record field type mismatch")
     }
 

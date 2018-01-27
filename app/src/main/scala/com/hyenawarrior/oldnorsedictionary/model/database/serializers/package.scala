@@ -41,25 +41,24 @@ package object serializers {
 
     override def marshall(obj: StrongVerb): List[Any] = {
 
-      val vceId = VerbClassEnum idOf obj.verbClass
+      val vceId: Byte = (VerbClassEnum idOf obj.verbClass).toByte
 
-      val ablautMapLength = obj.ablautGrade.size
-      val formsLength = obj.verbForms.size
+      val ablautMapLength: Byte = obj.ablautGrade.size.toByte
+      val formsLength: Byte = obj.verbForms.size.toByte
 
       val fixOrderedAblautGrade = obj.ablautGrade.toSeq
-      val ablautMapAsList =
-        fixOrderedAblautGrade.map { case (s, _) => EnumVerbStem idOf s } ++
-        fixOrderedAblautGrade.map { case (_, AblautGrade(rv)) => rv }
+      val ablautMapAsListKeys = fixOrderedAblautGrade.map { case (s, _) => (EnumVerbStem idOf s).toByte }
+      val ablautMapAsListVals = fixOrderedAblautGrade.map { case (_, AblautGrade(rv)) => rv }
 
       val fixOrderedVerbForms = obj.verbForms.toSeq
 
-      val verbFormsAsListKeys: List[Int] = fixOrderedVerbForms.map(_._1).flatMap {
+      val verbFormsAsListKeys: List[Byte] = fixOrderedVerbForms.map(_._1).flatMap {
 
         case (md, voice, ot, op) =>
           val v = VerbVoice idOf voice
           val t = ot.map(VerbTenseEnum.idOf(_) + 1).getOrElse(0)
           val p = op.map(Pronoun.idOf(_) + 1).getOrElse(0)
-          List(VerbModeEnum idOf md, v, t, p)
+          List((VerbModeEnum idOf md) toByte, v toByte, t toByte, p toByte)
       }.toList
 
       val verbFormsAsListValues: List[String] = fixOrderedVerbForms.map(_._2).flatMap {
@@ -68,21 +67,24 @@ package object serializers {
 
       }.toList
 
-      List(vceId, ablautMapLength, formsLength) ++ ablautMapAsList ++ verbFormsAsListKeys ++ verbFormsAsListValues
+      List(vceId, ablautMapLength, formsLength) ++
+        ablautMapAsListKeys ++ ablautMapAsListVals ++
+        verbFormsAsListKeys ++ verbFormsAsListValues
     }
 
     override def unmarshall(reader: Reader): StrongVerb = {
 
-      val verbClassEnum: StrongVerbClassEnum = (VerbClassEnum fromId reader[Int](0) get).asInstanceOf[StrongVerbClassEnum]
+      val vceId = reader[Byte]()
+      val verbClassEnum: StrongVerbClassEnum = (VerbClassEnum fromId vceId get).asInstanceOf[StrongVerbClassEnum]
 
-      val ablautMapSize = reader[Int](1)
-      val verbFormsCount = reader[Int](2)
+      val ablautMapSize = reader[Byte]()
+      val verbFormsCount = reader[Byte]()
 
       val ABLAUT_MAP_KEYS_OFFSET = 3
       val ABLAUT_MAP_VALS_OFFSET = ABLAUT_MAP_KEYS_OFFSET + ablautMapSize
 
-      val ablautKeys = (0 until ablautMapSize).map(i => EnumVerbStem fromId reader[Int](ABLAUT_MAP_KEYS_OFFSET + i) get)
-      val ablautVals = (0 until ablautMapSize).map(i => reader[String](ABLAUT_MAP_VALS_OFFSET + i))
+      val ablautKeys = (0 until ablautMapSize).map(i => EnumVerbStem fromId reader[Byte]() get)
+      val ablautVals = (0 until ablautMapSize).map(i => reader[String]())
 
       val ablautGrades: Map[EnumVerbStem, AblautGrade] = (ablautKeys zip ablautVals)
         .map { case (k, v) => k -> AblautGrade(v) }
@@ -93,10 +95,10 @@ package object serializers {
       val verbFormKeys: Seq[VerbType] = (VERB_FORMS_KEYS_OFFSET until VERB_FORMS_VALS_OFFSET by VERB_FORM_KEY_SIZE)
         .map(i => {
 
-          val mood = VerbModeEnum fromId reader[Int](i) get
-          val voice = VerbVoice fromId reader[Int](i + 1) get
-          val oti = reader[Int](i + 2)
-          val opi = reader[Int](i + 3)
+          val mood = VerbModeEnum fromId reader[Byte]() get
+          val voice = VerbVoice fromId reader[Byte]() get
+          val oti = reader[Byte]()
+          val opi = reader[Byte]()
 
           val ot = if(oti == 0) None else Some(VerbTenseEnum fromId (oti - 1) get)
           val op = if(opi == 0) None else Some(Pronoun fromId (opi - 1) get)
@@ -107,8 +109,8 @@ package object serializers {
       val VERB_FORMS_END_OF_MAP_OFFSET = VERB_FORMS_VALS_OFFSET + 2 * verbFormsCount
       val verbFormRawVals = (VERB_FORMS_VALS_OFFSET until VERB_FORMS_END_OF_MAP_OFFSET by 2)
         .map(i => {
-          val verbRepr = reader[String]( i )
-          val rootRepr = reader[String](i+1)
+          val verbRepr = reader[String]()
+          val rootRepr = reader[String]()
 
           (verbRepr, rootRepr)
         })
@@ -146,15 +148,14 @@ package object serializers {
 
     override def marshall(obj: DictionaryEntry): List[Any] = {
 
-      List(obj.word, obj.meanings.size) ++ obj.meanings
+      List(obj.word, obj.meanings.size.toByte) ++ obj.meanings
     }
 
     override def unmarshall(reader: Reader): DictionaryEntry = {
 
-      val word = reader[AnyRef](0)
-      val length = reader[Int](1)
-      val LIST_OFFSET = 2
-      val list = (LIST_OFFSET until LIST_OFFSET + length).map(reader[MeaningDef]).toList
+      val word = reader[AnyRef]()
+      val length = reader[Byte]()
+      val list = (0 until length).map(i => reader[MeaningDef]()).toList
       DictionaryEntry(word, list)
     }
   }
@@ -164,14 +165,14 @@ package object serializers {
     override val typeId: Int = 1
 
     override def marshall(obj: MeaningDef): List[Any]
-      = List(obj.meaning, obj.note, obj.examples.size) ++ obj.examples
+      = List(obj.meaning, obj.note, obj.examples.size.toByte) ++ obj.examples
 
     override def unmarshall(reader: Reader): MeaningDef = {
 
-      val meaning = reader[String](0)
-      val note = reader[String](1)
-      val countOfExamples = reader[Int](2)
-      val examples = (3 until 3 + countOfExamples).map(reader[String])
+      val meaning = reader[String]()
+      val note = reader[String]()
+      val countOfExamples = reader[Byte]()
+      val examples = (0 until countOfExamples).map(i => reader[String]())
 
       MeaningDef(meaning, note, examples)
     }

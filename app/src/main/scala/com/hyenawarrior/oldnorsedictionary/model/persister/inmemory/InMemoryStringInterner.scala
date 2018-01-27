@@ -7,7 +7,7 @@ import scala.collection.mutable
 /**
   * Created by HyenaWarrior on 2017.11.16..
   */
-object InMemoryStringInterner extends StringInterner {
+class InMemoryStringInterner extends StringInterner {
 
   val idToStr: mutable.Map[Int, String] = mutable.Map()
   val strToId: mutable.Map[String, Int] = mutable.Map()

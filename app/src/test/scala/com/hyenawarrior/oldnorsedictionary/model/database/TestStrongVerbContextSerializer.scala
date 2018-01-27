@@ -37,6 +37,13 @@ class TestStrongVerbContextSerializer {
   case class MyReader(data: List[Any]) extends Reader {
 
     private val indexedData = data.toIndexedSeq
+    private var i = -1
+
+    override def apply[T]()(implicit clazz: ClassTag[T]): T = {
+
+      i = i+1
+      indexedData(i).asInstanceOf[T]
+    }
 
     override def apply[T](i: Int)(implicit clazz: ClassTag[T]): T = indexedData(i).asInstanceOf[T]
   }

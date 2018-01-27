@@ -20,6 +20,8 @@ trait Serializer[T] {
 object Serializer {
 
   implicit val ClassOfInt = ClassTag.Int
+  implicit val ClassOfByte = ClassTag.Byte
   implicit val ClassOfBoolean = ClassTag.Boolean
   implicit val ClassOfString = ClassTag(classOf[String])
+  implicit val ClassOfBlob = ClassTag(classOf[Array[Byte]])
 }

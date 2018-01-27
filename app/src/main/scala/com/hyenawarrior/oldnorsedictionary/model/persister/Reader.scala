@@ -7,5 +7,5 @@ import scala.reflect.ClassTag
   */
 trait Reader {
 
-  def apply[T](i: Int)(implicit clazz: ClassTag[T]): T
+  def apply[T]()(implicit clazz: ClassTag[T]): T
 }

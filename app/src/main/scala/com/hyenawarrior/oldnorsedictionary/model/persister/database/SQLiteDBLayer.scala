@@ -1,12 +1,13 @@
 package com.hyenawarrior.oldnorsedictionary.model.persister.database
 
 import java.lang.String.valueOf
-import java.sql.DriverManager
+import java.sql.{DriverManager, SQLException}
 
 import com.hyenawarrior.oldnorsedictionary.model.persister.Serializer._
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.DBLayer.ColumnDefinition
 
 import scala.collection.mutable
+import scala.language.postfixOps
 
 /**
   * Created by HyenaWarrior on 2017.11.16..
@@ -23,6 +24,7 @@ object SQLiteDBLayer extends DBLayer {
 
         case ColumnDefinition(c, ClassOfInt | ClassOfBoolean) => s"$c INTEGER"
         case ColumnDefinition(c, ClassOfString) => s"$c VARCHAR(20)"
+        case ColumnDefinition(c, ClassOfBlob) => s"$c BLOB"
       }
       .mkString(", ")
 
@@ -73,6 +75,8 @@ object SQLiteDBLayer extends DBLayer {
               if(result.wasNull()) None else v
 
             case (ClassOfString,  i) => result.getString(i+1)
+
+            case (ClassOfBlob, i) => result.getBytes(i+1)
           }
 
           results += record
@@ -89,13 +93,27 @@ object SQLiteDBLayer extends DBLayer {
     val vals = record.map {
       case i: Int => valueOf(i)
       case s: String => s"'$s'"
+      case b: Array[Byte] => s""
     }
         .mkString(", ")
 
-    val sql = s"INSERT INTO $tableName VALUES($vals)"
+    val args = record.map(_ => "?").mkString(", ")
+    val sql = s"INSERT INTO $tableName VALUES($args)"
 
-    con.createStatement().executeUpdate(sql)
+    val ps = con prepareStatement sql
 
-    ()
+    try {
+      (record zipWithIndex) foreach {
+        case (n: Int, i) => ps.setInt(i + 1, n)
+        case (s: String, i) => ps.setString(i + 1, s)
+        case (b: Array[Byte], i) => ps.setBytes(i + 1, b)
+      }
+
+      ps.executeUpdate()
+
+    } catch {
+
+      case e: SQLException if ps != null => ps.close()
+    }
   }
 }

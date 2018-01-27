@@ -1,6 +1,6 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
-import com.hyenawarrior.oldnorsedictionary.model.persister.database.DatabasePersister.{ObjFields, ObjTypes, Texts}
+import com.hyenawarrior.oldnorsedictionary.model.persister.database.DatabasePersister.{ObjTypes, Objects, Texts}
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.{DatabasePersister, SQLiteDBLayer}
 import com.hyenawarrior.oldnorsedictionary.model.persister.inmemory.InMemoryPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.{Reader, Serializer}
@@ -13,22 +13,24 @@ import org.junit.Test
 
 class TestPersister {
 
-  case class TestType(i: Int, s: String, l: List[String])
+  case class TestType(i: Int, s: String, j: Byte, l: List[String], b: Boolean)
 
   implicit object TestTypeSerializer extends Serializer[TestType] {
 
     override val typeId: Int = 0
 
-    override def marshall(obj: TestType): List[Any] = List(obj.i, obj.s, obj.l.size) ++ obj.l
+    override def marshall(obj: TestType): List[Any] = List(obj.i, obj.s, obj.j, obj.l.size.toByte) ++ obj.l :+ obj.b
 
     override def unmarshall(reader: Reader): TestType = {
 
-      val i = reader[Int](0)
-      val s = reader[String](1)
-      val ls = reader[Int](2)
-      val l = (3 until 3 + ls).map(reader[String]).toList
+      val i = reader[Int]()
+      val s = reader[String]()
+      val j = reader[Byte]()
+      val ls = reader[Byte]()
+      val l = (0 until ls).map(i => reader[String]()).toList
+      val b = reader[Boolean]()
 
-      TestType(i, s, l)
+      TestType(i, s, j, l, b)
     }
   }
 
@@ -37,15 +39,17 @@ class TestPersister {
 
     implicit val map: Map[Class[_], Serializer[Any]] = Map(classOf[TestType] -> TestTypeSerializer.asInstanceOf[Serializer[Any]])
 
-    val persister = InMemoryPersister()
+    val persister = new InMemoryPersister()
 
-    val id = persister.store(TestType(0, "a", List("b", "c")))
+    val id = persister.store(TestType(8818, "a", 23, List("b", "c"), true))
 
     val obj = persister.load[TestType](id)
 
-    assertEquals(0, obj.i)
+    assertEquals(8818, obj.i)
     assertEquals("a", obj.s)
+    assertEquals(23, obj.j)
     assertEquals(List("b", "c"), obj.l)
+    assertEquals(true, obj.b)
   }
 
   @Test
@@ -54,18 +58,20 @@ class TestPersister {
     implicit val map: Map[Class[_], Serializer[Any]] = Map(classOf[TestType] -> TestTypeSerializer.asInstanceOf[Serializer[Any]])
 
     SQLiteDBLayer.createTable(Texts.tableName, Texts.columns)
-    SQLiteDBLayer.createTable(ObjFields.tableName, ObjFields.columns)
+    SQLiteDBLayer.createTable(Objects.tableName, Objects.columns)
     SQLiteDBLayer.createTable(ObjTypes.tableName, ObjTypes.columns)
 
     val dbp = DatabasePersister(SQLiteDBLayer)
 
-    val id = dbp.store(TestType(0, "a", List("b", "c")))
+    val id = dbp.store(TestType(654, "a", 12, List("b", "c"), false))
 
     val obj = dbp.load[TestType](id)
 
-    assertEquals(0, obj.i)
+    assertEquals(654, obj.i)
     assertEquals("a", obj.s)
+    assertEquals(12, obj.j)
     assertEquals(List("b", "c"), obj.l)
+    assertEquals(false, obj.b)
   }
 
 }

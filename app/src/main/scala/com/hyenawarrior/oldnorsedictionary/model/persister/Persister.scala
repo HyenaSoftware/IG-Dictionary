@@ -1,5 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.model.persister
 
+import java.io.DataInputStream
+
 import scala.reflect.ClassTag
 import com.hyenawarrior.oldnorsedictionary.model.persister.Serializer._
 
@@ -17,18 +19,19 @@ abstract class Persister(serializers: Map[Class[_], Serializer[_]]) {
 
   protected def serData: SerData
 
-  private case class MyReader(data: IndexedSeq[Int]) extends Reader {
+  private case class MyStreamReader(dis: DataInputStream) extends Reader {
 
-    override def apply[T](i: Int)(implicit clazz: ClassTag[T]): T = clazz match {
+    override def apply[T]()(implicit clazz: ClassTag[T]): T = clazz match {
 
-      case ClassOfString => stringInterner(data(i)).asInstanceOf[T]
-      case ClassOfInt => data(i).asInstanceOf[T]
-      case ClassOfBoolean => (data(i) != 0).asInstanceOf[T]
+      case ClassOfString => stringInterner(dis.readInt).asInstanceOf[T]
+      case ClassOfInt => dis.readInt.asInstanceOf[T]
+      case ClassOfByte => dis.readByte.asInstanceOf[T]
+      case ClassOfBoolean => dis.readBoolean().asInstanceOf[T]
       case _ =>
-        val objId = data(i)
+        val objId = dis.readInt
         val typeId = typeOf(objId) get
 
-        // find the approprieta serializer
+        // find the appropriate serializer
         val ser: Serializer[T] = serializers.values
           .find(_.typeId == typeId)
           .head
@@ -40,11 +43,12 @@ abstract class Persister(serializers: Map[Class[_], Serializer[_]]) {
 
   def typeOf(objId: Int): Option[Int] = serData.typeOf(objId)
 
-  def resolveObjects(list: List[Any]): List[Int] = list map {
+  def resolveObjects(list: List[Any]): List[AnyVal] = list map {
 
     case v: Int => v
+    case b: Byte => b
     case str: String => stringInterner getOrStore str
-    case b: Boolean => if(b) 1 else 0
+    case b: Boolean => b
     case obj =>
       val clazzOf = obj.getClass
       val ser = serializers(clazzOf).asInstanceOf[Serializer[Any]]
@@ -60,16 +64,10 @@ abstract class Persister(serializers: Map[Class[_], Serializer[_]]) {
     serData.store(serializer.typeId, data)
   }
 
-  private def internDataTypes(data: List[Any]): List[Int] = data.map {
-
-    case s: String => stringInterner getOrStore s
-    case i: Int => i
-  }
-
   def load[T](objId: Int)(implicit serializer: Serializer[T]): T = {
 
-    val intData = serData.load(objId, serializer.typeId).toArray
+    val dataStream = serData.load(objId, serializer.typeId)
 
-    serializer unmarshall MyReader(intData)
+    serializer unmarshall MyStreamReader(dataStream)
   }
 }
