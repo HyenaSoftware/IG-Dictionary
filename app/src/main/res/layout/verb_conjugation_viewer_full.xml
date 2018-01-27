@@ -28,71 +28,114 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:orientation="vertical"
             android:layout_marginTop="3dp">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Active Voice"
-                android:background="#fffde5"/>
-        <include layout="@layout/verb_conjugation_nonfinitive_viewer" android:id="@+id/frame.active.nonfinitive"/>
-        <FrameLayout
+
+        <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.active.indicatives"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Indicative"
-                      android:background="#fffde5"/>
-        </FrameLayout>
-        <FrameLayout
+                android:layout_height="match_parent" android:background="#4d4ec7">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Active Voice"
+                    android:layout_alignParentLeft="true" android:textAlignment="center"
+                    android:layout_centerVertical="true" android:textColor="#ffffff"/>
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/iv.toggle.active_voice_view" android:background="@drawable/ic_keyboard_arrow_up_black_18dp"
+                    android:layout_alignParentRight="true" android:onClick="onCollapseView"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.active.subjunctives"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Subjunctive"
-                      android:background="#fffde5"/>
-        </FrameLayout>
+                android:layout_height="match_parent" android:id="@+id/ll.active_voice_view">
+            <include layout="@layout/verb_conjugation_nonfinitive_viewer" android:id="@+id/frame.active.nonfinitive"/>
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.active.indicatives"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="Indicative"
+                          android:background="#fffde5"/>
+            </FrameLayout>
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.active.subjunctives"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="Subjunctive"
+                          android:background="#fffde5"/>
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
             android:layout_width="match_parent" android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="3dp">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:textAppearance="?android:attr/textAppearanceMedium"
-                  android:text="Mediopassive Voice"
-                  android:background="#fffde5"/>
-        <include layout="@layout/verb_conjugation_nonfinitive_viewer" android:id="@+id/frame.mediopassive.nonfinitive"/>
-        <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" android:layout_marginTop="3dp">
-            <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.mediopassive.indicative"
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent"/>
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:background="#4d4ec7">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Indicative"
-            />
-        </FrameLayout>
-        <FrameLayout
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:text="Mediopassive Voice"
+                      android:layout_alignParentLeft="true" android:textColor="#ffffff"
+                      android:layout_centerVertical="true"/>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:id="@+id/iv.toggle.mediopassive_voice_view"
+                       android:background="@drawable/ic_keyboard_arrow_down_black_18dp"
+                       android:layout_alignParentRight="true" android:onClick="onCollapseView"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" android:layout_marginTop="3dp">
-            <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.mediopassive.subjunctive"
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Subjunctive"
-            />
-        </FrameLayout>
+                android:layout_height="match_parent" android:id="@+id/ll.mediopassive_voice_view"
+                android:visibility="gone">
+            <include layout="@layout/verb_conjugation_nonfinitive_viewer" android:id="@+id/frame.mediopassive.nonfinitive"/>
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:layout_marginTop="3dp">
+                <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.mediopassive.indicative"
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="Indicative"
+                />
+            </FrameLayout>
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:layout_marginTop="3dp">
+                <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.mediopassive.subjunctive"
+                         android:layout_width="match_parent"
+                         android:layout_height="match_parent"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="Subjunctive"
+                />
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:layout_marginTop="3dp">
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="Past Participle"
-                  android:background="#fffde5"/>
-        <include layout="@layout/fragment_adjectival_strong_declension_view"
-                 android:id="@+id/frame.past_participle"
-                 android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" android:layout_marginTop="3dp">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:background="#4d4ec7">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceMedium" android:text="Past Participle"
+                      android:layout_alignParentLeft="true" android:textColor="#ffffff"
+                      android:layout_centerVertical="true"/>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:id="@+id/iv.toggle.past_participle_view" android:background="@drawable/ic_keyboard_arrow_down_black_18dp"
+                       android:layout_alignParentRight="true" android:onClick="onCollapseView"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/ll.past_participle_view"
+                android:visibility="gone">
+            <include layout="@layout/fragment_adjectival_strong_declension_view"
+                     android:id="@+id/frame.past_participle"
+                     android:layout_width="match_parent" android:layout_height="wrap_content"/>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
