@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/glVerb" android:orientation="vertical"
+              android:layout_marginBottom="3dp" android:columnCount="3"
+              android:paddingTop="6dp">
+    <TableLayout android:layout_width="match_parent"
+                 android:layout_marginBottom="6dp" android:layout_height="wrap_content" android:background="#fffde5">
+        <TableRow android:layout_width="match_parent">
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Weak I-stem"
+                    android:textAlignment="center" android:id="@+id/tv.addword.verb.stemName"
+                    android:layout_weight="1"/>
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Small Text"
+                    android:id="@+id/tv.addword.verb.AblautGrades" android:layout_weight="1"
+                    android:textAlignment="center"/>
+        </TableRow>
+    </TableLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical"
+            android:layout_marginTop="3dp">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Active Voice"
+                android:background="#fffde5"/>
+        <include layout="@layout/verb_conjugation_nonfinitive_viewer" android:id="@+id/frame.active.nonfinitive"/>
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.active.indicatives"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Indicative"
+                      android:background="#fffde5"/>
+        </FrameLayout>
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.active.subjunctives"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Subjunctive"
+                      android:background="#fffde5"/>
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="3dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium"
+                  android:text="Mediopassive Voice"
+                  android:background="#fffde5"/>
+        <include layout="@layout/verb_conjugation_nonfinitive_viewer" android:id="@+id/frame.mediopassive.nonfinitive"/>
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:layout_marginTop="3dp">
+            <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.mediopassive.indicative"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Indicative"
+            />
+        </FrameLayout>
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:layout_marginTop="3dp">
+            <include layout="@layout/verb_conjugation_finitive_viewer" android:id="@+id/frame.mediopassive.subjunctive"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Subjunctive"
+            />
+        </FrameLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:layout_marginTop="3dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="Past Participle"
+                  android:background="#fffde5"/>
+        <include layout="@layout/fragment_adjectival_strong_declension_view"
+                 android:id="@+id/frame.past_participle"
+                 android:layout_width="match_parent" android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>
+

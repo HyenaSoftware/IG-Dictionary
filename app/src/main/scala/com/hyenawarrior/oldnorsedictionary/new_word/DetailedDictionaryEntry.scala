@@ -51,6 +51,6 @@ class DetailedDictionaryEntry extends AppCompatActivity {
     case sv: StrongVerb =>
       //
       val view = findViewById(R.id.verb_conjugation_viewer)
-      setDeclensionsTo(sv, view, VerbModeEnum.INDICATIVE, VerbVoice.ACTIVE)
+      setDeclensionsTo(sv, view)
   }
 }

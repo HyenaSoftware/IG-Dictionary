@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:id="@+id/glVerb" android:orientation="vertical"
+              android:background="#fffde5" android:layout_marginBottom="6dp" android:columnCount="3"
+>
+        <TableRow android:layout_width="match_parent">
+            <TextView android:layout_width="0dp"    android:layout_height="wrap_content"
+                      android:layout_weight="1"     android:text="infinitive"
+                      android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hafa" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.Infinitive"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+            <TextView android:layout_width="0dp"    android:layout_height="wrap_content"
+                      android:layout_weight="1"     android:text="present participle"
+                      android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hafandi" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PresPart"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent">
+            <TextView android:layout_width="0dp"    android:layout_height="wrap_content"
+                      android:layout_weight="1"     android:text="past participle"
+                      android:textAppearance="?android:attr/textAppearanceSmall" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:text="hafðr" android:layout_weight="1"
+                      android:textAppearance="?android:attr/textAppearanceMedium"
+                      android:id="@+id/tv.addword.verb.PastPart" android:singleLine="false"/>
+        </TableRow>
+</TableLayout>
+

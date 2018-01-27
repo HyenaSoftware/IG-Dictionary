@@ -52,21 +52,4 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 			.map(i => adapter.getView(i, null, null))
 			.foreach(v => layout.addView(v))
 	}
-
-  def onClickOnAnEntry(view: View): Unit = {
-
-    val llFormView = view.findViewById(R.id.llFormTable)
-
-    llFormView.getVisibility match {
-      case View.VISIBLE => llFormView.setVisibility(View.GONE)
-      case View.GONE =>
-        llFormView.setVisibility(View.VISIBLE)
-
-        view.getTag match {
-
-          case DictionaryListItem(sv: StrongVerb, _, _, _) =>
-            setDeclensionsTo(sv, view, VerbModeEnum.INDICATIVE, VerbVoice.ACTIVE)
-        }
-    }
-  }
 }
