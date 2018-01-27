@@ -5,13 +5,13 @@ import android.content.Context
 import android.view.{LayoutInflater, View}
 import android.widget._
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
+import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{IMPERATIVE, INDICATIVE, PARTICIPLE, SUBJUNCTIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.{Pronoun, verbs}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.VerbForm
 import com.hyenawarrior.oldnorsedictionary.modelview.EditTextTypeListener
@@ -20,6 +20,8 @@ import com.hyenawarrior.oldnorsedictionary.new_word.VerbDeclPreferencesDialog
 import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.AddNewVerbHelper.{GRAY, RED}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.AddNewWordActivity._
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.WordData
+
+import scala.language.postfixOps
 
 /**
 	* Created by HyenaWarrior on 2017.04.17..
@@ -53,9 +55,10 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	// panel for showing the verb forms
 	val LL_DECL_LIST = rootView.findViewById(R.id.llVerbDeclensions).asInstanceOf[LinearLayout]
 
-	val RBG_MOOD = rootView.findViewById(R.id.rbgVerbMood).asInstanceOf[RadioGroup]
-	RBG_MOOD findViewById R.id.rbInd setOnClickListener MoodSelector
-	RBG_MOOD findViewById R.id.rbSubj setOnClickListener MoodSelector
+	val verbMoodPanel = rootView.findViewById(R.id.glVerbMood).asInstanceOf[GridLayout]
+	verbMoodPanel findViewById R.id.rbInd setOnClickListener MoodSelector
+	verbMoodPanel findViewById R.id.rbSubj setOnClickListener MoodSelector
+	verbMoodPanel findViewById R.id.cbMedioPassive setOnClickListener VoiceSelector
 
 	// verb class spinner in the UI
 	val LOAD_STEM_CLASS_ENUMS: Vector[List[VerbClassEnum]] = activity.getResources
@@ -233,7 +236,22 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
   object MoodSelector extends View.OnClickListener {
 
-    override def onClick(v: View): Unit = VerbDeclensionAdapter setFinitiveMood moodOf(v)
+    override def onClick(v: View): Unit = {
+
+			uncheckOthers(v)
+			VerbDeclensionAdapter setFinitiveMood moodOf(v)
+		}
+
+		private def uncheckOthers(v: View): Unit = {
+
+			val selectedRb = v.getId
+			val otherRbs = Seq(R.id.rbInd, R.id.rbSubj).filterNot(_ == selectedRb)
+
+			for(id <- otherRbs) {
+
+				verbMoodPanel.findViewById(id).asInstanceOf[RadioButton].setChecked(false)
+			}
+		}
 
     private def moodOf(v: View): FinitiveMood = v.getId match {
 
@@ -241,6 +259,18 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
       case R.id.rbSubj => SUBJUNCTIVE
     }
   }
+
+	object VoiceSelector extends View.OnClickListener {
+
+		override def onClick(v: View): Unit = VerbDeclensionAdapter showMediopassives isChecked(v)
+
+		private def isChecked(v: View): Boolean = {
+
+			val cb = v.asInstanceOf[CheckBox]
+
+			cb.isChecked
+		}
+	}
 
 	override def onTextFormOverride(rowView: View)(str: String): Unit = {
 

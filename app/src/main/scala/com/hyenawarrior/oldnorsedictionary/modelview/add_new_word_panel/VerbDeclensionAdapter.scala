@@ -3,8 +3,9 @@ package com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel
 import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.Button
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.INDICATIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.modelview._
@@ -14,11 +15,24 @@ import com.hyenawarrior.oldnorsedictionary.modelview._
 	*/
 class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClassEnum, StrongVerb)](activity)
 {
-  private var currentMood = VerbModeEnum.INDICATIVE
+  private var currentMood = INDICATIVE
+  private var currentVoice = ACTIVE
 
   def setFinitiveMood(mood: FinitiveMood) = {
 
     currentMood = mood
+
+    for(i <- 0 until getCount) {
+
+      val v = getView(i, null, null)
+
+      resetView(i, v)
+    }
+  }
+
+  def showMediopassives(show: Boolean) = {
+
+    currentVoice = if(show) MEDIO_PASSIVE else ACTIVE
 
     for(i <- 0 until getCount) {
 
@@ -42,7 +56,7 @@ class VerbDeclensionAdapter(activity: Activity) extends CustomAdapter[(VerbClass
     val (vcDesc, strongVerb) = itemAt(i)
 
 		// set declensions
-		setDeclensionsTo(strongVerb, view, currentMood, ACTIVE)
+		setDeclensionsTo(strongVerb, view, currentMood, currentVoice)
 
     // tag the select button
     val tv_addword_verb_Select = view.findViewById(R.id.tv_addword_verb_Select).asInstanceOf[Button]
