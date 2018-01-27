@@ -13,7 +13,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{PAST_
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem.fromStrRepr
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
@@ -304,49 +304,80 @@ object StrongVerbForm {
 
   private def inflectionFor(verbType: VerbType, stemOrVerbStr: String): String = verbType match {
 
-    case (INDICATIVE,  _, Some(tense), Some(pronoun)) => inflectionForFinitive(tense, pronoun, stemOrVerbStr)
-    case (SUBJUNCTIVE, _, Some(tense), Some(pronoun)) => inflectionForSubj(tense, pronoun, stemOrVerbStr)
-    case (mood: NonFinitiveMood, _, optTense, None) => inflectionFor(optTense, mood)
+    case (INDICATIVE,  voice, Some(tense), Some(pronoun)) => inflectionForFinitive(voice, tense, pronoun, stemOrVerbStr)
+    case (SUBJUNCTIVE, voice, Some(tense), Some(pronoun)) => inflectionForSubj(voice, tense, pronoun, stemOrVerbStr)
+    case (mood: NonFinitiveMood, voice, optTense, None) => inflectionFor(optTense, voice, mood)
   }
 
-	private def inflectionForFinitive(tense: VerbTenseEnum, pronoun: Pronoun, stemOrVerbStr: String) = (tense, pronoun) match {
+	private def inflectionForFinitive(voice: VerbVoice, tense: VerbTenseEnum, pronoun: Pronoun, stemOrVerbStr: String)
+    = (voice, tense, pronoun) match {
 
-		case (PRESENT, SG_1) => ""
-		case (PRESENT, SG_2 | SG_3) => "r"
-		case (PRESENT, PL_1) => "um"
-		case (PRESENT, PL_2) => "ið"
-		case (PRESENT, PL_3) => "a"
+		case (ACTIVE, PRESENT, SG_1) => ""
+		case (ACTIVE, PRESENT, SG_2 | SG_3) => "r"
+		case (ACTIVE, PRESENT, PL_1) => "um"
+		case (ACTIVE, PRESENT, PL_2) => "ið"
+		case (ACTIVE, PRESENT, PL_3) => "a"
 
-		case (PAST, SG_1 | SG_3) => ""
-		case (PAST, SG_2) if stemOrVerbStr endsWith "t" => "st"
-		case (PAST, SG_2)  => "t"
-		case (PAST, PL_1) => "um"
-		case (PAST, PL_2) => "uð"
-		case (PAST, PL_3) => "u"
+		case (ACTIVE, PAST, SG_1 | SG_3) => ""
+		case (ACTIVE, PAST, SG_2) if stemOrVerbStr endsWith "t" => "st"
+		case (ACTIVE, PAST, SG_2)  => "t"
+		case (ACTIVE, PAST, PL_1) => "um"
+		case (ACTIVE, PAST, PL_2) => "uð"
+		case (ACTIVE, PAST, PL_3) => "u"
+
+    case (MEDIO_PASSIVE, PRESENT, SG_1) => "umk"
+    case (MEDIO_PASSIVE, PRESENT, SG_2 | SG_3) => "sk"
+    case (MEDIO_PASSIVE, PRESENT, PL_1) => "umsk"
+    case (MEDIO_PASSIVE, PRESENT, PL_2) => "izk"
+    case (MEDIO_PASSIVE, PRESENT, PL_3) => "ask"
+
+    case (MEDIO_PASSIVE, PAST, SG_1) => "umk"
+    case (MEDIO_PASSIVE, PAST, SG_2 | SG_3) => "sk"
+    case (MEDIO_PASSIVE, PAST, PL_1) => "umsk"
+    case (MEDIO_PASSIVE, PAST, PL_2) => "uzk"
+    case (MEDIO_PASSIVE, PAST, PL_3) => "usk"
 	}
 
-  private def inflectionForSubj(tense: VerbTenseEnum, pronoun: Pronoun, stemOrVerbStr: String) = (tense, pronoun) match {
+  private def inflectionForSubj(voice: VerbVoice, tense: VerbTenseEnum, pronoun: Pronoun, stemOrVerbStr: String)
+    = (voice, tense, pronoun) match {
 
-    case (PRESENT, SG_1) => "a"
-    case (PRESENT, SG_2) => "ir"
-    case (PRESENT, SG_3) => "i"
-    case (PRESENT, PL_1) => "im"
-    case (PRESENT, PL_2) => "ið"
-    case (PRESENT, PL_3) => "i"
+    case (ACTIVE, PRESENT, SG_1) => "a"
+    case (ACTIVE, PRESENT, SG_2) => "ir"
+    case (ACTIVE, PRESENT, SG_3) => "i"
+    case (ACTIVE, PRESENT, PL_1) => "im"
+    case (ACTIVE, PRESENT, PL_2) => "ið"
+    case (ACTIVE, PRESENT, PL_3) => "i"
 
-    case (PAST, SG_1) => "a"
-    case (PAST, SG_2)  => "ir"
-    case (PAST, SG_3)  => "i"
-    case (PAST, PL_1) => "im"
-    case (PAST, PL_2) => "ið"
-    case (PAST, PL_3) => "i"
+    case (ACTIVE, PAST, SG_1) => "a"
+    case (ACTIVE, PAST, SG_2)  => "ir"
+    case (ACTIVE, PAST, SG_3)  => "i"
+    case (ACTIVE, PAST, PL_1) => "im"
+    case (ACTIVE, PAST, PL_2) => "ið"
+    case (ACTIVE, PAST, PL_3) => "i"
+
+    case (MEDIO_PASSIVE, PRESENT, SG_1) => "umk"
+    case (MEDIO_PASSIVE, PRESENT, SG_2 | SG_3) => "isk"
+    case (MEDIO_PASSIVE, PRESENT, PL_1) => "imsk"
+    case (MEDIO_PASSIVE, PRESENT, PL_2) => "izk"
+    case (MEDIO_PASSIVE, PRESENT, PL_3) => "isk"
+
+    case (MEDIO_PASSIVE, PAST, SG_1) => "umk"
+    case (MEDIO_PASSIVE, PAST, SG_2 | SG_3)  => "isk"
+    case (MEDIO_PASSIVE, PAST, PL_1) => "imsk"
+    case (MEDIO_PASSIVE, PAST, PL_2) => "izk"
+    case (MEDIO_PASSIVE, PAST, PL_3) => "isk"
   }
 
-	private def inflectionFor(optTense: Option[VerbTenseEnum], mood: NonFinitiveMood): String = (optTense, mood) match {
+	private def inflectionFor(optTense: Option[VerbTenseEnum], voice: VerbVoice, mood: NonFinitiveMood): String
+  = (optTense, voice, mood) match {
 
-		case (Some(PAST),			PARTICIPLE) => "inn"	// adjectival declension
-		case (Some(PRESENT),	PARTICIPLE) => "andi"	// -andi + adjectival declension?
-		case (None,			INFINITIVE) => "a"
+		case (Some(PAST),			ACTIVE, PARTICIPLE) => "inn"	// adjectival declension
+		case (Some(PRESENT),	ACTIVE, PARTICIPLE) => "andi"	// -andi + adjectival declension?
+		case (None,			      ACTIVE, INFINITIVE) => "a"
+
+    case (Some(PAST),	    MEDIO_PASSIVE, PARTICIPLE) => "izk"
+    case (Some(PRESENT),	MEDIO_PASSIVE, PARTICIPLE) => "andisk"
+    case (None,			      MEDIO_PASSIVE, INFINITIVE) => "ask"
 	}
 
   private def applyNonProductiveRules(verbType: VerbType, verbClass: VerbClassEnum)(str: String): Option[String]
@@ -354,16 +385,21 @@ object StrongVerbForm {
 
     case (INDICATIVE,  ACTIVE, Some(PRESENT), Some(Pronoun(SINGULAR, _))) =>
 
-      if(verbClass == STRONG_2ND_CLASS) {
+      verbClass match {
 
-        StrongVerbSecondClassIUmlaut(str)
-
-      } else {
-
-        Explicit_I_Umlaut(str)
+        case STRONG_2ND_CLASS => StrongVerbSecondClassIUmlaut(str)
+        case _ => Explicit_I_Umlaut(str)
       }
 
-    case (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(_)) => Explicit_I_Umlaut(str)
+    case (SUBJUNCTIVE, _, Some(PAST),    Some(_)) => Explicit_I_Umlaut(str)
+
+    case (INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun(SINGULAR, 2 | 3))) =>
+
+      verbClass match {
+
+        case STRONG_2ND_CLASS => StrongVerbSecondClassIUmlaut(str)
+        case _ => Explicit_I_Umlaut(str)
+      }
 
     // FIXME: apply U-umlaut here, to avoid interference with I-umlaut
     case _ => None

@@ -3,6 +3,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
 
@@ -28,14 +29,16 @@ package object verbs
 		case (PAST, PLURAL)		=> PRETERITE_PLURAL_STEM
 	}
 
-  // FIXME: refactor it to use the regular 'VerbType' type, instead of this
   def stemFrom(verbType: VerbType): EnumVerbStem = verbType match {
 
     case (INFINITIVE,               _, None,          None   ) => PRESENT_STEM
     case (INDICATIVE | SUBJUNCTIVE, _, Some(PRESENT), Some(_)) => PRESENT_STEM
-    case (INDICATIVE,  _, Some(PAST), Some(Pronoun(SINGULAR, _))) => PRETERITE_SINGULAR_STEM
-    case (INDICATIVE,  _, Some(PAST), Some(Pronoun(PLURAL,   _))) => PRETERITE_PLURAL_STEM
-    case (SUBJUNCTIVE, _, Some(PAST), Some(Pronoun(_,        _))) => PRETERITE_PLURAL_STEM
+    case (INDICATIVE,  ACTIVE, 				Some(PAST), Some(Pronoun(SINGULAR, _))) => PRETERITE_SINGULAR_STEM
+    case (INDICATIVE,  MEDIO_PASSIVE, Some(PAST), Some(Pronoun(SINGULAR, 1))) => PRETERITE_PLURAL_STEM
+    case (INDICATIVE,  MEDIO_PASSIVE, Some(PAST), Some(Pronoun(SINGULAR, 2 | 3))) => PRETERITE_SINGULAR_STEM
+    case (INDICATIVE,  _, 						Some(PAST), Some(Pronoun(PLURAL,   _))) => PRETERITE_PLURAL_STEM
+    case (SUBJUNCTIVE, _, 						Some(PAST), Some(Pronoun(_,        _))) => PRETERITE_PLURAL_STEM
+
     case (PARTICIPLE,  _,             Some(PRESENT), None) => PRESENT_STEM
     case (PARTICIPLE,  _,             Some(PAST),    None) => PERFECT_STEM
     case (IMPERATIVE,  _,             Some(PRESENT), _   ) => PRESENT_STEM
