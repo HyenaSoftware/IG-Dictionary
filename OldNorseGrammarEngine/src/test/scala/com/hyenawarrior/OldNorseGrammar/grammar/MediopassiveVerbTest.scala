@@ -13,30 +13,6 @@ import org.junit.Test
 class MediopassiveVerbTest {
 
   @Test
-  def testClass2ndChangeToJoForPresent(): Unit = {
-
-    val srcType: VerbType = (INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3))
-
-    val verb = StrongVerb(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "skaut"))
-
-    assertEquals("skjóta", verb.verbForms(INFINITIVE, ACTIVE, None, None).strForm)
-
-    // indicative
-    assertEquals("skýt",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skýtr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_2)).strForm)
-
-    assertEquals("skaut",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skauzt",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-
-    // subjunctive
-    assertEquals("skjóta",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skjótir",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_2)).strForm)
-
-    assertEquals("skyta",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skytir",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-  }
-
-  @Test
   def testClass2ndChange(): Unit = {
 
     val srcType: VerbType = (INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_3))
