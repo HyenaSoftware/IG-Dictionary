@@ -44,8 +44,6 @@ class TestStrongVerbContextSerializer {
       i = i+1
       indexedData(i).asInstanceOf[T]
     }
-
-    override def apply[T](i: Int)(implicit clazz: ClassTag[T]): T = indexedData(i).asInstanceOf[T]
   }
 
   @Test
