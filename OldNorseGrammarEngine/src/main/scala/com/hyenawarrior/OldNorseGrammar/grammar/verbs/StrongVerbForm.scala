@@ -332,6 +332,7 @@ object StrongVerbForm {
     case (MEDIO_PASSIVE, PRESENT, PL_3) => "ask"
 
     case (MEDIO_PASSIVE, PAST, SG_1) => "umk"
+    case (MEDIO_PASSIVE, PAST, SG_2) if !(stemOrVerbStr endsWith "t") => "tsk"
     case (MEDIO_PASSIVE, PAST, SG_2 | SG_3) => "sk"
     case (MEDIO_PASSIVE, PAST, PL_1) => "umsk"
     case (MEDIO_PASSIVE, PAST, PL_2) => "uzk"
