@@ -1,6 +1,6 @@
 package com.hyenawarrior
 
-import com.hyenawarrior.OldNorseGrammar.grammar.{MediopassiveVerbTest, SubjVerbTest}
+import com.hyenawarrior.OldNorseGrammar.grammar.{MediopassiveVerbTest, SubjMediopassiveVerbTest, SubjVerbTest}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphology.{TestTransformation, UmlautTest, VerbStemTest}
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.TestVowels
 import org.junit.runner.RunWith
@@ -21,6 +21,7 @@ import org.junit.runners.Suite
 	classOf[VerbTest],
 	classOf[SubjVerbTest],
   classOf[MediopassiveVerbTest],
+	classOf[SubjMediopassiveVerbTest],
 	classOf[UmlautTest]
 ))
 class TestSuite
