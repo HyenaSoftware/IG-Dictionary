@@ -62,4 +62,14 @@ class MediopassiveVerbTest {
     assertEquals("rákuzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
     assertEquals("rákusk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
   }
+
+  @Test
+  def testClass5thVerbLiggja(): Unit ={
+
+    val inf = (INFINITIVE, ACTIVE, None, None)
+
+    val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "liggja"))
+
+    assertEquals("lázk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+  }
 }
