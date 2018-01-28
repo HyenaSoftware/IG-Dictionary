@@ -38,20 +38,28 @@ class MediopassiveVerbTest {
     assertEquals("skutumsk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
     assertEquals("skutuzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
     assertEquals("skutusk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+  }
 
-    // subjunctive
-    assertEquals("skjótumk", verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skjótisk", verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_2)).strForm)
+  @Test
+  def testClass5thVerbReka(): Unit = {
 
-    assertEquals("skjótimsk", verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("skjótizk",  verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_2)).strForm)
-    assertEquals("skjótisk",  verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+    val inf = (INFINITIVE, ACTIVE, None, None)
 
-    assertEquals("skytumk",  verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skytisk",  verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+    val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "reka"))
 
-    assertEquals("skytimsk", verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("skytizk",  verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
-    assertEquals("skytisk",  verb.verbForms(SUBJUNCTIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("rekumk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("reksk",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+
+    assertEquals("rekumsk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("rekizk",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_2)).strForm)
+    assertEquals("rekask",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+
+    assertEquals("rákumk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
+    assertEquals("rakzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+    assertEquals("raksk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+
+    assertEquals("rákumsk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("rákuzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
+    assertEquals("rákusk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
   }
 }

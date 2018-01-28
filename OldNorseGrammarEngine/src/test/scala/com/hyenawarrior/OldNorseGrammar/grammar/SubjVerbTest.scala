@@ -56,7 +56,7 @@ class SubjVerbTest {
   }
 
   @Test
-  def testClass5thVerb(): Unit = {
+  def testClass5thVerbReka(): Unit = {
 
     val inf = (INFINITIVE, ACTIVE, None, None)
 

@@ -7,7 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.Enabled
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{apply => _, unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
@@ -408,7 +408,30 @@ class VerbTest
     // gemination doubles the 't'
     assertEquals("látt",    verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_2)).strForm)
     assertEquals("lágum",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.PL_1)).strForm)
-    assertEquals("leginn",  verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST),    None).strForm)
+    assertEquals("leginn",  verb.verbForms(PARTICIPLE, ACTIVE, Some(PAST),    None).strForm)
+  }
+
+  @Test
+  def testClass5thVerbReka(): Unit = {
+
+    val inf = (INFINITIVE, ACTIVE, None, None)
+
+    val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "reka"))
+
+    assertEquals("rek",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("rekr", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+
+    assertEquals("rekum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("rekið",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_2)).strForm)
+    assertEquals("reka",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+
+    assertEquals("rak",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
+    assertEquals("rakt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+    assertEquals("rak",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+
+    assertEquals("rákum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("rákuð",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
+    assertEquals("ráku",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
   }
 
   @Test
