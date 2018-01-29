@@ -27,8 +27,34 @@ object VerbContext {
     .flatMap { case (m, oT, oP) => VerbVoice.values.map(v => (m, v, oT, oP)) }
 }
 
+/**
+  * Proposed:
+  *   StrongVerb(StrongVerbClassEnum
+  *     , Map[EnumVerbStem, AblautGrade]
+  *     , Map[VerbType, StrongVerbForm] // restrictions
+  *     , Map[VerbType, StrongVerbForm] // generated forms
+  *     , Map[VerbType, StrongVerbForm] // direct overrides
+  *
+  * @param verbClass
+  * @param ablautGrade
+  * @param givenVerbForms
+  * @param generatedVerbForms
+  * @param overriddenVerbForms
+  */
 case class StrongVerb(verbClass: StrongVerbClassEnum, ablautGrade: Map[EnumVerbStem, AblautGrade]
-                      , verbForms: Map[VerbType, StrongVerbForm])
+                      , givenVerbForms: Map[VerbType, StrongVerbForm]
+                      , generatedVerbForms: Map[VerbType, StrongVerbForm]
+                      , overriddenVerbForms: Map[VerbType, StrongVerbForm]) {
+
+  lazy val verbForms = givenVerbForms ++ generatedVerbForms ++ overriddenVerbForms
+
+  def overrideFormsOf(overriddenVerbForms: Map[VerbType, StrongVerbForm]): StrongVerb = {
+
+    val generatedVerbForms2 = generatedVerbForms -- overriddenVerbForms.keys
+
+    new StrongVerb(verbClass, ablautGrade, givenVerbForms, generatedVerbForms2, overriddenVerbForms)
+  }
+}
 
 object StrongVerb {
 
@@ -46,16 +72,14 @@ object StrongVerb {
     // exclude the base form definition and the overrides
     val missingDeclensions = VerbContext.ALL_VERB_FORMS.filterNot(givenVerbForms.contains)
 
-    val missingVerbForms = missingDeclensions.map { vt =>
+    val generatedVerbForms = missingDeclensions.map { vt =>
 
         val expectedStemType = verbs.stemFrom(vt)
         vt -> StrongVerbForm.verbFrom(stems(expectedStemType), vt)
       }
       .toMap
 
-    val verbForms = givenVerbForms ++ missingVerbForms //++ overriddenVerbForms
-
-    new StrongVerb(verbClass, ablautGrades, verbForms)
+    new StrongVerb(verbClass, ablautGrades, givenVerbForms, generatedVerbForms, Map())
   }
 
   private val STEM_PREFERENCES = Map(

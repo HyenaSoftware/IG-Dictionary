@@ -61,6 +61,20 @@ class TestStrongVerbContextSerializer {
     val VERB_FORMS: Map[VerbType, StrongVerbForm] = Map(
 
       toKeyValuePair(NonFinitiveStrongVerbForm("liggja",StrongVerbStem("leg", STRONG_5TH_CLASS, PRESENT_STEM), NonFinitiveVerbType.INFINITIVE, ACTIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("lá",   StrongVerbStem("la", STRONG_5TH_CLASS, PRETERITE_SINGULAR_STEM),Pronoun.SG_3, PAST, INDICATIVE, ACTIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("lágum",StrongVerbStem("lág",STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM),  Pronoun.PL_1, PAST, INDICATIVE, ACTIVE))
+    )
+
+    val GEN_VERB_FORMS: Map[VerbType, StrongVerbForm] = Map(
+
+      toKeyValuePair(NonFinitiveStrongVerbForm("leginn",StrongVerbStem("leg", STRONG_5TH_CLASS, PERFECT_STEM), NonFinitiveVerbType.PAST_PARTICIPLE, ACTIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("ligg", StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_1, PRESENT, INDICATIVE, ACTIVE)),
+      toKeyValuePair(FinitiveStrongVerbForm("liggr",StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_3, PRESENT, INDICATIVE, ACTIVE))
+    )
+
+    val OVR_VERB_FORMS: Map[VerbType, StrongVerbForm] = Map(
+
+      toKeyValuePair(NonFinitiveStrongVerbForm("liggja",StrongVerbStem("leg", STRONG_5TH_CLASS, PRESENT_STEM), NonFinitiveVerbType.INFINITIVE, ACTIVE)),
       toKeyValuePair(NonFinitiveStrongVerbForm("leginn",StrongVerbStem("leg", STRONG_5TH_CLASS, PERFECT_STEM), NonFinitiveVerbType.PAST_PARTICIPLE, ACTIVE)),
       toKeyValuePair(FinitiveStrongVerbForm("ligg", StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_1, PRESENT, INDICATIVE, ACTIVE)),
       toKeyValuePair(FinitiveStrongVerbForm("liggr",StrongVerbStem("le", STRONG_5TH_CLASS, PRESENT_STEM), Pronoun.SG_3, PRESENT, INDICATIVE, ACTIVE)),
@@ -68,7 +82,7 @@ class TestStrongVerbContextSerializer {
       toKeyValuePair(FinitiveStrongVerbForm("lágum",StrongVerbStem("lág",STRONG_5TH_CLASS, PRETERITE_PLURAL_STEM),  Pronoun.PL_1, PAST, INDICATIVE, ACTIVE))
     )
 
-    val verb = StrongVerb(STRONG_5TH_CLASS, ABLAUT_GRADES, VERB_FORMS)
+    val verb = StrongVerb(STRONG_5TH_CLASS, ABLAUT_GRADES, VERB_FORMS, GEN_VERB_FORMS, OVR_VERB_FORMS)
     val data = serializer.marshall(verb)
 
     val sameVerb = serializer.unmarshall(MyReader(data))
@@ -84,7 +98,7 @@ class TestStrongVerbContextSerializer {
     val serializer = serializers.DictionaryEntryMarshaller
 
     val meanings = List(MeaningDef("m1", "n1", Seq("e1", "e2")))
-    val de = DictionaryEntry(StrongVerb(STRONG_5TH_CLASS, Map(), Map()), meanings)
+    val de = DictionaryEntry(StrongVerb(STRONG_5TH_CLASS, Map(), Map(), Map(), Map()), meanings)
 
     val data = serializer.marshall(de)
 

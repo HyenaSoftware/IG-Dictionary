@@ -37,103 +37,113 @@ package object serializers {
 
     override val typeId: Int = 2
 
-    private val VERB_FORM_KEY_SIZE = 4
-
     override def marshall(obj: StrongVerb): List[Any] = {
 
       val vceId: Byte = (VerbClassEnum idOf obj.verbClass).toByte
 
-      val ablautMapLength: Byte = obj.ablautGrade.size.toByte
-      val formsLength: Byte = obj.verbForms.size.toByte
+      //
+      val ablautData = serializeMap(obj.ablautGrade) {
 
-      val fixOrderedAblautGrade = obj.ablautGrade.toSeq
-      val ablautMapAsListKeys = fixOrderedAblautGrade.map { case (s, _) => (EnumVerbStem idOf s).toByte }
-      val ablautMapAsListVals = fixOrderedAblautGrade.map { case (_, AblautGrade(rv)) => rv }
+        case e: EnumVerbStem => List((EnumVerbStem idOf e).toByte)
+        case AblautGrade(rv) => List(rv)
+      }
 
-      val fixOrderedVerbForms = obj.verbForms.toSeq
+      //
+      val givenMapData: List[Any] = serializeMap(obj.givenVerbForms)(serializeMapElem)
+      val generatedMapData: List[Any] = serializeMap(obj.generatedVerbForms)(serializeMapElem)
+      val overriddenMapData: List[Any] = serializeMap(obj.overriddenVerbForms)(serializeMapElem)
 
-      val verbFormsAsListKeys: List[Byte] = fixOrderedVerbForms.map(_._1).flatMap {
+      vceId +: (ablautData ++ givenMapData ++ generatedMapData ++ overriddenMapData)
+    }
 
-        case (md, voice, ot, op) =>
-          val v = VerbVoice idOf voice
-          val t = ot.map(VerbTenseEnum.idOf(_) + 1).getOrElse(0)
-          val p = op.map(Pronoun.idOf(_) + 1).getOrElse(0)
-          List((VerbModeEnum idOf md) toByte, v toByte, t toByte, p toByte)
-      }.toList
+    private def serializeMapElem(a: Any): List[Any] = a match {
 
-      val verbFormsAsListValues: List[String] = fixOrderedVerbForms.map(_._2).flatMap {
+      case (md: VerbModeEnum, voice: VerbVoice, ot: Option[VerbTenseEnum], op: Option[Pronoun]) =>
+        val v = VerbVoice idOf voice
+        val t = ot.map(VerbTenseEnum.idOf(_) + 1).getOrElse(0)
+        val p = op.map(Pronoun.idOf(_) + 1).getOrElse(0)
+        List((VerbModeEnum idOf md) toByte, v toByte, t toByte, p toByte)
 
-        case StrongVerbForm(repr, StrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
+      case StrongVerbForm(repr, StrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
+    }
 
-      }.toList
+    private def serializeMap[K, V](m: Map[K, V])(f: Any => List[Any]): List[Any] = {
 
-      List(vceId, ablautMapLength, formsLength) ++
-        ablautMapAsListKeys ++ ablautMapAsListVals ++
-        verbFormsAsListKeys ++ verbFormsAsListValues
+      val fixOrderedMap = m.toSeq
+      val keys = fixOrderedMap.flatMap { case (k, _) => f(k) }
+      val vals = fixOrderedMap.flatMap { case (_, v) => f(v) }
+
+      m.size.toByte +: (keys ++ vals).toList
     }
 
     override def unmarshall(reader: Reader): StrongVerb = {
 
       val vceId = reader[Byte]()
-      val verbClassEnum: StrongVerbClassEnum = (VerbClassEnum fromId vceId get).asInstanceOf[StrongVerbClassEnum]
+      val verbClassEnum = (VerbClassEnum fromId vceId get).asInstanceOf[StrongVerbClassEnum]
 
-      val ablautMapSize = reader[Byte]()
-      val verbFormsCount = reader[Byte]()
+      //
+      val ablautGrades = deserializeMap(reader, EnumVerbStem fromId reader[Byte]() get, AblautGrade(reader[String]()))
 
-      val ABLAUT_MAP_KEYS_OFFSET = 3
-      val ABLAUT_MAP_VALS_OFFSET = ABLAUT_MAP_KEYS_OFFSET + ablautMapSize
+      //
+      val givenVerbForms = generateMapEntry(reader, verbClassEnum, ablautGrades)
+      val generatedVerbForms = generateMapEntry(reader, verbClassEnum, ablautGrades)
+      val overriddenVerbForms = generateMapEntry(reader, verbClassEnum, ablautGrades)
 
-      val ablautKeys = (0 until ablautMapSize).map(i => EnumVerbStem fromId reader[Byte]() get)
-      val ablautVals = (0 until ablautMapSize).map(i => reader[String]())
+      StrongVerb(verbClassEnum, ablautGrades, givenVerbForms, generatedVerbForms, overriddenVerbForms)
+    }
 
-      val ablautGrades: Map[EnumVerbStem, AblautGrade] = (ablautKeys zip ablautVals)
-        .map { case (k, v) => k -> AblautGrade(v) }
-        .toMap
+    private def deserializeMap[K, V](reader: Reader, fk: => K, fv: => V): Map[K, V] = {
 
-      val VERB_FORMS_KEYS_OFFSET = ABLAUT_MAP_KEYS_OFFSET + 2 * ablautMapSize
-      val VERB_FORMS_VALS_OFFSET = VERB_FORMS_KEYS_OFFSET + VERB_FORM_KEY_SIZE * verbFormsCount
-      val verbFormKeys: Seq[VerbType] = (VERB_FORMS_KEYS_OFFSET until VERB_FORMS_VALS_OFFSET by VERB_FORM_KEY_SIZE)
-        .map(i => {
+      val mapLength = reader[Byte]()
 
-          val mood = VerbModeEnum fromId reader[Byte]() get
-          val voice = VerbVoice fromId reader[Byte]() get
-          val oti = reader[Byte]()
-          val opi = reader[Byte]()
+      val keys = (0 until mapLength).map(_ => fk)
+      val vals = (0 until mapLength).map(_ => fv)
 
-          val ot = if(oti == 0) None else Some(VerbTenseEnum fromId (oti - 1) get)
-          val op = if(opi == 0) None else Some(Pronoun fromId (opi - 1) get)
+      (keys zip vals).toMap
+    }
 
-          (mood, voice, ot, op)
-        })
+    private def deserializeKey(reader: Reader): VerbType = {
 
-      val VERB_FORMS_END_OF_MAP_OFFSET = VERB_FORMS_VALS_OFFSET + 2 * verbFormsCount
-      val verbFormRawVals = (VERB_FORMS_VALS_OFFSET until VERB_FORMS_END_OF_MAP_OFFSET by 2)
-        .map(i => {
-          val verbRepr = reader[String]()
-          val rootRepr = reader[String]()
+      val mood = VerbModeEnum fromId reader[Byte]() get
+      val voice = VerbVoice fromId reader[Byte]() get
+      val oti = reader[Byte]()
+      val opi = reader[Byte]()
 
-          (verbRepr, rootRepr)
-        })
+      val ot = if(oti == 0) None else Some(VerbTenseEnum fromId (oti - 1) get)
+      val op = if(opi == 0) None else Some(Pronoun fromId (opi - 1) get)
 
-      val verbForms: Map[VerbType, StrongVerbForm] = (verbFormKeys zip verbFormRawVals).map {
+      (mood, voice, ot, op)
+    }
+
+    private def deserializeValue(reader: Reader): (String, String) = {
+
+      val verbRepr = reader[String]()
+      val rootRepr = reader[String]()
+
+      (verbRepr, rootRepr)
+    }
+
+    private def generateMapEntry(reader: Reader, verbClassEnum: StrongVerbClassEnum
+      , ablautGrades: Map[EnumVerbStem, AblautGrade]): Map[VerbType, StrongVerbForm] = {
+
+      val verbMap = deserializeMap(reader, deserializeKey(reader), deserializeValue(reader))
+
+      verbMap.map {
 
         case (vt, (vR, rR)) => vt -> generateStrongVerbFrom(verbClassEnum, ablautGrades, vt, vR, rR)
-
-      }.toMap
-
-      StrongVerb(verbClassEnum, ablautGrades, verbForms)
+      }
     }
 
     private def generateStrongVerbFrom(verbClassEnum: StrongVerbClassEnum, ablautGrades: Map[EnumVerbStem, AblautGrade]
       , verbType: VerbType, verbRepr: String, rootRepr: String): StrongVerbForm = verbType match {
 
-      case (k @ (mood: FinitiveMood, voice, Some(tense), Some(pronoun))) =>
+      case (mood: FinitiveMood, voice, Some(tense), Some(pronoun)) =>
         val stemType = tenseAndNumberToStem(tense, pronoun.number)
         val stem = StrongVerbStem(rootRepr, verbClassEnum, stemType)
 
         FinitiveStrongVerbForm(verbRepr, stem, pronoun, tense, mood, voice)
 
-      case (k @ (mood: NonFinitiveMood, voice, optTense, None)) =>
+      case (mood: NonFinitiveMood, voice, optTense, None) =>
         val stemType = moodAndTenseToStem(mood, optTense)
         val verbType = toNonFiniteVerbType(optTense, mood)
         val stem = StrongVerbStem(rootRepr, verbClassEnum, stemType)

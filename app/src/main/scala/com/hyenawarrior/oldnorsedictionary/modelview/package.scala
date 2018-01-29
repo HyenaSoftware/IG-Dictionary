@@ -50,7 +50,7 @@ package object modelview {
     * @param voice
     */
   def setDeclensionsTo(sv: StrongVerb, targetView: View, mood: FinitiveMood, voice: VerbVoice): Unit = sv match {
-    case StrongVerb(cl, ablautGrade, verbForms) =>
+    case StrongVerb(cl, ablautGrade, _, _, _) =>
 
     setVerbConjugationDetailsTo(targetView, cl, ablautGrade)
 
@@ -79,7 +79,7 @@ package object modelview {
     */
   def setDeclensionsTo(sv: StrongVerb, rootView: View): Unit = sv match {
 
-    case StrongVerb(cl, ablautGrade, verbForms) =>
+    case StrongVerb(cl, ablautGrade, _, _, _) =>
 
       if(rootView.getId != R.id.verb_conjugation_viewer) {
 
