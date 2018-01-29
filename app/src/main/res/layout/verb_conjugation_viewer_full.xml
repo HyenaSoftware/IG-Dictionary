@@ -31,7 +31,8 @@
 
         <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" android:background="#4d4ec7">
+                android:layout_height="match_parent" android:background="#4d4ec7"
+                android:id="@+id/rl.toggle.active_voice_view" android:onClick="onCollapseView">
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -43,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/iv.toggle.active_voice_view" android:background="@drawable/ic_keyboard_arrow_up_black_18dp"
-                    android:layout_alignParentRight="true" android:onClick="onCollapseView"/>
+                    android:layout_alignParentRight="true"/>
         </RelativeLayout>
         <LinearLayout
                 android:orientation="vertical"
@@ -74,7 +75,8 @@
             android:orientation="vertical"
             android:layout_marginTop="3dp">
         <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:background="#4d4ec7">
+                        android:background="#4d4ec7" android:id="@+id/rl.toggle.mediopassive_voice_view"
+                        android:onClick="onCollapseView">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:textAppearance="?android:attr/textAppearanceMedium"
                       android:text="Mediopassive Voice"
@@ -83,7 +85,7 @@
             <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
                        android:id="@+id/iv.toggle.mediopassive_voice_view"
                        android:background="@drawable/ic_keyboard_arrow_down_black_18dp"
-                       android:layout_alignParentRight="true" android:onClick="onCollapseView"/>
+                       android:layout_alignParentRight="true"/>
         </RelativeLayout>
         <LinearLayout
                 android:orientation="vertical"
@@ -118,14 +120,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:layout_marginTop="3dp">
         <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                        android:background="#4d4ec7">
+                        android:background="#4d4ec7" android:id="@+id/rl.toggle.past_participle_view"
+                        android:onClick="onCollapseView">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:textAppearance="?android:attr/textAppearanceMedium" android:text="Past Participle"
                       android:layout_alignParentLeft="true" android:textColor="#ffffff"
                       android:layout_centerVertical="true"/>
             <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
                        android:id="@+id/iv.toggle.past_participle_view" android:background="@drawable/ic_keyboard_arrow_down_black_18dp"
-                       android:layout_alignParentRight="true" android:onClick="onCollapseView"/>
+                       android:layout_alignParentRight="true"/>
         </RelativeLayout>
         <LinearLayout
                 android:orientation="vertical"

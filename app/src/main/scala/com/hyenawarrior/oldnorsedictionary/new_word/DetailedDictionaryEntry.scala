@@ -1,5 +1,6 @@
 package com.hyenawarrior.oldnorsedictionary.new_word
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
@@ -58,18 +59,19 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
   def onCollapseView(view: View): Unit = {
 
-    val picRsrc = view.getId match {
+    val (imgViewId, viewPanelId) = view.getId match {
 
-      case R.id.iv_toggle_active_voice_view       => invertVisibilityAndGetNewPicRsrc(R.id.ll_active_voice_view)
-      case R.id.iv_toggle_mediopassive_voice_view => invertVisibilityAndGetNewPicRsrc(R.id.ll_mediopassive_voice_view)
-      case R.id.iv_toggle_past_participle_view    => invertVisibilityAndGetNewPicRsrc(R.id.ll_past_participle_view)
+      case R.id.rl_toggle_active_voice_view       => R.id.iv_toggle_active_voice_view        -> R.id.ll_active_voice_view
+      case R.id.rl_toggle_mediopassive_voice_view => R.id.iv_toggle_mediopassive_voice_view  -> R.id.ll_mediopassive_voice_view
+      case R.id.rl_toggle_past_participle_view    => R.id.iv_toggle_past_participle_view     -> R.id.ll_past_participle_view
     }
 
-    val pic = ContextCompat.getDrawable(getApplicationContext, picRsrc)
-    view setBackground pic
+    val pic = invertVisibilityAndGetNewPicRsrc(viewPanelId)
+    val imgView = findViewById(imgViewId)
+    imgView setBackground pic
   }
 
-  private def invertVisibilityAndGetNewPicRsrc(viewId: Int): Int = {
+  private def invertVisibilityAndGetNewPicRsrc(viewId: Int): Drawable = {
 
     val panel = findViewById(viewId)
     val (nv, picRsrc) = panel.getVisibility match {
@@ -80,6 +82,6 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
     panel setVisibility nv
 
-    picRsrc
+    ContextCompat.getDrawable(getApplicationContext, picRsrc)
   }
 }
