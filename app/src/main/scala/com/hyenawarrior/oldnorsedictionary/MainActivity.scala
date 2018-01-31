@@ -109,7 +109,17 @@ class MainActivity extends AppCompatActivity
 		}
 	}
 
-  private def filter(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
+	private def filter(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
+
+		val fs = forms.groupBy { case ((_, voice, _, _), _) => voice }
+
+		val activeVoicedForms = fs.get(ACTIVE)
+		val medioPassiveVoicedForms = fs.get(MEDIO_PASSIVE)
+
+		activeVoicedForms.flatMap(splitByMood) orElse medioPassiveVoicedForms.flatMap(splitByMood)
+	}
+
+  private def splitByMood(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
 
     val fs = forms.groupBy { case ((md, _, _, _), _) => md }
 
@@ -171,7 +181,7 @@ class MainActivity extends AppCompatActivity
   private def abbrevationOf(voice: VerbVoice): String = voice match {
 
     case ACTIVE => "ACT"
-    case MEDIO_PASSIVE => "REFL"
+    case MEDIO_PASSIVE => "MID-PAS"
   }
 
   private def abbrevationOfTense(tense: VerbTenseEnum): String = tense match {
@@ -182,13 +192,13 @@ class MainActivity extends AppCompatActivity
 
   private def abbrevationOfPronoun(pronoun: Pronoun): String = pronoun match {
 
-    case Pronoun.SG_1 => "1SG"
-    case Pronoun.SG_2 => "2SG"
-    case Pronoun.SG_3 => "3SG"
+    case Pronoun.SG_1 => "SG1"
+    case Pronoun.SG_2 => "SG2"
+    case Pronoun.SG_3 => "SG3"
 
-    case Pronoun.PL_1 => "1PL"
-    case Pronoun.PL_2 => "2PL"
-    case Pronoun.PL_3 => "3PL"
+    case Pronoun.PL_1 => "PL1"
+    case Pronoun.PL_2 => "PL2"
+    case Pronoun.PL_3 => "PL3"
   }
 
   override protected def onBackPressed()
