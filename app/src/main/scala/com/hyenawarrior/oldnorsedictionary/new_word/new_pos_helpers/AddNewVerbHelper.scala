@@ -60,24 +60,35 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	verbMoodPanel findViewById R.id.rbSubj setOnClickListener MoodSelector
 	verbMoodPanel findViewById R.id.cbMedioPassive setOnClickListener VoiceSelector
 
-	// verb class spinner in the UI
-	val LOAD_STEM_CLASS_ENUMS: Vector[List[VerbClassEnum]] = activity.getResources
-		.getStringArray(R.array.verb_types)
-		.map
-		{
-			case "Undefined" => List()
-			case "Strong" => List(STRONG_1ST_CLASS, STRONG_2ND_CLASS, STRONG_3RD_CLASS, STRONG_4TH_CLASS, STRONG_5TH_CLASS
+	// verb class spinner in the UI, it should be the same as verb_types.xml
+	val LOAD_STEM_CLASS_ENUMS: IndexedSeq[List[VerbClassEnum]] = IndexedSeq(
+			List(), // undefined
+			List(STRONG_1ST_CLASS, STRONG_2ND_CLASS, STRONG_3RD_CLASS, STRONG_4TH_CLASS, STRONG_5TH_CLASS
 				, STRONG_6TH_CLASS
 				, STRONG_7_1_CLASS
 				, STRONG_7_2A_CLASS
 				, STRONG_7_2B_CLASS
 				, STRONG_7_3_CLASS
 				, STRONG_7_4_CLASS
-				, STRONG_7_5_CLASS)
-			case "Weak" => List(WEAK_A_STEM, WEAK_I_STEM, WEAK_J_STEM)
-			case str => VerbClassEnum.findByName(str).toList
-		}
-		.toVector
+				, STRONG_7_5_CLASS), // Strong
+			List(WEAK_A_STEM, WEAK_I_STEM, WEAK_J_STEM), // Weak
+			List(IRREGULAR),
+			List(STRONG_1ST_CLASS),
+			List(STRONG_2ND_CLASS),
+			List(STRONG_3RD_CLASS),
+			List(STRONG_4TH_CLASS),
+			List(STRONG_5TH_CLASS),
+			List(STRONG_6TH_CLASS),
+			List(STRONG_7_1_CLASS),
+			List(STRONG_7_2A_CLASS),
+			List(STRONG_7_2B_CLASS),
+			List(STRONG_7_3_CLASS),
+			List(STRONG_7_4_CLASS),
+			List(STRONG_7_5_CLASS),
+			List(WEAK_A_STEM),
+			List(WEAK_I_STEM),
+			List(WEAK_J_STEM)
+		)
 
 	val verbDeclPreferencesDialog = new VerbDeclPreferencesDialog(activity)
 
