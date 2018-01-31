@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.{Adapter, LinearLayout}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
+import android.widget.{Adapter, LinearLayout, TextView}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbModeEnum, VerbVoice}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 import com.hyenawarrior.oldnorsedictionary.modelview._
@@ -44,6 +44,8 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
   private def extractViewsInto(adapter: Adapter, layout: LinearLayout): Unit = {
 
+    layout.removeAllViews()
+
     Range(0, adapter.getCount)
       .map(i => adapter.getView(i, null, null))
       .foreach(v => layout.addView(v))
@@ -55,6 +57,13 @@ class DetailedDictionaryEntry extends AppCompatActivity {
       //
       val view = findViewById(R.id.verb_conjugation_viewer)
       setDeclensionsTo(sv, view)
+
+      val tvWord = findViewById(R.id.tvWord).asInstanceOf[TextView]
+      val priForm = sv.verbForms
+        .get((VerbModeEnum.INFINITIVE, VerbVoice.ACTIVE, None, None))
+        .map(_.strForm)
+        .getOrElse("???")
+      tvWord.setText(priForm)
   }
 
   def onCollapseView(view: View): Unit = {

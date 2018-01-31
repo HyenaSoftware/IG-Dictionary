@@ -6,10 +6,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" android:background="#555555">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="&lt;word>"
+                android:id="@+id/tvWord" android:background="#fffde5" android:layout_marginTop="3dp"/>
         <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:id="@+id/llMeanings" android:background="#ffffff">
+                android:layout_height="match_parent" android:layout_marginTop="3dp"
+                android:orientation="vertical" >
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceMedium" android:text="Examples"
+                      android:id="@+id/textView5" android:background="#fffde5"/>
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/llMeanings" android:background="#ffffff">
+                <include layout="@layout/meanings" android:layout_width="match_parent"
+                         android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
 
         <include layout="@layout/verb_conjugation_viewer_full" android:layout_width="match_parent"
