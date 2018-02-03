@@ -14,7 +14,14 @@ object NounForm {
 
   def fromStringRepr(str: String, stemClass: NounStemClass, declension: NounType): NounForm = {
 
-    val stemStr = str stripSuffix (stemClass inflection declension)
+    val declSuffix = stemClass inflection declension
+
+    if(!str.endsWith(declSuffix)) {
+
+      throw new RuntimeException(s"The word $str doesn't ends with $declSuffix.")
+    }
+
+    val stemStr = str stripSuffix declSuffix
 
     val nounStem = NounStem.fromStrRepr(stemStr, stemClass)
 

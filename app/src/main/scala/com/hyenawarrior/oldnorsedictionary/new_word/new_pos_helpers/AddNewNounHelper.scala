@@ -211,7 +211,9 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		case (maybeEmptyList, (Some(numCase), Some(str)), map) =>
       val listOfNSCE = if(maybeEmptyList.isEmpty) NounStemClassEnum.values else maybeEmptyList
 
-      val wordMaps = listOfNSCE.map(n => n -> generateFormsFrom(n.nounStemClass, (numCase, str), map))
+      val wordMaps = listOfNSCE
+        .map(n => n -> generateFormsFrom(n.nounStemClass, (numCase, str), map))
+        .filter { case (_, m) => m.nonEmpty }
       setInflectedFormsToUI(wordMaps)
 
       latestNounData = wordMaps.toMap
