@@ -7,5 +7,5 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object NullStemClass extends NounStemClass
 {
-	override protected def inflection(decl: (GNumber, Case)): String = ""
+	override def inflection(decl: (GNumber, Case)): String = ???
 }

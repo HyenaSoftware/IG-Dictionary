@@ -1,26 +1,49 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 
-import com.hyenawarrior.OldNorseGrammar.grammar._
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 
 /**
 	* Created by HyenaWarrior on 2017.03.20..
 	*/
-case class Noun(str: String, decl: (GNumber, Case), root: Root, stemClass: NounStemClass) extends PoS
-{
-	// mostly for debug
-	override def toString = s"$str (Noun) [${decl._1}, ${decl._2}] [root:${super.toString}]"
+class Noun(stemClass: NounStemClass, givenForms: Map[NounType, NounForm]
+					 , generatedForms: Map[NounType, NounForm]
+					 , overridenForms: Map[NounType, NounForm]) {
 
-	override def strForm: String =
-	{
-		val Syllables(syllables) = str
+	lazy val nounForms = givenForms ++ generatedForms ++ overridenForms
 
-		val transformedSyllables = transformations.foldLeft(syllables){ (sys, trn) => trn(sys).get }
+ }
 
-		Syllables(transformedSyllables)
+
+object Noun {
+
+	val ALL_FORMS = GNumber.conventionalValues.flatMap(n => Case.values.map(c => n -> c)).toSet
+
+	def apply(stemClass: NounStemClass, givenForms: Map[NounType, String]): Noun = {
+
+		val givenNounForms = givenForms.map {
+
+			case (nt, f) => nt -> NounForm.fromStringRepr(f, stemClass, nt)
+		}
+
+		val missingDeclensions = ALL_FORMS -- givenForms.keys
+		val nounStem = extractPrimaryStem(stemClass, givenForms)
+
+		val missingForms = missingDeclensions.map { nt =>
+
+			nt -> NounForm.fromStringRepr(nounStem, nt)
+
+		}.toMap
+
+		new Noun(stemClass, givenNounForms, missingForms, Map())
 	}
 
-	override def descriptorFlags = List(decl._1, decl._2)
+	private def extractPrimaryStem(stemClass: NounStemClass, givenForms: Map[NounType, String]): NounStem = {
 
-	override def transformations = super.transformations ++ stemClass.transformationsFor(decl)
+		val (decl, str) = givenForms.head
+
+		val form = NounForm.fromStringRepr(str, stemClass, decl)
+
+		form.stem
+	}
 }

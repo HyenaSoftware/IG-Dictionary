@@ -10,14 +10,14 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object StrongStemClassNeuter extends NounStemClass
 {
-	override def transformationsFor(decl: (GNumber, Case)) =  decl match
+	def transformationsFor(decl: (GNumber, Case)) =  decl match
 	{
 		// long stems have i-umlaut
 		case (PLURAL, NOMINATIVE | ACCUSATIVE | DATIVE) 	=> List(Explicit_U_Umlaut)
 		case _ => List()
 	}
 
-	override protected def inflection(decl: (GNumber, Case)) = decl match
+	override def inflection(decl: (GNumber, Case)) = decl match
 	{
 		case (SINGULAR, NOMINATIVE | ACCUSATIVE) => ""
 		case (SINGULAR, DATIVE)		=> "i"

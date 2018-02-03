@@ -2,10 +2,10 @@ package com.hyenawarrior
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Case.{ACCUSATIVE, DATIVE, NOMINATIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, StrongStemClassMascA, StrongStemClassMascI}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{StrongStemClassMascA, StrongStemClassMascI}
 import org.junit.Assert.assertEquals
-import org.junit.{Assert, Test}
+import org.junit.Test
 
 /**
 	* Created by HyenaWarrior on 2017.06.26..
@@ -13,36 +13,33 @@ import org.junit.{Assert, Test}
 class NounTest {
 
   @Test
-  def testStrongMascAStemInflectionForWolf(): Unit = {
+  def testStrongMascWaStem(): Unit = {
 
-    val root = StrongStemClassMascA.unapply("úlfr", (SINGULAR, NOMINATIVE)).get
+    val noun = Noun(StrongStemClassMascA, Map((SINGULAR, NOMINATIVE) -> "sǫngr"))
 
-    assertEquals("úlfum", StrongStemClassMascA(root, (PLURAL, DATIVE)).strForm())
+    assertEquals("sǫng", 		(noun nounForms SINGULAR -> ACCUSATIVE).strRepr)
+
+    assertEquals("sǫngvar", (noun nounForms PLURAL -> NOMINATIVE).strRepr)
+    assertEquals("sǫngum", 	(noun nounForms PLURAL -> DATIVE).strRepr)
   }
 
   @Test
-  def testStrongMascAStemInflectionForSong(): Unit = {
+  def testStrongMascIStem(): Unit = {
 
-    val root = StrongStemClassMascA.unapply("sǫngr", (SINGULAR, NOMINATIVE)).get
+    val noun = Noun(StrongStemClassMascI, Map((SINGULAR, NOMINATIVE) -> "gestr"))
 
-    assertEquals("sǫng", StrongStemClassMascA(root, (SINGULAR, ACCUSATIVE)).strForm())
-
-    assertEquals("sǫngvar", StrongStemClassMascA(root, (PLURAL, NOMINATIVE)).strForm())
-    assertEquals("sǫngum", StrongStemClassMascA(root, (PLURAL, DATIVE)).strForm())
-  }
-
-  @Test
-  def testStrongMascIStemInflectionForGuest(): Unit = {
-
-    val nc = StrongStemClassMascI
-
-    val root = nc.unapply("gestr", (SINGULAR, NOMINATIVE)).get
-
-    assertEquals("gestum", nc(root, (PLURAL, DATIVE)).strForm())
+    assertEquals("gestum", (noun nounForms PLURAL -> DATIVE).strRepr)
   }
 
 	@Test
-	def testStrongAFemNounInflection(): Unit =
+	def testStrongMascAForms(): Unit =
 	{
+    val noun = Noun(StrongStemClassMascA, Map((SINGULAR, NOMINATIVE) -> "úlfr"))
+
+		assertEquals("úlf", 	(noun nounForms SINGULAR -> ACCUSATIVE).strRepr)
+
+		assertEquals("úlfar",	(noun nounForms PLURAL   -> NOMINATIVE).strRepr)
+		assertEquals("úlfa",	(noun nounForms PLURAL   -> ACCUSATIVE).strRepr)
+		assertEquals("úlfum",	(noun nounForms PLURAL   -> DATIVE).strRepr)
 	}
 }

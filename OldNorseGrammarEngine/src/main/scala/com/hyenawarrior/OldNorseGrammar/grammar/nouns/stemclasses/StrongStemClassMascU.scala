@@ -12,7 +12,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object StrongStemClassMascU extends NounStemClass
 {
-	override def transformationsFor(decl: (GNumber, Case)) =  decl match
+	def transformationsFor(decl: (GNumber, Case)) =  decl match
 	{
 		// long stems have i-umlaut
 		case (SINGULAR, NOMINATIVE | ACCUSATIVE)	| (PLURAL, ACCUSATIVE | DATIVE)	=> List(Explicit_U_Umlaut)	// lost -u stem end
@@ -20,7 +20,7 @@ object StrongStemClassMascU extends NounStemClass
 		case _ => List()
 	}
 
-	override protected def inflection(decl: (GNumber, Case)) = decl match
+	override def inflection(decl: (GNumber, Case)) = decl match
 	{
 		case (SINGULAR, NOMINATIVE) => "r"
 		case (SINGULAR, ACCUSATIVE)	=> ""

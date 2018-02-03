@@ -6,6 +6,7 @@ import android.view.{LayoutInflater, View}
 import android.widget._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounType}
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.NounForm
@@ -180,25 +181,35 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		}
 		.toVector
 
-	private def generateFormsFrom(stemClass: NounStemClass, baseDef: (NounForm, String), map: Map[View, Override]):	Map[NounForm, String] =
-	{
-		val overridingDefs = map.values.flatMap
-		{
-			case (Some(numCase), Some(str)) => Some((numCase, str))
-			case _ => None
+	private def generateFormsFrom(stemClass: NounStemClass, baseDef: (NounForm, String), map: Map[View, Override])
+		:	Map[NounForm, String] = try {
+
+		val mapForms: Map[NounType, String] = map.values.map {
+
+			case (Some(nf), Some(str)) => (nf.number -> nf.caze) -> str
+
 		}.toMap
 
-		val root = baseDef match
-		{
-			case (nf, str) if stemClass != null => stemClass.unapply(str, (nf.number, nf.caze))
-			case _ => None
+		val baseForm: Map[NounType, String] = Map((baseDef._1.number, baseDef._1.caze) -> baseDef._2 )
+
+		val noun = Noun(stemClass, baseForm ++ mapForms)
+
+		noun.nounForms.flatMap {
+			case (d, nf) =>
+
+				val vs = NounForm.values
+				val e = vs.find { case NounForm(_, n, c) =>	d._1 == n &&d._2 == c	}
+
+				e.map(_ -> nf.strRepr)
 		}
 
-		val optWordsOfRoot = root.map(r => AddNewNounHelper.NOUN_DECLENSIONS.map(nd => nd -> stemClass(r, (nd.number, nd.caze)).strForm).toMap)
+	} catch {
 
-		val wordMap = optWordsOfRoot.getOrElse(Map())
+		case e: RuntimeException =>
+			val msg = e.getMessage
+			android.util.Log.w(AddNewVerbHelper.getClass.getSimpleName, msg)
 
-		wordMap ++ overridingDefs
+			Map()
 	}
 
 	private def fillNounForms(): Unit = selectedNounParameters match

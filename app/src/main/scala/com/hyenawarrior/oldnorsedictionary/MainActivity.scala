@@ -9,18 +9,17 @@ import android.util.Log
 import android.view.View
 import android.widget.{ListView, SearchView}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{DUAL, PLURAL, SINGULAR}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.{Word => GWord, _}
+import com.hyenawarrior.OldNorseGrammar.grammar._
 import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.AndroidSDBLayer
 import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}
 import com.hyenawarrior.oldnorsedictionary.modelview.DictionaryEntryAdapter
-import com.hyenawarrior.oldnorsedictionary.new_word.{AddNewWordActivityPager, DetailedDictionaryEntry}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
+import com.hyenawarrior.oldnorsedictionary.new_word.{AddNewWordActivityPager, DetailedDictionaryEntry}
 
 import scala.language.postfixOps
 
@@ -41,16 +40,6 @@ object Orderings
 	implicit object CaseOrdering extends Ordering[Case]
 	{
 		override def compare(x: Case, y: Case): Int = math.signum(x.id - y.id)
-	}
-
-	implicit object WordOrdering extends Ordering[GWord]
-	{
-		override def compare(x: GWord, y: GWord): Int = (x, y) match
-		{
-			case (GWord(Noun(_, (n1, c1), _, _)), GWord(Noun(_, (n2, c2), _, _))) if n1 != n2 => sgnDiff(n1, n2)
-			case (GWord(Noun(_, (n1, c1), _, _)), GWord(Noun(_, (n2, c2), _, _))) => sgnDiff(c1, c2)
-			case _ => 0
-		}
 	}
 
 	implicit object MeaningDefOrdering extends Ordering[MeaningDef]

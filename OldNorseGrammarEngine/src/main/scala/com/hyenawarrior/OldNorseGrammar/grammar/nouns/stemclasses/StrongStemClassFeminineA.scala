@@ -9,7 +9,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 class StrongStemClassFeminineA extends NounStemClass
 {
-	override protected def inflection(decl: (GNumber, Case)) = decl match
+	override def inflection(decl: (GNumber, Case)) = decl match
 	{
 		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) => ???
 		case (SINGULAR, GENITIVE)		=> "ar"

@@ -9,13 +9,13 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object StrongStemClassMascI extends NounStemClass
 {
-	override def transformationsFor(decl: (GNumber, Case)) =  decl match
+	def transformationsFor(decl: (GNumber, Case)) =  decl match
 	{
 		// long stems have i-umlaut
 		case _ => List()
 	}
 
-	override protected def inflection(decl: (GNumber, Case)) = decl match
+	override def inflection(decl: (GNumber, Case)) = decl match
 	{
 		case (SINGULAR, NOMINATIVE) => "r"
 		case (SINGULAR, ACCUSATIVE | DATIVE)	=> ""

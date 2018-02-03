@@ -9,12 +9,12 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 class WeakStemClass extends NounStemClass
 {
-	override def transformationsFor(decl: (GNumber, Case)) =  decl match
+	def transformationsFor(decl: (GNumber, Case)) =  decl match
 	{
 		case _ 	=> List(U_Umlaut)
 	}
 
-	override protected def inflection(decl: (GNumber, Case)): String = decl match
+	override def inflection(decl: (GNumber, Case)): String = decl match
 	{
 		case (PLURAL, DATIVE)										=> "um"
 		case (PLURAL, GENITIVE)									=> "a"

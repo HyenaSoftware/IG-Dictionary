@@ -7,10 +7,12 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 /**
 	* Created by HyenaWarrior on 2017.04.09..
 	*/
-object StrongStemClassMascA extends NounStemClass
-{
-	override protected def inflection(decl: (GNumber, Case)) = decl match
-	{
+object StrongStemClassMascA extends NounStemClass {
+
+	override def thematicVowel = Some("a")
+
+	override def inflection(decl: (GNumber, Case)) = decl match {
+
 		case (SINGULAR, NOMINATIVE) => "r"
 		case (SINGULAR, ACCUSATIVE)	=> ""
 		case (SINGULAR, DATIVE)			=> "i"

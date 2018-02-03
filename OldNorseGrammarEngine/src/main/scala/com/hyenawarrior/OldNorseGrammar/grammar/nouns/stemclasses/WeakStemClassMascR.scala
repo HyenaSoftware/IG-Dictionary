@@ -10,7 +10,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object WeakStemClassMascR extends NounStemClass
 {
-	override def transformationsFor(decl: (GNumber, Case)) =  decl match
+	def transformationsFor(decl: (GNumber, Case)) =  decl match
 	{
 		case (PLURAL, NOMINATIVE | ACCUSATIVE) => List(Explicit_I_Umlaut)
 		case (PLURAL, DATIVE) => List(Explicit_U_Umlaut)
@@ -18,7 +18,7 @@ object WeakStemClassMascR extends NounStemClass
 		case _ => List()
 	}
 
-	protected override def inflection(decl: (GNumber, Case)) = decl match
+	override def inflection(decl: (GNumber, Case)) = decl match
 	{
 		case (SINGULAR, NOMINATIVE)											=> "i"
 		case (SINGULAR, ACCUSATIVE | DATIVE | GENITIVE)	=> "a"

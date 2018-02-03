@@ -10,7 +10,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object StrongStemClassFeminineR extends NounStemClass
 {
-	override def transformationsFor(decl: (GNumber, Case)) =  decl match
+	def transformationsFor(decl: (GNumber, Case)) =  decl match
 	{
 		case (SINGULAR, cs) if cs != GENITIVE => List(Explicit_U_Umlaut)
 		case (PLURAL, NOMINATIVE | ACCUSATIVE) => List(Explicit_I_Umlaut)
@@ -18,7 +18,7 @@ object StrongStemClassFeminineR extends NounStemClass
 		case _ => List()
 	}
 
-	protected override def inflection(decl: (GNumber, Case)) = decl match
+	override def inflection(decl: (GNumber, Case)) = decl match
 	{
 		// auto umlaut for SNG-NOM and SNG-ACC
 		// root -> u-umlaut
