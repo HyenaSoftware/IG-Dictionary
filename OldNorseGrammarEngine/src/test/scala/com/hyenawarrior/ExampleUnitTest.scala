@@ -1,7 +1,7 @@
 package com.hyenawarrior
 
 import com.hyenawarrior.OldNorseGrammar.grammar._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{AblautGrade, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbForm.verbFrom
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{apply => _, unapply => _, _}
@@ -24,27 +24,11 @@ class ExampleUnitTest
   }
 
   @Test
-  def testInactiveUmlaut()
-	{
-		// TODO: Word force apply transformation in every case.
-		// Add an indicator to the transformators to avoid transformation when it's not needed
-		//	e.g.: Word(mp, List(U_Umlaut)) vs. Word(mp, List(Explicit_U_Umlaut))
+  def testActiveUmlaut(){
 
-    val mp = MockPoS("kallada")
+    val str = U_Umlaut("kalladu")
 
-    val w = Word(mp)
-
-    assertEquals("kallada", w.strForm())
-  }
-
-  @Test
-  def testActiveUmlaut()
-	{
-    val mp = MockPoS("kalladu")
-
-    val w = Word(mp)
-
-    assertEquals("kǫlludu", w.strForm())
+    assertEquals(Some("kǫlludu"), str)
   }
 
 	@Test
