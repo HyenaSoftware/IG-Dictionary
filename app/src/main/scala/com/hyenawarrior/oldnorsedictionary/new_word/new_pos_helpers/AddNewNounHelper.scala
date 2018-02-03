@@ -44,22 +44,36 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	var selectedNounParameters: Parameters = (List(), (None, None), Map())
   var latestNounData: Map[NounStemClassEnum, Map[NounType, String]] = Map()
 
-	val LL_DECL_LIST = rootView.findViewById(R.id.llNounDeclensionList).asInstanceOf[LinearLayout]
+	val LL_NOUN_DECLS = rootView.findViewById(R.id.llNounDeclensions).asInstanceOf[LinearLayout]
+	val LL_DECL_LIST = LL_NOUN_DECLS.findViewById(R.id.llNounDeclensionList).asInstanceOf[LinearLayout]
+
 	val NounDeclensionAdapter = new NounDeclensionAdapter(activity, LL_DECL_LIST)
 
+	LL_NOUN_DECLS findViewById R.id.rbIndef setOnClickListener DefinitenessListener
+	LL_NOUN_DECLS findViewById R.id.rbDef   setOnClickListener DefinitenessListener
+
 	//
-	override def activate(): Unit =
-	{
+	override def activate(): Unit = {
+
 		super.activate()
 
-		LL_DECL_LIST.setVisibility(View.VISIBLE)
+		LL_NOUN_DECLS.setVisibility(View.VISIBLE)
 	}
 
 	override def deactivate(): Unit = {
 
 		super.activate()
 
-		LL_DECL_LIST.setVisibility(View.GONE)
+		LL_NOUN_DECLS.setVisibility(View.GONE)
+	}
+
+	object DefinitenessListener extends View.OnClickListener {
+
+		override def onClick(v: View): Unit = v.getId match {
+
+			case R.id.rbIndef => ()
+			case R.id.rbDef => ()
+		}
 	}
 
 	def onRemoveOverride(tableRow: View) =

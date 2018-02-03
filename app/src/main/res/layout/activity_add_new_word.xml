@@ -75,9 +75,29 @@
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:id="@+id/llNounDeclensionList"
-                    android:layout_marginBottom="3dp" android:visibility="gone">
-                <!--include layout="@layout/noun_declension" /-->
+                    android:layout_height="match_parent" android:id="@+id/llNounDeclensions" android:visibility="gone">
+                <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:orientation="horizontal"
+                        android:background="#fffcbb" android:layout_marginBottom="3dp">
+                    <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Indefinite"
+                            android:id="@+id/rbIndef" android:layout_weight="1" android:checked="true"/>
+                    <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Definite"
+                            android:id="@+id/rbDef" android:layout_weight="1"/>
+                </RadioGroup>
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/llNounDeclensionList"
+                        android:layout_marginBottom="3dp">
+                    <!--include layout="@layout/noun_declension" /-->
+                </LinearLayout>
             </LinearLayout>
             <LinearLayout
                     android:orientation="vertical"
