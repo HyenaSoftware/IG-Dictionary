@@ -3,9 +3,11 @@ package com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel
 import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.{Button, TextView}
+import com.hyenawarrior.OldNorseGrammar.grammar.Case.{unapply => _, _}
+import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
 import com.hyenawarrior.oldnorsedictionary.R
-import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.NounForm
 import com.hyenawarrior.oldnorsedictionary.modelview.CustomAdapter
 
 /**
@@ -14,19 +16,19 @@ import com.hyenawarrior.oldnorsedictionary.modelview.CustomAdapter
 object NounDeclensionAdapter
 {
 	val NOUN_EDIT_TEXTS = List(
-		(R.id.tvNewWord_Nom_Sg, 	NounForm.NOUN_NOM_SG)
-		, (R.id.tvNewWord_Acc_Sg, NounForm.NOUN_ACC_SG)
-		, (R.id.tvNewWord_Dat_Sg, NounForm.NOUN_DAT_SG)
-		, (R.id.tvNewWord_Gen_Sg, NounForm.NOUN_GEN_SG)
+		(R.id.tvNewWord_Nom_Sg, 	(SINGULAR, NOMINATIVE))
+		, (R.id.tvNewWord_Acc_Sg, (SINGULAR, ACCUSATIVE))
+		, (R.id.tvNewWord_Dat_Sg, (SINGULAR, DATIVE))
+		, (R.id.tvNewWord_Gen_Sg, (SINGULAR, GENITIVE))
 
-		, (R.id.tvNewWord_Nom_Pl, NounForm.NOUN_NOM_PL)
-		, (R.id.tvNewWord_Acc_Pl, NounForm.NOUN_ACC_PL)
-		, (R.id.tvNewWord_Dat_Pl, NounForm.NOUN_DAT_PL)
-		, (R.id.tvNewWord_Gen_Pl, NounForm.NOUN_GEN_PL)
+		, (R.id.tvNewWord_Nom_Pl, (PLURAL, NOMINATIVE))
+		, (R.id.tvNewWord_Acc_Pl, (PLURAL, ACCUSATIVE))
+		, (R.id.tvNewWord_Dat_Pl, (PLURAL, DATIVE))
+		, (R.id.tvNewWord_Gen_Pl, (PLURAL, GENITIVE))
 	)
 }
 
-class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemClassEnum, Map[NounForm, String])](activity)
+class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemClassEnum, Map[NounType, String])](activity)
 {
 	override protected def getNewView(i: Int, viewGroup: ViewGroup): View =
 	{

@@ -15,7 +15,6 @@ trait PosForm
 	val id: Int
 }
 
-case class NounForm(id: Int, number: GNumber, caze: Case) extends PosForm { NounForm.add(id -> this) }
 case class VerbForm(id: Int, vtype: VerbType) extends PosForm {
 
   VerbForm.add(id -> this)
@@ -70,20 +69,3 @@ object VerbForm extends EnumLike[Int, VerbForm]
 }
 
 
-object NounForm extends EnumLike[Int, NounForm]
-{
-	// Nouns it can be divided by number
-	// - number x case x gender (x definiteness) = 2*4*3 (*2) = 24(*2)
-	val NOUN_NOM_SG		= NounForm(1000, SINGULAR, Case.NOMINATIVE)
-	val NOUN_ACC_SG		= NounForm(1001, SINGULAR, Case.ACCUSATIVE)
-	val NOUN_DAT_SG		= NounForm(1002, SINGULAR, Case.DATIVE)
-	val NOUN_GEN_SG		= NounForm(1003, SINGULAR, Case.GENITIVE)
-
-	val NOUN_NOM_PL		= NounForm(1004, PLURAL, Case.NOMINATIVE)
-	val NOUN_ACC_PL		= NounForm(1005, PLURAL, Case.ACCUSATIVE)
-	val NOUN_DAT_PL		= NounForm(1006, PLURAL, Case.DATIVE)
-	val NOUN_GEN_PL		= NounForm(1007, PLURAL, Case.GENITIVE)
-
-	// adjectival
-	// - number x case x gender x strength x type = 2*4*3*2=48
-}
