@@ -1,7 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.modelview
 
 import android.app.Activity
-import android.view.View
+import android.view.{View, ViewGroup}
 import android.widget._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
 import com.hyenawarrior.oldnorsedictionary.R
@@ -10,8 +10,8 @@ import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 /**
 	* Created by HyenaWarrior on 2017.04.04..
 	*/
-class DictionaryEntryAdapter(activity: Activity)
-	extends CustomAdapter[DictionaryListItem](activity, R.layout.dictionary_entry)
+class DictionaryEntryAdapter(activity: Activity, listView: ViewGroup)
+	extends CustomAdapter[DictionaryListItem](activity, listView, R.layout.dictionary_entry)
 {
 	protected def resetView(i: Int, view: View): Unit = {
 
@@ -26,26 +26,17 @@ class DictionaryEntryAdapter(activity: Activity)
 		view setTag item
 
 		// set words
-		val wordFormAdapter = new WordFormAdapter(activity)
+		val llWordForms = view.findViewById(R.id.llWordForms).asInstanceOf[LinearLayout]
+
+		val wordFormAdapter = new WordFormAdapter(activity, llWordForms)
 
 		wordFormAdapter resetItems item.otherForms.toList
 
-		val llWordForms = view.findViewById(R.id.llWordForms).asInstanceOf[LinearLayout]
-		extractViewsInto(wordFormAdapter, llWordForms)
-
 		// set meanings
-		val meaningAdapter = new MeaningAdapter(activity)
-		meaningAdapter resetItems item.meanings
-
 		val llMeanings = view.findViewById(R.id.llMeanings).asInstanceOf[LinearLayout]
-		extractViewsInto(meaningAdapter, llMeanings)
-	}
 
-  def extractViewsInto(adapter: Adapter, layout: LinearLayout): Unit =
-	{
-		Range(0, adapter.getCount)
-			//.foreach(i => wordFormAdapter.getView(i, null, llWordForms))
-			.map(i => adapter.getView(i, null, null))
-			.foreach(v => layout.addView(v))
+		val meaningAdapter = new MeaningAdapter(activity, llMeanings)
+
+		meaningAdapter resetItems item.meanings
 	}
 }

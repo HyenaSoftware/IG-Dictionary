@@ -1,7 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.modelview
 
 import android.app.Activity
-import android.view.View
+import android.view.{View, ViewGroup}
 import android.widget.TextView
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
@@ -16,8 +16,9 @@ import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 	* |        | meaning2  |
 	* + - - - -+ - - - - - +
 	*/
-class MeaningAdapter(activity: Activity) extends CustomAdapter[MeaningDef](activity, R.layout.meanings)
-{
+class MeaningAdapter(activity: Activity, listView: ViewGroup)
+	extends CustomAdapter[MeaningDef](activity, listView, R.layout.meanings) {
+
 	protected  def resetView(i: Int, view: View): Unit = {
 
 		val meaning = itemAt(i)

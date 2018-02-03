@@ -50,10 +50,10 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	// all the generated forms
 	var latestVerbData: Map[VerbClassEnum, StrongVerb] = Map()
 
-	val VerbDeclensionAdapter = new VerbDeclensionAdapter(activity)
-
 	// panel for showing the verb forms
 	val LL_DECL_LIST = rootView.findViewById(R.id.llVerbDeclensions).asInstanceOf[LinearLayout]
+	val LL_VERB_CONJUGATION_LIST = LL_DECL_LIST.findViewById(R.id.llVerbDeclensionList).asInstanceOf[LinearLayout]
+	val VerbDeclensionAdapter = new VerbDeclensionAdapter(activity, LL_VERB_CONJUGATION_LIST)
 
 	val verbMoodPanel = rootView.findViewById(R.id.glVerbMood).asInstanceOf[GridLayout]
 	verbMoodPanel findViewById R.id.rbInd setOnClickListener MoodSelector
@@ -160,15 +160,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		// make sure the other fields are already initialized when this method is called
 		onDeclensionSelected(VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype)
 
-		override def onClick(view: View): Unit = {
-
-			//
-			val map = selectedVerbParameters._2
-			val myState = map.get(rowView).map(_._1).getOrElse(VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype)
-
-			//
-			verbDeclPreferencesDialog.show(onDeclensionSelected)
-		}
+		override def onClick(view: View): Unit = verbDeclPreferencesDialog.show(onDeclensionSelected)
 
 		private def onDeclensionSelected(verbType: VerbType): Unit = {
 
@@ -315,7 +307,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
           .map(vc => vc -> generateAllFormsFrom(vc, overridingMap))
           .collect{ case (k, Some(sv)) => k -> sv }
 
-      setInflectedFormsToUI(wordMaps)
+      VerbDeclensionAdapter resetItems wordMaps
 
       latestVerbData = wordMaps.toMap
 
@@ -342,19 +334,6 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
       None
     }
-
-  private def setInflectedFormsToUI(listOfClassesAndVerbForms: List[(VerbClassEnum, StrongVerb)]): Unit = {
-
-		VerbDeclensionAdapter.resetItems(listOfClassesAndVerbForms)
-
-		val declensionList = LL_DECL_LIST.findViewById(R.id.llVerbDeclensionList).asInstanceOf[LinearLayout]
-
-		declensionList.removeAllViews()
-
-		Range(0, VerbDeclensionAdapter.getCount)
-			.map(i => VerbDeclensionAdapter.getView(i, null, declensionList))
-			.foreach(v => declensionList.addView(v))
-	}
 
 	override def getWordFormsBy(view: View): WordData = {
 

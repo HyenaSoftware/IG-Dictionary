@@ -28,8 +28,8 @@ object NounDeclensionAdapter
 	)
 }
 
-class NounDeclensionAdapter(activity: Activity)
-  extends CustomAdapter[(NounStemClassEnum, Map[NounType, String])](activity, R.layout.noun_declension)
+class NounDeclensionAdapter(activity: Activity, listView: ViewGroup)
+  extends CustomAdapter[(NounStemClassEnum, Map[NounType, String])](activity, listView, R.layout.noun_declension)
 {
 	protected def resetView(i: Int, view: View): Unit = {
 

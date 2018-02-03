@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.widget.{Adapter, LinearLayout, TextView}
+import android.widget.{LinearLayout, TextView}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbModeEnum, VerbVoice}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
@@ -29,26 +29,16 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
       case di: DictionaryListItem =>
 
-        // set meanings
-        val meaningAdapter = new MeaningAdapter(this)
-        meaningAdapter resetItems di.meanings
+      val llMeanings = findViewById(R.id.llMeanings).asInstanceOf[LinearLayout]
 
-        val llMeanings = findViewById(R.id.llMeanings).asInstanceOf[LinearLayout]
-        extractViewsInto(meaningAdapter, llMeanings)
+        // set meanings
+        val meaningAdapter = new MeaningAdapter(this, llMeanings)
+        meaningAdapter resetItems di.meanings
 
         showVerbs(di.posObj)
 
       case _ => ()
     }
-  }
-
-  private def extractViewsInto(adapter: Adapter, layout: LinearLayout): Unit = {
-
-    layout.removeAllViews()
-
-    Range(0, adapter.getCount)
-      .map(i => adapter.getView(i, null, null))
-      .foreach(v => layout.addView(v))
   }
 
   private def showVerbs(obj: Any): Unit = obj match {

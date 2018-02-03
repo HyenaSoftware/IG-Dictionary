@@ -93,7 +93,7 @@ class MainActivity extends AppCompatActivity
           .toList
 
 			entryListAdapter resetItems entries
-			listView.invalidateViews()
+
 			true
 		}
 	}
@@ -195,8 +195,8 @@ class MainActivity extends AppCompatActivity
 		super.onBackPressed()
 	}
 
-	lazy val entryListAdapter = new DictionaryEntryAdapter(this)
 	lazy val listView = findViewById(R.id.listView).asInstanceOf[ListView]
+	lazy val entryListAdapter = new DictionaryEntryAdapter(this, listView)
 
   lazy val igPersister = new IGPersister(getApplicationContext)
 

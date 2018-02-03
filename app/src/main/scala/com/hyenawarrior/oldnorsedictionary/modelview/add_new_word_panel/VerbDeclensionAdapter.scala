@@ -1,7 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel
 
 import android.app.Activity
-import android.view.View
+import android.view.{View, ViewGroup}
 import android.widget.Button
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.INDICATIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
@@ -13,8 +13,8 @@ import com.hyenawarrior.oldnorsedictionary.modelview._
 /**
 	* Created by HyenaWarrior on 2017.04.22..
 	*/
-class VerbDeclensionAdapter(activity: Activity)
-  extends CustomAdapter[(VerbClassEnum, StrongVerb)](activity, R.layout.verb_declension)
+class VerbDeclensionAdapter(activity: Activity, listView: ViewGroup)
+  extends CustomAdapter[(VerbClassEnum, StrongVerb)](activity, listView, R.layout.verb_declension)
 {
   private var currentMood = INDICATIVE
   private var currentVoice = ACTIVE

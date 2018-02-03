@@ -44,8 +44,8 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	var selectedNounParameters: Parameters = (List(), (None, None), Map())
   var latestNounData: Map[NounStemClassEnum, Map[NounType, String]] = Map()
 
-	val NounDeclensionAdapter = new NounDeclensionAdapter(activity)
 	val LL_DECL_LIST = rootView.findViewById(R.id.llNounDeclensionList).asInstanceOf[LinearLayout]
+	val NounDeclensionAdapter = new NounDeclensionAdapter(activity, LL_DECL_LIST)
 
 	//
 	override def activate(): Unit =
@@ -214,25 +214,15 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
       val wordMaps = listOfNSCE
         .map(n => n -> generateFormsFrom(n.nounStemClass, (numCase, str), map))
         .filter { case (_, m) => m.nonEmpty }
-      setInflectedFormsToUI(wordMaps)
+
+      NounDeclensionAdapter resetItems wordMaps
 
       latestNounData = wordMaps.toMap
 
 		case _ => ()
 	}
 
-	private def setInflectedFormsToUI(map: List[(NounStemClassEnum, Map[NounType, String])]): Unit =
-	{
-		NounDeclensionAdapter.resetItems(map)
-
-		LL_DECL_LIST.removeAllViews()
-
-		Range(0, NounDeclensionAdapter.getCount)
-			.map(i => NounDeclensionAdapter.getView(i, null, LL_DECL_LIST))
-			.foreach(v => LL_DECL_LIST.addView(v))
-	}
-
-  override def getWordFormsBy(view: View): WordData =
+	override def getWordFormsBy(view: View): WordData =
   {
     val optNounStemClassE = NounDeclensionAdapter.getSelectorTagOf(view)
 

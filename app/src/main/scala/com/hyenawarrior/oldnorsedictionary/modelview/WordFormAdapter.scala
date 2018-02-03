@@ -1,7 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.modelview
 
 import android.app.Activity
-import android.view.View
+import android.view.{View, ViewGroup}
 import android.widget.TextView
 import com.hyenawarrior.OldNorseGrammar.grammar._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType
@@ -11,8 +11,8 @@ import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 /**
 	* Created by HyenaWarrior on 2017.04.04..
 	*/
-class WordFormAdapter(activity: Activity)
-	extends CustomAdapter[DictionaryListItem.DescedString](activity, R.layout.word_form_entry)
+class WordFormAdapter(activity: Activity, listView: ViewGroup)
+	extends CustomAdapter[DictionaryListItem.DescedString](activity, listView, R.layout.word_form_entry)
 {
 	protected def resetView(i: Int, view: View): Unit = {
 

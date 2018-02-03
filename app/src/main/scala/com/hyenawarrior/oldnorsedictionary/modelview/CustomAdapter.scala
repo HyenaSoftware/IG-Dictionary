@@ -3,21 +3,30 @@ package com.hyenawarrior.oldnorsedictionary.modelview
 import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View, ViewGroup}
-import android.widget.BaseAdapter
+import android.widget.{BaseAdapter, ListView}
 
 import scala.collection.mutable
 
 /**
 	* Created by HyenaWarrior on 2017.03.10..
 	*/
-abstract class CustomAdapter[T](val activity: Activity, layoutElem: Int) extends BaseAdapter
+abstract class CustomAdapter[T](val activity: Activity, listView: ViewGroup, layoutElem: Int) extends BaseAdapter
 {
+	//
 	protected val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
 
 	private var items: List[T] = List()
 
 	private var viewCache: mutable.ArraySeq[View] = mutable.ArraySeq()
 
+	//
+	listView match {
+
+		case lv: ListView => lv setAdapter this
+		case _ => ()
+	}
+
+	//
 	protected def itemAt(i: Int) = items(i)
 
 	def resetItems(items: List[T]): Unit = {
@@ -25,6 +34,18 @@ abstract class CustomAdapter[T](val activity: Activity, layoutElem: Int) extends
 		this.items = items
 
     viewCache = new mutable.ArraySeq(items.size)
+
+		listView match {
+
+			case lv: ListView => lv.invalidateViews()
+			case _ =>
+
+				listView.removeAllViews()
+
+				Range(0, getCount)
+					.map(i => getView(i, null, listView))
+					.foreach(v => listView addView v)
+		}
 	}
 
   @deprecated
