@@ -28,13 +28,12 @@ object NounDeclensionAdapter
 	)
 }
 
-class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemClassEnum, Map[NounType, String])](activity)
+class NounDeclensionAdapter(activity: Activity)
+  extends CustomAdapter[(NounStemClassEnum, Map[NounType, String])](activity, R.layout.noun_declension)
 {
-	override protected def getNewView(i: Int, viewGroup: ViewGroup): View =
-	{
-		val isSingleList = getCount == 1
+	protected def resetView(i: Int, view: View): Unit = {
 
-		val view = inflater.inflate(R.layout.noun_declension, viewGroup, false)
+		val isSingleList = getCount == 1
 
 		val (nscEnum @ NounStemClassEnum(ncName, _), map) = itemAt(i)
 
@@ -53,8 +52,6 @@ class NounDeclensionAdapter(activity: Activity) extends CustomAdapter[(NounStemC
     // tag the select button
     val tv_addword_noun_Select = view.findViewById(R.id.tv_addword_noun_Select).asInstanceOf[Button]
     tv_addword_noun_Select.setTag(nscEnum)
-
-		view
 	}
 
   def getSelectorTagOf(view: View): Option[NounStemClassEnum] = view match

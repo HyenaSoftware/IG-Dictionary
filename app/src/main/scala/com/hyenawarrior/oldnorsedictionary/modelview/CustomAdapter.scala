@@ -10,7 +10,7 @@ import scala.collection.mutable
 /**
 	* Created by HyenaWarrior on 2017.03.10..
 	*/
-abstract class CustomAdapter[T](val activity: Activity) extends BaseAdapter
+abstract class CustomAdapter[T](val activity: Activity, layoutElem: Int) extends BaseAdapter
 {
 	protected val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
 
@@ -35,7 +35,16 @@ abstract class CustomAdapter[T](val activity: Activity) extends BaseAdapter
 		notifyDataSetChanged()
 	}
 
-	protected def getNewView(i: Int, viewGroup: ViewGroup): View
+	private final def getNewView(i: Int, viewGroup: ViewGroup): View = {
+
+		val view = inflater.inflate(layoutElem, viewGroup, false)
+
+		resetView(i, view)
+
+		view
+	}
+
+	protected def resetView(i: Int, view: View): Unit
 
 	def getItemId(i: Int): Long = i
 

@@ -1,9 +1,8 @@
 package com.hyenawarrior.oldnorsedictionary.modelview
 
 import android.app.Activity
-import android.view.{View, ViewGroup}
+import android.view.View
 import android.widget._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbModeEnum, VerbVoice}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
@@ -11,11 +10,10 @@ import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 /**
 	* Created by HyenaWarrior on 2017.04.04..
 	*/
-class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[DictionaryListItem](activity)
+class DictionaryEntryAdapter(activity: Activity)
+	extends CustomAdapter[DictionaryListItem](activity, R.layout.dictionary_entry)
 {
-	def getNewView(i: Int, viewGroup: ViewGroup): View =
-	{
-		val view = inflater.inflate(R.layout.dictionary_entry, null)
+	protected def resetView(i: Int, view: View): Unit = {
 
 		val item = itemAt(i)
 
@@ -41,8 +39,6 @@ class DictionaryEntryAdapter(activity: Activity) extends CustomAdapter[Dictionar
 
 		val llMeanings = view.findViewById(R.id.llMeanings).asInstanceOf[LinearLayout]
 		extractViewsInto(meaningAdapter, llMeanings)
-
-		view
 	}
 
   def extractViewsInto(adapter: Adapter, layout: LinearLayout): Unit =

@@ -1,7 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.modelview
 
 import android.app.Activity
-import android.view.ViewGroup
+import android.view.View
 import android.widget.TextView
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
@@ -16,11 +16,9 @@ import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 	* |        | meaning2  |
 	* + - - - -+ - - - - - +
 	*/
-class MeaningAdapter(activity: Activity) extends CustomAdapter[MeaningDef](activity)
+class MeaningAdapter(activity: Activity) extends CustomAdapter[MeaningDef](activity, R.layout.meanings)
 {
-	def getNewView(i: Int, viewGroup: ViewGroup) =
-	{
-		val view = inflater.inflate(R.layout.meanings, null)
+	protected  def resetView(i: Int, view: View): Unit = {
 
 		val meaning = itemAt(i)
 
@@ -32,8 +30,6 @@ class MeaningAdapter(activity: Activity) extends CustomAdapter[MeaningDef](activ
 
 		val tvExample = view.findViewById(R.id.tvMeaning).asInstanceOf[TextView]
 		tvExample.setText(meaning.examples.mkString("\n"))
-
-		view
 	}
 }
 
