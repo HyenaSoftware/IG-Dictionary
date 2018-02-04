@@ -12,25 +12,20 @@ case class NounForm(strRepr: String, declension: (GNumber, Case), stem: NounStem
 
 object NounForm {
 
-  def fromStringRepr(str: String, stemClass: NounStemClass, declension: NounType): NounForm = {
+  def fromStringRepr(str: String, stemClass: NounStemClass, declension: NounType): NounForm = (str, declension) match {
 
-    val declSuffix = stemClass inflection declension
+    case stemClass(stemStr) =>
+      val nounStem = NounStem.fromStrRepr(stemStr, stemClass)
+      fromStringRepr(nounStem, declension)
 
-    if(!str.endsWith(declSuffix)) {
-
+    case _ =>
+      val declSuffix = stemClass inflection declension
       throw new RuntimeException(s"The word $str doesn't ends with $declSuffix.")
-    }
-
-    val stemStr = str stripSuffix declSuffix
-
-    val nounStem = NounStem.fromStrRepr(stemStr, stemClass)
-
-    fromStringRepr(nounStem, declension)
   }
 
   def fromStringRepr(stem: NounStem, declension: NounType): NounForm = {
 
-    val str = stem.rootStr + stem.stemClass.inflection(declension)
+    val Some(str) = stem.stemClass(stem.rootStr, declension)
 
     val strWithoutSVs = SemivowelDeletion(str)
 

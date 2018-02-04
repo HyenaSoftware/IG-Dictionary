@@ -6,7 +6,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
 /**
   * Created by HyenaWarrior on 2017.04.15..
   */
-trait Umlaut extends WordTransformation {
+trait Umlaut extends WordTransformation with InvertableTransformation {
 
 	def unapply(str: String): Option[String] = {
 
