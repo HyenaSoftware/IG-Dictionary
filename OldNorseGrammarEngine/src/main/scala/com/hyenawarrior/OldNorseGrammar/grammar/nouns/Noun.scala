@@ -31,7 +31,7 @@ object Noun {
 
 		val missingForms = missingDeclensions.map { nt =>
 
-			nt -> NounForm.fromStringRepr(nounStem, nt)
+			nt -> NounForm.fromStem(nounStem, nt)
 
 		}.toMap
 

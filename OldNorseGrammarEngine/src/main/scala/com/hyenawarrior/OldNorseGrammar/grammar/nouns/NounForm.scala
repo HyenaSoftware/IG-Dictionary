@@ -16,14 +16,14 @@ object NounForm {
 
     case stemClass(stemStr) =>
       val nounStem = NounStem.fromStrRepr(stemStr, stemClass)
-      fromStringRepr(nounStem, declension)
+      fromStem(nounStem, declension)
 
     case _ =>
       val declSuffix = stemClass inflection declension
       throw new RuntimeException(s"The word $str doesn't ends with $declSuffix.")
   }
 
-  def fromStringRepr(stem: NounStem, declension: NounType): NounForm = {
+  def fromStem(stem: NounStem, declension: NounType): NounForm = {
 
     val Some(str) = stem.stemClass(stem.rootStr, declension)
 
