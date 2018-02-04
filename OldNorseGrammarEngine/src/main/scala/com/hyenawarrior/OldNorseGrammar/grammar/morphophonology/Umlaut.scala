@@ -124,4 +124,6 @@ object Explicit_I_Umlaut extends Umlaut with Explicit {
 }
 
 object U_Umlaut extends U_Umlaut
+
+@Deprecated
 object Explicit_U_Umlaut extends U_Umlaut with Explicit

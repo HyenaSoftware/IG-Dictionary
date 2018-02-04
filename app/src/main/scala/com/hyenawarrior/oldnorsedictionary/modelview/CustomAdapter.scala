@@ -48,7 +48,7 @@ abstract class CustomAdapter[T](val activity: Activity, listView: ViewGroup, lay
 		}
 	}
 
-  @deprecated
+  @Deprecated
 	def remove(i: Int): Unit =
 	{
 		items = items.indices.filterNot(_ == i).map(items(_)).toList
