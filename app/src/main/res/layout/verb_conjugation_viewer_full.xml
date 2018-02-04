@@ -135,9 +135,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" android:id="@+id/ll.past_participle_view"
                 android:visibility="gone">
-            <include layout="@layout/fragment_adjectival_strong_declension_view"
+            <!-- include layout="@layout/fragment_adjectival_strong_declension_view"
                      android:id="@+id/frame.past_participle"
-                     android:layout_width="match_parent" android:layout_height="wrap_content"/>
+                     android:layout_width="match_parent" android:layout_height="wrap_content"/ -->
         </LinearLayout>
     </LinearLayout>
 
