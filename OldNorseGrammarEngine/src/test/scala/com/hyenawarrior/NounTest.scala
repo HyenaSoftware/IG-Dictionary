@@ -4,7 +4,7 @@ import com.hyenawarrior.NounTestAux.diff
 import com.hyenawarrior.OldNorseGrammar.grammar.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{StrongStemClassMascA, StrongStemClassMascI, StrongStemClassNeuter}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses._
 import org.junit.Assert._
 import org.junit.Test
 
@@ -60,33 +60,68 @@ class NounTest {
   def testStrongNeuterJaForms(): Unit =  diff(StrongStemClassNeuter, Map(
 
     (SINGULAR, NOMINATIVE) -> "ríki",
-    (SINGULAR -> GENITIVE) -> "ríkis",
+    (SINGULAR, GENITIVE) -> "ríkis",
 
-    (PLURAL -> ACCUSATIVE) -> "ríki",
-    (PLURAL -> GENITIVE) -> "ríkja",
-    (PLURAL -> DATIVE) -> "ríkjum"
+    (PLURAL, ACCUSATIVE) -> "ríki",
+    (PLURAL, GENITIVE) -> "ríkja",
+    (PLURAL, DATIVE) -> "ríkjum"
   ))
 
   @Test
   def testStrongNeuterAForms2(): Unit =  diff(StrongStemClassNeuter, Map(
 
     (SINGULAR, NOMINATIVE) -> "land",
-    (SINGULAR -> GENITIVE) -> "lands",
+    (SINGULAR, GENITIVE) -> "lands",
 
-    (PLURAL -> ACCUSATIVE) -> "lǫnd",
-    (PLURAL -> GENITIVE) -> "landa",
-    (PLURAL -> DATIVE) -> "lǫndum"
+    (PLURAL, ACCUSATIVE) -> "lǫnd",
+    (PLURAL, GENITIVE) -> "landa",
+    (PLURAL, DATIVE) -> "lǫndum"
   ))
 
   @Test
-  def testStrongNeuterWaForms(): Unit =  {
+  def testStrongNeuterWaForms(): Unit =  diff(StrongStemClassNeuter, Map(
 
-    val noun = Noun(StrongStemClassNeuter, Map((SINGULAR, NOMINATIVE) -> "hǫgg"))
+    (SINGULAR, NOMINATIVE) -> "hǫgg",
+    (SINGULAR, ACCUSATIVE) -> "hǫgg",
+    (SINGULAR, DATIVE) -> "hǫggvi",
 
-    assertEquals("hǫgg", 	(noun nounForms SINGULAR -> ACCUSATIVE).strRepr)
+    (PLURAL, NOMINATIVE) -> "hǫgg",
+    (PLURAL, GENITIVE) -> "hǫggva",
+    (PLURAL, DATIVE) -> "hǫggum"
+  ))
 
-    assertEquals("hǫgg",	  (noun nounForms PLURAL   -> NOMINATIVE).strRepr)
-    assertEquals("hǫggva",	(noun nounForms PLURAL   -> GENITIVE).strRepr)
-    assertEquals("hǫggum",	(noun nounForms PLURAL   -> DATIVE).strRepr)
-  }
+  @Test
+  def testStrongFeminineOForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
+
+    (SINGULAR, NOMINATIVE) -> "grǫf",
+    (SINGULAR, DATIVE) -> "grafar",
+
+    (PLURAL, NOMINATIVE) -> "grafar",
+    (PLURAL, GENITIVE) -> "grafa",
+    (PLURAL, DATIVE) -> "grǫfum"
+  ))
+
+  @Test
+  def testStrongFeminineJoForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
+
+    (SINGULAR, NOMINATIVE) -> "ey",
+    (SINGULAR, DATIVE) -> "eyju",
+    (SINGULAR, GENITIVE) -> "eyjar",
+
+    (PLURAL, NOMINATIVE) -> "eyjar",
+    (PLURAL, GENITIVE) -> "eyja",
+    (PLURAL, DATIVE) -> "eyjum"
+  ))
+
+  @Test
+  def testStrongFeminineWoForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
+
+    (SINGULAR, NOMINATIVE) -> "ǫr",
+    (SINGULAR, DATIVE) -> "ǫr",
+    (SINGULAR, GENITIVE) -> "ǫrvar",
+
+    (PLURAL, NOMINATIVE) -> "ǫrvar",
+    (PLURAL, GENITIVE) -> "ǫrva",
+    (PLURAL, DATIVE) -> "ǫrum"
+  ))
 }

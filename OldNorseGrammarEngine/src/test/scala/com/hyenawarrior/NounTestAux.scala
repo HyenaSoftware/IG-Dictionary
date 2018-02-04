@@ -32,9 +32,11 @@ object NounTestAux {
 
   def diff(stemClass: NounStemClass, forms: Map[NounType, String]): Unit = {
 
+    val countOfTests = forms.size
     val differences = forms
-      .map { base =>
-        val tableName = s"\nGenerated forms from ${base._2} [${abbrevationOf(base._1)}]:"
+      .zipWithIndex
+      .map { case (base, idx) =>
+        val tableName = s"\nGenerated forms from ${base._2} [${abbrevationOf(base._1)}] (${idx+1} of $countOfTests):"
         (tableName, generateCertainForm(stemClass, base, forms - base._1))
 
       }.filter {
