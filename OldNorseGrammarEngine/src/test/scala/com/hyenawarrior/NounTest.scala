@@ -1,6 +1,6 @@
 package com.hyenawarrior
 
-import com.hyenawarrior.NounTestAux.diff
+import com.hyenawarrior.NounTestAux.{diff, nonReversible}
 import com.hyenawarrior.OldNorseGrammar.grammar.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
@@ -127,12 +127,12 @@ class NounTest {
   @Test
   def testStrongFeminineWoForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
 
-    (SINGULAR, NOMINATIVE) -> "ǫr",
-    (SINGULAR, DATIVE) -> "ǫr",
-    (SINGULAR, GENITIVE) -> "ǫrvar",
+    (SINGULAR, NOMINATIVE)  -> nonReversible("ǫr"),
+    (SINGULAR, DATIVE)      -> nonReversible("ǫr"),
+    (SINGULAR, GENITIVE)    -> "ǫrvar",
 
-    (PLURAL, NOMINATIVE) -> "ǫrvar",
-    (PLURAL, GENITIVE) -> "ǫrva",
-    (PLURAL, DATIVE) -> "ǫrum"
+    (PLURAL, NOMINATIVE)  -> "ǫrvar",
+    (PLURAL, GENITIVE)    -> "ǫrva",
+    (PLURAL, DATIVE)      -> nonReversible("ǫrum")
   ))
 }

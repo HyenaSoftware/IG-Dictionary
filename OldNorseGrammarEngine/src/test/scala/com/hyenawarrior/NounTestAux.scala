@@ -3,16 +3,24 @@ package com.hyenawarrior
 import java.lang.String._
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Case._
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, _}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 import org.junit.Assert._
+
+import scala.language.implicitConversions
 
 /**
   * Created by HyenaWarrior on 2018.02.03..
   */
 object NounTestAux {
+
+  case class Form(str: String, reversible: Boolean)
+
+  implicit def regular(str: String): Form = Form(str, true)
+
+  def nonReversible(str: String) = Form(str, false)
 
   private def abbrevationOf(decl: NounType): String = abbrevationOf(decl._1) + " " + abbrevationOf(decl._2)
 
@@ -30,14 +38,14 @@ object NounTestAux {
     case PLURAL => "PL"
   }
 
-  def diff(stemClass: NounStemClass, forms: Map[NounType, String]): Unit = {
+  def diff(stemClass: NounStemClass, forms: Map[NounType, Form]): Unit = {
 
     val countOfTests = forms.size
     val differences = forms
       .zipWithIndex
-      .map { case (base, idx) =>
-        val tableName = s"\nGenerated forms from ${base._2} [${abbrevationOf(base._1)}] (${idx+1} of $countOfTests):"
-        (tableName, generateCertainForm(stemClass, base, forms - base._1))
+      .collect { case ((decl, Form(str, true)), idx) =>
+        val tableName = s"\nGenerated forms from $str [${abbrevationOf(decl)}] (${idx+1} of $countOfTests):"
+        (tableName, generateTheseFrom(stemClass, decl -> str, forms - decl))
 
       }.filter {
         case (_, Left(exception)) => true
@@ -66,18 +74,18 @@ object NounTestAux {
     }
   }
 
-  private def generateCertainForm(stemClass: NounStemClass, givenForm: (NounType, String)
-    , expectedForms: Map[NounType, String]): Either[Exception, Iterable[(NounType, String, String)]] = try {
+  private def generateTheseFrom(stemClass: NounStemClass, givenForm: (NounType, String)
+    , expectedForms: Map[NounType, Form]): Either[Exception, Iterable[(NounType, String, String)]] = try {
 
     val generatedForms = Noun(stemClass, Map(givenForm)).nounForms
 
     val result = expectedForms.map {
-      case (nt, expStr) => generatedForms.get(nt)
+      case (nt, Form(expStr, _)) => generatedForms.get(nt)
         .map(nf => (expStr == nf.strRepr, nt, expStr, nf.strRepr))
         .getOrElse((false, nt, expStr, "<missing>"))
 
     }.collect {
-      case e@(false, nt, expStr, gvnStr) => (nt, expStr, gvnStr)
+      case (false, nt, expStr, gvnStr) => (nt, expStr, gvnStr)
     }
 
     Right(result)
