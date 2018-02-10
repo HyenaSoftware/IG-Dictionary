@@ -2,7 +2,8 @@ package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Explicit_U_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns._
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
 /**
@@ -14,10 +15,10 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object StrongStemClassFeminineA2 extends StrongStemClassFeminineA
 {
-	def transformationsFor(decl: (GNumber, Case)) =  decl match
-	{
-		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) => List(Explicit_U_Umlaut)
-		case _ => List()
+	override def transformationFor(decl: NounType) = decl match {
+
+		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) => Some(U_Umlaut)
+		case _ => None
 	}
 
 	override def inflection(decl: (GNumber, Case)) = decl match

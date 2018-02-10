@@ -91,6 +91,17 @@ class NounTest {
   ))
 
   @Test
+  def testStrongFeminineJoFormsLong(): Unit =  diff(StrongStemClassFeminineA1, Map(
+
+    (SINGULAR, NOMINATIVE) -> "heiðr",
+    (SINGULAR, GENITIVE) -> "heiðar",
+
+    (PLURAL, NOMINATIVE) -> "heiðar",
+    (PLURAL, GENITIVE) -> "heiða",
+    (PLURAL, DATIVE) -> "heiðum"
+  ))
+
+  @Test
   def testStrongFeminineOForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
 
     (SINGULAR, NOMINATIVE) -> "grǫf",

@@ -9,6 +9,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 class StrongStemClassFeminineA extends NounStemClass
 {
+	override def thematicVowel: Option[String] = Some("a")
+
 	override def inflection(decl: (GNumber, Case)) = decl match
 	{
 		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) => ???
