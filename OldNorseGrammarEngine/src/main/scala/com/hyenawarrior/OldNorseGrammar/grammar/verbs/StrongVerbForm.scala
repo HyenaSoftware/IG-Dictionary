@@ -194,7 +194,7 @@ object StrongVerbForm {
     val inflection = inflectionFor(verbType, stemStr)
 
     val isVAugmented = stemStr endsWith "v"
-    val useUUmlaut = (U_Umlaut canTransform inflection) || isVAugmented
+    val useUUmlaut = U_Umlaut.triggers.exists(c => inflection.contains(c)) || isVAugmented
     val isPastSingular = verbType match {
       case (INDICATIVE, _, Some(PAST), Some(Pronoun(SINGULAR, _))) => true
       case _ => false

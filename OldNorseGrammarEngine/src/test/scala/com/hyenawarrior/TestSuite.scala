@@ -22,6 +22,7 @@ import org.junit.runners.Suite
 	classOf[VerbStemTest],
 	classOf[VerbTest],
 	classOf[SubjVerbTest],
+	classOf[SyllablificationTest],
   classOf[MediopassiveVerbTest],
 	classOf[SubjMediopassiveVerbTest],
 	classOf[UmlautTest]

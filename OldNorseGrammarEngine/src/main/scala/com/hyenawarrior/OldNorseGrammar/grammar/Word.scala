@@ -1,8 +1,9 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
+import com.hyenawarrior.OldNorseGrammar.grammar.Syllable.lengthOf
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant.isConsonant
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowelOrSemivowel
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant._
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel._
 
 import scala.language.postfixOps
 
@@ -45,68 +46,56 @@ case class Word(pos: PoS)
 
 object Syllables {
 
-  private def newMapBuffer(): Map[Char, StringBuilder] = Map(
-    'o' -> StringBuilder.newBuilder,
-    'n' -> StringBuilder.newBuilder,
-    'c' -> StringBuilder.newBuilder)
+  private def findWhere(word: String, predicate: Char => Boolean, from: Int): Int =
+    word.indexWhere(predicate, from) match {
 
-  private def newSyllable(parts: Map[Char, StringBuilder], isStressed: Boolean) = {
-
-    val onset = parts('o').result()
-    val nucleus = parts('n').result()
-    val coda = parts('c').result()
-
-    Syllable(onset, nucleus, coda, isStressed)
+    case -1 => word.length
+    case i => i
   }
 
-	private def parseWord(isStressed: Boolean, chars: List[(Char, Char)], parts: Map[Char, StringBuilder])
-	: List[Syllable] = chars match {
+  private def fetchNextPair(word: String, i: Int): (String, String, Int) = {
 
-    case (t @ ('c' | 'n'), k) :: (tail @ ('o', _) :: _) =>
-      parts(t) += k
-      newSyllable(parts, isStressed) :: parseWord(isStressed = false, tail, newMapBuffer())
+    val vowelStartIdx = findWhere(word, isVowel, i)
+    val consStartIdx  = findWhere(word, isConsonant, vowelStartIdx)
+    val consEndIdx    = findWhere(word, isVowel, consStartIdx)
 
-    case (t, k) :: tail =>
-      parts(t) += k
-      parseWord(isStressed, tail, parts)
+    val vowels = word.substring(vowelStartIdx, consStartIdx)
 
-    case Nil => List(newSyllable(parts, isStressed))
+    val consonants = word.substring(consStartIdx, consEndIdx)
+
+    (vowels, consonants, consEndIdx)
   }
 
-  def unapply(word: String): Option[List[Syllable]] =	{
+  private def iterateOverTheWord(word: String, i: Int): List[(String, String)] = if(word.length > i) {
 
-    val firstOnsetIdx = word.indexWhere(isVowelOrSemivowel)
+    val (nucleus, coda, j) = fetchNextPair(word, i)
 
-    val wordTail = word.toList.drop(firstOnsetIdx)
+    (nucleus, coda) +: iterateOverTheWord(word, j)
 
-    val firstOnset = (1 to firstOnsetIdx).map(_ => 'o').toList
+  } else List()
 
-    val typesOfLetters = firstOnset ++ wordTail.map {
-      case v if isVowelOrSemivowel(v) => 'n'
-      case c if isConsonant(c) => 'c'
-    }
+  private def adjustAndCraeteSyllables(nextOnset: String, parts: List[(String, String)]
+                                       , isStressed: Boolean = false): List[Syllable] = parts match {
 
-    if(typesOfLetters.nonEmpty) {
+    case (nucleus, coda) :: Nil =>
+      List(Syllable(nextOnset, nucleus, coda, isStressed, lengthOf(nucleus, coda)))
 
-      val typesOfLetters2 = typesOfLetters.zipAll(typesOfLetters.tail, ' ', ' ').map {
+    case (nucleus, coda) :: other =>
+      val adjustedCoda = coda dropRight 1
+      val syllableLength = lengthOf(nucleus, adjustedCoda)
 
-        case ('c', 'n') => 'o'
-        case (a, _) => a
-      }
+      Syllable(nextOnset, nucleus, adjustedCoda, isStressed, syllableLength) +:
+        adjustAndCraeteSyllables(coda takeRight 1, other)
+  }
 
-      val chars = typesOfLetters2 zip word.toList
+  def unapply(word: String): Option[List[Syllable]] = if(word.isEmpty) None else	{
 
-      val syllables = parseWord(isStressed = true, chars, newMapBuffer())
+    val firstVowelIndex = word indexWhere isVowel
+    val firstOnset = word.substring(0, firstVowelIndex)
+    val parts      = iterateOverTheWord(word, firstVowelIndex)
 
-      Some(syllables)
-    }
-    else None
+    Some(adjustAndCraeteSyllables(firstOnset, parts, isStressed = true))
   }
 
   def apply(syllables: List[Syllable]): String = syllables.flatMap(_.letters).mkString
 }
-
-
-
-
-

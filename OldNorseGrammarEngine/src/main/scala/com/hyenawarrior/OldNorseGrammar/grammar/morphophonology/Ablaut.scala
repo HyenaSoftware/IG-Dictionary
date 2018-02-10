@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Syllables
+import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
 
@@ -54,13 +54,14 @@ object Ablaut
 
 		val firstSy = syllables.head
 
-		val nucleus = firstSy.nucleus
+		val Syllable(onset, nucleus, _, true, _) = firstSy
 
-		if (nucleus.nonEmpty) {
+		if (nucleus.nonEmpty) AblautGrade(onset.lastOption match {
 
-			AblautGrade(nucleus)
+			case Some('j') =>	"j" + nucleus
+			case _ => nucleus
 
-		} else {
+		}) else {
 
 			throw new RuntimeException(String.format("'%s' syllable of '%s' doesn't have any vowel.", firstSy.letters, rawStr))
 		}

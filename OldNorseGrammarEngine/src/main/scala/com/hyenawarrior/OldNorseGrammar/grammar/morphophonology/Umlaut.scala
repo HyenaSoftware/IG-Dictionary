@@ -25,11 +25,11 @@ trait Umlaut extends WordTransformation with InvertableTransformation {
 
 		val newSyllables = syllables.map(sy =>
 		{
-			val Syllable(onset, wholeNucleus, coda, isStressed) = sy
+			val Syllable(onset, wholeNucleus, coda, isStressed, length) = sy
 
 			val newNucleus =	mapping(sy.isStressed).getOrElse(wholeNucleus, wholeNucleus)
 
-			Syllable(onset, newNucleus, coda, isStressed)
+			Syllable(onset, newNucleus, coda, isStressed, length)
 		})
 
     Some(newSyllables)
@@ -51,7 +51,7 @@ trait Umlaut extends WordTransformation with InvertableTransformation {
 
 	private def transform(syllable: Syllable)(implicit trigger: Option[Char]): Option[Syllable] = {
 
-		val Syllable(onset, nucleus, coda, isStressed) = syllable
+		val Syllable(onset, nucleus, coda, isStressed, length) = syllable
 		val mapping = getMapping(isStressed, trigger)
 
 		val vowelsOfNucleus = nucleus filterNot isSemivowel
@@ -59,7 +59,7 @@ trait Umlaut extends WordTransformation with InvertableTransformation {
 			.get(vowelsOfNucleus)
 			.map(nucleus.replace(vowelsOfNucleus, _))
 
-		optNewNucleus.map(s => Syllable(onset, s, coda, isStressed))
+		optNewNucleus.map(s => Syllable(onset, s, coda, isStressed, length))
 	}
 
 	override def canTransform(syllables: List[Syllable]): Boolean = triggersIn(syllables.last).nonEmpty
@@ -71,7 +71,7 @@ trait Umlaut extends WordTransformation with InvertableTransformation {
     letters.filter(triggers.contains)
   }
 
-	protected val triggers: Seq[Char]
+	val triggers: Seq[Char]
 
 	protected def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]): Map[String, String]
 }
