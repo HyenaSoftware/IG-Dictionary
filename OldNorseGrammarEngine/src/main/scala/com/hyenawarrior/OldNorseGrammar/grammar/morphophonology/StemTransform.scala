@@ -1,9 +1,11 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Syllables
+import com.hyenawarrior.OldNorseGrammar.grammar.Syllable.Length.SHORT
+import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.VowelLengthening
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant._
+import com.hyenawarrior.auxiliary.&
 
 /**
 	* Created by HyenaWarrior on 2017.10.20..
@@ -270,6 +272,14 @@ object StemTransform {
   /**
     * restore the V-augmented stem
     * The only purpose of it, is to undo the semivowel deletion
+    *
+    * [https://lrc.la.utexas.edu/eieol/norol/10#grammar_1389]
+    * The w (v in the orthography) of the stem remained only when it followed
+    * - a short syllable,
+    * - a g, or a k,
+    * - and preceded a or u.
+    *
+    * <SHORT|"[:alpha:]+[kg]">w<"[au][:alpha:]*">
     */
   object FixVAugmentation {
 
@@ -278,14 +288,11 @@ object StemTransform {
 
     def unapply(stemStr: String): Option[String] = stemStr match {
 
-      case velarEnd(_) =>
+      // first syllable is affected by (V-augmented) U-Umlaut and stem ends in a velar consonant
+      case Syllables(Syllable(_, "a" | "ǫ" | "i" | "y" | "e", _, _, _) :: _) & velarEnd(_) => Some(stemStr + "v")
 
-        val Syllables(sy :: _) = stemStr
-
-        sy.nucleus match {
-          case "a" | "ǫ" | "i" | "y" | "e" => Some(stemStr + "v")
-          case _ => None
-        }
+      // the last syllable of the stem is short
+      case Syllables(_ :+ Syllable(_, _, _, _, SHORT)) => Some(stemStr + "v")
 
       case _ => None
     }
