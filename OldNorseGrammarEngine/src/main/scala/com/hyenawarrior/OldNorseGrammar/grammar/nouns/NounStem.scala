@@ -1,6 +1,5 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{FixJAugmentation, FixVAugmentation}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 
 /**
@@ -14,17 +13,15 @@ object NounStem {
 
   def fromStrRepr(stemStr: String, stemClass: NounStemClass): NounStem = {
 
-    val thematicVowel = stemClass.thematicVowel.getOrElse("")
-
-    val rootStr = normalizeStem(stemStr stripSuffix thematicVowel)
+    val rootStr = removeThematicVowel(stemStr, stemClass)
 
     NounStem(rootStr, stemClass)
   }
 
-  private def normalizeStem(stemStr: String): String = stemStr match {
+  def removeThematicVowel(stemStr: String, stemClass: NounStemClass): String = {
 
-    case FixVAugmentation(fixedStemStr) => fixedStemStr
-    case FixJAugmentation(fixedStemStr) => fixedStemStr
-    case _ => stemStr
+    val thematicVowel = stemClass.thematicVowel.getOrElse("")
+
+    stemStr stripSuffix thematicVowel
   }
 }
