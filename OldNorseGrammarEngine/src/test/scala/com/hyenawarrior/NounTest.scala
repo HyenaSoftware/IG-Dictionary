@@ -94,7 +94,7 @@ class NounTest {
   def testStrongFeminineOForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
 
     (SINGULAR, NOMINATIVE) -> "grǫf",
-    (SINGULAR, DATIVE) -> "grafar",
+    (SINGULAR, GENITIVE) -> "grafar",
 
     (PLURAL, NOMINATIVE) -> "grafar",
     (PLURAL, GENITIVE) -> "grafa",
