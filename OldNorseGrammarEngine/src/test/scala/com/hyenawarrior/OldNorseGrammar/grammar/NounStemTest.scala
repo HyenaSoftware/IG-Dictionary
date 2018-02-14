@@ -1,9 +1,9 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounStem
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{StrongStemClassFeminineA1, StrongStemClassFeminineA2, StrongStemClassMascA}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{StrongStemClassFeminineA2, StrongStemClassMascA}
 import org.junit.Assert.assertEquals
-import org.junit.{Assert, Test}
+import org.junit.Test
 
 /**
   * Created by HyenaWarrior on 2018.02.03..

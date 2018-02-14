@@ -52,9 +52,39 @@ class TestTransformation {
 	}
 
 	@Test
+	def testConsonantAssimilationReverse2(): Unit = {
+
+		assertEquals(Some("mennr"), ConsonantAssimilation.unapply("mennn"))
+	}
+
+	@Test
 	def testConsonantAssimilationShouldIgnore(): Unit = {
 
 		assertEquals("hestr", ConsonantAssimilation("hestr"))
+	}
+
+	@Test
+	def testConsonantAssimilationR(): Unit = {
+
+		assertEquals("maðr",  ConsonantAssimilation("mannr"))
+		assertEquals("stóll", ConsonantAssimilation("stólr"))
+		assertEquals("groenn", ConsonantAssimilation("groenr"))
+		assertEquals("less",   ConsonantAssimilation("lesr"))
+	}
+
+	@Test
+	def testConsonantAssimilationBlockR(): Unit = {
+
+		assertEquals("dalr",  ConsonantAssimilation("dalr"))
+		assertEquals("vinr", ConsonantAssimilation("vinr"))
+	}
+
+	@Test
+	def testConsonantAssimilationCombo(): Unit = {
+
+		assertEquals("nagl",   ConsonantAssimilation("naglr"))
+		assertEquals("menn",   ConsonantAssimilation("mennr"))
+		assertEquals("skipti", ConsonantAssimilation("skiptti"))
 	}
 
 	@Test

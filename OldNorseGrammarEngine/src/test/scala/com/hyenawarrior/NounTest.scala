@@ -164,10 +164,10 @@ class NounTest {
   def testStrongMascRForms(): Unit =  diff(StrongStemClassMascR, Map(
 
     (SINGULAR, NOMINATIVE)  -> "maðr",
-    (SINGULAR, ACCUSATIVE)  -> "mann",
+    (SINGULAR, ACCUSATIVE)  -> nonReversible("mann"),
     (SINGULAR, GENITIVE)    -> "manns",
 
-    (PLURAL, NOMINATIVE)  -> "menn",
+    (PLURAL, NOMINATIVE)  -> nonReversible("menn"),
     (PLURAL, GENITIVE)    -> "manna",
     (PLURAL, DATIVE)      -> "mǫnnum"
   ))
@@ -198,19 +198,19 @@ class NounTest {
 
   // in/weak fem I-stem
   @Test
-  def testWeakFemIForms(): Unit =  diff(WeakStemClassMascR, Map(
+  def testWeakFemIForms(): Unit =  diff(WeakStemClassFeminineI, Map(
 
     (SINGULAR, NOMINATIVE)  -> "gleði",
     (SINGULAR, ACCUSATIVE)  -> "gleði",
 
-    (PLURAL, NOMINATIVE)  -> "gleðir",
+    (PLURAL, NOMINATIVE)  -> "gleðar",
     (PLURAL, GENITIVE)    -> "gleða",
     (PLURAL, DATIVE)      -> "gleðum"
   ))
 
   // on/jon weak feminine U-stem
   @Test
-  def testWeakFemUForms(): Unit =  diff(WeakStemClassMascR, Map(
+  def testWeakFemUForms(): Unit =  diff(WeakStemClassFeminineU, Map(
 
     (SINGULAR, NOMINATIVE)  -> "saga",
     (SINGULAR, ACCUSATIVE)  -> "sǫgu",
@@ -221,7 +221,7 @@ class NounTest {
 
   // an/jan weak masc A-stem
   @Test
-  def testWeakMascAForms(): Unit =  diff(WeakStemClassMascR, Map(
+  def testWeakMascAForms(): Unit =  diff(WeakStemClassMascA, Map(
 
     (SINGULAR, NOMINATIVE)  -> "bogi",
     (SINGULAR, ACCUSATIVE)  -> "boga",
@@ -245,7 +245,7 @@ class NounTest {
 
   // an/jan weak neuter
   @Test
-  def testWeakNeuterForms(): Unit =  diff(WeakStemClassMascR, Map(
+  def testWeakNeuterForms(): Unit =  diff(WeakStemClassNeuter, Map(
 
     (SINGULAR, NOMINATIVE)  -> "hjarta",
     (SINGULAR, ACCUSATIVE)  -> "hjarta",
