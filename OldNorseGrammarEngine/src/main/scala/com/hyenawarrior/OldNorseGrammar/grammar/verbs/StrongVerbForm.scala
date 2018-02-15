@@ -225,10 +225,10 @@ object StrongVerbForm {
     val (mood, voice, optTense, optPronoun) = vt
     val stemType: EnumVerbStem = stemFrom(vt)
 
-    val ConsonantAssimilation(restoredVerbStrRepr) = verbStrRepr
+    val restoredVerbStrRepr = ConsonantAssimilation invert verbStrRepr
 
 		// remove inflection
-		val stemRepr = uninflect(restoredVerbStrRepr, vt)
+		val stemRepr = restoredVerbStrRepr.flatMap(uninflect(_, vt)).head
 
     // undo SemivowelDeletion
     val stemStrAugFixed = augment(stemRepr, verbClass, stemType)
@@ -259,9 +259,9 @@ object StrongVerbForm {
   private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): String
     = (verbClass, stemType, stemStr) match {
 
-    // helpr <-[I-umlaut + SVD]-- hjalp- --[braking]-> help-
+    // helpr <-[I-umlaut + SVD]-- hjalp- --[breaking]-> help-
     // the effect of the next line is inverted back during the stem normalization, but the normalization also add a flag
-    //  to indicate that this stem does have breaking - so, yes, it's redundant but it's important to have the flag
+    //  to indicate that this stem does have breaking - so, yes, it's redundant, but it's important to have the flag
     case (STRONG_3RD_CLASS, PRESENT_STEM, InverseBreaking(s)) => s
 
     /* do not fix the augmentation in any other cases:
@@ -288,17 +288,18 @@ object StrongVerbForm {
     case _ => stemStr
   }
 
-  private def uninflect(strRepr: String, vt: VerbType): String = {
+  private def uninflect(strRepr: String, vt: VerbType): Option[String] = {
 
     val inflection = inflectionFor(vt, strRepr)
 
     (strRepr, inflection.length) match {
 
-      case _ if strRepr endsWith inflection => strRepr dropRight inflection.length
-      case StressShift(prevStrRepr, `inflection`) => prevStrRepr dropRight inflection.length
+      case _ if strRepr endsWith inflection => Some(strRepr dropRight inflection.length)
+      case StressShift(prevStrRepr, `inflection`) => Some(prevStrRepr dropRight inflection.length)
 
         // fá -> fá + a
-      case (_, 1) if strRepr endsWith "á" => strRepr
+      case (_, 1) if strRepr endsWith "á" => Some(strRepr)
+      case _ => None
     }
   }
 
