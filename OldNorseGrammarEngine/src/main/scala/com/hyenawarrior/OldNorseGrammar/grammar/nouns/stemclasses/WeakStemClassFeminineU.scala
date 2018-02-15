@@ -10,15 +10,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object WeakStemClassFeminineU extends NounStemClass
 {
-	def transformationsFor(decl: (GNumber, Case)) =  decl match
-	{
-		case (PLURAL, GENITIVE) => List()
-		case (SINGULAR, NOMINATIVE) => List()
-		case _ => List(Explicit_U_Umlaut)
-	}
+	override def inflection(decl: (GNumber, Case)) = decl match	{
 
-	override def inflection(decl: (GNumber, Case)) = decl match
-	{
 		case (SINGULAR, NOMINATIVE)											=> "a"
 		case (SINGULAR, ACCUSATIVE | DATIVE | GENITIVE)	=> "u"
 

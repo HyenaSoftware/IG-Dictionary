@@ -2,24 +2,24 @@ package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, Explicit_U_Umlaut}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
 
 /**
 	* Created by HyenaWarrior on 2017.04.09..
 	*/
 object StrongStemClassFeminineR extends NounStemClass
 {
-	def transformationsFor(decl: (GNumber, Case)) =  decl match
-	{
-		case (SINGULAR, cs) if cs != GENITIVE => List(Explicit_U_Umlaut)
-		case (PLURAL, NOMINATIVE | ACCUSATIVE) => List(Explicit_I_Umlaut)
-		case (PLURAL, DATIVE) => List(Explicit_U_Umlaut)
-		case _ => List()
+	override def transformationFor(decl: NounType) =  decl match {
+
+		case (SINGULAR, cs) if cs != GENITIVE => Some(U_Umlaut)
+		case (PLURAL, NOMINATIVE | ACCUSATIVE) => Some(Explicit_I_Umlaut)
+		case (PLURAL, DATIVE) => Some(U_Umlaut)
+		case _ => None
 	}
 
-	override def inflection(decl: (GNumber, Case)) = decl match
-	{
+	override def inflection(decl: NounType) = decl match {
+
 		// auto umlaut for SNG-NOM and SNG-ACC
 		// root -> u-umlaut
 		case (SINGULAR, cs) if cs != GENITIVE		=> ""

@@ -9,8 +9,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object WeakStemClassMascA extends NounStemClass
 {
-	override def inflection(decl: (GNumber, Case)) = decl match
-	{
+	override def inflection(decl: (GNumber, Case)) = decl match {
+
 		case (SINGULAR, NOMINATIVE)											=> "i"
 		case (SINGULAR, ACCUSATIVE | DATIVE | GENITIVE)	=> "a"
 

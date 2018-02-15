@@ -2,8 +2,8 @@ package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, Explicit_U_Umlaut}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
 
 /**
 	* Created by HyenaWarrior on 2017.07.28..
@@ -12,16 +12,17 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object StrongStemClassMascU extends NounStemClass
 {
-	def transformationsFor(decl: (GNumber, Case)) =  decl match
-	{
-		// long stems have i-umlaut
-		case (SINGULAR, NOMINATIVE | ACCUSATIVE)	| (PLURAL, ACCUSATIVE | DATIVE)	=> List(Explicit_U_Umlaut)	// lost -u stem end
-		case (SINGULAR, DATIVE) 									| (PLURAL, NOMINATIVE) 					=> List(Explicit_I_Umlaut)
-		case _ => List()
+	override def thematicVowel: Option[String] = Some("U")
+
+	override def transformationFor(decl: NounType) =  decl match {
+
+		case (SINGULAR, NOMINATIVE | ACCUSATIVE)	| (PLURAL, ACCUSATIVE | DATIVE)	=> Some(U_Umlaut)	// lost -u stem end
+		case (SINGULAR, DATIVE) 									| (PLURAL, NOMINATIVE) 					=> Some(Explicit_I_Umlaut)
+		case _ => None
 	}
 
-	override def inflection(decl: (GNumber, Case)) = decl match
-	{
+	override def inflection(decl: NounType) = decl match {
+
 		case (SINGULAR, NOMINATIVE) => "r"
 		case (SINGULAR, ACCUSATIVE)	=> ""
 		case (SINGULAR, DATIVE)			=> "i"

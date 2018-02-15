@@ -9,11 +9,11 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object WeakStemClassNeuter extends WeakStemClass
 {
-	override def inflection(decl: (GNumber, Case)) = decl match
-	{
+	override def inflection(decl: (GNumber, Case)) = decl match	{
+
 		case (SINGULAR, _)	=> "a"
 		case (PLURAL, NOMINATIVE | ACCUSATIVE)	=> "u"
-		case (PLURAL, GENITIVE)	=> "na	"
+		case (PLURAL, GENITIVE)	=> "na"
 
 		case _ => super.inflection(decl)
 	}

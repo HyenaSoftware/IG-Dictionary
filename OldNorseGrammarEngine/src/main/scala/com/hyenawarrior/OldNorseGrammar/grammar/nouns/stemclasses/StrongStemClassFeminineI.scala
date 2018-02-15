@@ -2,8 +2,8 @@ package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Explicit_U_Umlaut
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
 
 /**
 	* Created by HyenaWarrior on 2017.07.28..
@@ -14,15 +14,14 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object StrongStemClassFeminineI extends NounStemClass
 {
-	def transformationsFor(decl: (GNumber, Case)) =  decl match
-	{
-		// long stems have i-umlaut
-		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) | (PLURAL, DATIVE) => List(Explicit_U_Umlaut)	// lost -u stem end
-		case _ => List()
+	override def transformationFor(decl: NounType) = decl match {
+
+		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) | (PLURAL, DATIVE) => Some(U_Umlaut)	// lost -u stem end
+		case _ => None
 	}
 
-	override def inflection(decl: (GNumber, Case)) = decl match
-	{
+	override def inflection(decl: NounType) = decl match	{
+
 		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) => ""
 		case (SINGULAR, GENITIVE)		=> "ar"
 

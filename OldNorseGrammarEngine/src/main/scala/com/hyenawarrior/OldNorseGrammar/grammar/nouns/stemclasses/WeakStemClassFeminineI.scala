@@ -1,5 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
+import com.hyenawarrior.OldNorseGrammar.grammar.Case.{ACCUSATIVE, DATIVE, GENITIVE, NOMINATIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
@@ -8,9 +9,13 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 	*/
 object WeakStemClassFeminineI extends NounStemClass
 {
-	override def inflection(decl: (GNumber, Case)) = decl match
-	{
+	override def inflection(decl: (GNumber, Case)) = decl match	{
+
 		case (SINGULAR, _)	=> "i"
-		case (PLURAL, _)		=> ""	// it doesn't exist
+
+		// in most of the cases it's obsoleted
+		case (PLURAL, NOMINATIVE | ACCUSATIVE) => "ar"
+		case (PLURAL, GENITIVE)             	 => "a"
+		case (PLURAL, DATIVE)               	 => "um"
 	}
 }
