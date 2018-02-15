@@ -1,9 +1,11 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.SemivowelDeletion
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{FixJAugmentation, FixVAugmentation}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounStem.removeThematicVowel
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowel
 import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
 /**
@@ -16,12 +18,27 @@ object NounForm {
 
   def fromStringRepr(str: String, stemClass: NounStemClass, declension: NounType): NounForm = try {
 
-    val stemClass(uninflectedStr) = (str, declension)
+    // undo consonant assimilation
+    val consAssimilatedStrs = ConsonantAssimilation invert str
+
+    // remove inflection
+    val uninflectedStrs = consAssimilatedStrs
+      .map(a => a -> declension)
+      .flatMap {
+
+        case stemClass(ustr) => Some(ustr)
+        case _ => None
+      }
+
+    // reverse-SVD should be done here?
+
+    val uninflectedStr = uninflectedStrs.head
 
     val isLocallyTriggeredUmlaut = theseCanCauseUUmlaut(stemClass.inflection(declension))
     val isNonProductiveUmlaut = stemClass.transformationFor(declension).contains(U_Umlaut)
 
-    val (stemStr, optUmlaut) = uninflectedStr match {
+    // reverse U-umlaut
+    val (stemUnUmlautedStr, optUmlaut) = uninflectedStr match {
 
       case U_Umlaut(s) if uninflectedStr != s =>
 
@@ -34,17 +51,23 @@ object NounForm {
     // if optUmlaut!=None then a semivowel caused a productive umlaut mutation in every form of the noun
 
     //
-    val rootStr = NounStem.removeThematicVowel(stemStr, stemClass)
-    val augmentedRootStr = augment(rootStr, optUmlaut)
-    val nounStem = NounStem(augmentedRootStr, stemClass)
+    val rootStr = removeThematicVowel(stemUnUmlautedStr, stemClass)
 
-    fromStem(nounStem, declension)
+    // undo SVD
+    val augmentedRootStr = augment(rootStr, optUmlaut)
+
+    // create the noun stem
+    val stem = NounStem(augmentedRootStr, stemClass)
+
+    // create the "official" representation of this noun-form from the constructed stem
+    fromStem(stem, declension)
 
   } catch {
 
     case e: Exception =>
+      println(e)
       val declSuffix = stemClass inflection declension
-      throw new RuntimeException(s"The word $str doesn't ends with $declSuffix.")
+      throw new RuntimeException(s"The word $str doesn't ends with $declSuffix.", e)
   }
 
   // basically it's the reverse SVD
@@ -62,16 +85,38 @@ object NounForm {
 
     //
     val canBeUmlauted = theseCanCauseUUmlaut(rootStr + stemClass.inflection(declension))
+
+    // apply productive U-umlaut
     val umlautedRootStr = if(canBeUmlauted) U_Umlaut(rootStr).getOrElse(rootStr) else rootStr
 
+    // inflect
     val Some(inflectedForm) = stemClass(umlautedRootStr, declension)
 
-    val strWithoutSVs = SemivowelDeletion(inflectedForm)
+    // SVD
+    val strWithSVs = SemivowelDeletion(inflectedForm)
 
-    NounForm(strWithoutSVs, declension, stem)
+    // consonant assimilation
+    val strConsAssimilation =
+      // perhaps the presence of the thematic vowel in the Proto-Germanic blocked the assimilation of the -r in the
+      // Old Norse as well: *walþuz -> *vǫllur -> vǫllr (instead of vǫll)
+      if(stemClass.thematicVowel.isDefined && strWithSVs.endsWith("r"))
+        strWithSVs else ConsonantAssimilation(strWithSVs)
+
+    NounForm(strConsAssimilation, declension, stem)
   }
 
-  private def theseCanCauseUUmlaut(str: String): Boolean = U_Umlaut.triggers.exists { str.contains(_) }
+  private def theseCanCauseUUmlaut(str: String): Boolean = {
+
+    val i = str.indexWhere(isVowel) match {
+
+      case -1 => 0
+      case i => i
+    }
+
+    val str2 = str substring i
+
+    U_Umlaut.triggers.exists { str2.contains(_) }
+  }
 
   def nounFrom(str: String) = 0
 }

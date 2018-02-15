@@ -5,9 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 /**
   * Created by HyenaWarrior on 2018.01.31..
   */
-case class NounStem(rootStr: String, stemClass: NounStemClass) {
-
-}
+case class NounStem(rootStr: String, stemClass: NounStemClass)
 
 object NounStem {
 
