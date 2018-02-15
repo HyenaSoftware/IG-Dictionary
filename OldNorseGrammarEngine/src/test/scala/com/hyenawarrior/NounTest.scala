@@ -193,7 +193,7 @@ class NounTest {
 
     (PLURAL, NOMINATIVE)  -> "vellir",
     (PLURAL, DATIVE)      -> "vǫllum",
-    (PLURAL, GENITIVE)    -> "vǫlla"
+    (PLURAL, GENITIVE)    -> "valla"
   ))
 
   // in/weak fem I-stem

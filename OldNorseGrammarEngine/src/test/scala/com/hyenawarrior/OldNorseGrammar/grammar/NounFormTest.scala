@@ -46,6 +46,22 @@ class NounFormTest {
   }
 
   @Test
+  def testStrongMascUStem(): Unit = {
+
+    val stem = NounForm.fromStringRepr("vǫllum", StrongStemClassMascU, PLURAL -> Case.DATIVE).stem
+
+    assertEquals(NounStem("vall", StrongStemClassMascU), stem)
+  }
+
+  @Test
+  def testStrongMascUStem2(): Unit = {
+
+    val stem = NounForm.fromStringRepr("skildir", StrongStemClassMascU, PLURAL -> NOMINATIVE).stem
+
+    assertEquals(NounStem("skeld", StrongStemClassMascU), stem)
+  }
+
+  @Test
   def testStrongMascUStemReverse(): Unit = {
 
     val stem = NounStem("vall", StrongStemClassMascU)
