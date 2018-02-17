@@ -13,11 +13,10 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESE
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.oldnorsedictionary.R
-import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.VerbForm
 import com.hyenawarrior.oldnorsedictionary.modelview.EditTextTypeListener
 import com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
 import com.hyenawarrior.oldnorsedictionary.new_word.VerbDeclPreferencesDialog
-import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.AddNewVerbHelper.{GRAY, RED}
+import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.AddNewVerbHelper.{DEFAULT_VERB_TYPE, GRAY, RED}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.AddNewWordActivity._
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.WordData
 
@@ -37,6 +36,8 @@ object AddNewVerbHelper
 	val GRAY = 0xffaaaaaa
 
 	type Declension = Either[(Pronoun, VerbTenseEnum), NonFinitiveVerbType]
+
+  val DEFAULT_VERB_TYPE: VerbType = (INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1))
 }
 
 class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.verb_types)
@@ -158,7 +159,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		var currentTenseLED: Option[Int] = None
 
 		// make sure the other fields are already initialized when this method is called
-		onDeclensionSelected(VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype)
+		onDeclensionSelected(DEFAULT_VERB_TYPE)
 
 		override def onClick(view: View): Unit = verbDeclPreferencesDialog.show(onDeclensionSelected)
 
@@ -282,7 +283,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		val (classes, map) = selectedVerbParameters
 
 		val declStr = map.get(rowView).map(e => (e._1, optStr))
-      .getOrElse((VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype, optStr))
+      .getOrElse(DEFAULT_VERB_TYPE -> optStr)
 
 		val newMap = (map - rowView) + ((rowView, declStr))
 

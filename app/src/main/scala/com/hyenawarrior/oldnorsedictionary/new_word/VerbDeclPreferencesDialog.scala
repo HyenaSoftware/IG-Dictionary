@@ -6,68 +6,47 @@ import android.view.{LayoutInflater, View}
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.{AdapterView, ArrayAdapter, RadioButton, Spinner}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbModeEnum, VerbTenseEnum, VerbType}
 import com.hyenawarrior.oldnorsedictionary.R
-import com.hyenawarrior.oldnorsedictionary.model.database.marshallers.VerbForm
 import com.hyenawarrior.oldnorsedictionary.new_word.VerbDeclPreferencesDialog._
+import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.AddNewVerbHelper
 
 /**
 	* Created by HyenaWarrior on 2017.06.17..
 	*/
 object VerbDeclPreferencesDialog
 {
-	val spinnerItemsIndPresentItem			= List(
-		VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype,
-		VerbForm.VERB_INDICATIVE_PRESENT_2ND_SG.vtype,
-		VerbForm.VERB_INDICATIVE_PRESENT_3RD_SG.vtype,
+  val spinnerItemsIndPresentItem    = List(SG_1, SG_2, SG_3, PL_1, PL_2, PL_3)
+    .map { pronoun => (INDICATIVE, ACTIVE, Some(PRESENT), Some(pronoun)) }
 
-		VerbForm.VERB_INDICATIVE_PRESENT_1ST_PL.vtype,
-		VerbForm.VERB_INDICATIVE_PRESENT_2ND_PL.vtype,
-		VerbForm.VERB_INDICATIVE_PRESENT_3RD_PL.vtype)
+  val spinnerItemsIndPreteriteItem  = List(SG_1, SG_2, SG_3, PL_1, PL_2, PL_3)
+    .map { pronoun => (INDICATIVE, ACTIVE, Some(PAST), Some(pronoun)) }
 
-	val spinnerItemsIndPreteriteItem			= List(
-		VerbForm.VERB_INDICATIVE_PAST_1ST_SG.vtype,
-		VerbForm.VERB_INDICATIVE_PAST_2ND_SG.vtype,
-		VerbForm.VERB_INDICATIVE_PAST_3RD_SG.vtype,
+  val spinnerItemsSubjPresentItem	  = List(SG_1, SG_2, SG_3, PL_1, PL_2, PL_3)
+    .map { pronoun => (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(pronoun)) }
 
-		VerbForm.VERB_INDICATIVE_PAST_1ST_PL.vtype,
-		VerbForm.VERB_INDICATIVE_PAST_2ND_PL.vtype,
-		VerbForm.VERB_INDICATIVE_PAST_3RD_PL.vtype)
+	val spinnerItemsSubjPreteriteItem = List(SG_1, SG_2, SG_3, PL_1, PL_2, PL_3)
+    .map { pronoun => (SUBJUNCTIVE, ACTIVE, Some(PAST), Some(pronoun)) }
 
-	val spinnerItemsSubjPresentItem			= List(
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_SG.vtype,
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_SG.vtype,
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_SG.vtype,
+  val spinnerItemsNonFinitive	= List[VerbType](
+    (INFINITIVE, ACTIVE, None,          None),
+    (PARTICIPLE, ACTIVE, Some(PRESENT), None),
+    (PARTICIPLE, ACTIVE, Some(PAST),    None))
 
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_1ST_PL.vtype,
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_2ND_PL.vtype,
-		VerbForm.VERB_SUBJUNCTIVE_PRESENT_3RD_PL.vtype)
-
-	val spinnerItemsSubjPreteriteItem			= List(
-		VerbForm.VERB_SUBJUNCTIVE_PAST_1ST_SG.vtype,
-		VerbForm.VERB_SUBJUNCTIVE_PAST_2ND_SG.vtype,
-		VerbForm.VERB_SUBJUNCTIVE_PAST_3RD_SG.vtype,
-
-		VerbForm.VERB_SUBJUNCTIVE_PAST_1ST_PL.vtype,
-		VerbForm.VERB_SUBJUNCTIVE_PAST_2ND_PL.vtype,
-		VerbForm.VERB_SUBJUNCTIVE_PAST_3RD_PL.vtype)
-
-	val spinnerItemsNonFinitive		=  List(
-			VerbForm.VERB_INFINITIVE.vtype,
-			VerbForm.VERB_PRESENT_PARTICIPLE.vtype,
-			VerbForm.VERB_PAST_PARTICIPLE.vtype)
-
-  val spinnerItemsImperative = List(
-			VerbForm.VERB_IMPERATIVE_SG_2ND.vtype,
-			VerbForm.VERB_IMPERATIVE_PL_1ST.vtype,
-			VerbForm.VERB_IMPERATIVE_PL_2ND.vtype)
+  val spinnerItemsImperative = List(SG_2, PL_1, PL_2)
+    .map { e => (IMPERATIVE, ACTIVE, Some(PRESENT), Some(e)) }
 }
 
 class VerbDeclPreferencesDialog(activity: Activity)
 {
-	type State = (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])
+	private type State = (VerbModeEnum, Option[VerbTenseEnum], Option[Pronoun])
 
-	var state = VerbForm.VERB_INDICATIVE_PRESENT_1ST_SG.vtype
+	var state = AddNewVerbHelper.DEFAULT_VERB_TYPE
+
 	var activeVerbMode = R.id.rbInd
 	var activeVerbTense = R.id.rbPresent
 	var spinnerIndex = 0
@@ -122,13 +101,13 @@ class VerbDeclPreferencesDialog(activity: Activity)
 
 			case id @ (R.id.rbInd | R.id.rbSubj) =>
 				activeVerbMode = id
-				setSpinnerAndTenseRadioButtons(R.array.verb_ind_subj_decls, true)
+				setSpinnerAndTenseRadioButtons(R.array.verb_ind_subj_decls, enableTenseButtons = true)
         disableOtherRadioButtonsThan(id)
 				setState()
 
 			case R.id.rbNonFinitive =>
 				activeVerbMode = R.id.rbNonFinitive
-				setSpinnerAndTenseRadioButtons(R.array.verb_nonfinitive_decls, false)
+				setSpinnerAndTenseRadioButtons(R.array.verb_nonfinitive_decls, enableTenseButtons = false)
         disableOtherRadioButtonsThan(R.id.rbNonFinitive)
 				setState()
 
@@ -138,7 +117,7 @@ class VerbDeclPreferencesDialog(activity: Activity)
         rbPresent.setChecked(true)
         rbPreterite.setChecked(false)
 
-        setSpinnerAndTenseRadioButtons(R.array.verb_imperative_decls, false)
+        setSpinnerAndTenseRadioButtons(R.array.verb_imperative_decls, enableTenseButtons = false)
         disableOtherRadioButtonsThan(R.id.rbImperative)
         setState()
 
