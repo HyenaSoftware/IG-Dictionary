@@ -6,9 +6,9 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 /**
 	* Created by HyenaWarrior on 2017.03.20..
 	*/
-class Noun(stemClass: NounStemClass, givenForms: Map[NounType, NounForm]
-					 , generatedForms: Map[NounType, NounForm]
-					 , overridenForms: Map[NounType, NounForm]) {
+case class Noun(stem: NounStem, givenForms: Map[NounType, NounForm]
+                , generatedForms: Map[NounType, NounForm]
+                , overridenForms: Map[NounType, NounForm]) {
 
 	lazy val nounForms = givenForms ++ generatedForms ++ overridenForms
 
@@ -21,29 +21,25 @@ object Noun {
 
 	def apply(stemClass: NounStemClass, givenForms: Map[NounType, String]): Noun = {
 
+    if(givenForms.isEmpty) {
+
+      throw new RuntimeException("There was no forms given.")
+    }
+
 		val givenNounForms = givenForms.map {
 
-			case (nt, f) => nt -> NounForm.fromStringRepr(f, stemClass, nt)
+			case (declension, strRepr) => declension -> NounForm(strRepr, declension)
 		}
 
 		val missingDeclensions = ALL_FORMS -- givenForms.keys
-		val nounStem = extractPrimaryStem(stemClass, givenForms)
+		val nounStem = NounStem.from(givenNounForms.values.head, stemClass)
 
-		val missingForms = missingDeclensions.map { nt =>
+		val missingForms = missingDeclensions.map { declension =>
 
-			nt -> NounForm.fromStem(nounStem, nt)
+			declension -> NounForm.fromStem(nounStem, declension)
 
 		}.toMap
 
-		new Noun(stemClass, givenNounForms, missingForms, Map())
-	}
-
-	private def extractPrimaryStem(stemClass: NounStemClass, givenForms: Map[NounType, String]): NounStem = {
-
-		val (decl, str) = givenForms.head
-
-		val form = NounForm.fromStringRepr(str, stemClass, decl)
-
-		form.stem
+		new Noun(nounStem, givenNounForms, missingForms, Map())
 	}
 }
