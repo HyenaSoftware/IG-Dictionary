@@ -5,7 +5,7 @@ import android.view.{View, ViewGroup}
 import android.widget.{Button, TextView}
 import com.hyenawarrior.OldNorseGrammar.grammar.Case.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.modelview.CustomAdapter
@@ -29,23 +29,23 @@ object NounDeclensionAdapter
 }
 
 class NounDeclensionAdapter(activity: Activity, listView: ViewGroup)
-  extends CustomAdapter[(NounStemClassEnum, Map[NounType, String])](activity, listView, R.layout.noun_declension)
+  extends CustomAdapter[(NounStemClassEnum, Noun)](activity, listView, R.layout.noun_declension)
 {
 	protected def resetView(i: Int, view: View): Unit = {
 
 		val isSingleList = getCount == 1
 
-		val (nscEnum @ NounStemClassEnum(ncName, _), map) = itemAt(i)
+		val (nscEnum, noun) = itemAt(i)
 
 		//
 		val tvNounDeclDesc = view.findViewById(R.id.tvNounDeclDesc).asInstanceOf[TextView]
-		tvNounDeclDesc.setText(if (isSingleList)	"" else ncName)
+		tvNounDeclDesc.setText(if (isSingleList)	"" else nscEnum.name)
 
 		NounDeclensionAdapter.NOUN_EDIT_TEXTS.foreach
 		{
 			case (id, nf) =>
 				val tvNC = view.findViewById(id).asInstanceOf[TextView]
-				val ncTextForm = map.getOrElse(nf, "...")
+				val ncTextForm = noun.nounForms.get(nf).map(_.strRepr).getOrElse("...")
 				tvNC.setText(ncTextForm)
 		}
 

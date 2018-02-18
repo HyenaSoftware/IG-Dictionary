@@ -1,6 +1,8 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
 import android.content.Context
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.INFINITIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
@@ -62,6 +64,19 @@ class IGPersister(ctx: Context) {
           case (_, v) => v -> false
         }
         .map { case(v, p) => persister.stringInterner.getOrStore(v.strForm) -> p }
+
+      // create lookup entries
+      for((strId, isPri) <- strIds) {
+
+        lookupTable.insert(Array(strId, OldNorse.id, objId, isPri))
+      }
+
+    case nn: Noun =>
+      val strIds = nn.nounForms.map {
+        case ((GNumber.SINGULAR, Case.NOMINATIVE), nf) => nf -> true
+        case (_, nf) => nf -> false
+      }
+      .map { case (n, p) => persister.stringInterner.getOrStore(n.strRepr) -> p }
 
       // create lookup entries
       for((strId, isPri) <- strIds) {

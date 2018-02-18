@@ -6,7 +6,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns._
 /**
 	* Created by HyenaWarrior on 2017.04.09..
 	*/
-trait NounStemClass {
+trait NounStemClass extends Serializable {
 
 	def thematicVowel: Option[String] = None
 

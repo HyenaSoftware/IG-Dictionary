@@ -36,13 +36,14 @@ object AddNewNounHelper
   type Declension = (GNumber, Case)
 }
 
-class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spinner) extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.noun_types)
-{
+class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spinner)
+  extends AbstractAddNewPosHelper(activity, stemClassSpinner, R.array.noun_types) {
+
 	type Override = (Option[NounType], Option[String])
 	type Parameters = (List[NounStemClassEnum], Override, Map[View, Override])
 
 	var selectedNounParameters: Parameters = (List(), (None, None), Map())
-  var latestNounData: Map[NounStemClassEnum, Map[NounType, String]] = Map()
+  var latestNounData: Map[NounStemClassEnum, Noun] = Map()
 
 	val LL_NOUN_DECLS = rootView.findViewById(R.id.llNounDeclensions).asInstanceOf[LinearLayout]
 	val LL_DECL_LIST = LL_NOUN_DECLS.findViewById(R.id.llNounDeclensionList).asInstanceOf[LinearLayout]
@@ -197,7 +198,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		.toVector
 
 	private def generateFormsFrom(stemClass: NounStemClass, baseDef: (NounType, String), map: Map[View, Override])
-		:	Map[NounType, String] = try {
+		:	Option[Noun] = try {
 
 		val mapForms: Map[NounType, String] = map.values.map {
 
@@ -207,9 +208,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		val baseForm: Map[NounType, String] = Map(baseDef)
 
-		val noun = Noun(stemClass, baseForm ++ mapForms)
-
-		noun.nounForms.map { case (d, nf) =>	d -> nf.strRepr	}
+		Some(Noun(stemClass, baseForm ++ mapForms))
 
 	} catch {
 
@@ -217,7 +216,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			val msg = e.getMessage
 			android.util.Log.w(AddNewVerbHelper.getClass.getSimpleName, msg)
 
-			Map()
+			None
 	}
 
 	private def fillNounForms(): Unit = selectedNounParameters match
@@ -225,9 +224,9 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		case (maybeEmptyList, (Some(numCase), Some(str)), map) =>
       val listOfNSCE = if(maybeEmptyList.isEmpty) NounStemClassEnum.values else maybeEmptyList
 
-      val wordMaps = listOfNSCE
-        .map(n => n -> generateFormsFrom(n.nounStemClass, (numCase, str), map))
-        .filter { case (_, m) => m.nonEmpty }
+      val wordMaps: List[(NounStemClassEnum, Noun)] = listOfNSCE
+        .map(nsce => nsce -> generateFormsFrom(nsce.nounStemClass, (numCase, str), map))
+        .collect{ case (k, Some(noun)) => k -> noun }
 
       NounDeclensionAdapter resetItems wordMaps
 
@@ -243,8 +242,8 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
     optNounStemClassE match
     {
       case Some(nounStemClassE) =>
-				val selectedForm = latestNounData(nounStemClassE)
-				WordData(selectedForm, List())
+				val selectedNoun = latestNounData(nounStemClassE)
+				WordData(selectedNoun, List())
 
       case _ => throw new IllegalStateException("Unknown control")
     }

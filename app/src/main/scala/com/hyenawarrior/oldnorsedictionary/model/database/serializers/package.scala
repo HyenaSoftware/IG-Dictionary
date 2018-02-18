@@ -1,11 +1,13 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.FinitiveStrongVerbForm.tenseAndNumberToStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.{moodAndTenseToStem, toNonFiniteVerbType}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber, Pronoun}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.persister.{Reader, Serializer}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
@@ -19,6 +21,7 @@ package object serializers {
 
   implicit val ALL_SERIALIZER: Map[Class[_], Serializer[_]] = Map(
     classOf[StrongVerb] -> StrongVerbContextMarshaller,
+    classOf[Noun] -> NounMarshaller,
     classOf[DictionaryEntry] -> DictionaryEntryMarshaller,
     classOf[MeaningDef] -> MeaningDefMarshaller)
 
@@ -33,6 +36,7 @@ package object serializers {
     }
   }
 
+  // 2 -strong verbs
   implicit object StrongVerbContextMarshaller extends Serializer[StrongVerb] {
 
     override val typeId: Int = 2
@@ -152,6 +156,72 @@ package object serializers {
     }
   }
 
+  // 3 - nouns
+  implicit object NounMarshaller extends Serializer[Noun] {
+
+    override val typeId: Int = 3
+
+    override def marshall(obj: Noun): List[Any] = {
+
+      val rootRepr = obj.stem.rootStr
+
+      val nsce = NounStemClassEnum.values.find(e => e.nounStemClass == obj.stem.stemClass).get
+      val nsceId = (NounStemClassEnum idOf nsce).toByte
+
+      val givenFormsStream     = obj.givenForms.size.toByte     +: obj.givenForms.values.flatMap(serializeNounForm).toList
+      val generatedFormsStream = obj.generatedForms.size.toByte +: obj.generatedForms.values.flatMap(serializeNounForm).toList
+      val overridenFormsStream = obj.overridenForms.size.toByte +: obj.overridenForms.values.flatMap(serializeNounForm).toList
+
+      List(rootRepr, nsceId.toByte) ++ givenFormsStream ++ generatedFormsStream ++ overridenFormsStream
+    }
+
+    private def serializeNounForm(obj: NounForm): List[Any] = {
+
+      val (number, caze) = obj.declension
+      val numberId = (GNumber idOf number).toByte
+      val caseId   = (Case idOf caze).toByte
+
+      List(obj.strRepr, numberId, caseId)
+    }
+
+    override def unmarshall(reader: Reader): Noun = {
+
+      val rootRepr = reader[String]()
+      val stemClassId = reader[Byte]()
+
+      val stemClass = NounStemClassEnum.fromId(stemClassId).map(_.nounStemClass).get
+      val stem = NounStem(rootRepr, stemClass)
+
+      val givenForms     = deserializeList(reader).map(e => e.declension -> e).toMap
+      val generatedForms = deserializeList(reader).map(e => e.declension -> e).toMap
+      val overridenForms = deserializeList(reader).map(e => e.declension -> e).toMap
+
+      Noun(stem, givenForms, generatedForms, overridenForms)
+    }
+
+    private def deserializeList(reader: Reader): List[NounForm] = {
+
+      val size = reader[Byte]()
+
+      (0 until size).map(i => createMapValue(reader)).toList
+    }
+
+    private def createMapValue(reader: Reader): NounForm = {
+
+      val strRepr = reader[String]()
+      val numberId = reader[Byte]()
+      val caseId   = reader[Byte]()
+
+      val number = GNumber fromId numberId get
+      val caze   = Case fromId caseId get
+
+      val declension = number -> caze
+
+      NounForm(strRepr, declension)
+    }
+  }
+
+  // 0 - dictionary entry
   implicit object DictionaryEntryMarshaller extends Serializer[DictionaryEntry] {
 
     override val typeId: Int = 0
@@ -170,6 +240,7 @@ package object serializers {
     }
   }
 
+  // 1 - meaning definition
   implicit object MeaningDefMarshaller extends Serializer[MeaningDef] {
 
     override val typeId: Int = 1

@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget._
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.INFINITIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
@@ -44,7 +47,11 @@ object SetMeaningFragment extends Fragment
 
     val (posTypeName, posSubType) = wordData.word match
     {
-      case _: StrongVerb => "verb" -> "strong"
+      case sv: StrongVerb => "verb" -> sv.verbClass.name
+      case nn: Noun =>
+          val optName = NounStemClassEnum.values.collectFirst { case NounStemClassEnum(n, _) => n }
+          "noun" -> (optName getOrElse "???")
+
       case _ => "???" -> "???"
     }
 
@@ -54,10 +61,14 @@ object SetMeaningFragment extends Fragment
     val tv_setmeaning_ClassType = dataContext.rootView.findViewById(R.id.tv_setmeaning_ClassType).asInstanceOf[TextView]
     tv_setmeaning_ClassType.setText(posSubType)
 
-    val word = optWordData match
-    {
+    val word = optWordData match {
+
       case Some(WordData(sv: StrongVerb, _)) =>
         sv.verbForms.get((INFINITIVE, ACTIVE, None, None)).map(_.strForm).getOrElse("???")
+
+      case Some(WordData(noun: Noun, _)) =>
+        noun.nounForms.get(GNumber.SINGULAR -> Case.NOMINATIVE).map(_.strRepr).getOrElse("???")
+
       case _ => "???"
     }
 
