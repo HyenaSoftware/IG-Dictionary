@@ -2,12 +2,16 @@ package com.hyenawarrior.oldnorsedictionary
 
 import android.view.View
 import android.widget.TextView
+import com.hyenawarrior.OldNorseGrammar.grammar.Case.{unapply => _, _}
+import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
 
@@ -16,6 +20,18 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
   */
 package object modelview {
 
+  private val NOUN_EDIT_TEXTS = Seq(
+    R.id.tvNewWord_Nom_Sg -> (SINGULAR, NOMINATIVE),
+    R.id.tvNewWord_Acc_Sg -> (SINGULAR, ACCUSATIVE),
+    R.id.tvNewWord_Dat_Sg -> (SINGULAR, DATIVE),
+    R.id.tvNewWord_Gen_Sg -> (SINGULAR, GENITIVE),
+
+    R.id.tvNewWord_Nom_Pl -> (PLURAL, NOMINATIVE),
+    R.id.tvNewWord_Acc_Pl -> (PLURAL, ACCUSATIVE),
+    R.id.tvNewWord_Dat_Pl -> (PLURAL, DATIVE),
+    R.id.tvNewWord_Gen_Pl -> (PLURAL, GENITIVE)
+  )
+  
   private val VERB_NON_FINITIVE_IDS = Seq(
 
     (INFINITIVE, None,          None) -> R.id.tv_addword_verb_Infinitive,
@@ -41,6 +57,19 @@ package object modelview {
     (PAST, Pronoun.PL_2) -> R.id.tv_addword_verb_PastPl2,
     (PAST, Pronoun.PL_3) -> R.id.tv_addword_verb_PastPl3
   )
+  
+  def setDeclensionsTo(noun: Noun, nscEnum: NounStemClassEnum, targetView: View, isDefinite: Boolean): Unit = {
+
+    val tvNounDeclDesc = targetView.findViewById(R.id.tvNounDeclDesc).asInstanceOf[TextView]
+    tvNounDeclDesc.setText(nscEnum.name)
+
+    for((id, nf) <- NOUN_EDIT_TEXTS) {
+
+      val tvNC = targetView.findViewById(id).asInstanceOf[TextView]
+      val ncTextForm = noun.nounForms.get(nf).map(_.strRepr).getOrElse("...")
+      tvNC.setText(ncTextForm)
+    }
+  }
 
   /**
     * Show only nonfinitives + indicative or subjunctive conjugation

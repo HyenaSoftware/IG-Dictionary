@@ -2,13 +2,13 @@ package com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel
 
 import android.app.Activity
 import android.view.{View, ViewGroup}
-import android.widget.{Button, TextView}
+import android.widget.Button
 import com.hyenawarrior.OldNorseGrammar.grammar.Case.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
 import com.hyenawarrior.oldnorsedictionary.R
-import com.hyenawarrior.oldnorsedictionary.modelview.CustomAdapter
+import com.hyenawarrior.oldnorsedictionary.modelview.{CustomAdapter, setDeclensionsTo}
 
 /**
 	* Created by HyenaWarrior on 2017.04.12..
@@ -33,21 +33,9 @@ class NounDeclensionAdapter(activity: Activity, listView: ViewGroup)
 {
 	protected def resetView(i: Int, view: View): Unit = {
 
-		val isSingleList = getCount == 1
-
 		val (nscEnum, noun) = itemAt(i)
 
-		//
-		val tvNounDeclDesc = view.findViewById(R.id.tvNounDeclDesc).asInstanceOf[TextView]
-		tvNounDeclDesc.setText(if (isSingleList)	"" else nscEnum.name)
-
-		NounDeclensionAdapter.NOUN_EDIT_TEXTS.foreach
-		{
-			case (id, nf) =>
-				val tvNC = view.findViewById(id).asInstanceOf[TextView]
-				val ncTextForm = noun.nounForms.get(nf).map(_.strRepr).getOrElse("...")
-				tvNC.setText(ncTextForm)
-		}
+		setDeclensionsTo(noun, nscEnum, view, isDefinite = false)
 
     // tag the select button
     val tv_addword_noun_Select = view.findViewById(R.id.tv_addword_noun_Select).asInstanceOf[Button]
