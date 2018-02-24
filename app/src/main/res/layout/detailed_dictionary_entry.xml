@@ -28,7 +28,9 @@
             </LinearLayout>
         </LinearLayout>
 
-        <include layout="@layout/verb_conjugation_viewer_full" android:layout_width="match_parent"
-                 android:layout_height="wrap_content" android:id="@+id/verb_conjugation_viewer"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:focusableInTouchMode="false" android:id="@+id/pos_viewer"/>
     </LinearLayout>
 </ScrollView>

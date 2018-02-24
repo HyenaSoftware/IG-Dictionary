@@ -8,12 +8,14 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.{ListView, SearchView}
+import com.hyenawarrior.OldNorseGrammar.grammar.Case.{ACCUSATIVE, DATIVE, GENITIVE, NOMINATIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{DUAL, PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar._
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounType}
 import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.AndroidSDBLayer
 import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}
@@ -69,6 +71,7 @@ class MainActivity extends AppCompatActivity
         .map {
           case DictionaryEntry(sv: StrongVerb, meanings) =>
 
+						// keep only those forms of the verb which are matching on the search string
             val matchingForms = sv.verbForms
               .filter {
                 case (_, v) if v.strForm.startsWith(fixedStr) => true
@@ -79,7 +82,8 @@ class MainActivity extends AppCompatActivity
 
             val priForm = sv.verbForms(INF_KEY).strForm -> abbrevationOf(INF_KEY)
 
-            val formsToShow = filter(matchingForms) match {
+            // determine which form we want to show
+            val formsToShow = filterVerbForms(matchingForms) match {
 
               case Some((INF_KEY, f)) => Seq(priForm)
               case Some((k, v)) => Seq(priForm, v.strForm -> abbrevationOf(k))
@@ -88,7 +92,21 @@ class MainActivity extends AppCompatActivity
 
             DictionaryListItem(formsToShow, "verb", sv, meanings)
 
-          //case DictionaryEntry(noun, meanings) =>
+          case DictionaryEntry(noun: Noun, meanings) =>
+
+						val matchingForm = noun.nounForms.filter { case (_, NounForm(strRepr, _)) => strRepr startsWith fixedStr }
+
+						val SG_NOM_KEY = (SINGULAR, NOMINATIVE)
+
+						val priForm = noun.nounForms(SG_NOM_KEY).strRepr -> abbrevationOf(SG_NOM_KEY)
+
+            val formsToShow = filterNounForms(matchingForm) match {
+
+							case Some((SG_NOM_KEY, f)) => Seq(priForm)
+							case Some((k, f)) => Seq(priForm, f.strRepr -> abbrevationOf(k))
+						}
+
+            DictionaryListItem(formsToShow, "noun", noun, meanings)
         }
           .toList
 
@@ -98,7 +116,8 @@ class MainActivity extends AppCompatActivity
 		}
 	}
 
-	private def filter(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
+	//
+	private def filterVerbForms(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
 
 		val fs = forms.groupBy { case ((_, voice, _, _), _) => voice }
 
@@ -145,7 +164,30 @@ class MainActivity extends AppCompatActivity
     }
     .orElse(forms.headOption)
 
+	//
+	private def filterNounForms(forms: Map[NounType, NounForm]): Option[(NounType, NounForm)] = {
 
+		val fs = forms.groupBy { case ((number, _), _) => number }
+
+		val singularForms = fs get SINGULAR
+		val pluralForms = fs get PLURAL
+
+		singularForms.flatMap(splitByCase) orElse pluralForms.flatMap(splitByCase)
+	}
+
+	private def splitByCase(forms: Map[NounType, NounForm]): Option[(NounType, NounForm)] = {
+
+		val fs = forms.groupBy { case ((_, caze), _) => caze }
+
+		val nm = fs get NOMINATIVE flatMap(m => m.headOption)
+		val ac = fs get ACCUSATIVE flatMap(m => m.headOption)
+		val dt = fs get DATIVE 	   flatMap(m => m.headOption)
+		val gn = fs get GENITIVE   flatMap(m => m.headOption)
+
+		nm orElse ac orElse dt orElse gn
+	}
+
+	//
   private def abbrevationOf(form: VerbType): String ={
 
     val (mood, voice, optTense, optPronoun) = form
@@ -189,6 +231,29 @@ class MainActivity extends AppCompatActivity
     case Pronoun.PL_2 => "PL2"
     case Pronoun.PL_3 => "PL3"
   }
+
+	//
+	private def abbrevationOf(declension: NounType): String = {
+
+		val (number, caze) = declension
+
+		abbrevationOf(number) + " " + abbrevationOf(caze)
+	}
+
+	private def abbrevationOf(number: GNumber): String = number match {
+
+		case SINGULAR => "SG"
+		case PLURAL => "PL"
+	}
+
+	private def abbrevationOf(caze: Case): String = caze match {
+
+		case NOMINATIVE => "NOM"
+		case ACCUSATIVE => "NOM"
+		case DATIVE => "NOM"
+		case GENITIVE => "NOM"
+	}
+
 
   override protected def onBackPressed()
 	{

@@ -6,7 +6,9 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.{LinearLayout, TextView}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbModeEnum, VerbVoice}
+import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 import com.hyenawarrior.oldnorsedictionary.modelview._
@@ -15,6 +17,8 @@ import com.hyenawarrior.oldnorsedictionary.modelview._
   * Created by HyenaWarrior on 2018.01.20..
   */
 class DetailedDictionaryEntry extends AppCompatActivity {
+
+  private lazy val posViewer = findViewById(R.id.pos_viewer).asInstanceOf[LinearLayout]
 
   protected override def onCreate(savedInstanceState: Bundle): Unit = {
 
@@ -35,6 +39,7 @@ class DetailedDictionaryEntry extends AppCompatActivity {
         val meaningAdapter = new MeaningAdapter(this, llMeanings)
         meaningAdapter resetItems di.meanings
 
+        posViewer.removeAllViews()
         showVerbs(di.posObj)
 
       case _ => ()
@@ -45,7 +50,8 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
     case sv: StrongVerb =>
       //
-      val view = findViewById(R.id.verb_conjugation_viewer)
+
+      val view = getLayoutInflater.inflate(R.layout.verb_conjugation_viewer_full, posViewer)
       setDeclensionsTo(sv, view)
 
       val tvWord = findViewById(R.id.tvWord).asInstanceOf[TextView]
@@ -53,6 +59,18 @@ class DetailedDictionaryEntry extends AppCompatActivity {
         .get((VerbModeEnum.INFINITIVE, VerbVoice.ACTIVE, None, None))
         .map(_.strForm)
         .getOrElse("???")
+      tvWord.setText(priForm)
+
+    case nn: Noun =>
+      val view = getLayoutInflater.inflate(R.layout.noun_declension_detailed_view, posViewer)
+      setDeclensionsTo(nn, view)
+
+      val tvWord = findViewById(R.id.tvWord).asInstanceOf[TextView]
+      val priForm = nn.nounForms
+        .get((GNumber.SINGULAR, Case.NOMINATIVE))
+        .map(_.strRepr)
+        .getOrElse("???")
+
       tvWord.setText(priForm)
   }
 

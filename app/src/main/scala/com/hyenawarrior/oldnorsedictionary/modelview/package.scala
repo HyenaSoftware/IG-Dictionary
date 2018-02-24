@@ -57,11 +57,28 @@ package object modelview {
     (PAST, Pronoun.PL_2) -> R.id.tv_addword_verb_PastPl2,
     (PAST, Pronoun.PL_3) -> R.id.tv_addword_verb_PastPl3
   )
-  
+
+  def setDeclensionsTo(noun: Noun, targetView: View): Unit = {
+
+    val descView   = targetView.findViewById(R.id.tv_noun_class).asInstanceOf[TextView]
+    val indefView = targetView.findViewById(R.id.frame_noun_indef)
+    val defView   = targetView.findViewById(R.id.frame_noun_def)
+
+    descView.setText(noun.stem.stemClass.toString)
+
+    setDeclensionsTo(noun, indefView, isDefinite = false)
+    setDeclensionsTo(noun, defView, isDefinite = true)
+  }
+
   def setDeclensionsTo(noun: Noun, nscEnum: NounStemClassEnum, targetView: View, isDefinite: Boolean): Unit = {
 
     val tvNounDeclDesc = targetView.findViewById(R.id.tvNounDeclDesc).asInstanceOf[TextView]
     tvNounDeclDesc.setText(nscEnum.name)
+
+    setDeclensionsTo(noun, targetView, isDefinite)
+  }
+
+  def setDeclensionsTo(noun: Noun, targetView: View, isDefinite: Boolean): Unit = {
 
     for((id, nf) <- NOUN_EDIT_TEXTS) {
 
@@ -109,11 +126,6 @@ package object modelview {
   def setDeclensionsTo(sv: StrongVerb, rootView: View): Unit = sv match {
 
     case StrongVerb(cl, ablautGrade, _, _, _) =>
-
-      if(rootView.getId != R.id.verb_conjugation_viewer) {
-
-        throw new RuntimeException("Unexpected view, it should be R.layout.verb_conjugation_viewer_full.")
-      }
 
       setVerbConjugationDetailsTo(rootView, cl, ablautGrade)
 
