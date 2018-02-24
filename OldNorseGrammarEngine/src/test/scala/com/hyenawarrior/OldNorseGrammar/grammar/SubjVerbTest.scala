@@ -1,9 +1,11 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbClassEnum, VerbType}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.ACTIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerb, VerbType}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum
 import org.junit.Assert._
 import org.junit.Test
 

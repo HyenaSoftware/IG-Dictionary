@@ -8,14 +8,14 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.{ListView, SearchView}
-import com.hyenawarrior.OldNorseGrammar.grammar.Case.{ACCUSATIVE, DATIVE, GENITIVE, NOMINATIVE}
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{DUAL, PLURAL, SINGULAR}
-import com.hyenawarrior.OldNorseGrammar.grammar._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.{ACCUSATIVE, DATIVE, GENITIVE, NOMINATIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{DUAL, PLURAL, SINGULAR}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Pronoun}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounType}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.AndroidSDBLayer
 import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}

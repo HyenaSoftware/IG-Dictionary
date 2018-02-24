@@ -4,12 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
 import android.widget._
-import com.hyenawarrior.OldNorseGrammar.grammar.Case._
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, NounStemClassEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounType}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel.NounDeclensionAdapter
 import com.hyenawarrior.oldnorsedictionary.modelview.{EditTextTypeListener, ItemListener}
@@ -193,7 +194,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 			case "Feminine" => List(STRONG_FEMININE_A1, STRONG_FEMININE_A2, STRONG_FEMININE_I, STRONG_FEMININE_R, WEAK_FEMININE_I, WEAK_FEMININE_U)
 			case "Masculine" => List(STRONG_MASCULINE_A, STRONG_MASCULINE_I, STRONG_MASCULINE_R, STRONG_MASCULINE_U, WEAK_MASCULINE_A, WEAK_MASCULINE_R)
 			case "Neuter" => List(STRONG_NEUTER, WEAK_NEUTER_U)
-			case str => NounStemClassEnum.findByName[NounStemClassEnum](str).toList
+			case str => NounStemClassEnum.findBy(str).toList
 		}
 		.toVector
 
@@ -222,7 +223,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	private def fillNounForms(): Unit = selectedNounParameters match
 	{
 		case (maybeEmptyList, (Some(numCase), Some(str)), map) =>
-      val listOfNSCE = if(maybeEmptyList.isEmpty) NounStemClassEnum.values else maybeEmptyList
+      val listOfNSCE = if(maybeEmptyList.isEmpty) NounStemClassEnum.values.toList else maybeEmptyList
 
       val wordMaps: List[(NounStemClassEnum, Noun)] = listOfNSCE
         .map(nsce => nsce -> generateFormsFrom(nsce.nounStemClass, (numCase, str), map))

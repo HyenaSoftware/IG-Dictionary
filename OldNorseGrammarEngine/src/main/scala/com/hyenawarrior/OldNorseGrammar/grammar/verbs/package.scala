@@ -1,11 +1,13 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{GNumber, Pronoun}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{VerbModeEnum, VerbTenseEnum, VerbVoice}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 
 /**
 	* Created by HyenaWarrior on 2017.04.22..

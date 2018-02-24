@@ -1,8 +1,8 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 
 /**
 	* Created by HyenaWarrior on 2017.04.25..

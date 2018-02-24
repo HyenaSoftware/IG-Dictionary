@@ -4,14 +4,15 @@ import android.app.Activity
 import android.content.Context
 import android.view.{LayoutInflater, View}
 import android.widget._
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{IMPERATIVE, INDICATIVE, PARTICIPLE, SUBJUNCTIVE}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.NonFinitiveVerbType.{INFINITIVE, PAST_PARTICIPLE, PRESENT_PARTICIPLE}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum.{IMPERATIVE, INDICATIVE, PARTICIPLE, SUBJUNCTIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum.{PAST, PRESENT}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFinitiveVerbType, StrongVerbClassEnum, VerbClassEnum, VerbModeEnum, VerbTenseEnum, WeakVerbClassEnum}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.modelview.EditTextTypeListener
 import com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel.VerbDeclensionAdapter
@@ -296,7 +297,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 		case (listOfClasses, viewToVerbForms) =>
 
-      val listOfVerbClasses = if(listOfClasses.isEmpty) VerbClassEnum.values else listOfClasses
+      val listOfVerbClasses = if(listOfClasses.isEmpty) VerbClassEnum.values.toList else listOfClasses
 
       val sortedListOfVerbClasses = listOfVerbClasses.sortWith { case (a, b) => a.toString() < b.toString() }
 

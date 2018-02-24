@@ -1,8 +1,8 @@
 package com.hyenawarrior
 
 import com.hyenawarrior.NounTestAux.{diff, nonReversible}
-import com.hyenawarrior.OldNorseGrammar.grammar.Case._
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses._
 import org.junit.Assert._

@@ -3,10 +3,11 @@ package com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel
 import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.Button
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.INDICATIVE
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum.INDICATIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum.{unapply => _}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, VerbClassEnum}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.modelview._
 

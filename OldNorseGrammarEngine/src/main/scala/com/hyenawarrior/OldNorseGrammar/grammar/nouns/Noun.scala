@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 
 /**

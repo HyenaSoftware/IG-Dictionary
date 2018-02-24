@@ -3,7 +3,7 @@ package com.hyenawarrior.oldnorsedictionary.modelview
 import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{unapply => _}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum.{unapply => _}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 

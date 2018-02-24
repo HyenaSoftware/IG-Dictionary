@@ -2,11 +2,11 @@ package com.hyenawarrior
 
 import java.lang.String._
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Case._
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, _}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import org.junit.Assert._
 
 import scala.language.implicitConversions

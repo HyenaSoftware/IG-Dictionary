@@ -1,7 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Case._
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
 

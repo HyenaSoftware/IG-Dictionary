@@ -1,13 +1,14 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum.STRONG_5TH_CLASS
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{INDICATIVE, INFINITIVE, PARTICIPLE}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.ACTIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum.STRONG_5TH_CLASS
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum.{INDICATIVE, INFINITIVE, PARTICIPLE}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum.{PAST, PRESENT}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.ACTIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{NonFinitiveVerbType, VerbTenseEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.persister.Reader

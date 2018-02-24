@@ -5,10 +5,12 @@ import java.lang.String.format
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.{Disabled, EnabledFor, Undefined}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_SINGULAR_STEM}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{StrongVerbClassEnum, TransformationMode}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.StrongVerbClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_SINGULAR_STEM}
 
 /**
 	* Created by HyenaWarrior on 2017.04.22..

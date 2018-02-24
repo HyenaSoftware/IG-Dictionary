@@ -1,15 +1,16 @@
 package com.hyenawarrior
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.Raising
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerbForm._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.EnabledFor
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{apply => _, unapply => _, _}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{apply => _, unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
 import org.junit.Assert._
 import org.junit.Test

@@ -1,7 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Case.NOMINATIVE
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{PLURAL, SINGULAR}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.{DATIVE, NOMINATIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{NounForm, NounStem}
 import org.junit.Assert.assertEquals
@@ -48,7 +48,7 @@ class NounFormTest {
   @Test
   def testStrongMascUStem(): Unit = {
 
-    val nounStem = NounStem.from(NounForm("vǫllum", PLURAL -> Case.DATIVE), StrongStemClassMascU)
+    val nounStem = NounStem.from(NounForm("vǫllum", PLURAL -> DATIVE), StrongStemClassMascU)
 
     assertEquals(NounStem("vall", StrongStemClassMascU), nounStem)
   }

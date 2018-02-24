@@ -1,13 +1,15 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.FinitiveStrongVerbForm.tenseAndNumberToStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.{moodAndTenseToStem, toNonFiniteVerbType}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber, Pronoun}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Pronoun}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFinitiveMood, StrongVerbClassEnum, VerbClassEnum, VerbModeEnum, VerbTenseEnum, VerbVoice}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.persister.{Reader, Serializer}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
@@ -83,10 +85,10 @@ package object serializers {
     override def unmarshall(reader: Reader): StrongVerb = {
 
       val vceId = reader[Byte]()
-      val verbClassEnum = (VerbClassEnum fromId vceId get).asInstanceOf[StrongVerbClassEnum]
+      val verbClassEnum = (VerbClassEnum findById vceId get).asInstanceOf[StrongVerbClassEnum]
 
       //
-      val ablautGrades = deserializeMap(reader, EnumVerbStem fromId reader[Byte]() get, AblautGrade(reader[String]()))
+      val ablautGrades = deserializeMap(reader, EnumVerbStem findById reader[Byte]() get, AblautGrade(reader[String]()))
 
       //
       val givenVerbForms = generateMapEntry(reader, verbClassEnum, ablautGrades)
@@ -108,13 +110,13 @@ package object serializers {
 
     private def deserializeKey(reader: Reader): VerbType = {
 
-      val mood = VerbModeEnum fromId reader[Byte]() get
-      val voice = VerbVoice fromId reader[Byte]() get
+      val mood = VerbModeEnum findById reader[Byte]() get
+      val voice = VerbVoice findById reader[Byte]() get
       val oti = reader[Byte]()
       val opi = reader[Byte]()
 
-      val ot = if(oti == 0) None else Some(VerbTenseEnum fromId (oti - 1) get)
-      val op = if(opi == 0) None else Some(Pronoun fromId (opi - 1) get)
+      val ot = if(oti == 0) None else Some(VerbTenseEnum findById (oti - 1) get)
+      val op = if(opi == 0) None else Some(Pronoun findById (opi - 1) get)
 
       (mood, voice, ot, op)
     }
@@ -189,7 +191,7 @@ package object serializers {
       val rootRepr = reader[String]()
       val stemClassId = reader[Byte]()
 
-      val stemClass = NounStemClassEnum.fromId(stemClassId).map(_.nounStemClass).get
+      val stemClass = NounStemClassEnum.findById(stemClassId).map(_.nounStemClass).get
       val stem = NounStem(rootRepr, stemClass)
 
       val givenForms     = deserializeList(reader).map(e => e.declension -> e).toMap
@@ -212,8 +214,8 @@ package object serializers {
       val numberId = reader[Byte]()
       val caseId   = reader[Byte]()
 
-      val number = GNumber fromId numberId get
-      val caze   = Case fromId caseId get
+      val number = GNumber findById numberId get
+      val caze   = Case findById caseId get
 
       val declension = number -> caze
 

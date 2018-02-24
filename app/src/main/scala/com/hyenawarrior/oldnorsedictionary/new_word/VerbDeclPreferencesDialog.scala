@@ -5,12 +5,13 @@ import android.content.{Context, DialogInterface}
 import android.view.{LayoutInflater, View}
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.{AdapterView, ArrayAdapter, RadioButton, Spinner}
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.{VerbModeEnum, VerbTenseEnum, VerbType}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum.{PAST, PRESENT}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbType
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{VerbModeEnum, VerbTenseEnum}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.new_word.VerbDeclPreferencesDialog._
 import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.AddNewVerbHelper

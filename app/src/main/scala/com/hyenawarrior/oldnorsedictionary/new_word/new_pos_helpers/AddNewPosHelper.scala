@@ -1,7 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers
 
 import android.view.View
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.WordData
 
 /**

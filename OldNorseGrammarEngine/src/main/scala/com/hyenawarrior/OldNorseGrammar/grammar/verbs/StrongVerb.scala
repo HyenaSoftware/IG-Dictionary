@@ -1,11 +1,15 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{AblautGrade, Explicit_I_Umlaut}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{INDICATIVE, INFINITIVE, PARTICIPLE, SUBJUNCTIVE}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{EnumVerbStem, StrongVerbStem}
-import com.hyenawarrior.OldNorseGrammar.grammar.{GNumber, Pronoun, verbs}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum.{INDICATIVE, INFINITIVE, PARTICIPLE, SUBJUNCTIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{StrongVerbClassEnum, VerbTenseEnum, VerbVoice}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 
 /**
 	* Created by HyenaWarrior on 2017.10.08..
@@ -95,7 +99,7 @@ object StrongVerb {
 		// collect what we have
 		val pseudoFormsToStem: Map[EnumVerbStem, Iterable[StrongVerbStem]] = pseudoVerbForms.map {
 
-			case ((INDICATIVE, _, Some(VerbTenseEnum.PRESENT), Some(Pronoun(GNumber.SINGULAR, _))), stem) =>
+			case ((INDICATIVE, _, Some(VerbTenseEnum.PRESENT), Some(Pronoun(SINGULAR, _))), stem) =>
 				StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, EnumVerbStem.PRESENT_STEM, Some(Explicit_I_Umlaut))
 
 			case (vt, stem) =>

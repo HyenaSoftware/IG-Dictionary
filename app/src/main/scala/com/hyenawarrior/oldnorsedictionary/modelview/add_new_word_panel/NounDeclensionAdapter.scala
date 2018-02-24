@@ -3,10 +3,10 @@ package com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel
 import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.Button
-import com.hyenawarrior.OldNorseGrammar.grammar.Case.{unapply => _, _}
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.{unapply => _, _}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.modelview.{CustomAdapter, setDeclensionsTo}
 

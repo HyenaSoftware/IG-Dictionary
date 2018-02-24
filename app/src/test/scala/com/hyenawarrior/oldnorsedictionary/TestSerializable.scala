@@ -2,19 +2,20 @@ package com.hyenawarrior.oldnorsedictionary
 
 import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Case.NOMINATIVE
-import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.SINGULAR
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber, Pronoun}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.NOMINATIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.SINGULAR
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.StrongStemClassNeuter
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType.INFINITIVE
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum.STRONG_7_1_CLASS
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum.{INDICATIVE, SUBJUNCTIVE}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum.{PAST, PRESENT}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounStem}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.NonFinitiveVerbType.INFINITIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum.STRONG_7_1_CLASS
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum.{INDICATIVE, SUBJUNCTIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum.{PAST, PRESENT}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem.PRESENT_STEM
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem.PRESENT_STEM
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
@@ -36,7 +37,7 @@ class TestSerializable {
     val byteArray = byteArrayOS.toByteArray
 
     val iss = new ObjectInputStream(new ByteArrayInputStream(byteArray))
-    val obj2 = iss.readObject()
+    iss.readObject()
   }
 
   @Test

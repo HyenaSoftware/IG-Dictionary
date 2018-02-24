@@ -1,12 +1,12 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Ablaut, U_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Ablaut
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{Breaking, JAugment}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.EnabledFor
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbClassEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.EnumVerbStem._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 import org.junit.Assert._
 import org.junit.Test
 

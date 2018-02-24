@@ -2,7 +2,7 @@ package com.hyenawarrior.oldnorsedictionary.model.database
 
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.StrongStemClassMascA
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{NounForm, _}
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import com.hyenawarrior.oldnorsedictionary.model.persister.Reader
 import org.junit.Assert._
 import org.junit.Test

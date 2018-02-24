@@ -1,7 +1,8 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFinitiveVerbType, VerbClassEnum, VerbTenseEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.VerbStemClass.FinitiveVerbDesc
 
 /**

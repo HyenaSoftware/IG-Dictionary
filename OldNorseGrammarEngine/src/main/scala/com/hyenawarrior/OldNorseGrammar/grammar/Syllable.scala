@@ -2,7 +2,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Syllable.Length
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.{isLong, isShort}
-import com.hyenawarrior.auxiliary.EnumLike
+import com.hyenawarrior.auxiliary.enum.{EnumConst, EnumLike}
 
 /**
   * Created by HyenaWarrior on 2017.04.15..
@@ -20,12 +20,12 @@ object Syllable {
     }
   }
 
-  case class Length(name: String, countOfMora: Int) {
+  case class Length(name: String, countOfMora: Int) extends EnumConst[Length] {
 
     override def toString: String = name
   }
 
-  object Length extends EnumLike[String, Length] {
+  implicit object Length extends EnumLike[Length] {
 
     val SHORT = Length("Short", 1)
     val LONG = Length("Long", 2)

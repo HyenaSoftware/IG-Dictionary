@@ -1,8 +1,6 @@
 package com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers
 
 import android.view.View
-import android.widget.TableRow
-import com.hyenawarrior.OldNorseGrammar.grammar.{Case, GNumber}
 
 /**
 	* Created by HyenaWarrior on 2017.04.17..
