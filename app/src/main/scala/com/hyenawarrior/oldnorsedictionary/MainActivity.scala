@@ -10,16 +10,17 @@ import android.view.View
 import android.widget.{ListView, SearchView}
 import com.hyenawarrior.OldNorseGrammar.grammar.Case.{ACCUSATIVE, DATIVE, GENITIVE, NOMINATIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.GNumber.{DUAL, PLURAL, SINGULAR}
+import com.hyenawarrior.OldNorseGrammar.grammar._
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounType}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar._
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounType}
 import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.AndroidSDBLayer
 import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}
 import com.hyenawarrior.oldnorsedictionary.modelview.DictionaryEntryAdapter
+import com.hyenawarrior.oldnorsedictionary.modelview.helpers.abbrevationOf
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 import com.hyenawarrior.oldnorsedictionary.new_word.{AddNewWordActivityPager, DetailedDictionaryEntry}
 
@@ -186,74 +187,6 @@ class MainActivity extends AppCompatActivity
 
 		nm orElse ac orElse dt orElse gn
 	}
-
-	//
-  private def abbrevationOf(form: VerbType): String ={
-
-    val (mood, voice, optTense, optPronoun) = form
-
-    val md = Some(abbrevationOfMood(mood))
-    val vc = Some(abbrevationOf(voice))
-    val ts = optTense.map(abbrevationOfTense)
-    val pr = optPronoun.map(abbrevationOfPronoun)
-
-    Seq(ts, md, pr, vc).flatten.mkString(" ")
-  }
-
-  private def abbrevationOfMood(mood: VerbModeEnum): String = mood match {
-
-    case INFINITIVE => "INF"
-    case INDICATIVE => "IND"
-    case SUBJUNCTIVE => "SBJV"
-    case IMPERATIVE => "IMP"
-		case PARTICIPLE => "PTCP"
-  }
-
-  private def abbrevationOf(voice: VerbVoice): String = voice match {
-
-    case ACTIVE => "ACT"
-    case MEDIO_PASSIVE => "MID-PAS"
-  }
-
-  private def abbrevationOfTense(tense: VerbTenseEnum): String = tense match {
-
-    case PRESENT => "PRS"
-    case PAST => "PST"
-  }
-
-  private def abbrevationOfPronoun(pronoun: Pronoun): String = pronoun match {
-
-    case Pronoun.SG_1 => "SG1"
-    case Pronoun.SG_2 => "SG2"
-    case Pronoun.SG_3 => "SG3"
-
-    case Pronoun.PL_1 => "PL1"
-    case Pronoun.PL_2 => "PL2"
-    case Pronoun.PL_3 => "PL3"
-  }
-
-	//
-	private def abbrevationOf(declension: NounType): String = {
-
-		val (number, caze) = declension
-
-		abbrevationOf(number) + " " + abbrevationOf(caze)
-	}
-
-	private def abbrevationOf(number: GNumber): String = number match {
-
-		case SINGULAR => "SG"
-		case PLURAL => "PL"
-	}
-
-	private def abbrevationOf(caze: Case): String = caze match {
-
-		case NOMINATIVE => "NOM"
-		case ACCUSATIVE => "NOM"
-		case DATIVE => "NOM"
-		case GENITIVE => "NOM"
-	}
-
 
   override protected def onBackPressed()
 	{
