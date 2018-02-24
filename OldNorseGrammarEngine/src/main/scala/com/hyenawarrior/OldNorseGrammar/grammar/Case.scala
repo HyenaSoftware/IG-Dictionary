@@ -5,7 +5,7 @@ import com.hyenawarrior.auxiliary.EnumLike
 /**
 	* Created by HyenaWarrior on 2017.03.01..
 	*/
-final case class Case(id: Int, name: String) extends DescriptorFlag
+final case class Case(id: Int, name: String)
 {
 	Case.add(name -> this)
 

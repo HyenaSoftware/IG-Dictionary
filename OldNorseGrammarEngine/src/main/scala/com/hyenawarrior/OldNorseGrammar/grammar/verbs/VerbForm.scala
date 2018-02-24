@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
-import com.hyenawarrior.OldNorseGrammar.grammar.{DescriptorFlag, PoS}
+import com.hyenawarrior.OldNorseGrammar.grammar.PoS
 
 /**
 	* Created by HyenaWarrior on 2017.04.19..
@@ -8,8 +8,6 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{DescriptorFlag, PoS}
 abstract class VerbForm(rawForm: String) extends PoS
 {
 	override def strForm: String = rawForm
-
-	override def descriptorFlags: List[DescriptorFlag] = List()
 
 	override def toString: String = strForm
 }

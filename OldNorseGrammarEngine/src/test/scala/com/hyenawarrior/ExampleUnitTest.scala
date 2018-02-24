@@ -19,8 +19,6 @@ class ExampleUnitTest
   case class MockPoS(str: String) extends PoS
 	{
     override def strForm: String = str
-
-    override def descriptorFlags: List[DescriptorFlag] = List()
   }
 
   @Test

@@ -39,8 +39,6 @@ case class Word(pos: PoS)
 	// formatted description
 	val description = "[not yet]"
 
-	val traits: List[DescriptorFlag] = pos.descriptorFlags
-
 	override def toString = s"${strForm()} [$pos + ${POS_DEPENDENT_TRANSFORMATIONS.map(_.toString)}]"
 }
 

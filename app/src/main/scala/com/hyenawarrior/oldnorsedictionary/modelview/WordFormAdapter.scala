@@ -3,8 +3,6 @@ package com.hyenawarrior.oldnorsedictionary.modelview
 import android.app.Activity
 import android.view.{View, ViewGroup}
 import android.widget.TextView
-import com.hyenawarrior.OldNorseGrammar.grammar._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveVerbType
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 
@@ -23,20 +21,5 @@ class WordFormAdapter(activity: Activity, listView: ViewGroup)
 
 		tvWordForm setText word
 		tvWordDesc setText desc
-	}
-
-	def formatTraits(trs: List[DescriptorFlag]): String = trs.map(t => shortCut(t)).mkString("[", ", ", "]")
-
-	def shortCut(df: Any) = df match
-	{
-		case Case.NOMINATIVE => "nom"
-		case Case.ACCUSATIVE => "acc"
-		case Case.DATIVE => "dat"
-		case Case.GENITIVE => "gen"
-		case GNumber.SINGULAR => "sg"
-		case GNumber.PLURAL => "pl"
-		case NonFinitiveVerbType.INFINITIVE => "inf"
-		case NonFinitiveVerbType.PRESENT_PARTICIPLE => "present part."
-		case NonFinitiveVerbType.PAST_PARTICIPLE => "past part."
 	}
 }

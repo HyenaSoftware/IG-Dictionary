@@ -11,7 +11,5 @@ trait PoS extends Serializable
 {
 	def strForm: String
 
-	def descriptorFlags: List[DescriptorFlag]
-
 	def transformations: List[WordTransformation] = List(U_Umlaut)
 }
