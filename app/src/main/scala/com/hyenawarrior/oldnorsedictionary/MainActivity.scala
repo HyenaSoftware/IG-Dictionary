@@ -66,6 +66,8 @@ class MainActivity extends AppCompatActivity
 
 		override def onQueryTextChange(str: String): Boolean = {
 
+			import com.hyenawarrior.oldnorsedictionary.modelview.helpers._
+
       val fixedStr = str.replace("ö", "ǫ")
 
       val entries = if(fixedStr.isEmpty) List() else igPersister.lookup(fixedStr)
@@ -84,7 +86,8 @@ class MainActivity extends AppCompatActivity
             val priForm = sv.verbForms(INF_KEY).strForm -> abbrevationOf(INF_KEY)
 
             // determine which form we want to show
-            val formsToShow = filterVerbForms(matchingForms) match {
+            val firstForm = matchingForms.toSeq.sortBy { case (vt, _) => vt }.headOption
+            val formsToShow = firstForm match {
 
               case Some((INF_KEY, f)) => Seq(priForm)
               case Some((k, v)) => Seq(priForm, v.strForm -> abbrevationOf(k))
@@ -101,7 +104,8 @@ class MainActivity extends AppCompatActivity
 
 						val priForm = noun.nounForms(SG_NOM_KEY).strRepr -> abbrevationOf(SG_NOM_KEY)
 
-            val formsToShow = filterNounForms(matchingForm) match {
+            val firstForm = matchingForm.toSeq.sortBy { case (vt, _) => vt }.headOption
+            val formsToShow = firstForm match {
 
 							case Some((SG_NOM_KEY, f)) => Seq(priForm)
 							case Some((k, f)) => Seq(priForm, f.strRepr -> abbrevationOf(k))
@@ -115,77 +119,6 @@ class MainActivity extends AppCompatActivity
 
 			true
 		}
-	}
-
-	//
-	private def filterVerbForms(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
-
-		val fs = forms.groupBy { case ((_, voice, _, _), _) => voice }
-
-		val activeVoicedForms = fs.get(ACTIVE)
-		val medioPassiveVoicedForms = fs.get(MEDIO_PASSIVE)
-
-		activeVoicedForms.flatMap(splitByMood) orElse medioPassiveVoicedForms.flatMap(splitByMood)
-	}
-
-  private def splitByMood(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
-
-    val fs = forms.groupBy { case ((md, _, _, _), _) => md }
-
-    val inf = fs.get(INFINITIVE).map(_.head)
-		val prtcp = fs.get(PARTICIPLE).map(_.head)
-
-    inf orElse fs.get(INDICATIVE).flatMap(splitByTense) orElse prtcp
-  }
-
-  private def splitByTense(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
-
-    val fs = forms.groupBy { case ((_, _, Some(t), _), _) => t }
-
-    val present = fs.get(PRESENT).flatMap(splitByNumber)
-    val past = fs.get(PAST).flatMap(splitByNumber)
-
-    present orElse past
-  }
-
-  private def splitByNumber(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = {
-
-    val fs = forms.groupBy { case ((_, _, _, Some(Pronoun(n, _))), _) => n }
-
-    val sg = fs.get(SINGULAR).flatMap(select)
-    val pl = fs.get(PLURAL).flatMap(select)
-
-    sg orElse pl
-  }
-
-  private def select(forms: Map[VerbType, StrongVerbForm]): Option[(VerbType, StrongVerbForm)] = forms
-    .find {
-      case ((_, _, _, Some(Pronoun(_, 3))), _) => true
-      case _ => false
-    }
-    .orElse(forms.headOption)
-
-	//
-	private def filterNounForms(forms: Map[NounType, NounForm]): Option[(NounType, NounForm)] = {
-
-		val fs = forms.groupBy { case ((number, _), _) => number }
-
-		val singularForms = fs get SINGULAR
-		val pluralForms = fs get PLURAL
-
-		singularForms.flatMap(splitByCase) orElse pluralForms.flatMap(splitByCase)
-	}
-
-	private def splitByCase(forms: Map[NounType, NounForm]): Option[(NounType, NounForm)] = {
-
-		val fs = forms.groupBy { case ((_, caze), _) => caze }
-
-		val nm = fs get NOMINATIVE flatMap(m => m.headOption)
-		val ac = fs get ACCUSATIVE flatMap(m => m.headOption)
-		val dt = fs get DATIVE 	   flatMap(m => m.headOption)
-		val gn = fs get GENITIVE   flatMap(m => m.headOption)
-
-		nm orElse ac orElse dt orElse gn
 	}
 
   override protected def onBackPressed()

@@ -8,6 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{VerbModeEnum, VerbTenseEnum, VerbVoice}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Pronoun}
+import com.hyenawarrior.auxiliary.enum.EnumConst
 
 /**
   * Created by HyenaWarrior on 2018.02.24..
@@ -66,4 +67,16 @@ package object helpers {
 
     case _ => ABBREVATIONS_OF getOrElse(obj, obj.toString)
   }
+
+  trait EnumOrdering[T <: EnumConst[T]] extends Ordering[T] {
+
+    override def compare(x: T, y: T): Int = x.id() - y.id()
+  }
+
+  implicit object VerbVoiceOrdering extends EnumOrdering[VerbVoice]
+  implicit object VerbModeOrdering extends EnumOrdering[VerbModeEnum]
+  implicit object VerbTenseOrdering extends EnumOrdering[VerbTenseEnum]
+  implicit object PronounOrdering extends EnumOrdering[Pronoun]
+  implicit object GNumberOrdering extends EnumOrdering[GNumber]
+  implicit object CaseOrdering extends EnumOrdering[Case]
 }
