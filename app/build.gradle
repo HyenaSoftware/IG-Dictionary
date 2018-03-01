@@ -24,6 +24,15 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    // somehow local unittests became broken, this code allows to build them
+    // however it's unclear how IntelliJ or Gradle were able to build these tests up to now
+    sourceSets {
+        test {
+            scala.srcDirs = ['src/test/scala']
+        }
+        androidTest.setRoot('tests')
+    }
 }
 
 dependencies {
