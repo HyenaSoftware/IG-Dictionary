@@ -10,12 +10,12 @@ import scala.language.postfixOps
 /**
 	* Created by HyenaWarrior on 2017.03.01..
 	*/
-case class Word(pos: PoS)
+case class Word(pos: PoSForm)
 {
 	private val DEFAULT_TRANSFORMATIONS = List(U_Umlaut)
 	private val POS_DEPENDENT_TRANSFORMATIONS = pos.transformations
 
-	def underlyingPoS: PoS = pos
+	def underlyingPoS: PoSForm = pos
 
 	// useful for lookup
 	def strForm(): String =

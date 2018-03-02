@@ -7,7 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, WordT
 	*
 	* Part of Speech - Szófaj
 	*/
-trait PoS extends Serializable
+trait PoSForm extends Serializable
 {
 	def strForm: String
 

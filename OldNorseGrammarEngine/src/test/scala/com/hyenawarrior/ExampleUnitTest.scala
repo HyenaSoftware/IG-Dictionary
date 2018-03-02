@@ -19,7 +19,7 @@ import org.junit.Test
   */
 class ExampleUnitTest
 {
-  case class MockPoS(str: String) extends PoS
+  case class MockPoSForm(str: String) extends PoSForm
 	{
     override def strForm: String = str
   }
