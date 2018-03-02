@@ -21,25 +21,25 @@ class MediopassiveVerbTest {
 
     val verb = StrongVerb(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "skauzk"))
 
-    assertEquals("skjótask", verb.verbForms(INFINITIVE, MEDIO_PASSIVE, None, None).strForm)
+    assertEquals("skjótask", verb.verbForms(INFINITIVE, MEDIO_PASSIVE, None, None).strRepr)
 
-    assertEquals("skjótandisk", verb.verbForms(PARTICIPLE, MEDIO_PASSIVE, Some(PRESENT), None).strForm)
-    assertEquals("skotizk",     verb.verbForms(PARTICIPLE, MEDIO_PASSIVE, Some(PAST),    None).strForm)
+    assertEquals("skjótandisk", verb.verbForms(PARTICIPLE, MEDIO_PASSIVE, Some(PRESENT), None).strRepr)
+    assertEquals("skotizk",     verb.verbForms(PARTICIPLE, MEDIO_PASSIVE, Some(PAST),    None).strRepr)
 
     // indicative
-    assertEquals("skjótumk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skýzk",    verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_2)).strForm)
+    assertEquals("skjótumk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("skýzk",    verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_2)).strRepr)
 
-    assertEquals("skjótumsk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("skjótizk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_2)).strForm)
-    assertEquals("skjótask",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+    assertEquals("skjótumsk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("skjótizk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("skjótask",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_3)).strRepr)
 
-    assertEquals("skutumk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skauzk",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+    assertEquals("skutumk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("skauzk",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
 
-    assertEquals("skutumsk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("skutuzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
-    assertEquals("skutusk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("skutumsk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("skutuzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("skutusk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
   }
 
   @Test
@@ -49,20 +49,20 @@ class MediopassiveVerbTest {
 
     val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "reka"))
 
-    assertEquals("rekumk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("reksk",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("rekumk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("reksk",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("rekumsk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("rekizk",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_2)).strForm)
-    assertEquals("rekask",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+    assertEquals("rekumsk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("rekizk",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("rekask",   verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun.PL_3)).strRepr)
 
-    assertEquals("rákumk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("rakzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("raksk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("rákumk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("rakzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("raksk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("rákumsk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("rákuzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
-    assertEquals("rákusk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("rákumsk", verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("rákuzk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("rákusk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
   }
 
   @Test
@@ -72,6 +72,6 @@ class MediopassiveVerbTest {
 
     val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "liggja"))
 
-    assertEquals("lázk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
+    assertEquals("lázk",  verb.verbForms(INDICATIVE, MEDIO_PASSIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
   }
 }

@@ -58,7 +58,7 @@ class DetailedDictionaryEntry extends AppCompatActivity {
       val tvWord = findViewById(R.id.tvWord).asInstanceOf[TextView]
       val priForm = sv.verbForms
         .get((VerbModeEnum.INFINITIVE, VerbVoice.ACTIVE, None, None))
-        .map(_.strForm)
+        .map(_.strRepr)
         .getOrElse("???")
       tvWord.setText(priForm)
 

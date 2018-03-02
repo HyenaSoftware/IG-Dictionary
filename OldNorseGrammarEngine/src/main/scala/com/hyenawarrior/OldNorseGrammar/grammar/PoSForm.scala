@@ -9,7 +9,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, WordT
 	*/
 trait PoSForm extends Serializable
 {
-	def strForm: String
+	def strRepr: String
 
 	def transformations: List[WordTransformation] = List(U_Umlaut)
 }

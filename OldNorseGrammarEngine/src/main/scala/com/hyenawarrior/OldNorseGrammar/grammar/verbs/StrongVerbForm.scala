@@ -30,7 +30,7 @@ abstract class StrongVerbForm(strRepr: String, stem: StrongVerbStem, voice: Verb
 	def getStem: StrongVerbStem = stem
 }
 
-case class FinitiveStrongVerbForm(strRepr: String, stem: StrongVerbStem, pronoun: Pronoun
+case class FinitiveStrongVerbForm(override val strRepr: String, stem: StrongVerbStem, pronoun: Pronoun
   , tense: VerbTenseEnum, mood: FinitiveMood, voice: VerbVoice)	extends StrongVerbForm(strRepr, stem, voice)
 
 object FinitiveStrongVerbForm {
@@ -43,7 +43,7 @@ object FinitiveStrongVerbForm {
 	}
 }
 
-case class NonFinitiveStrongVerbForm(strRepr: String, stem: StrongVerbStem, nonFinitiveVerbType: NonFinitiveVerbType
+case class NonFinitiveStrongVerbForm(override val strRepr: String, stem: StrongVerbStem, nonFinitiveVerbType: NonFinitiveVerbType
   , voice: VerbVoice) extends StrongVerbForm(strRepr, stem, voice) {
 
   if (nonFinitiveVerbType.verbStemBase != stem.getStemType) {
@@ -118,13 +118,13 @@ object StrongVerbForm {
     val verb = verbFrom(stem, optTense, mood, voice)
 
     // +1 do validation:
-    if(verb.strForm != verbStrRepr) {
+    if(verb.strRepr != verbStrRepr) {
 
       val verbType = toNonFiniteVerbType(optTense, mood)
 
       throw new RuntimeException(format("Unable to match the given '%s' verbform to the specifications: %s form of %s." +
         " The form should be '%s'.",
-        verbStrRepr, verbType.name, verbClass.name, verb.strForm))
+        verbStrRepr, verbType.name, verbClass.name, verb.strRepr))
     }
 
     verb
@@ -138,11 +138,11 @@ object StrongVerbForm {
 		val verb = verbFrom(stem, pronoun, tense, mood, voice)
 
 		// +1 do validation:
-		if(verb.strForm != verbStrRepr) {
+		if(verb.strRepr != verbStrRepr) {
 
 			throw new RuntimeException(format("The given '%s' verbform is not correct to be a %s, %s person, %s tense, %s mood verb." +
 				" The verb form should be '%s'.",
-				verbStrRepr, verbClass.name, pronoun, tense.name, mood.name, verb.strForm))
+				verbStrRepr, verbClass.name, pronoun, tense.name, mood.name, verb.strRepr))
 		}
 
 		verb

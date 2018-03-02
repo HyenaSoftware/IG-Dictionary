@@ -158,7 +158,7 @@ package object modelview {
 
       val f = sv.verbForms(wt)
       val tv = targetView.findViewById(id).asInstanceOf[TextView]
-      tv.setText(f.strForm.replace("ǫ", "ö"))
+      tv.setText(f.strRepr.replace("ǫ", "ö"))
     }
   }
 
@@ -173,7 +173,7 @@ package object modelview {
 
       val f = sv.verbForms(wt)
       val tv = targetView.findViewById(id).asInstanceOf[TextView]
-      tv.setText(f.strForm.replace("ǫ", "ö"))
+      tv.setText(f.strRepr.replace("ǫ", "ö"))
     }
   }
 }

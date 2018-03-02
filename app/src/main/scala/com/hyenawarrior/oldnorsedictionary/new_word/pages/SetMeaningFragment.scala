@@ -64,7 +64,7 @@ object SetMeaningFragment extends Fragment
     val word = optWordData match {
 
       case Some(WordData(sv: StrongVerb, _)) =>
-        sv.verbForms.get((INFINITIVE, ACTIVE, None, None)).map(_.strForm).getOrElse("???")
+        sv.verbForms.get((INFINITIVE, ACTIVE, None, None)).map(_.strRepr).getOrElse("???")
 
       case Some(WordData(noun: Noun, _)) =>
         noun.nounForms.get(GNumber.SINGULAR -> Case.NOMINATIVE).map(_.strRepr).getOrElse("???")

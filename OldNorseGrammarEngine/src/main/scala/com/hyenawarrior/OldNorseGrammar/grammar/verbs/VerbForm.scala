@@ -7,7 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.PoSForm
 	*/
 abstract class VerbForm(rawForm: String) extends PoSForm
 {
-	override def strForm: String = rawForm
+	override def strRepr: String = rawForm
 
-	override def toString: String = strForm
+	override def toString: String = strRepr
 }

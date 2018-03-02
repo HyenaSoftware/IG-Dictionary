@@ -20,7 +20,7 @@ case class Word(pos: PoSForm)
 	// useful for lookup
 	def strForm(): String =
 	{
-		val Syllables(syllables) = pos.strForm
+		val Syllables(syllables) = pos.strRepr
 
 		val allTransformations = POS_DEPENDENT_TRANSFORMATIONS ++ DEFAULT_TRANSFORMATIONS
 		val transformedSyllables = allTransformations.foldLeft(syllables) {

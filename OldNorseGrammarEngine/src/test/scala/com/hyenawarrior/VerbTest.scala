@@ -55,7 +55,7 @@ class VerbTest
 
     val verbForm = verb.verbForms(trgForm)
 
-    assertEquals(verbForm.strForm, "beit")
+    assertEquals(verbForm.strRepr, "beit")
 
   } catch {
 
@@ -72,7 +72,7 @@ class VerbTest
 
 		val verbForm = verb.verbForms(trgForm)
 
-		assertEquals(verbForm.strForm, "bitu")
+		assertEquals(verbForm.strRepr, "bitu")
 
 	} catch {
 
@@ -94,7 +94,7 @@ class VerbTest
 
 		val verbform = verb.verbForms( (INFINITIVE, ACTIVE, None, None))
 
-		assertEquals("krjúpa", verbform.strForm)
+		assertEquals("krjúpa", verbform.strRepr)
 	}
 
 	@Test
@@ -104,23 +104,23 @@ class VerbTest
 
     val verb = StrongVerb(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "skaut"))
 
-		assertEquals("skjóta", verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
+		assertEquals("skjóta", verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
 
-    assertEquals("skýt",    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skýtr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_2)).strForm)
-    assertEquals("skýtr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("skýt",    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("skýtr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("skýtr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("skjótum", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("skjótið", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_2)).strForm)
-    assertEquals("skjóta",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+    assertEquals("skjótum", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("skjótið", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("skjóta",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strRepr)
 
-    assertEquals("skaut",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skauzt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("skaut",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("skaut",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("skauzt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("skaut",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("skutum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("skutuð",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
-    assertEquals("skutu",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("skutum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("skutuð",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("skutu",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
 
   }
 
@@ -131,9 +131,9 @@ class VerbTest
 
     val verb = StrongVerb(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "skýtr"))
 
-    assertEquals("skjóta", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+    assertEquals("skjóta", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strRepr)
 
-    assertEquals("skýt",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("skýt",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
   }
 
 	/**
@@ -154,7 +154,7 @@ class VerbTest
 
 		val verbform = StrongVerbForm.verbFrom(stem, Pronoun.SG_2, PAST, INDICATIVE, ACTIVE)
 
-		assertEquals("brauzt", verbform.strForm)
+		assertEquals("brauzt", verbform.strRepr)
 	}
 
 
@@ -170,7 +170,7 @@ class VerbTest
 
     val stem = StrongVerbStem.fromStrRepr("bregð", STRONG_3RD_CLASS, PRESENT_STEM)
 
-    assertEquals("bregða", StrongVerbForm.verbFrom(stem, None, INFINITIVE, ACTIVE).strForm)
+    assertEquals("bregða", StrongVerbForm.verbFrom(stem, None, INFINITIVE, ACTIVE).strRepr)
   }
 
 	@Test
@@ -182,7 +182,7 @@ class VerbTest
     assertEquals("spenn", normalizedStemStr)
 
 		val verbform = StrongVerbForm.verbFrom(stem, None, INFINITIVE, ACTIVE)
-		assertEquals("spinna", verbform.strForm)
+		assertEquals("spinna", verbform.strRepr)
 	}
 
 	@Test
@@ -192,10 +192,10 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_3RD_CLASS, Map(srcType -> "batt"))
 
-    assertEquals("binda", verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
-    assertEquals("batt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("batzt", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("batt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("binda", verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
+    assertEquals("batt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("batzt", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("batt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
 	}
 
   /*
@@ -211,7 +211,7 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_3RD_CLASS, Map(srcType -> "brenn"))
 
-    assertEquals("brennr",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("brennr",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
   }
 
   @Test
@@ -221,7 +221,7 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_3RD_CLASS, Map(srcType -> "bind"))
 
-    assertEquals("bindr",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("bindr",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
   }
 
   @Test
@@ -230,10 +230,10 @@ class VerbTest
     val srcForm =  (INFINITIVE, ACTIVE, None, None)
     val verb = StrongVerb(STRONG_3RD_CLASS, Map(srcForm -> "spinna"))
 
-    assertEquals("spann",		verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
-    assertEquals("spunnu",	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("spann",		verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("spunnu",	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
 
-    assertEquals("spunninn",	verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strForm)
+    assertEquals("spunninn",	verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strRepr)
   }
 
   @Test
@@ -241,9 +241,9 @@ class VerbTest
 
     val stem = StrongVerbStem.fromStrRepr("hjalp", STRONG_3RD_CLASS, PRESENT_STEM)
 
-		assertEquals("hjalpa", 	StrongVerbForm.verbFrom(stem, None, INFINITIVE, ACTIVE).strForm)
-		assertEquals("help", 		StrongVerbForm.verbFrom(stem, Pronoun.SG_1, PRESENT, INDICATIVE, ACTIVE).strForm)
-		assertEquals("hjǫlpum",	StrongVerbForm.verbFrom(stem, Pronoun.PL_1, PRESENT, INDICATIVE, ACTIVE).strForm)
+		assertEquals("hjalpa", 	StrongVerbForm.verbFrom(stem, None, INFINITIVE, ACTIVE).strRepr)
+		assertEquals("help", 		StrongVerbForm.verbFrom(stem, Pronoun.SG_1, PRESENT, INDICATIVE, ACTIVE).strRepr)
+		assertEquals("hjǫlpum",	StrongVerbForm.verbFrom(stem, Pronoun.PL_1, PRESENT, INDICATIVE, ACTIVE).strRepr)
 	}
 
   @Test
@@ -251,8 +251,8 @@ class VerbTest
 
     val stem = StrongVerbStem.fromStrRepr("gald", STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM)
 
-    assertEquals("galzt", StrongVerbForm.verbFrom(stem, Pronoun.SG_2, PAST, INDICATIVE, ACTIVE).strForm)
-    assertEquals("galt",  StrongVerbForm.verbFrom(stem, Pronoun.SG_3, PAST, INDICATIVE, ACTIVE).strForm)
+    assertEquals("galzt", StrongVerbForm.verbFrom(stem, Pronoun.SG_2, PAST, INDICATIVE, ACTIVE).strRepr)
+    assertEquals("galt",  StrongVerbForm.verbFrom(stem, Pronoun.SG_3, PAST, INDICATIVE, ACTIVE).strRepr)
   }
 
   /** Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr. */
@@ -263,10 +263,10 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_3RD_CLASS, Map(srcType -> "verðr"))
 
-    assertEquals("verða", verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
-		assertEquals("verð", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("varð", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
-    assertEquals("urðu",	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("verða", verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
+		assertEquals("verð", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("varð", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("urðu",	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
   }
 
   @Test
@@ -276,10 +276,10 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_3RD_CLASS, Map(srcType -> "halp"))
 
-    assertEquals("hjalpa", 	verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
-    assertEquals("help", 		verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("hjǫlpum",	verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("halpt", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_2)).strForm)
+    assertEquals("hjalpa", 	verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
+    assertEquals("help", 		verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("hjǫlpum",	verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("halpt", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_2)).strRepr)
   }
 
   @Test
@@ -291,7 +291,7 @@ class VerbTest
 
     val verbFormP3 = verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3))
 
-    assertEquals("helpr", verbFormP3.strForm)
+    assertEquals("helpr", verbFormP3.strRepr)
   }
 
 
@@ -304,7 +304,7 @@ class VerbTest
 
     val verbFormP3 = verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3))
 
-    assertEquals("hjalpa", verbFormP3.strForm)
+    assertEquals("hjalpa", verbFormP3.strRepr)
   }
 
 	@Test
@@ -312,14 +312,14 @@ class VerbTest
 
 		val presStem = StrongVerbStem.fromStrRepr("sekkv", STRONG_3RD_CLASS, PRESENT_STEM)
 
-		assertEquals("søkkr", 	StrongVerbForm.verbFrom(presStem, Pronoun.SG_3, PRESENT, INDICATIVE, ACTIVE).strForm)
-		assertEquals("søkkva", 	StrongVerbForm.verbFrom(presStem, Pronoun.PL_3, PRESENT, INDICATIVE, ACTIVE).strForm)
+		assertEquals("søkkr", 	StrongVerbForm.verbFrom(presStem, Pronoun.SG_3, PRESENT, INDICATIVE, ACTIVE).strRepr)
+		assertEquals("søkkva", 	StrongVerbForm.verbFrom(presStem, Pronoun.PL_3, PRESENT, INDICATIVE, ACTIVE).strRepr)
 
 		val pastSgStem = StrongVerbStem.fromStrRepr("sakkv", STRONG_3RD_CLASS, PRETERITE_SINGULAR_STEM)
-		assertEquals("sǫkk", 	StrongVerbForm.verbFrom(pastSgStem, Pronoun.SG_3, PAST, INDICATIVE, ACTIVE).strForm)
+		assertEquals("sǫkk", 	StrongVerbForm.verbFrom(pastSgStem, Pronoun.SG_3, PAST, INDICATIVE, ACTIVE).strRepr)
 
 		val pastPlStem = StrongVerbStem.fromStrRepr("sukk", STRONG_3RD_CLASS, PRETERITE_PLURAL_STEM)
-		assertEquals("sukku", StrongVerbForm.verbFrom(pastPlStem, Pronoun.PL_3, PAST, INDICATIVE, ACTIVE).strForm)
+		assertEquals("sukku", StrongVerbForm.verbFrom(pastPlStem, Pronoun.PL_3, PAST, INDICATIVE, ACTIVE).strRepr)
 	}
 
   @Test
@@ -330,13 +330,13 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_3RD_CLASS, Map(srcForm -> "søkkva", irregularPerfect -> "sokkinn"))
 
-    assertEquals("søkkr", 	verb.verbForms(INDICATIVE, ACTIVE,  Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("søkkva", 	verb.verbForms(INDICATIVE, ACTIVE,  Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+    assertEquals("søkkr", 	verb.verbForms(INDICATIVE, ACTIVE,  Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("søkkva", 	verb.verbForms(INDICATIVE, ACTIVE,  Some(PRESENT), Some(Pronoun.PL_3)).strRepr)
 
-    assertEquals("sǫkk", 	  verb.verbForms(INDICATIVE, ACTIVE,  Some(PAST), Some(Pronoun.SG_3)).strForm)
-    assertEquals("sukku",   verb.verbForms(INDICATIVE, ACTIVE,  Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("sǫkk", 	  verb.verbForms(INDICATIVE, ACTIVE,  Some(PAST), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("sukku",   verb.verbForms(INDICATIVE, ACTIVE,  Some(PAST), Some(Pronoun.PL_3)).strRepr)
 
-    assertEquals("sokkinn", verb.verbForms(PARTICIPLE, ACTIVE, Some(PAST),    None).strForm)
+    assertEquals("sokkinn", verb.verbForms(PARTICIPLE, ACTIVE, Some(PAST),    None).strRepr)
   }
 
   @Test
@@ -347,11 +347,11 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_3RD_CLASS, Map(srcForm -> "syngva", irregularPerfect -> "sunginn"))
 
-		assertEquals("syngva", 	verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
-		assertEquals("syngr", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("sǫng",    verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
+		assertEquals("syngva", 	verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
+		assertEquals("syngr", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("sǫng",    verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("sunginn",  verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST),    None).strForm)
+    assertEquals("sunginn",  verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST),    None).strRepr)
   }
 
 	@Test
@@ -402,14 +402,14 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_5TH_CLASS, Map(srcForm -> "liggr"))
 
-    assertEquals("liggr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("liggjum", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("liggr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("liggjum", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
 
-    assertEquals("lá",      verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_1)).strForm)
+    assertEquals("lá",      verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_1)).strRepr)
     // gemination doubles the 't'
-    assertEquals("látt",    verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_2)).strForm)
-    assertEquals("lágum",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.PL_1)).strForm)
-    assertEquals("leginn",  verb.verbForms(PARTICIPLE, ACTIVE, Some(PAST),    None).strForm)
+    assertEquals("látt",    verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_2)).strRepr)
+    assertEquals("lágum",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.PL_1)).strRepr)
+    assertEquals("leginn",  verb.verbForms(PARTICIPLE, ACTIVE, Some(PAST),    None).strRepr)
   }
 
   @Test
@@ -419,20 +419,20 @@ class VerbTest
 
     val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "reka"))
 
-    assertEquals("rek",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("rekr", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("rek",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("rekr", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("rekum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("rekið",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_2)).strForm)
-    assertEquals("reka",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+    assertEquals("rekum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("rekið",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("reka",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strRepr)
 
-    assertEquals("rak",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("rakt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("rak",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("rak",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("rakt",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("rak",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("rákum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("rákuð",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
-    assertEquals("ráku",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("rákum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("rákuð",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("ráku",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
   }
 
   @Test
@@ -442,10 +442,10 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_5TH_CLASS, Map(srcForm -> "vega"))
 
-    assertEquals("vegr", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("vegum",verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("vá",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_3)).strForm)
-    assertEquals("vágum",verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.PL_1)).strForm)
+    assertEquals("vegr", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("vegum",verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("vá",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.SG_3)).strRepr)
+    assertEquals("vágum",verb.verbForms(INDICATIVE, ACTIVE, Some(PAST),    Some(Pronoun.PL_1)).strRepr)
   }
 
   @Test
@@ -455,20 +455,20 @@ class VerbTest
 
     val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "sjá"))
 
-    assertEquals("sé",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("sér", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("sé",  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("sér", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
     // [sé + um] -> [sj + óum] -> [sj + áum] -> sjáum --(vowel-deletion)-> sjám
     // [sé + um] ---> [sj + áum] -> sjáa --(vowel-deletion)-> sjá
     //assertEquals("sjám", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
 
-    assertEquals("sátt", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("sá", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
-    assertEquals("sám", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
+    assertEquals("sátt", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("sá", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("sám", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
     // 'sá' or 'sáu'
-    val pastP3 = verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm
+    val pastP3 = verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr
     assertTrue(pastP3 == "sáu" || pastP3 == "sá")
 
-    assertEquals("sénn",  verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST),    None).strForm)
+    assertEquals("sénn",  verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST),    None).strRepr)
   }
 
   @Test
@@ -479,39 +479,39 @@ class VerbTest
     val svStemPP = StrongVerbStem("tók", STRONG_6TH_CLASS, PRETERITE_PLURAL_STEM)
     val svStemPF = StrongVerbStem("tak", STRONG_6TH_CLASS, PERFECT_STEM)
 
-    assertEquals("taka",		verbFrom(svStemPR, None, INFINITIVE, ACTIVE).strForm)
+    assertEquals("taka",		verbFrom(svStemPR, None, INFINITIVE, ACTIVE).strRepr)
 
-    assertEquals("tekinn", 	verbFrom(svStemPF, Some(PAST), 		PARTICIPLE, ACTIVE).strForm)
-    assertEquals("takandi", verbFrom(svStemPR, Some(PRESENT), PARTICIPLE, ACTIVE).strForm)
+    assertEquals("tekinn", 	verbFrom(svStemPF, Some(PAST), 		PARTICIPLE, ACTIVE).strRepr)
+    assertEquals("takandi", verbFrom(svStemPR, Some(PRESENT), PARTICIPLE, ACTIVE).strRepr)
 
-    assertEquals("tek", 		verbFrom(svStemPR, Pronoun.SG_1, PRESENT,	INDICATIVE, ACTIVE).strForm)
-    assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_2, PRESENT,	INDICATIVE, ACTIVE).strForm)
-    assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_3, PRESENT,	INDICATIVE, ACTIVE).strForm)
+    assertEquals("tek", 		verbFrom(svStemPR, Pronoun.SG_1, PRESENT,	INDICATIVE, ACTIVE).strRepr)
+    assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_2, PRESENT,	INDICATIVE, ACTIVE).strRepr)
+    assertEquals("tekr", 		verbFrom(svStemPR, Pronoun.SG_3, PRESENT,	INDICATIVE, ACTIVE).strRepr)
 
-    assertEquals("tǫkum", 	verbFrom(svStemPR, Pronoun.PL_1, PRESENT,	INDICATIVE, ACTIVE).strForm)
-    assertEquals("takið", 	verbFrom(svStemPR, Pronoun.PL_2, PRESENT,	INDICATIVE, ACTIVE).strForm)
-    assertEquals("taka",		verbFrom(svStemPR, Pronoun.PL_3, PRESENT,	INDICATIVE, ACTIVE).strForm)
+    assertEquals("tǫkum", 	verbFrom(svStemPR, Pronoun.PL_1, PRESENT,	INDICATIVE, ACTIVE).strRepr)
+    assertEquals("takið", 	verbFrom(svStemPR, Pronoun.PL_2, PRESENT,	INDICATIVE, ACTIVE).strRepr)
+    assertEquals("taka",		verbFrom(svStemPR, Pronoun.PL_3, PRESENT,	INDICATIVE, ACTIVE).strRepr)
 
-    assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_1, PAST, 		INDICATIVE, ACTIVE).strForm)
-    assertEquals("tókt" /*"tókst"*/, verbFrom(svStemPS, Pronoun.SG_2, PAST,	INDICATIVE, ACTIVE).strForm)
-    assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_3, PAST,    INDICATIVE, ACTIVE).strForm)
+    assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_1, PAST, 		INDICATIVE, ACTIVE).strRepr)
+    assertEquals("tókt" /*"tókst"*/, verbFrom(svStemPS, Pronoun.SG_2, PAST,	INDICATIVE, ACTIVE).strRepr)
+    assertEquals("tók", 		verbFrom(svStemPS, Pronoun.SG_3, PAST,    INDICATIVE, ACTIVE).strRepr)
 
-    assertEquals("tókum",		verbFrom(svStemPP, Pronoun.PL_1, PAST, INDICATIVE, ACTIVE).strForm)
-    assertEquals("tókuð",		verbFrom(svStemPP, Pronoun.PL_2, PAST, INDICATIVE, ACTIVE).strForm)
-    assertEquals("tóku",		verbFrom(svStemPP, Pronoun.PL_3, PAST, INDICATIVE, ACTIVE).strForm)
+    assertEquals("tókum",		verbFrom(svStemPP, Pronoun.PL_1, PAST, INDICATIVE, ACTIVE).strRepr)
+    assertEquals("tókuð",		verbFrom(svStemPP, Pronoun.PL_2, PAST, INDICATIVE, ACTIVE).strRepr)
+    assertEquals("tóku",		verbFrom(svStemPP, Pronoun.PL_3, PAST, INDICATIVE, ACTIVE).strRepr)
   }
 
   @Test
   def testClass73VowelDeletion(): Unit = {
 
     val stem = StrongVerbStem.fromStrRepr("fá", STRONG_7_3_CLASS, PRESENT_STEM)
-    assertEquals("fá", verbFrom(stem, None, INFINITIVE, ACTIVE).strForm)
+    assertEquals("fá", verbFrom(stem, None, INFINITIVE, ACTIVE).strRepr)
 
 
     val srcForm =  (INFINITIVE, ACTIVE, None, None)
     val verb = StrongVerb(STRONG_7_3_CLASS, Map(srcForm -> "fá"))
 
-    assertEquals("fá", verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
+    assertEquals("fá", verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
   }
 
   @Test
@@ -521,9 +521,9 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_7_1_CLASS, Map(srcForm -> "heita"))
 
-    assertEquals("heita", verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
-    assertEquals("hézt", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("hétuð", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
+    assertEquals("heita", verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
+    assertEquals("hézt", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("hétuð", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strRepr)
   }
 
   @Test
@@ -533,9 +533,9 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_7_2A_CLASS, Map(srcForm -> "auka"))
 
-    assertEquals("jók", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("jókum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("aukinn",verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strForm)
+    assertEquals("jók", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("jókum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("aukinn",verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strRepr)
   }
 
   @Test
@@ -548,12 +548,12 @@ class VerbTest
     val verb = StrongVerb(STRONG_7_2B_CLASS, Map(srcForm -> "búa", irregularPastPlural -> "bjuggu", irregularPastSingular -> "bjó"))
 
     // past-plural stem has preference over the present stem for past-single stem
-    assertEquals("bjó", 	  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
+    assertEquals("bjó", 	  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strRepr)
 
     // impossible to compute this form: the ancestor PGmc verb was a weak verb, probably its dental suffix
     //  changed as *būdēdum > bjuggum
-    assertEquals("bjuggum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("búinn",   verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strForm)
+    assertEquals("bjuggum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("búinn",   verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strRepr)
   }
 
   @Test
@@ -567,12 +567,12 @@ class VerbTest
     // as bjuggum is not a regular form of the verb búa, it's not expectad that
     // the engine can compute forms other than past plural
 
-    assertEquals("búa", 	  verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
-    assertEquals("bý", 	    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("býr", 	  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("bjótt",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("bjuggum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("búinn",   verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strForm)
+    assertEquals("búa", 	  verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
+    assertEquals("bý", 	    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("býr", 	  verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("bjótt",   verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("bjuggum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("búinn",   verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strRepr)
   }
 
   @Test
@@ -583,12 +583,12 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_7_2B_CLASS, Map(srcForm -> "hǫggva", pp -> "hǫggvinn"))
 
-    assertEquals("hǫggva",  verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
+    assertEquals("hǫggva",  verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
     // FIXME: haggv -> heggv -> høggv, should both of I and U umlaut applied ?
-    assertEquals("hegg",    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
+    assertEquals("hegg",    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
     //assertEquals("hjó",     verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
-    assertEquals("hjuggum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("hǫggvinn",   verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strForm)
+    assertEquals("hjuggum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("hǫggvinn",   verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strRepr)
   }
 
   case class Format[K, V](m: Map[K, V]) {
@@ -606,12 +606,12 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_7_2B_CLASS, Map(presentS3 -> "heggr", pastS3 -> "hjó", pastP3 -> "hjuggu", perf -> "hǫggvinn"))
 
-    assertEquals("hǫggva",  verb.verbForms (INFINITIVE, ACTIVE, None, None).strForm)
-    assertEquals("hegg",    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("heggr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("hjó",     verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
-    assertEquals("hjuggum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("hǫggvinn",   verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strForm)
+    assertEquals("hǫggva",  verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
+    assertEquals("hegg",    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("heggr",   verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("hjó",     verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("hjuggum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("hǫggvinn",   verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strRepr)
   }
 
   @Test
@@ -621,9 +621,9 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_7_3_CLASS, Map(srcForm -> "falla"))
 
-    assertEquals("fell", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("fellum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("fallinn",verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strForm)
+    assertEquals("fell", 	verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("fellum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("fallinn",verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strRepr)
   }
 
   @Test
@@ -633,9 +633,9 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_7_3_CLASS, Map(srcForm -> "fengu"))
 
-    assertEquals("fekk",    verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
-    assertEquals("fengum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("fenginn", verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strForm)
+    assertEquals("fekk",    verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("fengum",  verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("fenginn", verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strRepr)
   }
 
   @Test
@@ -645,7 +645,7 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_7_3_CLASS, Map(srcForm -> "fekk"))
 
-    assertEquals("fengu",    verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("fengu",    verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
   }
 
   @Test
@@ -655,8 +655,8 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_7_4_CLASS, Map(srcForm -> "fá"))
 
-    assertEquals("fæ", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("fám", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("fæ", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("fám", verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
   }
 
   @Test
@@ -664,7 +664,7 @@ class VerbTest
 
     val stem = StrongVerbStem.fromStrRepr("fá", STRONG_7_4_CLASS, PRESENT_STEM)
 
-    assertEquals("fá", verbFrom(stem, None, INFINITIVE, ACTIVE).strForm)
+    assertEquals("fá", verbFrom(stem, None, INFINITIVE, ACTIVE).strRepr)
   }
 
 	@Test

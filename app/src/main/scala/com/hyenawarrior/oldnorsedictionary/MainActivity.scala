@@ -77,20 +77,20 @@ class MainActivity extends AppCompatActivity
 						// keep only those forms of the verb which are matching on the search string
             val matchingForms = sv.verbForms
               .filter {
-                case (_, v) if v.strForm.startsWith(fixedStr) => true
+                case (_, v) if v.strRepr.startsWith(fixedStr) => true
                 case _ => false
               }
 
             val INF_KEY = (INFINITIVE, ACTIVE, None, None)
 
-            val priForm = sv.verbForms(INF_KEY).strForm -> abbrevationOf(INF_KEY)
+            val priForm = sv.verbForms(INF_KEY).strRepr -> abbrevationOf(INF_KEY)
 
             // determine which form we want to show
             val firstForm = matchingForms.toSeq.sortBy { case (vt, _) => vt }.headOption
             val formsToShow = firstForm match {
 
               case Some((INF_KEY, f)) => Seq(priForm)
-              case Some((k, v)) => Seq(priForm, v.strForm -> abbrevationOf(k))
+              case Some((k, v)) => Seq(priForm, v.strRepr -> abbrevationOf(k))
               case None => Seq()
             }
 

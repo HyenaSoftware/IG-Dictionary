@@ -63,7 +63,7 @@ class IGPersister(ctx: Context) {
           case ((INFINITIVE, ACTIVE, None, None), v) => v -> true
           case (_, v) => v -> false
         }
-        .map { case(v, p) => persister.stringInterner.getOrStore(v.strForm) -> p }
+        .map { case(v, p) => persister.stringInterner.getOrStore(v.strRepr) -> p }
 
       // create lookup entries
       for((strId, isPri) <- strIds) {

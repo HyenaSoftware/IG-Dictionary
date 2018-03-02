@@ -21,23 +21,23 @@ class SubjVerbTest {
 
     val verb = StrongVerb(VerbClassEnum.STRONG_2ND_CLASS, Map(srcType -> "skyti"))
 
-    assertEquals("skjóta", verb.verbForms(INFINITIVE, ACTIVE, None, None).strForm)
+    assertEquals("skjóta", verb.verbForms(INFINITIVE, ACTIVE, None, None).strRepr)
 
-    assertEquals("skjóta",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skjótir",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_2)).strForm)
-    assertEquals("skjóti",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
+    assertEquals("skjóta",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("skjótir",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("skjóti",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("skjótim", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
-    assertEquals("skjótið", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_2)).strForm)
-    assertEquals("skjóti",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strForm)
+    assertEquals("skjótim", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("skjótið", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("skjóti",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_3)).strRepr)
 
-    assertEquals("skyta",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strForm)
-    assertEquals("skytir",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("skyti",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("skyta",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("skytir",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("skyti",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("skytim",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("skytið",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strForm)
-    assertEquals("skyti",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("skytim",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("skytið",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_2)).strRepr)
+    assertEquals("skyti",   verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
   }
 
   def testClass5thVerbStressShift(): Unit = {
@@ -46,15 +46,15 @@ class SubjVerbTest {
 
     val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "sjá"))
 
-    assertEquals("sé",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("sér", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("sém", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("sé",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("sér", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("sém", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
 
-    assertEquals("sæir", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("sæi",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("sæir", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("sæi",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("sæim", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("sæi",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("sæim", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("sæi",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
   }
 
   @Test
@@ -64,14 +64,14 @@ class SubjVerbTest {
 
     val verb = StrongVerb(VerbClassEnum.STRONG_5TH_CLASS, Map(inf -> "reka"))
 
-    assertEquals("reka",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strForm)
-    assertEquals("reki", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strForm)
-    assertEquals("rekim", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strForm)
+    assertEquals("reka",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
+    assertEquals("reki", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3)).strRepr)
+    assertEquals("rekim", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(Pronoun.PL_1)).strRepr)
 
-    assertEquals("rækir", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strForm)
-    assertEquals("ræki",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
+    assertEquals("rækir", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_2)).strRepr)
+    assertEquals("ræki",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strRepr)
 
-    assertEquals("rækim", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strForm)
-    assertEquals("ræki",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strForm)
+    assertEquals("rækim", verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
+    assertEquals("ræki",  verb.verbForms(SUBJUNCTIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_3)).strRepr)
   }
 }
