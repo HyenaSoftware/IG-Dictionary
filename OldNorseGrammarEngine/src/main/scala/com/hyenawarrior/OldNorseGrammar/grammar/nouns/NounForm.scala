@@ -1,12 +1,13 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 
+import com.hyenawarrior.OldNorseGrammar.grammar.PoSForm
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
 
 /**
   * Created by HyenaWarrior on 2018.02.02..
   */
-case class NounForm(strRepr: String, declension: NounType)
+case class NounForm(strRepr: String, declension: NounType) extends PoSForm
 
 object NounForm {
 

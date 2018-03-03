@@ -2,6 +2,7 @@ package com.hyenawarrior.oldnorsedictionary
 
 import android.view.View
 import android.widget.TextView
+import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
@@ -87,6 +88,12 @@ package object modelview {
       val ncTextForm = noun.nounForms.get(nf).map(_.strRepr).getOrElse("...")
       tvNC.setText(ncTextForm)
     }
+  }
+
+  def setDeclensionsTo[K, F <: PoSForm](pos: Pos[K, F], targetView: View): Unit = pos match {
+
+    case noun: Noun       => setDeclensionsTo(noun, targetView)
+    case verb: StrongVerb => setDeclensionsTo(verb, targetView)
   }
 
   /**

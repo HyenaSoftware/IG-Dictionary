@@ -3,13 +3,14 @@ package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{AblautGrade, Explicit_I_Umlaut}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum.{INDICATIVE, INFINITIVE, PARTICIPLE, SUBJUNCTIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{StrongVerbClassEnum, VerbTenseEnum, VerbVoice}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{unapply => _, _}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{StrongVerbClassEnum, VerbModeEnum, VerbTenseEnum, VerbVoice}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
+import com.hyenawarrior.OldNorseGrammar.grammar.{Pos, verbs}
 
 /**
 	* Created by HyenaWarrior on 2017.10.08..
@@ -48,7 +49,7 @@ object VerbContext {
 case class StrongVerb(verbClass: StrongVerbClassEnum, ablautGrade: Map[EnumVerbStem, AblautGrade]
                       , givenVerbForms: Map[VerbType, StrongVerbForm]
                       , generatedVerbForms: Map[VerbType, StrongVerbForm]
-                      , overriddenVerbForms: Map[VerbType, StrongVerbForm]) {
+                      , overriddenVerbForms: Map[VerbType, StrongVerbForm]) extends Pos[VerbType, StrongVerbForm] {
 
   lazy val verbForms = givenVerbForms ++ generatedVerbForms ++ overriddenVerbForms
 
@@ -58,6 +59,10 @@ case class StrongVerb(verbClass: StrongVerbClassEnum, ablautGrade: Map[EnumVerbS
 
     new StrongVerb(verbClass, ablautGrade, givenVerbForms, generatedVerbForms2, overriddenVerbForms)
   }
+
+  override val forms: Map[VerbType, StrongVerbForm] = verbForms
+
+  override val PRIMARY_KEY = (INFINITIVE, ACTIVE, None, None)
 }
 
 object StrongVerb {

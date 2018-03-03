@@ -7,12 +7,11 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.{LinearLayout, TextView}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{VerbModeEnum, VerbVoice}
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
-import com.hyenawarrior.oldnorsedictionary.R
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 import com.hyenawarrior.oldnorsedictionary.modelview._
+import com.hyenawarrior.oldnorsedictionary.{R, modelview}
 
 /**
   * Created by HyenaWarrior on 2018.01.20..
@@ -32,47 +31,39 @@ class DetailedDictionaryEntry extends AppCompatActivity {
     //
     serializable match {
 
-      case di: DictionaryListItem =>
+      case DictionaryListItem(_, _, posObj, meanings) =>
 
       val llMeanings = findViewById(R.id.llMeanings).asInstanceOf[LinearLayout]
 
         // set meanings
         val meaningAdapter = new MeaningAdapter(this, llMeanings)
-        meaningAdapter resetItems di.meanings
+        meaningAdapter resetItems meanings
 
         posViewer.removeAllViews()
-        showVerbs(di.posObj)
+        showWord(posObj)
 
       case _ => ()
     }
   }
 
-  private def showVerbs(obj: Any): Unit = obj match {
+  private def showWord[K, F <: PoSForm](obj: Pos[K, F]): Unit = {
 
-    case sv: StrongVerb =>
-      //
+    val layout = obj match {
 
-      val view = getLayoutInflater.inflate(R.layout.verb_conjugation_viewer_full, posViewer)
-      setDeclensionsTo(sv, view)
+      case _: StrongVerb => R.layout.verb_conjugation_viewer_full
+      case _: Noun       => R.layout.noun_declension_detailed_view
+    }
 
-      val tvWord = findViewById(R.id.tvWord).asInstanceOf[TextView]
-      val priForm = sv.verbForms
-        .get((VerbModeEnum.INFINITIVE, VerbVoice.ACTIVE, None, None))
-        .map(_.strRepr)
-        .getOrElse("???")
-      tvWord.setText(priForm)
+    val view = getLayoutInflater.inflate(layout, posViewer)
+    modelview.setDeclensionsTo(obj, view)
 
-    case nn: Noun =>
-      val view = getLayoutInflater.inflate(R.layout.noun_declension_detailed_view, posViewer)
-      setDeclensionsTo(nn, view)
+    val tvWord = findViewById(R.id.tvWord).asInstanceOf[TextView]
+    val priForm = obj.forms
+      .get(obj.PRIMARY_KEY)
+      .map(_.strRepr)
+      .getOrElse("???")
 
-      val tvWord = findViewById(R.id.tvWord).asInstanceOf[TextView]
-      val priForm = nn.nounForms
-        .get((GNumber.SINGULAR, Case.NOMINATIVE))
-        .map(_.strRepr)
-        .getOrElse("???")
-
-      tvWord.setText(priForm)
+    tvWord.setText(priForm)
   }
 
   def onCollapseView(view: View): Unit = {

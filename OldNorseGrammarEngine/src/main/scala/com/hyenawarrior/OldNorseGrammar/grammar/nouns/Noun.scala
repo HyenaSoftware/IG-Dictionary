@@ -1,5 +1,8 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 
+import com.hyenawarrior.OldNorseGrammar.grammar.Pos
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 
@@ -8,11 +11,14 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 	*/
 case class Noun(stem: NounStem, givenForms: Map[NounType, NounForm]
                 , generatedForms: Map[NounType, NounForm]
-                , overridenForms: Map[NounType, NounForm]) {
+                , overridenForms: Map[NounType, NounForm]) extends Pos[NounType, NounForm] {
 
 	lazy val nounForms = givenForms ++ generatedForms ++ overridenForms
 
- }
+	override val forms: Map[(GNumber, Case), NounForm] = nounForms
+
+	override val PRIMARY_KEY = (SINGULAR, NOMINATIVE)
+}
 
 
 object Noun {

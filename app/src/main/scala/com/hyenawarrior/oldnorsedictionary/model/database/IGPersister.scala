@@ -1,11 +1,7 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
 import android.content.Context
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum.INFINITIVE
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.ACTIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.SupportedLanguages.OldNorse
 import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister.lookupTable
@@ -52,37 +48,24 @@ class IGPersister(ctx: Context) {
 
     val objId = persister.store(obj)
 
-    addLookupTexts(obj, objId)
+    val posObj = obj.word.asInstanceOf[Pos[_, _ <: PoSForm]]
+    addLookupTexts(posObj, objId)
   }
 
-  private def addLookupTexts(de: DictionaryEntry, objId: Int): Unit = de.word match {
+  private def addLookupTexts[K, F <: PoSForm](pos: Pos[K, F], objId: Int): Unit = {
 
-    case sv: StrongVerb =>
-      val strIds = sv.verbForms
-        .map {
-          case ((INFINITIVE, ACTIVE, None, None), v) => v -> true
-          case (_, v) => v -> false
-        }
-        .map { case(v, p) => persister.stringInterner.getOrStore(v.strRepr) -> p }
-
-      // create lookup entries
-      for((strId, isPri) <- strIds) {
-
-        lookupTable.insert(Array(strId, OldNorse.id, objId, isPri))
+    val strIds = pos.forms
+      .map {
+        case (pos.PRIMARY_KEY, v) => v -> true
+        case (_, v) => v -> false
       }
+      .map { case (v, p) => persister.stringInterner.getOrStore(v.strRepr) -> p }
 
-    case nn: Noun =>
-      val strIds = nn.nounForms.map {
-        case ((GNumber.SINGULAR, Case.NOMINATIVE), nf) => nf -> true
-        case (_, nf) => nf -> false
-      }
-      .map { case (n, p) => persister.stringInterner.getOrStore(n.strRepr) -> p }
+    // create lookup entries
+    for ((strId, isPri) <- strIds) {
 
-      // create lookup entries
-      for((strId, isPri) <- strIds) {
-
-        lookupTable.insert(Array(strId, OldNorse.id, objId, isPri))
-      }
+      lookupTable.insert(Array(strId, OldNorse.id, objId, isPri))
+    }
   }
 
   def loadObject(objId: Int): Option[Any] = {

@@ -8,48 +8,17 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.{ListView, SearchView}
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.{ACCUSATIVE, DATIVE, GENITIVE, NOMINATIVE}
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{DUAL, PLURAL, SINGULAR}
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Pronoun}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounType}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
+import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
 import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.AndroidSDBLayer
 import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}
 import com.hyenawarrior.oldnorsedictionary.modelview.DictionaryEntryAdapter
-import com.hyenawarrior.oldnorsedictionary.modelview.helpers.abbrevationOf
-import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
+import com.hyenawarrior.oldnorsedictionary.modelview.helpers._
 import com.hyenawarrior.oldnorsedictionary.new_word.{AddNewWordActivityPager, DetailedDictionaryEntry}
 
 import scala.language.postfixOps
-
-object Orderings
-{
-	def sgnDiff[T](a: T, b: T)(implicit ordering: Ordering[T]): Int = ordering.compare(a, b)
-
-	implicit object NumberOrdering extends Ordering[GNumber]
-	{
-		override def compare(x: GNumber, y: GNumber): Int = (x, y) match
-		{
-			case (SINGULAR, DUAL | PLURAL) => -1
-			case (DUAL | PLURAL, SINGULAR) => 1
-			case _ => 0
-		}
-	}
-
-	implicit object CaseOrdering extends Ordering[Case]
-	{
-		override def compare(x: Case, y: Case): Int = math.signum(x.id - y.id)
-	}
-
-	implicit object MeaningDefOrdering extends Ordering[MeaningDef]
-	{
-		override def compare(x: MeaningDef, y: MeaningDef): Int = x.meaning.compareTo(y.meaning)
-	}
-}
 
 object MainActivity
 {
@@ -66,52 +35,15 @@ class MainActivity extends AppCompatActivity
 
 		override def onQueryTextChange(str: String): Boolean = {
 
-			import com.hyenawarrior.oldnorsedictionary.modelview.helpers._
-
       val fixedStr = str.replace("ö", "ǫ")
 
       val entries = if(fixedStr.isEmpty) List() else igPersister.lookup(fixedStr)
         .map {
-          case DictionaryEntry(sv: StrongVerb, meanings) =>
-
-						// keep only those forms of the verb which are matching on the search string
-            val matchingForms = sv.verbForms
-              .filter {
-                case (_, v) if v.strRepr.startsWith(fixedStr) => true
-                case _ => false
-              }
-
-            val INF_KEY = (INFINITIVE, ACTIVE, None, None)
-
-            val priForm = sv.verbForms(INF_KEY).strRepr -> abbrevationOf(INF_KEY)
-
-            // determine which form we want to show
-            val firstForm = matchingForms.toSeq.sortBy { case (vt, _) => vt }.headOption
-            val formsToShow = firstForm match {
-
-              case Some((INF_KEY, f)) => Seq(priForm)
-              case Some((k, v)) => Seq(priForm, v.strRepr -> abbrevationOf(k))
-              case None => Seq()
-            }
-
-            DictionaryListItem(formsToShow, "verb", sv, meanings)
+          case DictionaryEntry(sverb: StrongVerb, meanings) =>
+            DictionaryListItem(getFormsToShowOf(fixedStr, sverb), "verb", sverb, meanings)
 
           case DictionaryEntry(noun: Noun, meanings) =>
-
-						val matchingForm = noun.nounForms.filter { case (_, NounForm(strRepr, _)) => strRepr startsWith fixedStr }
-
-						val SG_NOM_KEY = (SINGULAR, NOMINATIVE)
-
-						val priForm = noun.nounForms(SG_NOM_KEY).strRepr -> abbrevationOf(SG_NOM_KEY)
-
-            val firstForm = matchingForm.toSeq.sortBy { case (vt, _) => vt }.headOption
-            val formsToShow = firstForm match {
-
-							case Some((SG_NOM_KEY, f)) => Seq(priForm)
-							case Some((k, f)) => Seq(priForm, f.strRepr -> abbrevationOf(k))
-						}
-
-            DictionaryListItem(formsToShow, "noun", noun, meanings)
+            DictionaryListItem(getFormsToShowOf(fixedStr, noun), "noun", noun, meanings)
         }
           .toList
 
@@ -119,6 +51,32 @@ class MainActivity extends AppCompatActivity
 
 			true
 		}
+
+    private def getFormsToShowOf[K, F <: PoSForm](searchString: String, obj: Pos[K, F])(implicit ordering: Ordering[K]): Seq[(String, String)] = {
+
+			val PRI_FORM = obj.forms(obj.PRIMARY_KEY).strRepr -> abbrevationOf(obj.PRIMARY_KEY)
+
+      // keep only those forms of the verb which are matching on the search string
+      val formsToShow = obj.forms.toSeq
+        // keep only the matching forms
+        .filter {
+          case (_, pos) if pos.strRepr.startsWith(searchString) => true
+          case _ => false
+        }
+        // sort them by their type
+        .sortBy { case (vt, _) => vt }
+        // pick up the first one
+        .headOption
+        .map {
+          // if it is the primary form then use it
+          case (obj.PRIMARY_KEY, f) => Seq(PRI_FORM)
+          // if it is not the pri. form then add the pri. form too
+          case (k, v)       => Seq(PRI_FORM, v.strRepr -> abbrevationOf(k))
+        }
+
+      // return the selected forms
+      formsToShow getOrElse Seq()
+    }
 	}
 
   override protected def onBackPressed()
