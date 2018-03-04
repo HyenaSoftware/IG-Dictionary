@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto" tools:context=".MainActivity">
+
+    <item
+            android:id="@+id/main_menu_opt_settings"
+            android:title="Settings"
+            android:icon="@android:drawable/ic_menu_preferences"
+            app:showAsAction="always" />
+    <item
+            android:id="@+id/main_menu_opt_newWord"
+            android:title="Add new word"
+            android:icon="@android:drawable/ic_menu_add"
+            app:showAsAction="always" />
+    <item
+            android:id="@+id/main_menu_opt_copyDB"
+            android:title="Copy Database"
+            app:showAsAction="never" />
+    <item
+            android:id="@+id/main_menu_opt_clearDB"
+            android:title="Clean Database"
+            app:showAsAction="never" />
+</menu>

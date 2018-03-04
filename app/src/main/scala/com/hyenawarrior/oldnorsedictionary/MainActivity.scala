@@ -5,9 +5,10 @@ import java.io.{File, FileInputStream, FileOutputStream}
 import android.content.Intent
 import android.os.{Bundle, Environment}
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.util.Log
-import android.view.View
-import android.widget.{ListView, SearchView}
+import android.view.{Menu, MenuItem, View}
+import android.widget.{ListView, SearchView, Toast}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
@@ -96,12 +97,14 @@ class MainActivity extends AppCompatActivity
 		sw setOnQueryTextListener TypeListener
 	}
 
-	def clear(view: View)
+	private def clear()
 	{
 		getApplicationContext.deleteDatabase(AndroidSDBLayer.DATABASE_NAME)
+
+		Toast.makeText(this, "The database has been purged.", Toast.LENGTH_SHORT)
 	}
 
-	def backup(view: View)
+	private def backup()
 	{
 		try
 		{
@@ -160,5 +163,38 @@ class MainActivity extends AppCompatActivity
 		installEventHandlers()
 
 		listView setAdapter entryListAdapter
+
+		val myToolbar = findViewById(R.id.my_toolbar).asInstanceOf[Toolbar]
+		setSupportActionBar(myToolbar)
 	}
+
+	override def onCreateOptionsMenu(menu: Menu): Boolean = {
+
+		getMenuInflater.inflate(R.menu.main_menu_options, menu)
+
+		super.onCreateOptionsMenu(menu)
+	}
+
+  override def onOptionsItemSelected(item: MenuItem): Boolean = {
+
+    item.getItemId match {
+
+      case R.id.main_menu_opt_newWord =>
+        val clazz: Class[AddNewWordActivityPager] = classOf[AddNewWordActivityPager]
+        val intent = new Intent(this, clazz)
+
+        intent.putExtra(MainActivity.EXTRA_MESSAGE, "data")
+
+        startActivity(intent)
+
+      case R.id.main_menu_opt_clearDB => clear()
+      case R.id.main_menu_opt_copyDB => backup()
+
+      case _ => Toast
+        .makeText(MainActivity.this, s"Don't know what to do with '${item.getTitle}'.", Toast.LENGTH_SHORT)
+        .show()
+    }
+
+    super.onOptionsItemSelected(item)
+  }
 }
