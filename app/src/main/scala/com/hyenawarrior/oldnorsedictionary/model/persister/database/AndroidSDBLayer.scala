@@ -95,7 +95,8 @@ class AndroidSDBLayer (ctx: Context) extends DBLayer {
 
     case ColumnDefinition(name, ClassOfInt) => cv.getAsInteger(name)
     case ColumnDefinition(name, ClassOfString) => cv.getAsString(name)
-    case ColumnDefinition(name, ClassOfBoolean) => cv.getAsBoolean(name)
+    // getAsBoolean() doesn't work with DatabaseUtils.cursorRowToContentValues
+    case ColumnDefinition(name, ClassOfBoolean) => cv.getAsInteger(name) != 0
     case ColumnDefinition(name, ClassOfBlob) => cv.getAsByteArray(name)
   }
 
