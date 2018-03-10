@@ -19,18 +19,18 @@ class MeaningDefListView(activity: Activity, hostView: ViewGroup)
 	{
 		val elem = optElem getOrElse MeaningDef("", "", Seq())
 
-		val btnRemove = meaningRecordView.findViewById(R.id.ibRemove)
+		val btnRemove = meaningRecordView.findViewById[View](R.id.ibRemove)
 		btnRemove setOnClickListener ClickListener(onRemoveMeaningDef(meaningRecordView))
 
-		val etMeaning = meaningRecordView.findViewById(R.id.et_setmeaning_Desc).asInstanceOf[EditText]
+		val etMeaning = meaningRecordView.findViewById[EditText](R.id.et_setmeaning_Desc)
 		etMeaning.setText(elem.meaning, TextView.BufferType.EDITABLE)
 		etMeaning addTextChangedListener new EditTextTypeListener(onMeaningChange(meaningRecordView))
 
-		val etNote = meaningRecordView.findViewById(R.id.et_setmeaning_Note).asInstanceOf[EditText]
+		val etNote = meaningRecordView.findViewById[EditText](R.id.et_setmeaning_Note)
 		etNote.setText(elem.note, TextView.BufferType.EDITABLE)
 		etNote addTextChangedListener new EditTextTypeListener(onNoteChange(meaningRecordView))
 
-		val subControlOfHost = meaningRecordView.findViewById(R.id.tl_setmeaning_Examples).asInstanceOf[ViewGroup]
+		val subControlOfHost = meaningRecordView.findViewById[ViewGroup](R.id.tl_setmeaning_Examples)
 		val exRecHandler = new ExampleRecordView(activity, subControlOfHost)
 	 	for(exStr <- elem.examples)
 		{

@@ -23,7 +23,7 @@ object SetMeaningFragment extends Fragment
 
   class DataContext(val rootView: View)
 	{
-		private val hostView = rootView.findViewById(R.id.llMeanings).asInstanceOf[ViewGroup]
+		private val hostView = rootView.findViewById[ViewGroup](R.id.llMeanings)
 
 		val meaningDefListView = new MeaningDefListView(getActivity, hostView)
 	}
@@ -53,10 +53,10 @@ object SetMeaningFragment extends Fragment
       case _ => "???" -> "???"
     }
 
-    val tv_setmeaning_PosType = dataContext.rootView.findViewById(R.id.tv_setmeaning_PosType).asInstanceOf[TextView]
+    val tv_setmeaning_PosType = dataContext.rootView.findViewById[TextView](R.id.tv_setmeaning_PosType)
     tv_setmeaning_PosType.setText(posTypeName)
 
-    val tv_setmeaning_ClassType = dataContext.rootView.findViewById(R.id.tv_setmeaning_ClassType).asInstanceOf[TextView]
+    val tv_setmeaning_ClassType = dataContext.rootView.findViewById[TextView](R.id.tv_setmeaning_ClassType)
     tv_setmeaning_ClassType.setText(posSubType)
 
     val word = optWordData match {
@@ -67,7 +67,7 @@ object SetMeaningFragment extends Fragment
       case _ => "???"
     }
 
-    val tv_setmeaning_Word = dataContext.rootView.findViewById(R.id.tv_setmeaning_Word).asInstanceOf[TextView]
+    val tv_setmeaning_Word = dataContext.rootView.findViewById[TextView](R.id.tv_setmeaning_Word)
     tv_setmeaning_Word.setText(word)
   }
 

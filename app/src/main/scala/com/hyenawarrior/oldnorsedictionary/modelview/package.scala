@@ -62,9 +62,9 @@ package object modelview {
 
   def setDeclensionsTo(noun: Noun, targetView: View): Unit = {
 
-    val descView   = targetView.findViewById(R.id.tv_noun_class).asInstanceOf[TextView]
-    val indefView = targetView.findViewById(R.id.frame_noun_indef)
-    val defView   = targetView.findViewById(R.id.frame_noun_def)
+    val descView   = targetView.findViewById[TextView](R.id.tv_noun_class)
+    val indefView = targetView.findViewById[View](R.id.frame_noun_indef)
+    val defView   = targetView.findViewById[View](R.id.frame_noun_def)
 
     descView.setText(noun.stem.stemClass.toString)
 
@@ -74,7 +74,7 @@ package object modelview {
 
   def setDeclensionsTo(noun: Noun, nscEnum: NounStemClassEnum, targetView: View, isDefinite: Boolean): Unit = {
 
-    val tvNounDeclDesc = targetView.findViewById(R.id.tvNounDeclDesc).asInstanceOf[TextView]
+    val tvNounDeclDesc = targetView.findViewById[TextView](R.id.tvNounDeclDesc)
     tvNounDeclDesc.setText(nscEnum.name)
 
     setDeclensionsTo(noun, targetView, isDefinite)
@@ -84,7 +84,7 @@ package object modelview {
 
     for((id, nf) <- NOUN_EDIT_TEXTS) {
 
-      val tvNC = targetView.findViewById(id).asInstanceOf[TextView]
+      val tvNC = targetView.findViewById[TextView](id)
       val ncTextForm = noun.nounForms.get(nf).map(_.strRepr).getOrElse("...")
       tvNC.setText(ncTextForm)
     }
@@ -113,7 +113,7 @@ package object modelview {
   }
 
   private def setVerbConjugationDetailsTo(targetView: View, cl: StrongVerbClassEnum, ablautGrade: Map[EnumVerbStem, AblautGrade]): Unit = {
-    val stemName = targetView.findViewById(R.id.tv_addword_verb_stemName).asInstanceOf[TextView]
+    val stemName = targetView.findViewById[TextView](R.id.tv_addword_verb_stemName)
     stemName.setText(cl.name)
 
     val ablautDesc = Seq(PRESENT_STEM, PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM, PERFECT_STEM)
@@ -122,7 +122,7 @@ package object modelview {
       .replace("ǫ", "ö")
 
     // set ablaut grades
-    val tv_addword_verb_AblautGrades = targetView.findViewById(R.id.tv_addword_verb_AblautGrades).asInstanceOf[TextView]
+    val tv_addword_verb_AblautGrades = targetView.findViewById[TextView](R.id.tv_addword_verb_AblautGrades)
     tv_addword_verb_AblautGrades.setText(ablautDesc)
   }
 
@@ -137,13 +137,13 @@ package object modelview {
 
       setVerbConjugationDetailsTo(rootView, cl, ablautGrade)
 
-      val frame_active_non = rootView.findViewById(R.id.frame_active_nonfinitive)
-      val frame_active_ind = rootView.findViewById(R.id.frame_active_indicatives)
-      val frame_active_subj = rootView.findViewById(R.id.frame_active_subjunctives)
+      val frame_active_non = rootView.findViewById[View](R.id.frame_active_nonfinitive)
+      val frame_active_ind = rootView.findViewById[View](R.id.frame_active_indicatives)
+      val frame_active_subj = rootView.findViewById[View](R.id.frame_active_subjunctives)
 
-      val frame_medpass_non = rootView.findViewById(R.id.frame_mediopassive_nonfinitive)
-      val frame_medpass_ind = rootView.findViewById(R.id.frame_mediopassive_indicative)
-      val frame_medpass_subj = rootView.findViewById(R.id.frame_mediopassive_subjunctive)
+      val frame_medpass_non = rootView.findViewById[View](R.id.frame_mediopassive_nonfinitive)
+      val frame_medpass_ind = rootView.findViewById[View](R.id.frame_mediopassive_indicative)
+      val frame_medpass_subj = rootView.findViewById[View](R.id.frame_mediopassive_subjunctive)
 
       setInfinitiveConjugationsTo(sv, frame_active_non, ACTIVE)
       setFinitiveConjugationTo(sv, frame_active_ind, INDICATIVE, ACTIVE)
@@ -164,7 +164,7 @@ package object modelview {
       }
 
       val f = sv.verbForms(wt)
-      val tv = targetView.findViewById(id).asInstanceOf[TextView]
+      val tv = targetView.findViewById[TextView](id)
       tv.setText(f.strRepr.replace("ǫ", "ö"))
     }
   }
@@ -179,7 +179,7 @@ package object modelview {
       }
 
       val f = sv.verbForms(wt)
-      val tv = targetView.findViewById(id).asInstanceOf[TextView]
+      val tv = targetView.findViewById[TextView](id)
       tv.setText(f.strRepr.replace("ǫ", "ö"))
     }
   }

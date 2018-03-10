@@ -16,8 +16,8 @@ class WordFormAdapter(activity: Activity, listView: ViewGroup)
 
 		val (word, desc) = itemAt(i)
 
-		val tvWordForm = view.findViewById(R.id.tvWordForm).asInstanceOf[TextView]
-		val tvWordDesc = view.findViewById(R.id.tvWordDesc).asInstanceOf[TextView]
+		val tvWordForm = view.findViewById[TextView](R.id.tvWordForm)
+		val tvWordDesc = view.findViewById[TextView](R.id.tvWordDesc)
 
 		tvWordForm setText word
 		tvWordDesc setText desc

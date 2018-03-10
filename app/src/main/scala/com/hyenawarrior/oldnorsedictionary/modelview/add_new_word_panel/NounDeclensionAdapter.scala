@@ -38,7 +38,7 @@ class NounDeclensionAdapter(activity: Activity, listView: ViewGroup)
 		setDeclensionsTo(noun, nscEnum, view, isDefinite = false)
 
     // tag the select button
-    val tv_addword_noun_Select = view.findViewById(R.id.tv_addword_noun_Select).asInstanceOf[Button]
+    val tv_addword_noun_Select = view.findViewById[Button](R.id.tv_addword_noun_Select)
     tv_addword_noun_Select.setTag(nscEnum)
 	}
 

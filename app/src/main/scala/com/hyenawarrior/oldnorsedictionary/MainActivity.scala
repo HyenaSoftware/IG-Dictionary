@@ -85,14 +85,14 @@ class MainActivity extends AppCompatActivity
 		super.onBackPressed()
 	}
 
-	lazy val listView = findViewById(R.id.listView).asInstanceOf[ListView]
+	lazy val listView = findViewById[ListView](R.id.listView)
 	lazy val entryListAdapter = new DictionaryEntryAdapter(this, listView)
 
   lazy val igPersister = new IGPersister(getApplicationContext)
 
 	private def installEventHandlers()
 	{
-		val sw = findViewById(R.id.searchView).asInstanceOf[SearchView]
+		val sw = findViewById[SearchView](R.id.searchView)
 
 		sw setOnQueryTextListener TypeListener
 	}
@@ -164,7 +164,7 @@ class MainActivity extends AppCompatActivity
 
 		listView setAdapter entryListAdapter
 
-		val myToolbar = findViewById(R.id.my_toolbar).asInstanceOf[Toolbar]
+		val myToolbar = findViewById[Toolbar](R.id.my_toolbar)
 		setSupportActionBar(myToolbar)
 	}
 

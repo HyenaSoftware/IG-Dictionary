@@ -52,7 +52,7 @@ class VerbDeclensionAdapter(activity: Activity, listView: ViewGroup)
 		setDeclensionsTo(strongVerb, view, currentMood, currentVoice)
 
     // tag the select button
-    val tv_addword_verb_Select = view.findViewById(R.id.tv_addword_verb_Select).asInstanceOf[Button]
+    val tv_addword_verb_Select = view.findViewById[Button](R.id.tv_addword_verb_Select)
     tv_addword_verb_Select.setTag(vcDesc)
 	}
 

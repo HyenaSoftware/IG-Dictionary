@@ -14,7 +14,7 @@ class AddNewWordActivityPager extends AppCompatActivity
 {
 	outer =>
 
-	lazy val pager = findViewById(R.id.AddNewWordPager).asInstanceOf[ViewPager]
+	lazy val pager = findViewById[ViewPager](R.id.AddNewWordPager)
 
 	object AddWordPagerAdapter
 		extends FragmentStatePagerAdapter(outer.asInstanceOf[FragmentActivity].getSupportFragmentManager)

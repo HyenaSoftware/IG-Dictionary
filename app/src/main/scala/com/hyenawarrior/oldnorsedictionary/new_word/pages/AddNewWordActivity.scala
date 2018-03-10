@@ -19,9 +19,9 @@ object AddNewWordActivity extends Fragment
 
 		object StemClassListener extends ItemListener(i => currentPosHelper.onStemClassSelected(i))
 
-		val tlOverrides = rootView.findViewById(R.id.tlOverrides).asInstanceOf[TableLayout]
+		val tlOverrides = rootView.findViewById[TableLayout](R.id.tlOverrides)
 
-		val SP_SELECT_STEM_CLASS = rootView.findViewById(R.id.spSelectStemClass).asInstanceOf[Spinner]
+		val SP_SELECT_STEM_CLASS = rootView.findViewById[Spinner](R.id.spSelectStemClass)
 		SP_SELECT_STEM_CLASS.setOnItemSelectedListener(StemClassListener)
 
 		val addNewNounHelper = new AddNewNounHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
@@ -40,7 +40,7 @@ object AddNewWordActivity extends Fragment
 
 		//
 		val posTypeSpinnerListener = new SpinnerListener(postInitContext.POS_TYPES, onPosTypeSelected)
-		val spSelectPoS = rootView.findViewById(R.id.spSelectPoS).asInstanceOf[Spinner]
+		val spSelectPoS = rootView.findViewById[Spinner](R.id.spSelectPoS)
 		spSelectPoS.setOnItemSelectedListener(posTypeSpinnerListener)
 
 		rootView

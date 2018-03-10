@@ -3,13 +3,13 @@ apply plugin: 'jp.leafytree.android-scala'
 
 
 android {
-    compileSdkVersion 25 // 17
+    compileSdkVersion 26 // appcompat and support libs requires this
     buildToolsVersion "26.0.1"
 
     defaultConfig {
         applicationId "com.hyenawarrior.oldnorsedictionary"
         minSdkVersion 17
-        targetSdkVersion 25 //17
+        targetSdkVersion 26 // use the same target environment
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -39,12 +39,12 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     testCompile 'org.xerial:sqlite-jdbc:3.20.1'
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:26.1.0' // must be in the same version than support lib
 
     compile project(':OldNorseGrammarEngine')
     compile 'org.scala-lang:scala-library:2.11.7'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:support-v4:26.1.0' // room.persistence requires 26.1.0+ version
 }
 
 // prevent 'Error:No such property: useAnt for class: org.gradle.api.tasks.scala.ScalaCompileOptions'

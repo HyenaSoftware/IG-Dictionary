@@ -18,7 +18,7 @@ class DictionaryEntryAdapter(activity: Activity, listView: ViewGroup)
 
 		val item = itemAt(i)
 
-		val tvDesc = view.findViewById(R.id.tvDesc).asInstanceOf[TextView]
+		val tvDesc = view.findViewById[TextView](R.id.tvDesc)
 		val text = s"[${item.posType}]"
 
 		tvDesc setText text
@@ -27,14 +27,14 @@ class DictionaryEntryAdapter(activity: Activity, listView: ViewGroup)
 		view setTag item
 
 		// set words
-		val llWordForms = view.findViewById(R.id.llWordForms).asInstanceOf[LinearLayout]
+		val llWordForms = view.findViewById[LinearLayout](R.id.llWordForms)
 
 		val wordFormAdapter = new WordFormAdapter(activity, llWordForms)
 
 		wordFormAdapter resetItems item.otherForms.toList
 
 		// set meanings
-		val llMeanings = view.findViewById(R.id.llMeanings).asInstanceOf[LinearLayout]
+		val llMeanings = view.findViewById[LinearLayout](R.id.llMeanings)
 
 		val meaningAdapter = new MeaningAdapter(activity, llMeanings)
 

@@ -46,13 +46,13 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	var selectedNounParameters: Parameters = (List(), (None, None), Map())
   var latestNounData: Map[NounStemClassEnum, Noun] = Map()
 
-	val LL_NOUN_DECLS = rootView.findViewById(R.id.llNounDeclensions).asInstanceOf[LinearLayout]
-	val LL_DECL_LIST = LL_NOUN_DECLS.findViewById(R.id.llNounDeclensionList).asInstanceOf[LinearLayout]
+	val LL_NOUN_DECLS = rootView.findViewById[LinearLayout](R.id.llNounDeclensions)
+	val LL_DECL_LIST = LL_NOUN_DECLS.findViewById[LinearLayout](R.id.llNounDeclensionList)
 
 	val NounDeclensionAdapter = new NounDeclensionAdapter(activity, LL_DECL_LIST)
 
-	LL_NOUN_DECLS findViewById R.id.rbIndef setOnClickListener DefinitenessListener
-	LL_NOUN_DECLS findViewById R.id.rbDef   setOnClickListener DefinitenessListener
+	LL_NOUN_DECLS findViewById[View] R.id.rbIndef setOnClickListener DefinitenessListener
+	LL_NOUN_DECLS findViewById[View] R.id.rbDef   setOnClickListener DefinitenessListener
 
 	//
 	override def activate(): Unit = {
@@ -106,12 +106,12 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		val rowView = inflater.inflate(R.layout.new_word_overriding_def_row, null)
 
 		// add hint, it's necessary to be able to remove the overrides
-		val btnRemoveView = rowView.findViewById(R.id.ibRemove)
+		val btnRemoveView = rowView.findViewById[View](R.id.ibRemove)
 		btnRemoveView.setTag(rowView)
 		btnRemoveView.setVisibility(if(isPrimary) View.GONE else View.VISIBLE)
 
 		// add text listeners
-		val etView = rowView.findViewById(R.id.etNewWord_Text).asInstanceOf[EditText]
+		val etView = rowView.findViewById[EditText](R.id.etNewWord_Text)
 		val etListener = new EditTextTypeListener(
 			if(isPrimary)	onPrimaryTextChange
 			else					onTextFormOverride(rowView))
@@ -119,7 +119,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		etView.addTextChangedListener(etListener)
 
 		//
-		val spNounDecl = rowView.findViewById(R.id.spNounDecl).asInstanceOf[Spinner]
+		val spNounDecl = rowView.findViewById[Spinner](R.id.spNounDecl)
 		val spListener = new ItemListener(
 			if(isPrimary)	i => onNounDeclensionSelected(AddNewNounHelper.NOUN_DECLENSIONS(i))
 			else					i => onNounDeclensionSelected2(rowView)(AddNewNounHelper.NOUN_DECLENSIONS(i)))

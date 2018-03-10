@@ -20,11 +20,11 @@ class ExampleRecordView(activity: Activity, hostView: ViewGroup) extends Dynamic
 		val elem = optElem getOrElse ""
 
 		val idx = examples.size + 1
-		val etExample = recordView.findViewById(R.id.et_setmeaning_Example).asInstanceOf[EditText]
+		val etExample = recordView.findViewById[EditText](R.id.et_setmeaning_Example)
 		etExample addTextChangedListener new EditTextTypeListener(onMeaningChange(recordView))
 		etExample.setText(elem, TextView.BufferType.EDITABLE)
 
-		val tvIndex = recordView.findViewById(R.id.tv_setmeaning_Example_Index).asInstanceOf[TextView]
+		val tvIndex = recordView.findViewById[TextView](R.id.tv_setmeaning_Example_Index)
 		tvIndex setText s"$idx"
 	}
 

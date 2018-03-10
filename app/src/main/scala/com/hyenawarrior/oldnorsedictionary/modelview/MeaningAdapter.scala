@@ -23,13 +23,13 @@ class MeaningAdapter(activity: Activity, listView: ViewGroup)
 
 		val meaning = itemAt(i)
 
-    val tvIndex = view.findViewById(R.id.tvIndex).asInstanceOf[TextView]
+    val tvIndex = view.findViewById[TextView](R.id.tvIndex)
     tvIndex setText s"$i."
 
-		val tvMeaning = view.findViewById(R.id.tvDesc).asInstanceOf[TextView]
+		val tvMeaning = view.findViewById[TextView](R.id.tvDesc)
 		tvMeaning.setText(meaning.meaning + " (" + meaning.note + ")")
 
-		val tvExample = view.findViewById(R.id.tvMeaning).asInstanceOf[TextView]
+		val tvExample = view.findViewById[TextView](R.id.tvMeaning)
 		tvExample.setText(meaning.examples.mkString("\n"))
 	}
 }

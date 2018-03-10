@@ -18,7 +18,7 @@ import com.hyenawarrior.oldnorsedictionary.{R, modelview}
   */
 class DetailedDictionaryEntry extends AppCompatActivity {
 
-  private lazy val posViewer = findViewById(R.id.pos_viewer).asInstanceOf[LinearLayout]
+  private lazy val posViewer = findViewById[LinearLayout](R.id.pos_viewer)
 
   protected override def onCreate(savedInstanceState: Bundle): Unit = {
 
@@ -33,7 +33,7 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
       case DictionaryListItem(_, _, posObj, meanings) =>
 
-      val llMeanings = findViewById(R.id.llMeanings).asInstanceOf[LinearLayout]
+      val llMeanings = findViewById[LinearLayout](R.id.llMeanings)
 
         // set meanings
         val meaningAdapter = new MeaningAdapter(this, llMeanings)
@@ -57,7 +57,7 @@ class DetailedDictionaryEntry extends AppCompatActivity {
     val view = getLayoutInflater.inflate(layout, posViewer)
     modelview.setDeclensionsTo(obj, view)
 
-    val tvWord = findViewById(R.id.tvWord).asInstanceOf[TextView]
+    val tvWord = findViewById[TextView](R.id.tvWord)
     val priForm = obj.forms
       .get(obj.PRIMARY_KEY)
       .map(_.strRepr)
@@ -76,13 +76,13 @@ class DetailedDictionaryEntry extends AppCompatActivity {
     }
 
     val pic = invertVisibilityAndGetNewPicRsrc(viewPanelId)
-    val imgView = findViewById(imgViewId)
+    val imgView = findViewById[View](imgViewId)
     imgView setBackground pic
   }
 
   private def invertVisibilityAndGetNewPicRsrc(viewId: Int): Drawable = {
 
-    val panel = findViewById(viewId)
+    val panel = findViewById[View](viewId)
     val (nv, picRsrc) = panel.getVisibility match {
 
       case View.VISIBLE => View.GONE -> R.drawable.ic_keyboard_arrow_down_black_18dp

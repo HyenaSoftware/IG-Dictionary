@@ -95,7 +95,7 @@ class VerbDeclPreferencesDialog(activity: Activity)
 
 	object RadioButtonListener extends View.OnClickListener
 	{
-		val verbDeclSpinner: Spinner = selfView.findViewById(R.id.spVerbDeclensions).asInstanceOf[Spinner]
+		val verbDeclSpinner: Spinner = selfView.findViewById[Spinner](R.id.spVerbDeclensions)
 		verbDeclSpinner.setOnItemSelectedListener(SpinnerListener)
 
 		override def onClick(view: View): Unit = view.getId match {
@@ -146,7 +146,7 @@ class VerbDeclPreferencesDialog(activity: Activity)
 
       for(id <- otherRbs) {
 
-        selfView.findViewById(id) match {
+        selfView.findViewById[View](id) match {
           case rb: RadioButton => rb.setChecked(false)
           case _ => ()
         }
@@ -179,13 +179,13 @@ class VerbDeclPreferencesDialog(activity: Activity)
 		inflater.inflate(R.layout.new_verb_overriding_def_row_preferences, null)
 	}
 
-  val rbPresent = selfView.findViewById(R.id.rbPresent).asInstanceOf[RadioButton]
-  val rbPreterite = selfView.findViewById(R.id.rbPreterite).asInstanceOf[RadioButton]
+  val rbPresent = selfView.findViewById[RadioButton](R.id.rbPresent)
+  val rbPreterite = selfView.findViewById[RadioButton](R.id.rbPreterite)
 
 	// wire the radio buttons to the event handler
 	for(id <- Seq(R.id.rbInd, R.id.rbSubj, R.id.rbImperative, R.id.rbNonFinitive, R.id.rbPresent, R.id.rbPreterite))
 	{
-		selfView.findViewById(id).setOnClickListener(RadioButtonListener)
+		selfView.findViewById[View](id).setOnClickListener(RadioButtonListener)
 	}
 
 	private val dialog = new AlertDialog.Builder(activity)

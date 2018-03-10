@@ -53,14 +53,14 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	var latestVerbData: Map[VerbClassEnum, StrongVerb] = Map()
 
 	// panel for showing the verb forms
-	val LL_DECL_LIST = rootView.findViewById(R.id.llVerbDeclensions).asInstanceOf[LinearLayout]
-	val LL_VERB_CONJUGATION_LIST = LL_DECL_LIST.findViewById(R.id.llVerbDeclensionList).asInstanceOf[LinearLayout]
+	val LL_DECL_LIST = rootView.findViewById[LinearLayout](R.id.llVerbDeclensions)
+	val LL_VERB_CONJUGATION_LIST = LL_DECL_LIST.findViewById[LinearLayout](R.id.llVerbDeclensionList)
 	val VerbDeclensionAdapter = new VerbDeclensionAdapter(activity, LL_VERB_CONJUGATION_LIST)
 
-	val verbMoodPanel = rootView.findViewById(R.id.glVerbMood).asInstanceOf[GridLayout]
-	verbMoodPanel findViewById R.id.rbInd setOnClickListener MoodSelector
-	verbMoodPanel findViewById R.id.rbSubj setOnClickListener MoodSelector
-	verbMoodPanel findViewById R.id.cbMedioPassive setOnClickListener VoiceSelector
+	val verbMoodPanel = rootView.findViewById[GridLayout](R.id.glVerbMood)
+	verbMoodPanel findViewById[View] R.id.rbInd setOnClickListener MoodSelector
+	verbMoodPanel findViewById[View] R.id.rbSubj setOnClickListener MoodSelector
+	verbMoodPanel findViewById[View] R.id.cbMedioPassive setOnClickListener VoiceSelector
 
 	// verb class spinner in the UI, it should be the same as verb_types.xml
 	val LOAD_STEM_CLASS_ENUMS: IndexedSeq[List[VerbClassEnum]] = IndexedSeq(
@@ -135,15 +135,15 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		val rowView = inflater.inflate(R.layout.new_verb_overriding_def_row, null)
 
 		// add hint, it's necessary to be able to remove the overrides
-		val btnRemoveView = rowView.findViewById(R.id.ibRemove)
+		val btnRemoveView = rowView.findViewById[View](R.id.ibRemove)
 		btnRemoveView.setTag(rowView)
 		btnRemoveView.setVisibility(if(isPrimary) View.GONE else View.VISIBLE)
 
-		val btnPref = rowView.findViewById(R.id.ibPreferences)
+		val btnPref = rowView.findViewById[View](R.id.ibPreferences)
 		btnPref.setOnClickListener(ShowVerbDeclDialogListener(rowView))
 
 		// add type listeners
-		val etView = rowView.findViewById(R.id.etNewWord_Text).asInstanceOf[EditText]
+		val etView = rowView.findViewById[EditText](R.id.etNewWord_Text)
 		val etListener = new EditTextTypeListener(onTextFormOverride(rowView))
 
 		etView.addTextChangedListener(etListener)
@@ -193,7 +193,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 				case (_, _, _, None) 											=>	GRAY ->"S1"
 			}
 
-			val tvVerbPronoun = rowView.findViewById(R.id.tvVerbPronoun).asInstanceOf[TextView]
+			val tvVerbPronoun = rowView.findViewById[TextView](R.id.tvVerbPronoun)
 
 			tvVerbPronoun.setTextColor(clr)
 			tvVerbPronoun.setText(text)
@@ -208,8 +208,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 				case (_, _, None, _) => None
 			}
 
-			previousTenseLED.foreach(rowView.findViewById(_).asInstanceOf[TextView].setTextColor(GRAY))
-			currentTenseLED.foreach(rowView.findViewById(_).asInstanceOf[TextView].setTextColor(RED))
+			previousTenseLED.foreach(rowView.findViewById[TextView](_).setTextColor(GRAY))
+			currentTenseLED.foreach(rowView.findViewById[TextView](_).setTextColor(RED))
 		}
 
 		def updateMoodLED(verbType: VerbType): Unit = {
@@ -223,8 +223,8 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 				case (IMPERATIVE, _, _, _) => R.id.tvVerbImperative
 			}
 
-			rowView.findViewById(previousMoodLED).asInstanceOf[TextView].setTextColor(GRAY)
-			rowView.findViewById(currentMoodLED).asInstanceOf[TextView].setTextColor(RED)
+			rowView.findViewById[TextView](previousMoodLED).setTextColor(GRAY)
+			rowView.findViewById[TextView](currentMoodLED).setTextColor(RED)
 		}
 
     def updateVoiceLED(verbType: VerbType): Unit = {
@@ -235,7 +235,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
         case (_, MEDIO_PASSIVE, _, _) => RED
       }
 
-      rowView.findViewById(R.id.tvVerbMedioPassive).asInstanceOf[TextView].setTextColor(colour)
+      rowView.findViewById[TextView](R.id.tvVerbMedioPassive).setTextColor(colour)
     }
 	}
 
@@ -254,7 +254,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 			for(id <- otherRbs) {
 
-				verbMoodPanel.findViewById(id).asInstanceOf[RadioButton].setChecked(false)
+				verbMoodPanel.findViewById[RadioButton](id).setChecked(false)
 			}
 		}
 
