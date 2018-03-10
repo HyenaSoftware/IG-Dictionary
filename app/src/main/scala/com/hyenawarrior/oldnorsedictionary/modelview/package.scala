@@ -75,7 +75,7 @@ package object modelview {
   def setDeclensionsTo(noun: Noun, nscEnum: NounStemClassEnum, targetView: View, isDefinite: Boolean): Unit = {
 
     val tvNounDeclDesc = targetView.findViewById[TextView](R.id.tvNounDeclDesc)
-    tvNounDeclDesc.setText(nscEnum.name)
+    tvNounDeclDesc.setText(nscEnum.toString)
 
     setDeclensionsTo(noun, targetView, isDefinite)
   }

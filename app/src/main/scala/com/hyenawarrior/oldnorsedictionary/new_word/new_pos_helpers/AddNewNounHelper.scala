@@ -186,17 +186,31 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		fillNounForms()
 	}
 
-	val LOAD_STEM_CLASS_ENUMS: Vector[List[NounStemClassEnum]] =	activity.getResources
-		.getStringArray(R.array.noun_types)
-		.map
-		{
-			case "Undefined" => List()
-			case "Feminine" => List(STRONG_FEMININE_A1, STRONG_FEMININE_A2, STRONG_FEMININE_I, STRONG_FEMININE_R, WEAK_FEMININE_I, WEAK_FEMININE_U)
-			case "Masculine" => List(STRONG_MASCULINE_A, STRONG_MASCULINE_I, STRONG_MASCULINE_R, STRONG_MASCULINE_U, WEAK_MASCULINE_A, WEAK_MASCULINE_R)
-			case "Neuter" => List(STRONG_NEUTER, WEAK_NEUTER_U)
-			case str => NounStemClassEnum.findBy(str).toList
-		}
-		.toVector
+	val LOAD_STEM_CLASS_ENUMS: Vector[List[NounStemClassEnum]] =	Vector(
+		List(),
+		List(STRONG_FEMININE_A1, STRONG_FEMININE_A2, STRONG_FEMININE_I, STRONG_FEMININE_R, WEAK_FEMININE_I, WEAK_FEMININE_U),
+		List(STRONG_MASCULINE_A, STRONG_MASCULINE_I, STRONG_MASCULINE_R, STRONG_MASCULINE_U, WEAK_MASCULINE_A, WEAK_MASCULINE_R),
+		List(STRONG_NEUTER, WEAK_NEUTER_U),
+
+		List(STRONG_MASCULINE_A),
+		List(STRONG_MASCULINE_I),
+		List(STRONG_MASCULINE_U),
+		List(STRONG_MASCULINE_R),
+
+		List(STRONG_FEMININE_A1),
+		List(STRONG_FEMININE_A2),
+		List(STRONG_FEMININE_I),
+		List(STRONG_FEMININE_R),
+
+		List(STRONG_NEUTER),
+
+		List(WEAK_MASCULINE_A),
+		List(WEAK_MASCULINE_R),
+		List(WEAK_FEMININE_I),
+		List(WEAK_FEMININE_U),
+
+		List(WEAK_NEUTER_U)
+	)
 
 	private def generateFormsFrom(stemClass: NounStemClass, baseDef: (NounType, String), map: Map[View, Override])
 		:	Option[Noun] = try {
@@ -226,7 +240,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
       val listOfNSCE = if(maybeEmptyList.isEmpty) NounStemClassEnum.values.toList else maybeEmptyList
 
       val wordMaps: List[(NounStemClassEnum, Noun)] = listOfNSCE
-        .map(nsce => nsce -> generateFormsFrom(nsce.nounStemClass, (numCase, str), map))
+        .map(nsce => nsce -> generateFormsFrom(nsce, (numCase, str), map))
         .collect{ case (k, Some(noun)) => k -> noun }
 
       NounDeclensionAdapter resetItems wordMaps

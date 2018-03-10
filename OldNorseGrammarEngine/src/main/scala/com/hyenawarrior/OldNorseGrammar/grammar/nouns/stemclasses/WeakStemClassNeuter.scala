@@ -9,6 +9,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 	*/
 object WeakStemClassNeuter extends WeakStemClass
 {
+	override def toString = "Weak neuter class"
+
 	override def inflection(decl: (GNumber, Case)) = decl match	{
 
 		case (SINGULAR, _)	=> "a"

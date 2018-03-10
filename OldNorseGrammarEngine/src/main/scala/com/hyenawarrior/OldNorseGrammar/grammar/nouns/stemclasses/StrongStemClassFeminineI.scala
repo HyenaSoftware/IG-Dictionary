@@ -4,6 +4,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
 	* Created by HyenaWarrior on 2017.07.28..
@@ -12,8 +13,10 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
   * to -un by u-umlaut in all cases in the singular except the genitive, and in the
   * dative plural. T
 	*/
-object StrongStemClassFeminineI extends NounStemClass
+object StrongStemClassFeminineI extends NounStemClassEnum
 {
+	override def toString = "Strong feminine I-class"
+
 	override def transformationFor(decl: NounType) = decl match {
 
 		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) | (PLURAL, DATIVE) => Some(U_Umlaut)	// lost -u stem end

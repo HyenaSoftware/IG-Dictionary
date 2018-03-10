@@ -15,6 +15,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 	*/
 object StrongStemClassFeminineA2 extends StrongStemClassFeminineA
 {
+	override def toString = "Strong feminine A2-class"
+
 	override def transformationFor(decl: NounType) = decl match {
 
 		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) => Some(U_Umlaut)

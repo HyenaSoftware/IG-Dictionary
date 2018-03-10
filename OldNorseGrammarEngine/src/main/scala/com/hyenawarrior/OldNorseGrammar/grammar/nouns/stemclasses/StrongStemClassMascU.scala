@@ -4,14 +4,17 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
 	* Created by HyenaWarrior on 2017.07.28..
 	*
 	* Nouns derived with the suffix -nað/nuð also originally belong to this class,
 	*/
-object StrongStemClassMascU extends NounStemClass
+object StrongStemClassMascU extends NounStemClassEnum
 {
+	override def toString = "Strong masculine U-class"
+
 	override def thematicVowel: Option[String] = Some("U")
 
 	override def transformationFor(decl: NounType) =  decl match {

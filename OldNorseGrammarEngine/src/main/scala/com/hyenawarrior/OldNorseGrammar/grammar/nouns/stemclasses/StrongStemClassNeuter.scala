@@ -4,12 +4,15 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{InvertableTransformation, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
 	* Created by HyenaWarrior on 2017.07.28..
 	*/
-object StrongStemClassNeuter extends NounStemClass
+object StrongStemClassNeuter extends NounStemClassEnum
 {
+	override def toString = "Strong neuter class"
+
 	override def transformationFor(decl: NounType): Option[InvertableTransformation] =  decl match {
 
 		case (PLURAL, NOMINATIVE | ACCUSATIVE | DATIVE) 	=> Some(U_Umlaut)

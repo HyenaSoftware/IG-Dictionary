@@ -167,7 +167,7 @@ package object serializers {
 
       val rootRepr = obj.stem.rootStr
 
-      val nsce = NounStemClassEnum.values.find(e => e.nounStemClass == obj.stem.stemClass).get
+      val nsce = obj.stem.stemClass.asInstanceOf[NounStemClassEnum]
       val nsceId = (NounStemClassEnum idOf nsce).toByte
 
       val givenFormsStream     = obj.givenForms.size.toByte     +: obj.givenForms.values.flatMap(serializeNounForm).toList
@@ -191,7 +191,7 @@ package object serializers {
       val rootRepr = reader[String]()
       val stemClassId = reader[Byte]()
 
-      val stemClass = NounStemClassEnum.findById(stemClassId).map(_.nounStemClass).get
+      val stemClass = NounStemClassEnum.findById(stemClassId).get
       val stem = NounStem(rootRepr, stemClass)
 
       val givenForms     = deserializeList(reader).map(e => e.declension -> e).toMap

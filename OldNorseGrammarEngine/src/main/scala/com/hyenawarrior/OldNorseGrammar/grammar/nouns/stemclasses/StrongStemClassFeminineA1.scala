@@ -13,6 +13,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns._
 	*/
 object StrongStemClassFeminineA1 extends StrongStemClassFeminineA
 {
+	override def toString = "Strong feminine A1-class"
+
 	override def transformationFor(decl: NounType) = Some(Explicit_I_Umlaut)
 
 	override def inflection(decl: (GNumber, Case)) = decl match

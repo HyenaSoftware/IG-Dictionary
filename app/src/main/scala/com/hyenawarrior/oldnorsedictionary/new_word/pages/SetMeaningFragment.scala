@@ -46,10 +46,7 @@ object SetMeaningFragment extends Fragment
     val (posTypeName, posSubType) = wordData.word match
     {
       case sv: StrongVerb => "verb" -> sv.verbClass.name
-      case nn: Noun =>
-          val optName = NounStemClassEnum.values.collectFirst { case NounStemClassEnum(n, _) => n }
-          "noun" -> (optName getOrElse "???")
-
+      case nn: Noun       => "noun" -> nn.stem.stemClass.toString
       case _ => "???" -> "???"
     }
 

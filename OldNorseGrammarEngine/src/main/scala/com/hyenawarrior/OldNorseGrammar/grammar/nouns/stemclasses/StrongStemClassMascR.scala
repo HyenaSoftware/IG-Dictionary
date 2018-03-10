@@ -4,12 +4,15 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Explicit_I_Umlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
 	* Created by HyenaWarrior on 2017.04.09..
 	*/
-object StrongStemClassMascR extends NounStemClass
+object StrongStemClassMascR extends NounStemClassEnum
 {
+	override def toString = "Strong masculine R-class"
+
 	override def transformationFor(decl: NounType) = decl match {
 
 		case (SINGULAR, DATIVE) => Some(Explicit_I_Umlaut)
