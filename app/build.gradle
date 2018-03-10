@@ -13,6 +13,8 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -45,6 +47,11 @@ dependencies {
     compile 'org.scala-lang:scala-library:2.11.7'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:support-v4:26.1.0' // room.persistence requires 26.1.0+ version
+
+    // androidTest
+    androidTestCompile 'com.android.support:support-annotations:26.1.0'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
 }
 
 // prevent 'Error:No such property: useAnt for class: org.gradle.api.tasks.scala.ScalaCompileOptions'
