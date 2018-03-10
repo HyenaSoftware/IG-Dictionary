@@ -38,8 +38,8 @@ class IGPersister(ctx: Context) {
     val args = OldNorse.id +: textIds.toList
 
     val objIds = lookupTable
-      .select(List("ObjId", "IsPrimary"), args.toArray, whereClause, isDictinct = true)
-      .map{ case List(o: Int, isPri: Boolean) => o }
+      .select(List("ObjId"), args.toArray, whereClause, isDictinct = true)
+      .map{ case List(o: Int) => o }
 
     objIds.flatMap(load[DictionaryEntry](_))
   }
