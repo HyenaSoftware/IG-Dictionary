@@ -6,14 +6,14 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFi
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stemclasses.VerbStemClass.FinitiveVerbDesc
 
 /**
-	* Created by HyenaWarrior on 2017.04.19..
-	*/
-object VerbStemClass
-{
-	type FinitiveVerbDesc = (Pronoun, FinitiveMood, VerbTenseEnum)
+  * Created by HyenaWarrior on 2017.04.19..
+  */
+object VerbStemClass {
+
+  type FinitiveVerbDesc = (Pronoun, FinitiveMood, VerbTenseEnum)
 }
 
-trait VerbStemClass[+V <: VerbForm]
-{
-	def convertTo(verb: StrongVerbForm, verbClass: VerbClassEnum, targetForm: Either[FinitiveVerbDesc, NonFinitiveVerbType]): Option[V]
+trait VerbStemClass[+V <: VerbForm] {
+
+  def convertTo(verb: StrongVerbForm, verbClass: VerbClassEnum, targetForm: Either[FinitiveVerbDesc, NonFinitiveVerbType]): Option[V]
 }

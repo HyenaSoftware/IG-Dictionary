@@ -13,13 +13,13 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_SINGULAR_STEM}
 
 /**
-	* Created by HyenaWarrior on 2017.04.22..
-	*/
+  * Created by HyenaWarrior on 2017.04.22..
+  */
 abstract class VerbStem(stemType: EnumVerbStem) extends Serializable {
 
-	def stringForm(): String
+  def stringForm(): String
 
-	def getStemType: EnumVerbStem = stemType
+  def getStemType: EnumVerbStem = stemType
 }
 
 // instead of using the root string representation, it may have its own string representation
@@ -58,7 +58,7 @@ case class StrongVerbStem(normalizedStem: String, verbClass: StrongVerbClassEnum
   /**
     * @return Ablaut grade of the stem, that can be irregular.
     */
-	def getAblautGrade = Ablaut.getAblautGradeFrom(normalizedStem)
+  def getAblautGrade = Ablaut.getAblautGradeFrom(normalizedStem)
 
   /**
     * Be aware: it can't reflect the ablaut of an irregular present stem
@@ -106,14 +106,14 @@ object StrongVerbStem {
   val IRREGULAR_VERB_CLASSES = Set(STRONG_7_1_CLASS, STRONG_7_2A_CLASS, STRONG_7_2B_CLASS
     , STRONG_7_3_CLASS, STRONG_7_4_CLASS, STRONG_7_5_CLASS)
 
-	val ABLAUTS: Map[StrongVerbClassEnum, StaticAblaut] = Map(
-		STRONG_1ST_CLASS -> StaticAblaut("í",	"ei", "i", "i"),
-		STRONG_2ND_CLASS -> StaticAblaut("jú", "au", "u", "o"),
-		STRONG_3RD_CLASS -> StaticAblaut("e", 	"a", 	"u", "o"),
+  val ABLAUTS: Map[StrongVerbClassEnum, StaticAblaut] = Map(
+    STRONG_1ST_CLASS -> StaticAblaut("í",	"ei", "i", "i"),
+    STRONG_2ND_CLASS -> StaticAblaut("jú", "au", "u", "o"),
+    STRONG_3RD_CLASS -> StaticAblaut("e", 	"a", 	"u", "o"),
 
-		STRONG_4TH_CLASS -> StaticAblaut("e",	"a", 	"á", "o"),
-		STRONG_5TH_CLASS -> StaticAblaut("e", "a", 	"á", "e"),
-		STRONG_6TH_CLASS -> StaticAblaut("a", "ó", 	"ó", "a"),
+    STRONG_4TH_CLASS -> StaticAblaut("e",	"a", 	"á", "o"),
+    STRONG_5TH_CLASS -> StaticAblaut("e", "a", 	"á", "e"),
+    STRONG_6TH_CLASS -> StaticAblaut("a", "ó", 	"ó", "a"),
 
     STRONG_7_1_CLASS -> StaticAblaut("ei", "é", "é", "ei"),
     STRONG_7_2A_CLASS -> StaticAblaut("au", "jó", "jó", "au"),
@@ -121,7 +121,7 @@ object StrongVerbStem {
     STRONG_7_3_CLASS -> StaticAblaut("a", "e", "e", "a"),
     STRONG_7_4_CLASS -> StaticAblaut("á", "é", "é", "á"),
     STRONG_7_5_CLASS -> StaticAblaut("ó", "é", "é", "ó")
-	)
+  )
 
   /**
       Root -> Stem
@@ -143,20 +143,20 @@ object StrongVerbStem {
     StrongVerbStem(myStemRepr, verbClass, stemType)
   }
 
-	/**
-		* Create a stem from a string representation
-		*
-		* Do not use it for:
-		* 	- creating a custom/irregular stem
-		*
-		* @param stemStr    denormalized or decayed string representation
-		* @param verbClass  class of the current verb stem
-		* @param stemType   it's corresponding with the ablaut grades
-		* @return
-		* @throws RuntimeException if the ablaut grade of the strong verb class is not matching on the nucleus of
-		*                          the first syllable
-		*/
-	def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, appliedUmlaut: Option[Umlaut] = None)
+  /**
+    * Create a stem from a string representation
+    *
+    * Do not use it for:
+    * 	- creating a custom/irregular stem
+    *
+    * @param stemStr    denormalized or decayed string representation
+    * @param verbClass  class of the current verb stem
+    * @param stemType   it's corresponding with the ablaut grades
+    * @return
+    * @throws RuntimeException if the ablaut grade of the strong verb class is not matching on the nucleus of
+    *                          the first syllable
+    */
+  def fromStrRepr(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, appliedUmlaut: Option[Umlaut] = None)
   : StrongVerbStem = {
 
     val (optTransformation, normalizedStemStr) = normalize(stemStr, verbClass, stemType)
@@ -166,23 +166,23 @@ object StrongVerbStem {
   }
 
   private def normalize(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): (TransformationMode, String)
-		= (verbClass, stemType, stemStr) match {
+    = (verbClass, stemType, stemStr) match {
 
     // normalize stem before processing it
     case (STRONG_2ND_CLASS, PRESENT_STEM, JuToJo(origStemStr)) => EnabledFor(JuToJo) -> origStemStr
 
-		case (STRONG_3RD_CLASS,  PRESENT_STEM,  Breaking(origStemStr))  => EnabledFor(Breaking) -> origStemStr
-		case (STRONG_3RD_CLASS,  PRESENT_STEM,  Raising(origStemStr))   => EnabledFor(Raising) -> origStemStr
+    case (STRONG_3RD_CLASS,  PRESENT_STEM,  Breaking(origStemStr))  => EnabledFor(Breaking) -> origStemStr
+    case (STRONG_3RD_CLASS,  PRESENT_STEM,  Raising(origStemStr))   => EnabledFor(Raising) -> origStemStr
     case (STRONG_3RD_CLASS,  PERFECT_STEM,  PerfectRaising(origStemStr))   => EnabledFor(PerfectRaising) -> origStemStr
-		case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr))    => EnabledFor(NasalAssimilation) -> origStemStr
-		case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, DevoiceAfterLateral(origStemStr))  => EnabledFor(DevoiceAfterLateral) -> origStemStr
+    case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, NasalAssimilation(origStemStr))    => EnabledFor(NasalAssimilation) -> origStemStr
+    case (STRONG_3RD_CLASS | STRONG_7_3_CLASS, PRETERITE_SINGULAR_STEM, DevoiceAfterLateral(origStemStr))  => EnabledFor(DevoiceAfterLateral) -> origStemStr
 
     case (STRONG_5TH_CLASS | STRONG_7_2B_CLASS, PRESENT_STEM, JAugment(origStemStr)) => EnabledFor(JAugment) -> origStemStr
 
     case (STRONG_6TH_CLASS | STRONG_7_3_CLASS, PERFECT_STEM, VelarIUmlaut(origStemStr)) => EnabledFor(VelarIUmlaut) -> origStemStr
 
     case _ => Disabled -> stemStr
-	}
+  }
 
   private[stem] def denormalize(stemRepr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem
                                 , allowTransform: TransformationMode): Option[String]

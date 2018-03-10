@@ -8,27 +8,27 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
-	* Created by HyenaWarrior on 2017.04.09..
-	*/
+  * Created by HyenaWarrior on 2017.04.09..
+  */
 object WeakStemClassMascR extends NounStemClassEnum {
 
-	override def toString = "Weak masculine R-class"
+  override def toString = "Weak masculine R-class"
 
-	override def transformationFor(decl: NounType) =  decl match {
+  override def transformationFor(decl: NounType) =  decl match {
 
-		case (PLURAL, NOMINATIVE | ACCUSATIVE) => Some(Explicit_I_Umlaut)
-		case _ => None
-	}
+    case (PLURAL, NOMINATIVE | ACCUSATIVE) => Some(Explicit_I_Umlaut)
+    case _ => None
+  }
 
-	override def inflection(decl: (GNumber, Case)) = decl match	{
+  override def inflection(decl: (GNumber, Case)) = decl match	{
 
-		case (SINGULAR, NOMINATIVE)											=> "i"
-		case (SINGULAR, ACCUSATIVE | DATIVE | GENITIVE)	=> "a"
+    case (SINGULAR, NOMINATIVE)											=> "i"
+    case (SINGULAR, ACCUSATIVE | DATIVE | GENITIVE)	=> "a"
 
-		case (PLURAL, NOMINATIVE)	=> "r"
-		case (PLURAL, ACCUSATIVE)	=> "r"
+    case (PLURAL, NOMINATIVE)	=> "r"
+    case (PLURAL, ACCUSATIVE)	=> "r"
 
-		case (PLURAL, DATIVE)										=> "um"
-		case (PLURAL, GENITIVE)									=> "a"
-	}
+    case (PLURAL, DATIVE)										=> "um"
+    case (PLURAL, GENITIVE)									=> "a"
+  }
 }

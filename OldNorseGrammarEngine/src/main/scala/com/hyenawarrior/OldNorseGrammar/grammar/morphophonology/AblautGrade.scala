@@ -1,16 +1,18 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology
 
-/**
-	* Created by HyenaWarrior on 2017.04.19..
-	*/
-case class AblautGrade(rootVowel: String)
-{
-	def occuresIn(str: String): Boolean = str.contains(rootVowel)
+import scala.language.implicitConversions
 
-	override def toString: String = rootVowel
+/**
+  * Created by HyenaWarrior on 2017.04.19..
+  */
+case class AblautGrade(rootVowel: String) {
+
+  def occuresIn(str: String): Boolean = str.contains(rootVowel)
+
+  override def toString: String = rootVowel
 }
 
-object AblautGrade
-{
-	implicit def AblautGradeFromString(str: String): AblautGrade = AblautGrade(str)
+object AblautGrade {
+
+  implicit def AblautGradeFromString(str: String): AblautGrade = AblautGrade(str)
 }

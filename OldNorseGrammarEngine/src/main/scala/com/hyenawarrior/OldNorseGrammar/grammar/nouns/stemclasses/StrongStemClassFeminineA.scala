@@ -6,19 +6,19 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
-	* Created by HyenaWarrior on 2017.07.28..
-	*/
+  * Created by HyenaWarrior on 2017.07.28..
+  */
 abstract class StrongStemClassFeminineA extends NounStemClassEnum
 {
-	override def thematicVowel: Option[String] = Some("a")
+  override def thematicVowel: Option[String] = Some("a")
 
-	override def inflection(decl: (GNumber, Case)) = decl match
-	{
-		case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) => ???
-		case (SINGULAR, GENITIVE)		=> "ar"
+  override def inflection(decl: (GNumber, Case)) = decl match
+  {
+    case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) => ???
+    case (SINGULAR, GENITIVE)		=> "ar"
 
-		case (PLURAL, NOMINATIVE | ACCUSATIVE)		=> "ar"
-		case (PLURAL, DATIVE)				=> "um"
-		case (PLURAL, GENITIVE)			=> "a"
-	}
+    case (PLURAL, NOMINATIVE | ACCUSATIVE)		=> "ar"
+    case (PLURAL, DATIVE)				=> "um"
+    case (PLURAL, GENITIVE)			=> "a"
+  }
 }

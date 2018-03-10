@@ -13,17 +13,17 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 import com.hyenawarrior.OldNorseGrammar.grammar.{Pos, verbs}
 
 /**
-	* Created by HyenaWarrior on 2017.10.08..
-	*
-	* TODO rename it to StrongVerb once StrongVerb and similar classes renamed to StrongVerbForm
-	*
-	*/
+  * Created by HyenaWarrior on 2017.10.08..
+  *
+  * TODO rename it to StrongVerb once StrongVerb and similar classes renamed to StrongVerbForm
+  *
+  */
 
 object VerbContext {
 
-	val ALL_VERB_FORMS: List[VerbType] = (List(INDICATIVE, SUBJUNCTIVE)
-		.flatMap{ mood => VerbTenseEnum.values.map(tense => mood -> Some(tense)) }
-	  .flatMap{ case (mood, oTense) =>
+  val ALL_VERB_FORMS: List[VerbType] = (List(INDICATIVE, SUBJUNCTIVE)
+    .flatMap{ mood => VerbTenseEnum.values.map(tense => mood -> Some(tense)) }
+    .flatMap{ case (mood, oTense) =>
       Pronoun.values.map(pronoun => (mood, oTense, Some(pronoun)))
     } ++
     List((INFINITIVE, None, None)) ++
@@ -98,33 +98,33 @@ object StrongVerb {
     PERFECT_STEM ->             Seq(PERFECT_STEM, PRESENT_STEM, PRETERITE_SINGULAR_STEM, PRETERITE_PLURAL_STEM)
   )
 
-	private def extractStems(pseudoVerbForms: Map[VerbType, StrongVerbStem], verbClassEnum: StrongVerbClassEnum):
-		Map[EnumVerbStem, StrongVerbStem] = {
+  private def extractStems(pseudoVerbForms: Map[VerbType, StrongVerbStem], verbClassEnum: StrongVerbClassEnum):
+    Map[EnumVerbStem, StrongVerbStem] = {
 
-		// collect what we have
-		val pseudoFormsToStem: Map[EnumVerbStem, Iterable[StrongVerbStem]] = pseudoVerbForms.map {
+    // collect what we have
+    val pseudoFormsToStem: Map[EnumVerbStem, Iterable[StrongVerbStem]] = pseudoVerbForms.map {
 
-			case ((INDICATIVE, _, Some(VerbTenseEnum.PRESENT), Some(Pronoun(SINGULAR, _))), stem) =>
-				StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, EnumVerbStem.PRESENT_STEM, Some(Explicit_I_Umlaut))
+      case ((INDICATIVE, _, Some(VerbTenseEnum.PRESENT), Some(Pronoun(SINGULAR, _))), stem) =>
+        StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, EnumVerbStem.PRESENT_STEM, Some(Explicit_I_Umlaut))
 
-			case (vt, stem) =>
-				// do a stem -> string -> conversion to force validate the inputs
-				//	TODO: is this double conversion really necessary?
-				val stemType = verbs.stemFrom(vt)
-				StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, stemType)
-		}
-			.groupBy ( _.getStemType )
+      case (vt, stem) =>
+        // do a stem -> string -> conversion to force validate the inputs
+        //	TODO: is this double conversion really necessary?
+        val stemType = verbs.stemFrom(vt)
+        StrongVerbStem.fromStrRepr(stem.stringForm(), verbClassEnum, stemType)
+    }
+      .groupBy ( _.getStemType )
 
-		val pseudoStemsBy: Map[EnumVerbStem, StrongVerbStem] = pseudoFormsToStem.map { case(e, m) => e -> m.head }
+    val pseudoStemsBy: Map[EnumVerbStem, StrongVerbStem] = pseudoFormsToStem.map { case(e, m) => e -> m.head }
 
-		// build stems from the root
-		val stemMap = STEM_PREFERENCES.flatMap {
+    // build stems from the root
+    val stemMap = STEM_PREFERENCES.flatMap {
 
-			case (k, v) => getOrCreateStem(v, pseudoStemsBy, verbClassEnum).map(k -> _)
-		}
+      case (k, v) => getOrCreateStem(v, pseudoStemsBy, verbClassEnum).map(k -> _)
+    }
 
-		stemMap
-	}
+    stemMap
+  }
 
   private def getOrCreateStem(preferences: Seq[EnumVerbStem], pseudoStemsBy: Map[EnumVerbStem, StrongVerbStem]
                               , verbClassEnum: StrongVerbClassEnum): Option[StrongVerbStem] = {
@@ -133,10 +133,10 @@ object StrongVerb {
     val secondaryStems = preferences.tail
 
     val optTransformedClosestStem = pseudoStemsBy
-			// use the primary form
-			.get(primaryStem)
-			// or create it from another form
-			.orElse(secondaryStems.collectFirst {
+      // use the primary form
+      .get(primaryStem)
+      // or create it from another form
+      .orElse(secondaryStems.collectFirst {
 
       case verbStem if pseudoStemsBy.contains(verbStem) =>
         val srcStem = pseudoStemsBy(verbStem)

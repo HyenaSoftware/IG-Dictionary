@@ -1,36 +1,36 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.phonology
 
 /**
-	* Created by HyenaWarrior on 2017.10.15..
-	*/
+  * Created by HyenaWarrior on 2017.10.15..
+  */
 object Consonant {
 
-	private val CONSONANTS 		= Set('b', 'd', 'ð', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'x', 'z', 'þ')
+  private val CONSONANTS 		= Set('b', 'd', 'ð', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'x', 'z', 'þ')
 
-	private val nasals				= Set('n', 'm')
+  private val nasals				= Set('n', 'm')
 
-	private val voicedStop		= Set('b', 'd', 'g')
-	private val voicelessStop = Set('p', 't', 'k')
+  private val voicedStop		= Set('b', 'd', 'g')
+  private val voicelessStop = Set('p', 't', 'k')
 
   private val dentals = Set('ð', 'd', 't', 's')
 
-	private val devoicing = Map('b' -> 'p', 'd' -> 't', 'g' -> 'k')
-	private val voicing   = Map('p' -> 'b', 't' -> 'd', 'k' -> 'g')
+  private val devoicing = Map('b' -> 'p', 'd' -> 't', 'g' -> 'k')
+  private val voicing   = Map('p' -> 'b', 't' -> 'd', 'k' -> 'g')
 
-	private val velars		= Set('k', 'g', 'h')
+  private val velars		= Set('k', 'g', 'h')
 
-	def isConsonant(c: Char) = CONSONANTS contains c
+  def isConsonant(c: Char) = CONSONANTS contains c
 
-	def isNasal(c: Char): Boolean = nasals contains c
+  def isNasal(c: Char): Boolean = nasals contains c
 
-	def isVoicedStop(c: Char): Boolean = voicedStop contains c
+  def isVoicedStop(c: Char): Boolean = voicedStop contains c
 
-	def isVoicelessStop(c: Char): Boolean = voicelessStop contains c
+  def isVoicelessStop(c: Char): Boolean = voicelessStop contains c
 
   def isDental(c: Char) = dentals contains c
 
-	def isVelar(c: Char) = velars contains c
+  def isVelar(c: Char) = velars contains c
 
-	def devoice(c: Char): Char = devoicing(c)
-	def voice(c: Char): Char = voicing(c)
+  def devoice(c: Char): Char = devoicing(c)
+  def voice(c: Char): Char = voicing(c)
 }

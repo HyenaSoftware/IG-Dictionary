@@ -7,26 +7,26 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
-	* Created by HyenaWarrior on 2017.07.28..
-	*/
-object StrongStemClassNeuter extends NounStemClassEnum
-{
-	override def toString = "Strong neuter class"
+  * Created by HyenaWarrior on 2017.07.28..
+  */
+object StrongStemClassNeuter extends NounStemClassEnum {
 
-	override def transformationFor(decl: NounType): Option[InvertableTransformation] =  decl match {
+  override def toString = "Strong neuter class"
 
-		case (PLURAL, NOMINATIVE | ACCUSATIVE | DATIVE) 	=> Some(U_Umlaut)
-		case _ => None
-	}
+  override def transformationFor(decl: NounType): Option[InvertableTransformation] =  decl match {
 
-	override def inflection(decl: NounType) = decl match {
+    case (PLURAL, NOMINATIVE | ACCUSATIVE | DATIVE) 	=> Some(U_Umlaut)
+    case _ => None
+  }
 
-		case (SINGULAR, NOMINATIVE | ACCUSATIVE) => ""
-		case (SINGULAR, DATIVE)		=> "i"
-		case (SINGULAR, GENITIVE)	=> "s"	// fé: -ar
+  override def inflection(decl: NounType) = decl match {
 
-		case (PLURAL, NOMINATIVE | ACCUSATIVE)		=> ""
-		case (PLURAL, DATIVE)				=> "um"
-		case (PLURAL, GENITIVE)			=> "a"
-	}
+    case (SINGULAR, NOMINATIVE | ACCUSATIVE) => ""
+    case (SINGULAR, DATIVE)		=> "i"
+    case (SINGULAR, GENITIVE)	=> "s"	// fé: -ar
+
+    case (PLURAL, NOMINATIVE | ACCUSATIVE)		=> ""
+    case (PLURAL, DATIVE)				=> "um"
+    case (PLURAL, GENITIVE)			=> "a"
+  }
 }

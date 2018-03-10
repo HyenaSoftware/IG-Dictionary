@@ -6,21 +6,21 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
-	* Created by HyenaWarrior on 2017.07.28..
-	*/
-object WeakStemClassMascA extends NounStemClassEnum
-{
-	override def toString = "Weak masculine A-class"
+  * Created by HyenaWarrior on 2017.07.28..
+  */
+object WeakStemClassMascA extends NounStemClassEnum {
 
-	override def inflection(decl: (GNumber, Case)) = decl match {
+  override def toString = "Weak masculine A-class"
 
-		case (SINGULAR, NOMINATIVE)											=> "i"
-		case (SINGULAR, ACCUSATIVE | DATIVE | GENITIVE)	=> "a"
+  override def inflection(decl: (GNumber, Case)) = decl match {
 
-		case (PLURAL, NOMINATIVE)	=> "ar"
-		case (PLURAL, ACCUSATIVE)	=> "a"
+    case (SINGULAR, NOMINATIVE)											=> "i"
+    case (SINGULAR, ACCUSATIVE | DATIVE | GENITIVE)	=> "a"
 
-		case (PLURAL, DATIVE)										=> "um"
-		case (PLURAL, GENITIVE)									=> "a"
-	}
+    case (PLURAL, NOMINATIVE)	=> "ar"
+    case (PLURAL, ACCUSATIVE)	=> "a"
+
+    case (PLURAL, DATIVE)										=> "um"
+    case (PLURAL, GENITIVE)									=> "a"
+  }
 }

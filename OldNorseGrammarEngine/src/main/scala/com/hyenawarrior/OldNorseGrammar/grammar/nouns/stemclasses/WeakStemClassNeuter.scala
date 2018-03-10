@@ -5,18 +5,18 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 
 /**
-	* Created by HyenaWarrior on 2017.07.28..
-	*/
-object WeakStemClassNeuter extends WeakStemClass
-{
-	override def toString = "Weak neuter class"
+  * Created by HyenaWarrior on 2017.07.28..
+  */
+object WeakStemClassNeuter extends WeakStemClass {
 
-	override def inflection(decl: (GNumber, Case)) = decl match	{
+  override def toString = "Weak neuter class"
 
-		case (SINGULAR, _)	=> "a"
-		case (PLURAL, NOMINATIVE | ACCUSATIVE)	=> "u"
-		case (PLURAL, GENITIVE)	=> "na"
+  override def inflection(decl: (GNumber, Case)) = decl match	{
 
-		case _ => super.inflection(decl)
-	}
+    case (SINGULAR, _)	=> "a"
+    case (PLURAL, NOMINATIVE | ACCUSATIVE)	=> "u"
+    case (PLURAL, GENITIVE)	=> "na"
+
+    case _ => super.inflection(decl)
+  }
 }

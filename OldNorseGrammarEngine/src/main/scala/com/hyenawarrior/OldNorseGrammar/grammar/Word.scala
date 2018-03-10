@@ -8,38 +8,38 @@ import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel._
 import scala.language.postfixOps
 
 /**
-	* Created by HyenaWarrior on 2017.03.01..
-	*/
-case class Word(pos: PoSForm)
-{
-	private val DEFAULT_TRANSFORMATIONS = List(U_Umlaut)
-	private val POS_DEPENDENT_TRANSFORMATIONS = pos.transformations
+  * Created by HyenaWarrior on 2017.03.01..
+  */
+case class Word(pos: PoSForm) {
 
-	def underlyingPoS: PoSForm = pos
+  private val DEFAULT_TRANSFORMATIONS = List(U_Umlaut)
+  private val POS_DEPENDENT_TRANSFORMATIONS = pos.transformations
 
-	// useful for lookup
-	def strForm(): String =
-	{
-		val Syllables(syllables) = pos.strRepr
+  def underlyingPoS: PoSForm = pos
 
-		val allTransformations = POS_DEPENDENT_TRANSFORMATIONS ++ DEFAULT_TRANSFORMATIONS
-		val transformedSyllables = allTransformations.foldLeft(syllables) {
+  // useful for lookup
+  def strForm(): String =
+  {
+    val Syllables(syllables) = pos.strRepr
+
+    val allTransformations = POS_DEPENDENT_TRANSFORMATIONS ++ DEFAULT_TRANSFORMATIONS
+    val transformedSyllables = allTransformations.foldLeft(syllables) {
 
       case (sys, trn) if trn canTransform sys => trn(sys).get
       case (sys, _) => sys
     }
 
-		val str = Syllables(transformedSyllables)
+    val str = Syllables(transformedSyllables)
 
-		str
+    str
 
-		//pos.strForm
-	}
+    //pos.strForm
+  }
 
-	// formatted description
-	val description = "[not yet]"
+  // formatted description
+  val description = "[not yet]"
 
-	override def toString = s"${strForm()} [$pos + ${POS_DEPENDENT_TRANSFORMATIONS.map(_.toString)}]"
+  override def toString = s"${strForm()} [$pos + ${POS_DEPENDENT_TRANSFORMATIONS.map(_.toString)}]"
 }
 
 object Syllables {

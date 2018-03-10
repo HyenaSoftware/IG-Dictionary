@@ -10,7 +10,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemC
 	*/
 object StrongStemClassMascI extends NounStemClassEnum {
 
-	override def toString = "Strong masculine I-class"
+  override def toString = "Strong masculine I-class"
 
 	override def thematicVowel: Option[String] = Some("i")
 

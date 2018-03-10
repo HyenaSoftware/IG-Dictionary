@@ -4,8 +4,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.Length
 
 
 /**
-	* Created by HyenaWarrior on 2017.10.15..
-	*/
+  * Created by HyenaWarrior on 2017.10.15..
+  */
 case class Vowel(prop: Int, length: Length) {
 
   def isBack  = (prop & 0x8) == Vowel.BACK
@@ -85,19 +85,19 @@ object Vowel {
 
   def isShort(vowels: String): Boolean = vowels.length == 1 && isShort(vowels.head)
 
-	def isVowel(c: Char): Boolean = VOWEL_MAP contains c
+  def isVowel(c: Char): Boolean = VOWEL_MAP contains c
 
-	def isSemivowel(c: Char): Boolean = SEMIVOWELS contains c
+  def isSemivowel(c: Char): Boolean = SEMIVOWELS contains c
 
-	def isVowelOrSemivowel(c: Char): Boolean = isSemivowel(c) || isVowel(c)
+  def isVowelOrSemivowel(c: Char): Boolean = isSemivowel(c) || isVowel(c)
 
-	def raise(c: Char): Char = raising(c)
+  def raise(c: Char): Char = raising(c)
 
-	def isBackVowel(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isBack)
+  def isBackVowel(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isBack)
 
   def isFrontVowel(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isFront)
 
-	def isLabialVowel(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isLabial)
+  def isLabialVowel(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isLabial)
 
   def isShortVowel(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isShort)
 

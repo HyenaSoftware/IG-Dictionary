@@ -13,7 +13,7 @@ object StrongStemClassMascR extends NounStemClassEnum
 {
 	override def toString = "Strong masculine R-class"
 
-	override def transformationFor(decl: NounType) = decl match {
+  override def transformationFor(decl: NounType) = decl match {
 
 		case (SINGULAR, DATIVE) => Some(Explicit_I_Umlaut)
 		case (PLURAL, NOMINATIVE | ACCUSATIVE) => Some(Explicit_I_Umlaut)

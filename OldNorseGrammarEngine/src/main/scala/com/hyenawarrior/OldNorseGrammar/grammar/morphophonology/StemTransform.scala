@@ -8,8 +8,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant._
 import com.hyenawarrior.auxiliary.&
 
 /**
-	* Created by HyenaWarrior on 2017.10.20..
-	*/
+  * Created by HyenaWarrior on 2017.10.20..
+  */
 object StemTransform {
 
   trait Transformation {
@@ -19,61 +19,61 @@ object StemTransform {
     def unapply(stemStr: String): Option[String]
   }
 
-	trait NucleusTransformation extends Transformation {
+  trait NucleusTransformation extends Transformation {
 
-		protected val SRC_NUCLEUS: String
-		protected val DST_NUCLEUS: String
+    protected val SRC_NUCLEUS: String
+    protected val DST_NUCLEUS: String
 
-		final def apply(stemStr: String): Option[String] = transform(stemStr, SRC_NUCLEUS, DST_NUCLEUS)
-		final def unapply(stemStr: String): Option[String] = transform(stemStr, DST_NUCLEUS, SRC_NUCLEUS)
+    final def apply(stemStr: String): Option[String] = transform(stemStr, SRC_NUCLEUS, DST_NUCLEUS)
+    final def unapply(stemStr: String): Option[String] = transform(stemStr, DST_NUCLEUS, SRC_NUCLEUS)
 
-		protected def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String]
-	}
+    protected def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String]
+  }
 
-	object Breaking extends NucleusTransformation {
+  object Breaking extends NucleusTransformation {
 
-		// assume that a stem has only one syllable (?)
-		val SRC_NUCLEUS: String = "e"
-		val DST_NUCLEUS: String = "ja"
+    // assume that a stem has only one syllable (?)
+    val SRC_NUCLEUS: String = "e"
+    val DST_NUCLEUS: String = "ja"
 
-		override def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String] = {
+    override def transform(stemStr: String, nucleus: String, newNucleus: String): Option[String] = {
 
-			val idxOfJa =	stemStr indexOf nucleus
-			if(idxOfJa == -1) return None
+      val idxOfJa =	stemStr indexOf nucleus
+      if(idxOfJa == -1) return None
 
-			val idxOfNucleusEnd = idxOfJa + nucleus.length
-			val onset = stemStr.substring(0, idxOfJa)
-			val coda = stemStr substring idxOfNucleusEnd
+      val idxOfNucleusEnd = idxOfJa + nucleus.length
+      val onset = stemStr.substring(0, idxOfJa)
+      val coda = stemStr substring idxOfNucleusEnd
 
-			if (!isEligible(onset, coda)) return None
+      if (!isEligible(onset, coda)) return None
 
-			Some(onset + newNucleus + coda)
-		}
+      Some(onset + newNucleus + coda)
+    }
 
-		/**
-		  https://lrc.la.utexas.edu/eieol/norol/20#grammar_1398
-			https://lrc.la.utexas.edu/eieol/norol/60#grammar_1454
+    /**
+      https://lrc.la.utexas.edu/eieol/norol/20#grammar_1398
+      https://lrc.la.utexas.edu/eieol/norol/60#grammar_1454
 
-			> This rule only applies to [the infinitive and present plural forms]* of verbs whose stem ends in
-			a consonant cluster beginning with l or r.
-			> Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr.
+      > This rule only applies to [the infinitive and present plural forms]* of verbs whose stem ends in
+      a consonant cluster beginning with l or r.
+      > Fracture does not occur at all if *e is preceded by v, l, or r, e.g. verða, leðr.
 
-			* Sg 1-3 has I-umlaut, that reverses -ja- to -e- with the help of semivowel-deletion.
-			  So I assume that it's applied to the whole present stem.
-			*/
-		private def isEligible(onset: String, coda: String): Boolean = {
+      * Sg 1-3 has I-umlaut, that reverses -ja- to -e- with the help of semivowel-deletion.
+        So I assume that it's applied to the whole present stem.
+      */
+    private def isEligible(onset: String, coda: String): Boolean = {
 
-			val prevCons = onset.lastOption.getOrElse(' ')
-			val clusterFirstCons = coda.charAt(0)
-			val clusterSecondCons = coda.charAt(1)
+      val prevCons = onset.lastOption.getOrElse(' ')
+      val clusterFirstCons = coda.charAt(0)
+      val clusterSecondCons = coda.charAt(1)
 
-			val firstIsVLR = "vlr" contains prevCons
-			val secondIsLR = "lr" contains clusterFirstCons
-			val thirdIsCons = isConsonant(clusterSecondCons)
+      val firstIsVLR = "vlr" contains prevCons
+      val secondIsLR = "lr" contains clusterFirstCons
+      val thirdIsCons = isConsonant(clusterSecondCons)
 
-			!firstIsVLR && secondIsLR && thirdIsCons
-		}
-	}
+      !firstIsVLR && secondIsLR && thirdIsCons
+    }
+  }
 
   // TODO: Should it be renamed as A-mutation?
   object JuToJo extends NucleusTransformation {
@@ -147,38 +147,38 @@ object StemTransform {
     }
   }
 
-	object NasalAssimilation extends Transformation {
+  object NasalAssimilation extends Transformation {
 
-		override def apply(stemStr: String): Option[String] = {
+    override def apply(stemStr: String): Option[String] = {
 
-			val (prefix, lastChars) = split(stemStr)
+      val (prefix, lastChars) = split(stemStr)
 
-			val newSuffix = lastChars.toSeq match {
+      val newSuffix = lastChars.toSeq match {
 
-				case _ :+ c :+ d if isNasal(c) && isVoicedStop(d) => Some(s"${devoice(d)}" * 2)
-				case _ => None
-			}
+        case _ :+ c :+ d if isNasal(c) && isVoicedStop(d) => Some(s"${devoice(d)}" * 2)
+        case _ => None
+      }
 
-			newSuffix.map(prefix + _)
-		}
+      newSuffix.map(prefix + _)
+    }
 
-		private def split(stemStr: String) = stemStr splitAt stemStr.length - 2
+    private def split(stemStr: String) = stemStr splitAt stemStr.length - 2
 
-		override def unapply(stemStr: String): Option[String] = {
+    override def unapply(stemStr: String): Option[String] = {
 
-			val (prefix, lastChars) = split(stemStr)
+      val (prefix, lastChars) = split(stemStr)
 
-			val suffix = lastChars.toSeq match {
+      val suffix = lastChars.toSeq match {
 
-				case _ :+ c :+ d if c==d && isVoicelessStop(c) =>
-					val n = if(c=='p') 'm' else 'n'
-					Some(s"$n${voice(d)}")
-				case _ => None
-			}
+        case _ :+ c :+ d if c==d && isVoicelessStop(c) =>
+          val n = if(c=='p') 'm' else 'n'
+          Some(s"$n${voice(d)}")
+        case _ => None
+      }
 
-			suffix.map(prefix + _)
-		}
-	}
+      suffix.map(prefix + _)
+    }
+  }
 
   object DevoiceAfterLateral extends Transformation {
 

@@ -10,26 +10,26 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 
 /**
-	* Created by HyenaWarrior on 2017.04.22..
-	*
-	* I. "gefa" is a string representation of a verbform
-	* II. StrongFinitiveVerb(stem, classDesc, pronoun, tense) is an object representation of a verbform
-	*
-	* III. every string representation of a verb has an object representation and vica-versa
-	* IV. set of representation of verbforms is a verb
-	* V. a verb has many verbforms, which have string and object representations
-	*
-	*/
-package object verbs
-{
-	type VerbType = (VerbModeEnum, VerbVoice, Option[VerbTenseEnum], Option[Pronoun])
+  * Created by HyenaWarrior on 2017.04.22..
+  *
+  * I. "gefa" is a string representation of a verbform
+  * II. StrongFinitiveVerb(stem, classDesc, pronoun, tense) is an object representation of a verbform
+  *
+  * III. every string representation of a verb has an object representation and vica-versa
+  * IV. set of representation of verbforms is a verb
+  * V. a verb has many verbforms, which have string and object representations
+  *
+  */
+package object verbs {
 
-	def tenseToStem(tense: VerbTenseEnum, number: GNumber): EnumVerbStem = (tense, number) match	{
+  type VerbType = (VerbModeEnum, VerbVoice, Option[VerbTenseEnum], Option[Pronoun])
 
-		case (PRESENT, _)			=> PRESENT_STEM
-		case (PAST, SINGULAR) => PRETERITE_SINGULAR_STEM
-		case (PAST, PLURAL)		=> PRETERITE_PLURAL_STEM
-	}
+  def tenseToStem(tense: VerbTenseEnum, number: GNumber): EnumVerbStem = (tense, number) match	{
+
+    case (PRESENT, _)			=> PRESENT_STEM
+    case (PAST, SINGULAR) => PRETERITE_SINGULAR_STEM
+    case (PAST, PLURAL)		=> PRETERITE_PLURAL_STEM
+  }
 
   def stemFrom(verbType: VerbType): EnumVerbStem = verbType match {
 
@@ -47,10 +47,10 @@ package object verbs
     case _ => ???
   }
 
-	def stemToTense(stem: EnumVerbStem): (VerbTenseEnum, Option[GNumber]) = stem match	{
+  def stemToTense(stem: EnumVerbStem): (VerbTenseEnum, Option[GNumber]) = stem match	{
 
-		case PRESENT_STEM							=> PRESENT	-> None
-		case PRETERITE_SINGULAR_STEM	=> PAST			-> Some(SINGULAR)
-		case PRETERITE_PLURAL_STEM		=> PAST			-> Some(PLURAL)
-	}
+    case PRESENT_STEM							=> PRESENT	-> None
+    case PRETERITE_SINGULAR_STEM	=> PAST			-> Some(SINGULAR)
+    case PRETERITE_PLURAL_STEM		=> PAST			-> Some(PLURAL)
+  }
 }

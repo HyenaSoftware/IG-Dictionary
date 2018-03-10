@@ -7,33 +7,33 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
-	* Created by HyenaWarrior on 2017.07.28..
-	*
-	* Nouns derived with the suffix -nað/nuð also originally belong to this class,
-	*/
-object StrongStemClassMascU extends NounStemClassEnum
-{
-	override def toString = "Strong masculine U-class"
+  * Created by HyenaWarrior on 2017.07.28..
+  *
+  * Nouns derived with the suffix -nað/nuð also originally belong to this class,
+  */
+object StrongStemClassMascU extends NounStemClassEnum {
 
-	override def thematicVowel: Option[String] = Some("U")
+  override def toString = "Strong masculine U-class"
 
-	override def transformationFor(decl: NounType) =  decl match {
+  override def thematicVowel: Option[String] = Some("U")
 
-		case (SINGULAR, NOMINATIVE | ACCUSATIVE)	| (PLURAL, ACCUSATIVE | DATIVE)	=> Some(U_Umlaut)	// lost -u stem end
-		case (SINGULAR, DATIVE) 									| (PLURAL, NOMINATIVE) 					=> Some(Explicit_I_Umlaut)
-		case _ => None
-	}
+  override def transformationFor(decl: NounType) =  decl match {
 
-	override def inflection(decl: NounType) = decl match {
+    case (SINGULAR, NOMINATIVE | ACCUSATIVE)	| (PLURAL, ACCUSATIVE | DATIVE)	=> Some(U_Umlaut)	// lost -u stem end
+    case (SINGULAR, DATIVE) 									| (PLURAL, NOMINATIVE) 					=> Some(Explicit_I_Umlaut)
+    case _ => None
+  }
 
-		case (SINGULAR, NOMINATIVE) => "r"
-		case (SINGULAR, ACCUSATIVE)	=> ""
-		case (SINGULAR, DATIVE)			=> "i"
-		case (SINGULAR, GENITIVE)		=> "ar"
+  override def inflection(decl: NounType) = decl match {
 
-		case (PLURAL, NOMINATIVE)		=> "ir"
-		case (PLURAL, ACCUSATIVE)		=> "u"
-		case (PLURAL, DATIVE)				=> "um"
-		case (PLURAL, GENITIVE)			=> "a"
-	}
+    case (SINGULAR, NOMINATIVE) => "r"
+    case (SINGULAR, ACCUSATIVE)	=> ""
+    case (SINGULAR, DATIVE)			=> "i"
+    case (SINGULAR, GENITIVE)		=> "ar"
+
+    case (PLURAL, NOMINATIVE)		=> "ir"
+    case (PLURAL, ACCUSATIVE)		=> "u"
+    case (PLURAL, DATIVE)				=> "um"
+    case (PLURAL, GENITIVE)			=> "a"
+  }
 }

@@ -6,19 +6,19 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
 /**
-	* Created by HyenaWarrior on 2017.04.09..
-	*/
-object WeakStemClassFeminineU extends NounStemClassEnum
-{
-	override def toString = "Weak feminine U-class"
+  * Created by HyenaWarrior on 2017.04.09..
+  */
+object WeakStemClassFeminineU extends NounStemClassEnum {
 
-	override def inflection(decl: (GNumber, Case)) = decl match	{
+  override def toString = "Weak feminine U-class"
 
-		case (SINGULAR, NOMINATIVE)											=> "a"
-		case (SINGULAR, ACCUSATIVE | DATIVE | GENITIVE)	=> "u"
+  override def inflection(decl: (GNumber, Case)) = decl match	{
 
-		case (PLURAL, NOMINATIVE | ACCUSATIVE)	=> "ur"
-		case (PLURAL, DATIVE)										=> "um"
-		case (PLURAL, GENITIVE)									=> "na"
-	}
+    case (SINGULAR, NOMINATIVE)											=> "a"
+    case (SINGULAR, ACCUSATIVE | DATIVE | GENITIVE)	=> "u"
+
+    case (PLURAL, NOMINATIVE | ACCUSATIVE)	=> "ur"
+    case (PLURAL, DATIVE)										=> "um"
+    case (PLURAL, GENITIVE)									=> "na"
+  }
 }
