@@ -69,19 +69,17 @@ object Vowel {
     'ý' -> Vowel(HIGH | FRONT | LABIAL, LONG)
   )
 
-  def isDiphtong(vowels: String): Boolean = vowels.length == 2 && {
+  def isDiphtong(vowels: String): Boolean = vowels match {
 
-    val v1 = vowels(0)
-    val v2 = vowels(1)
-
-    isVowel(v1) && isVowel(v2)
+    case "ei" | "au" | "øy" | "ey" => true
+    case _ => false
   }
 
   def isLong(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isLong)
 
   def isShort(c: Char): Boolean = VOWEL_MAP.get(c).exists(_.isShort)
 
-  def isLong(vowels: String): Boolean = isDiphtong(vowels) || isLong(vowels.head)
+  def isLong(vowels: String): Boolean = if(vowels.length > 1) vowels.forall(isVowel) else isLong(vowels.head)
 
   def isShort(vowels: String): Boolean = vowels.length == 1 && isShort(vowels.head)
 

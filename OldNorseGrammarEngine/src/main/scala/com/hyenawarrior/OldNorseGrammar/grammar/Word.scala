@@ -54,7 +54,15 @@ object Syllables {
   private def fetchNextPair(word: String, i: Int): (String, String, Int) = {
 
     val vowelStartIdx = findWhere(word, isVowel, i)
-    val consStartIdx  = findWhere(word, isConsonant, vowelStartIdx)
+
+    val consStartIdx = vowelStartIdx + {
+      val remains = word substring vowelStartIdx
+
+      if (isDiphtong(remains take 2)) 2
+      else if (isVowel(remains.head)) 1
+      else 0
+    }
+
     val consEndIdx    = findWhere(word, isVowel, consStartIdx)
 
     val vowels = word.substring(vowelStartIdx, consStartIdx)

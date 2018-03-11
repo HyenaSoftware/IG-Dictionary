@@ -93,4 +93,10 @@ class SyllablificationTest {
   @Test
   def testSyllablificationOverLong2(): Unit = check("haust",
     Syllable("h", "au", "st", isStressed = true, Length.OVERLONG))
+
+  @Test
+  def testSyllableDiphthongTest() = check("hirðiar",
+    Syllable("h", "i", "r", isStressed = true, Length.LONG),
+    Syllable("ð", "i", "", isStressed = false, Length.SHORT),
+    Syllable("", "a", "r", isStressed = false, Length.LONG))
 }
