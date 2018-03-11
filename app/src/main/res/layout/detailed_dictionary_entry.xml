@@ -6,19 +6,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" android:background="#555555">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="&lt;word>"
-                android:id="@+id/tvWord" android:background="#fffde5" android:layout_marginTop="3dp"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:weightSum="3">
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="someword"
+                    android:id="@+id/tvWord" android:background="#fffde5" android:layout_marginTop="3dp"
+                    android:singleLine="true" android:layout_weight="2" android:paddingLeft="6dp"
+                    android:backgroundTintMode="multiply"/>
+        </LinearLayout>
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" android:layout_marginTop="3dp"
                 android:orientation="vertical" >
             <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
                       android:textAppearance="?android:attr/textAppearanceMedium" android:text="Examples"
-                      android:id="@+id/textView5" android:background="#fffde5"/>
+                      android:id="@+id/textView5" android:background="#4d4ec7" android:textColor="#fffde5"/>
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
