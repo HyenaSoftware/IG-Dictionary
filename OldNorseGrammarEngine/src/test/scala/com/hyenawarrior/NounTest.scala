@@ -1,9 +1,10 @@
 package com.hyenawarrior
 
+import com.hyenawarrior.NounTest._
 import com.hyenawarrior.NounTestAux.{diff, nonReversible}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounFormType, NounType}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses._
 import org.junit.Assert._
 import org.junit.Test
@@ -11,247 +12,302 @@ import org.junit.Test
 /**
 	* Created by HyenaWarrior on 2017.06.26..
 	*/
+object NounTest {
+
+  def defin(declension: NounType): NounFormType = declension -> true
+  def indef(declension: NounType): NounFormType = declension -> false
+}
+
 class NounTest {
 
   @Test
   def testStrongMascWaStem(): Unit = {
 
-    val noun = Noun(StrongStemClassMascA, Map((SINGULAR, NOMINATIVE) -> "sǫngr"))
+    val noun = Noun(StrongStemClassMascA, Map(indef(SINGULAR -> NOMINATIVE) -> "sǫngr"))
 
-    assertEquals("sǫng", 		(noun nounForms SINGULAR -> ACCUSATIVE).strRepr)
+    assertEquals("sǫng", 		(noun nounForms SINGULAR -> ACCUSATIVE -> false).strRepr)
 
-    assertEquals("sǫngvar", (noun nounForms PLURAL -> NOMINATIVE).strRepr)
-    assertEquals("sǫngum", 	(noun nounForms PLURAL -> DATIVE).strRepr)
+    assertEquals("sǫngvar", (noun nounForms PLURAL -> NOMINATIVE -> false).strRepr)
+    assertEquals("sǫngum", 	(noun nounForms PLURAL -> DATIVE -> false).strRepr)
   }
 
   @Test
   def testStrongMascIStem(): Unit = {
 
-    val noun = Noun(StrongStemClassMascI, Map((SINGULAR, NOMINATIVE) -> "gestr"))
+    val noun = Noun(StrongStemClassMascI, Map(indef(SINGULAR -> NOMINATIVE) -> "gestr"))
 
-    assertEquals("gestum", (noun nounForms PLURAL -> DATIVE).strRepr)
+    assertEquals("gestum", (noun nounForms PLURAL -> DATIVE -> false).strRepr)
   }
 
-	@Test
-	def testStrongMascAForms(): Unit = {
+  @Test
+  def testStrongMascAForms(): Unit = diff(StrongStemClassMascA, Map(
 
-    val noun = Noun(StrongStemClassMascA, Map((SINGULAR, NOMINATIVE) -> "úlfr"))
+    indef(SINGULAR, NOMINATIVE) -> "úlfr",
+    indef(SINGULAR, ACCUSATIVE) -> "úlf",
 
-		assertEquals("úlf", 	(noun nounForms SINGULAR -> ACCUSATIVE).strRepr)
+    indef(PLURAL, NOMINATIVE) -> "úlfar",
+    indef(PLURAL, ACCUSATIVE) -> "úlfa",
+    indef(PLURAL, DATIVE) -> "úlfum",
 
-		assertEquals("úlfar",	(noun nounForms PLURAL   -> NOMINATIVE).strRepr)
-		assertEquals("úlfa",	(noun nounForms PLURAL   -> ACCUSATIVE).strRepr)
-		assertEquals("úlfum",	(noun nounForms PLURAL   -> DATIVE).strRepr)
-	}
+    defin(PLURAL, DATIVE) -> "úlfunum"
+  ))
+
+  @Test
+  def testStrongMascAForms2(): Unit = diff(StrongStemClassMascA, Map(
+
+    indef(PLURAL, NOMINATIVE) -> "hestar",
+    indef(PLURAL, ACCUSATIVE) -> "hesta",
+
+    defin(PLURAL, NOMINATIVE) -> "hestarnir",
+    defin(PLURAL, ACCUSATIVE) -> "hestana"
+  ))
 
   @Test
   def testStrongNeuterAForms(): Unit =  diff(StrongStemClassNeuter, Map(
 
-    (SINGULAR, NOMINATIVE) -> "kné",
-    (SINGULAR, GENITIVE)   -> "knés",
+    indef(SINGULAR, NOMINATIVE) -> "kné",
+    indef(SINGULAR, GENITIVE)   -> "knés",
 
-    (PLURAL,   NOMINATIVE) -> "kné",
-    (PLURAL,   GENITIVE)   -> "knjá",
-    (PLURAL,   DATIVE)     -> "knjám"
+    indef(PLURAL,   NOMINATIVE) -> "kné",
+    indef(PLURAL,   GENITIVE)   -> "knjá",
+    indef(PLURAL,   DATIVE)     -> "knjám"
     //(PLURAL,   DATIVE)     -> "knjóm"
   ))
 
   @Test
   def testStrongNeuterJaForms(): Unit =  diff(StrongStemClassNeuter, Map(
 
-    (SINGULAR, NOMINATIVE) -> "ríki",
-    (SINGULAR, GENITIVE) -> "ríkis",
+    indef(SINGULAR, NOMINATIVE) -> "ríki",
+    indef(SINGULAR, GENITIVE) -> "ríkis",
 
-    (PLURAL, ACCUSATIVE) -> "ríki",
-    (PLURAL, GENITIVE) -> "ríkja",
-    (PLURAL, DATIVE) -> "ríkjum"
+    indef(PLURAL, ACCUSATIVE) -> "ríki",
+    indef(PLURAL, GENITIVE) -> "ríkja",
+    indef(PLURAL, DATIVE) -> "ríkjum"
   ))
 
   @Test
   def testStrongNeuterAForms2(): Unit =  diff(StrongStemClassNeuter, Map(
 
-    (SINGULAR, NOMINATIVE) -> "land",
-    (SINGULAR, GENITIVE) -> "lands",
+    indef(SINGULAR, NOMINATIVE) -> "land",
+    indef(SINGULAR, GENITIVE) -> "lands",
 
-    (PLURAL, ACCUSATIVE) -> "lǫnd",
-    (PLURAL, GENITIVE) -> "landa",
-    (PLURAL, DATIVE) -> "lǫndum"
+    indef(PLURAL, ACCUSATIVE) -> "lǫnd",
+    indef(PLURAL, GENITIVE) -> "landa",
+    indef(PLURAL, DATIVE) -> "lǫndum"
+  ))
+
+  @Test
+  def testStrongNeuterAForms3(): Unit =  diff(StrongStemClassNeuter, Map(
+
+    indef(SINGULAR, NOMINATIVE) -> "tré",
+    indef(SINGULAR, GENITIVE) -> "trés",
+
+    indef(PLURAL, ACCUSATIVE) -> "tré",
+    indef(PLURAL, GENITIVE) -> "trjáa",
+    indef(PLURAL, DATIVE) -> "trjám",
+
+    defin(SINGULAR, NOMINATIVE) -> "tréit",
+    defin(SINGULAR, GENITIVE) -> "trésins",
+
+    defin(PLURAL, ACCUSATIVE) -> "tréin",
+    defin(PLURAL, GENITIVE) -> "trjánna",
+    defin(PLURAL, DATIVE) -> "trjánum"
   ))
 
   @Test
   def testStrongNeuterWaForms(): Unit =  diff(StrongStemClassNeuter, Map(
 
-    (SINGULAR, NOMINATIVE) -> "hǫgg",
-    (SINGULAR, ACCUSATIVE) -> "hǫgg",
-    (SINGULAR, DATIVE) -> "hǫggvi",
+    indef(SINGULAR, NOMINATIVE) -> "hǫgg",
+    indef(SINGULAR, ACCUSATIVE) -> "hǫgg",
+    indef(SINGULAR, DATIVE) -> "hǫggvi",
 
-    (PLURAL, NOMINATIVE) -> "hǫgg",
-    (PLURAL, GENITIVE) -> "hǫggva",
-    (PLURAL, DATIVE) -> "hǫggum"
+    indef(PLURAL, NOMINATIVE) -> "hǫgg",
+    indef(PLURAL, GENITIVE) -> "hǫggva",
+    indef(PLURAL, DATIVE) -> "hǫggum"
   ))
 
   @Test
   def testStrongFeminineJoFormsLong(): Unit =  diff(StrongStemClassFeminineA1, Map(
 
-    (SINGULAR, NOMINATIVE) -> "heiðr",
-    (SINGULAR, GENITIVE) -> "heiðar",
+    indef(SINGULAR, NOMINATIVE) -> "heiðr",
+    indef(SINGULAR, GENITIVE) -> "heiðar",
 
-    (PLURAL, NOMINATIVE) -> "heiðar",
-    (PLURAL, GENITIVE) -> "heiða",
-    (PLURAL, DATIVE) -> "heiðum"
+    indef(PLURAL, NOMINATIVE) -> "heiðar",
+    indef(PLURAL, GENITIVE) -> "heiða",
+    indef(PLURAL, DATIVE) -> "heiðum"
   ))
 
   @Test
   def testStrongFeminineOForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
 
-    (SINGULAR, NOMINATIVE) -> "grǫf",
-    (SINGULAR, GENITIVE) -> "grafar",
+    indef(SINGULAR, NOMINATIVE) -> "grǫf",
+    indef(SINGULAR, GENITIVE) -> "grafar",
 
-    (PLURAL, NOMINATIVE) -> "grafar",
-    (PLURAL, GENITIVE) -> "grafa",
-    (PLURAL, DATIVE) -> "grǫfum"
+    indef(PLURAL, NOMINATIVE) -> "grafar",
+    indef(PLURAL, GENITIVE) -> "grafa",
+    indef(PLURAL, DATIVE) -> "grǫfum"
+  ))
+
+  @Test
+  def testStrongFeminineOForms2(): Unit =  diff(StrongStemClassFeminineA2, Map(
+
+    indef(SINGULAR, NOMINATIVE) -> "gjǫf",
+    indef(SINGULAR, GENITIVE) -> "gjafar",
+
+    indef(PLURAL, NOMINATIVE) -> "gjafar",
+    indef(PLURAL, GENITIVE) -> "gjafa",
+    indef(PLURAL, DATIVE) -> "gjǫfum",
+
+    defin(SINGULAR, NOMINATIVE) -> "gjǫfin",
+    defin(SINGULAR, ACCUSATIVE) -> "gjǫfina",
+    defin(SINGULAR, DATIVE) -> "gjǫfinnar",
+    defin(SINGULAR, GENITIVE) -> "gjǫfinni",
+
+    defin(PLURAL, NOMINATIVE) -> "gjafarnar",
+    defin(PLURAL, DATIVE) -> "gjǫfunum",
+    defin(PLURAL, GENITIVE) -> "gjafanna"
   ))
 
   @Test
   def testStrongFeminineJoForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
 
-    (SINGULAR, NOMINATIVE) -> "ey",
-    (SINGULAR, DATIVE) -> "eyju",
-    (SINGULAR, GENITIVE) -> "eyjar",
+    indef(SINGULAR, NOMINATIVE) -> "ey",
+    indef(SINGULAR, DATIVE) -> "eyju",
+    indef(SINGULAR, GENITIVE) -> "eyjar",
 
-    (PLURAL, NOMINATIVE) -> "eyjar",
-    (PLURAL, GENITIVE) -> "eyja",
-    (PLURAL, DATIVE) -> "eyjum"
+    indef(PLURAL, NOMINATIVE) -> "eyjar",
+    indef(PLURAL, GENITIVE) -> "eyja",
+    indef(PLURAL, DATIVE) -> "eyjum"
   ))
 
   @Test
   def testStrongFeminineWoForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
 
-    (SINGULAR, NOMINATIVE)  -> nonReversible("ǫr"),
-    (SINGULAR, DATIVE)      -> nonReversible("ǫr"),
-    (SINGULAR, GENITIVE)    -> "ǫrvar",
+    indef(SINGULAR, NOMINATIVE)  -> nonReversible("ǫr"),
+    indef(SINGULAR, DATIVE)      -> nonReversible("ǫr"),
+    indef(SINGULAR, GENITIVE)    -> "ǫrvar",
 
-    (PLURAL, NOMINATIVE)  -> "ǫrvar",
-    (PLURAL, GENITIVE)    -> "ǫrva",
-    (PLURAL, DATIVE)      -> nonReversible("ǫrum")
+    indef(PLURAL, NOMINATIVE)  -> "ǫrvar",
+    indef(PLURAL, GENITIVE)    -> "ǫrva",
+    indef(PLURAL, DATIVE)      -> nonReversible("ǫrum")
   ))
 
   @Test
   def testStrongMascIForms(): Unit =  diff(StrongStemClassMascI, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "gestr",
-    (SINGULAR, DATIVE)      -> "gest",
-    (SINGULAR, GENITIVE)    -> "gests",
+    indef(SINGULAR, NOMINATIVE)  -> "gestr",
+    indef(SINGULAR, DATIVE)      -> "gest",
+    indef(SINGULAR, GENITIVE)    -> "gests",
 
-    (PLURAL, NOMINATIVE)  -> "gestir",
-    (PLURAL, GENITIVE)    -> "gesta",
-    (PLURAL, DATIVE)      -> "gestum"
+    indef(PLURAL, NOMINATIVE)  -> "gestir",
+    indef(PLURAL, GENITIVE)    -> "gesta",
+    indef(PLURAL, DATIVE)      -> "gestum"
   ))
 
   @Test
   def testStrongFeminineIForms(): Unit =  diff(StrongStemClassFeminineI, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "hǫll",
-    (SINGULAR, DATIVE)      -> "hǫll",
-    (SINGULAR, GENITIVE)    -> "hallar",
+    indef(SINGULAR, NOMINATIVE)  -> "hǫll",
+    indef(SINGULAR, DATIVE)      -> "hǫll",
+    indef(SINGULAR, GENITIVE)    -> "hallar",
 
-    (PLURAL, NOMINATIVE)  -> "hallir",
-    (PLURAL, GENITIVE)    -> "halla",
-    (PLURAL, DATIVE)      -> "hǫllum"
+    indef(PLURAL, NOMINATIVE)  -> "hallir",
+    indef(PLURAL, GENITIVE)    -> "halla",
+    indef(PLURAL, DATIVE)      -> "hǫllum"
   ))
 
   @Test
   def testStrongMascRForms(): Unit =  diff(StrongStemClassMascR, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "maðr",
-    (SINGULAR, ACCUSATIVE)  -> nonReversible("mann"),
-    (SINGULAR, GENITIVE)    -> "manns",
+    indef(SINGULAR, NOMINATIVE)  -> "maðr",
+    indef(SINGULAR, ACCUSATIVE)  -> nonReversible("mann"),
+    indef(SINGULAR, GENITIVE)    -> "manns",
 
-    (PLURAL, NOMINATIVE)  -> nonReversible("menn"),
-    (PLURAL, GENITIVE)    -> "manna",
-    (PLURAL, DATIVE)      -> "mǫnnum"
+    indef(PLURAL, NOMINATIVE)  -> nonReversible("menn"),
+    indef(PLURAL, GENITIVE)    -> "manna",
+    indef(PLURAL, DATIVE)      -> "mǫnnum"
   ))
 
   @Test
   def testStrongFeminineRForms(): Unit =  diff(StrongStemClassFeminineR, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "strǫnd",
-    (SINGULAR, GENITIVE)    -> "strandar",
+    indef(SINGULAR, NOMINATIVE)  -> "strǫnd",
+    indef(SINGULAR, GENITIVE)    -> "strandar",
 
-    (PLURAL, NOMINATIVE)  -> "strendr",
-    (PLURAL, GENITIVE)    -> "stranda",
-    (PLURAL, DATIVE)      -> "strǫndum"
+    indef(PLURAL, NOMINATIVE)  -> "strendr",
+    indef(PLURAL, GENITIVE)    -> "stranda",
+    indef(PLURAL, DATIVE)      -> "strǫndum"
   ))
 
   @Test
   def testStrongMascUForms(): Unit =  diff(StrongStemClassMascU, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "vǫllr",
-    (SINGULAR, ACCUSATIVE)  -> "vǫll",
-    (SINGULAR, DATIVE)      -> "velli",
-    (SINGULAR, GENITIVE)    -> "vallar",
+    indef(SINGULAR, NOMINATIVE)  -> "vǫllr",
+    indef(SINGULAR, ACCUSATIVE)  -> "vǫll",
+    indef(SINGULAR, DATIVE)      -> "velli",
+    indef(SINGULAR, GENITIVE)    -> "vallar",
 
-    (PLURAL, NOMINATIVE)  -> "vellir",
-    (PLURAL, DATIVE)      -> "vǫllum",
-    (PLURAL, GENITIVE)    -> "valla"
+    indef(PLURAL, NOMINATIVE)  -> "vellir",
+    indef(PLURAL, DATIVE)      -> "vǫllum",
+    indef(PLURAL, GENITIVE)    -> "valla"
   ))
 
   // in/weak fem I-stem
   @Test
   def testWeakFemIForms(): Unit =  diff(WeakStemClassFeminineI, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "gleði",
-    (SINGULAR, ACCUSATIVE)  -> "gleði",
+    indef(SINGULAR, NOMINATIVE)  -> "gleði",
+    indef(SINGULAR, ACCUSATIVE)  -> "gleði",
 
-    (PLURAL, NOMINATIVE)  -> "gleðar",
-    (PLURAL, GENITIVE)    -> "gleða",
-    (PLURAL, DATIVE)      -> "gleðum"
+    indef(PLURAL, NOMINATIVE)  -> "gleðar",
+    indef(PLURAL, GENITIVE)    -> "gleða",
+    indef(PLURAL, DATIVE)      -> "gleðum"
   ))
 
   // on/jon weak feminine U-stem
   @Test
   def testWeakFemUForms(): Unit =  diff(WeakStemClassFeminineU, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "saga",
-    (SINGULAR, ACCUSATIVE)  -> "sǫgu",
+    indef(SINGULAR, NOMINATIVE)  -> "saga",
+    indef(SINGULAR, ACCUSATIVE)  -> "sǫgu",
 
-    (PLURAL, NOMINATIVE)  -> "sǫgur",
-    (PLURAL, GENITIVE)    -> "sagna"
+    indef(PLURAL, NOMINATIVE)  -> "sǫgur",
+    indef(PLURAL, GENITIVE)    -> "sagna"
   ))
 
   // an/jan weak masc A-stem
   @Test
   def testWeakMascAForms(): Unit =  diff(WeakStemClassMascA, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "bogi",
-    (SINGULAR, ACCUSATIVE)  -> "boga",
+    indef(SINGULAR, NOMINATIVE)  -> "bogi",
+    indef(SINGULAR, ACCUSATIVE)  -> "boga",
 
-    (PLURAL, NOMINATIVE)  -> "bogar",
-    (PLURAL, GENITIVE)    -> "boga",
-    (PLURAL, DATIVE)      -> "bogum"
+    indef(PLURAL, NOMINATIVE)  -> "bogar",
+    indef(PLURAL, GENITIVE)    -> "boga",
+    indef(PLURAL, DATIVE)      -> "bogum"
   ))
 
   // -nd/weak masc R-stem
   @Test
   def testWeakMascRForms(): Unit =  diff(WeakStemClassMascR, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "bóndi",
-    (SINGULAR, ACCUSATIVE)  -> "bónda",
+    indef(SINGULAR, NOMINATIVE)  -> "bóndi",
+    indef(SINGULAR, ACCUSATIVE)  -> "bónda",
 
-    (PLURAL, NOMINATIVE)  -> "bœndr",
-    (PLURAL, GENITIVE)    -> "bónda",
-    (PLURAL, DATIVE)      -> "bóndum"
+    indef(PLURAL, NOMINATIVE)  -> "bœndr",
+    indef(PLURAL, GENITIVE)    -> "bónda",
+    indef(PLURAL, DATIVE)      -> "bóndum"
   ))
 
   // an/jan weak neuter
   @Test
   def testWeakNeuterForms(): Unit =  diff(WeakStemClassNeuter, Map(
 
-    (SINGULAR, NOMINATIVE)  -> "hjarta",
-    (SINGULAR, ACCUSATIVE)  -> "hjarta",
+    indef(SINGULAR, NOMINATIVE)  -> "hjarta",
+    indef(SINGULAR, ACCUSATIVE)  -> "hjarta",
 
-    (PLURAL, NOMINATIVE)  -> "hjǫrtu",
-    (PLURAL, GENITIVE)    -> "hjartna",
-    (PLURAL, DATIVE)      -> "hjǫrtum"
+    indef(PLURAL, NOMINATIVE)  -> "hjǫrtu",
+    indef(PLURAL, GENITIVE)    -> "hjartna",
+    indef(PLURAL, DATIVE)      -> "hjǫrtum"
   ))
 }

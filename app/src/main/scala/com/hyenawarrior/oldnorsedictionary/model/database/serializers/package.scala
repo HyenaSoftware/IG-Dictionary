@@ -183,7 +183,7 @@ package object serializers {
       val numberId = (GNumber idOf number).toByte
       val caseId   = (Case idOf caze).toByte
 
-      List(obj.strRepr, numberId, caseId)
+      List(obj.strRepr, numberId, caseId, obj.isDefinite)
     }
 
     override def unmarshall(reader: Reader): Noun = {
@@ -194,9 +194,9 @@ package object serializers {
       val stemClass = NounStemClassEnum.findById(stemClassId).get
       val stem = NounStem(rootRepr, stemClass)
 
-      val givenForms     = deserializeList(reader).map(e => e.declension -> e).toMap
-      val generatedForms = deserializeList(reader).map(e => e.declension -> e).toMap
-      val overridenForms = deserializeList(reader).map(e => e.declension -> e).toMap
+      val givenForms     = deserializeList(reader).map(e => e.declension -> e.isDefinite -> e).toMap
+      val generatedForms = deserializeList(reader).map(e => e.declension -> e.isDefinite -> e).toMap
+      val overridenForms = deserializeList(reader).map(e => e.declension -> e.isDefinite -> e).toMap
 
       Noun(stem, givenForms, generatedForms, overridenForms)
     }
@@ -213,13 +213,14 @@ package object serializers {
       val strRepr = reader[String]()
       val numberId = reader[Byte]()
       val caseId   = reader[Byte]()
+      val isDefinite = reader[Boolean]()
 
       val number = GNumber findById numberId get
       val caze   = Case findById caseId get
 
       val declension = number -> caze
 
-      NounForm(strRepr, declension)
+      NounForm(strRepr, declension, isDefinite)
     }
   }
 

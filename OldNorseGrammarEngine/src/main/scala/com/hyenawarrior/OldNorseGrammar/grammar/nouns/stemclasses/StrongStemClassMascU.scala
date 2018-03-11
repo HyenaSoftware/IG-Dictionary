@@ -11,7 +11,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemC
   *
   * Nouns derived with the suffix -nað/nuð also originally belong to this class,
   */
-object StrongStemClassMascU extends NounStemClassEnum {
+object StrongStemClassMascU extends NounStemClassEnum with MasculineNoun {
 
   override def toString = "Strong masculine U-class"
 

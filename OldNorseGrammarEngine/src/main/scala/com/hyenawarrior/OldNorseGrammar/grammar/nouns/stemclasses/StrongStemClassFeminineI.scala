@@ -13,7 +13,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemC
   * to -un by u-umlaut in all cases in the singular except the genitive, and in the
   * dative plural. T
   */
-object StrongStemClassFeminineI extends NounStemClassEnum
+object StrongStemClassFeminineI extends NounStemClassEnum with FeminineNoun
 {
   override def toString = "Strong feminine I-class"
 

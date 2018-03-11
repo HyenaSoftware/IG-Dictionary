@@ -15,7 +15,7 @@ class NounFormTest {
   @Test
   def testStrongMascJaStem(): Unit = {
 
-    val nounStem = NounStem.from(NounForm("niðr", SINGULAR -> NOMINATIVE), StrongStemClassMascA)
+    val nounStem = NounStem.from(NounForm("niðr", SINGULAR -> NOMINATIVE, false), StrongStemClassMascA)
 
     assertEquals(NounStem("niðj", StrongStemClassMascA), nounStem)
   }
@@ -23,7 +23,7 @@ class NounFormTest {
   @Test
   def testStrongMascWaStem(): Unit = {
 
-    val nounStem = NounStem.from(NounForm("sǫngr", SINGULAR -> NOMINATIVE), StrongStemClassMascA)
+    val nounStem = NounStem.from(NounForm("sǫngr", SINGULAR -> NOMINATIVE, false), StrongStemClassMascA)
 
     assertEquals(NounStem("sangv", StrongStemClassMascA), nounStem)
   }
@@ -31,7 +31,7 @@ class NounFormTest {
   @Test
   def testStrongFemWaStem(): Unit = {
 
-    val nounStem = NounStem.from(NounForm("ǫr", SINGULAR -> NOMINATIVE), StrongStemClassFeminineA2)
+    val nounStem = NounStem.from(NounForm("ǫr", SINGULAR -> NOMINATIVE, false), StrongStemClassFeminineA2)
 
     assertEquals(NounStem("ar", StrongStemClassFeminineA2), nounStem)
   }
@@ -41,14 +41,14 @@ class NounFormTest {
 
     val stem = NounStem("mann", StrongStemClassMascR)
 
-    assertEquals("maðr", NounForm.fromStem(stem, SINGULAR -> NOMINATIVE).strRepr)
-    assertEquals("menn", NounForm.fromStem(stem, PLURAL   -> NOMINATIVE).strRepr)
+    assertEquals("maðr", NounForm.fromStem(stem, SINGULAR -> NOMINATIVE, false).strRepr)
+    assertEquals("menn", NounForm.fromStem(stem, PLURAL   -> NOMINATIVE, false).strRepr)
   }
 
   @Test
   def testStrongMascUStem(): Unit = {
 
-    val nounStem = NounStem.from(NounForm("vǫllum", PLURAL -> DATIVE), StrongStemClassMascU)
+    val nounStem = NounStem.from(NounForm("vǫllum", PLURAL -> DATIVE, false), StrongStemClassMascU)
 
     assertEquals(NounStem("vall", StrongStemClassMascU), nounStem)
   }
@@ -56,7 +56,7 @@ class NounFormTest {
   @Test
   def testStrongMascUStem2(): Unit = {
 
-    val stem = NounStem.from(NounForm("skildir", PLURAL -> NOMINATIVE), StrongStemClassMascU)
+    val stem = NounStem.from(NounForm("skildir", PLURAL -> NOMINATIVE, false), StrongStemClassMascU)
 
     assertEquals(NounStem("skeld", StrongStemClassMascU), stem)
   }
@@ -66,14 +66,14 @@ class NounFormTest {
 
     val stem = NounStem("vall", StrongStemClassMascU)
 
-    assertEquals("vǫllr",  NounForm.fromStem(stem, SINGULAR -> NOMINATIVE).strRepr)
-    assertEquals("vellir", NounForm.fromStem(stem, PLURAL   -> NOMINATIVE).strRepr)
+    assertEquals("vǫllr",  NounForm.fromStem(stem, SINGULAR -> NOMINATIVE, false).strRepr)
+    assertEquals("vellir", NounForm.fromStem(stem, PLURAL   -> NOMINATIVE, false).strRepr)
   }
 
   @Test
   def testWeakMascRStem(): Unit = {
 
-    val stem = NounStem.from(NounForm("bóndi", SINGULAR -> NOMINATIVE), WeakStemClassMascR)
+    val stem = NounStem.from(NounForm("bóndi", SINGULAR -> NOMINATIVE, false), WeakStemClassMascR)
 
     assertEquals("bónd", stem.rootStr)
   }
@@ -83,7 +83,7 @@ class NounFormTest {
 
     val stem = NounStem("bónd", WeakStemClassMascR)
 
-    val form = NounForm.fromStem(stem, PLURAL -> NOMINATIVE)
+    val form = NounForm.fromStem(stem, PLURAL -> NOMINATIVE, false)
 
     assertEquals("bœndr", form.strRepr)
   }

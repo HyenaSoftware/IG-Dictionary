@@ -31,15 +31,29 @@ object NounDeclensionAdapter
 class NounDeclensionAdapter(activity: Activity, listView: ViewGroup)
   extends CustomAdapter[(NounStemClassEnum, Noun)](activity, listView, R.layout.noun_declension)
 {
+	private var showDefiniteForms = false
+
 	protected def resetView(i: Int, view: View): Unit = {
 
 		val (nscEnum, noun) = itemAt(i)
 
-		setDeclensionsTo(noun, nscEnum, view, isDefinite = false)
+		setDeclensionsTo(noun, nscEnum, view, showDefiniteForms)
 
     // tag the select button
     val tv_addword_noun_Select = view.findViewById[Button](R.id.tv_addword_noun_Select)
     tv_addword_noun_Select.setTag(nscEnum)
+	}
+
+	def setDefinitness(isDefinite: Boolean): Unit = {
+
+		showDefiniteForms = isDefinite
+
+		for(i <- 0 until getCount) {
+
+			val v = getView(i, null, null)
+
+			resetView(i, v)
+		}
 	}
 
   def getSelectorTagOf(view: View): Option[NounStemClassEnum] = view match

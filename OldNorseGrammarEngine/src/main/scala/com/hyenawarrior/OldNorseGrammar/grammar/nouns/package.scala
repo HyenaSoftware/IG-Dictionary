@@ -10,6 +10,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel._
 package object nouns {
 
   type NounType = (GNumber, Case)
+  type NounFormType = (NounType, Boolean)
 
   def theseCanCauseUUmlaut(str: String): Boolean = {
 

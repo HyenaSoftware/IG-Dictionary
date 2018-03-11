@@ -31,19 +31,19 @@ class TestNounSerializer {
 
     val serializer = serializers.NounMarshaller
 
-    val GIVEN_FORMS = Seq(NounForm("úlfr", GNumber.SINGULAR -> Case.NOMINATIVE))
-      .map(nf => nf.declension -> nf).toMap
+    val GIVEN_FORMS = Seq(NounForm("úlfr", GNumber.SINGULAR -> Case.NOMINATIVE, false))
+      .map(nf => nf.declension -> nf.isDefinite -> nf).toMap
 
     val GEN_VERB_FORMS = Seq(
-      NounForm("úlfar", GNumber.PLURAL -> Case.NOMINATIVE),
-      NounForm("úlf",   GNumber.SINGULAR -> Case.ACCUSATIVE),
-      NounForm("úlfa",  GNumber.PLURAL -> Case.ACCUSATIVE))
-      .map(nf => nf.declension -> nf).toMap
+      NounForm("úlfar", GNumber.PLURAL -> Case.NOMINATIVE, false),
+      NounForm("úlf",   GNumber.SINGULAR -> Case.ACCUSATIVE, false),
+      NounForm("úlfa",  GNumber.PLURAL -> Case.ACCUSATIVE, false))
+      .map(nf => nf.declension -> nf.isDefinite -> nf).toMap
 
     val OVR_VERB_FORMS = Seq(
-      NounForm("úlfi",  GNumber.SINGULAR -> Case.DATIVE),
-      NounForm("úlfum", GNumber.PLURAL -> Case.DATIVE))
-      .map(nf => nf.declension -> nf).toMap
+      NounForm("úlfi",  GNumber.SINGULAR -> Case.DATIVE, false),
+      NounForm("úlfum", GNumber.PLURAL -> Case.DATIVE, false))
+      .map(nf => nf.declension -> nf.isDefinite -> nf).toMap
 
     val noun = Noun(NounStem("", StrongStemClassMascA), GIVEN_FORMS, GEN_VERB_FORMS, OVR_VERB_FORMS)
     val data = serializer.marshall(noun)

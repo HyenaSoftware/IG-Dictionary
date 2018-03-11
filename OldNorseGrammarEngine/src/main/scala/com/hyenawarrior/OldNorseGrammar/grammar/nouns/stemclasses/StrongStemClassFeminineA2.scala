@@ -4,7 +4,6 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns._
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 
 /**
   * Created by HyenaWarrior on 2017.07.28..
@@ -23,7 +22,7 @@ object StrongStemClassFeminineA2 extends StrongStemClassFeminineA
     case _ => None
   }
 
-  override def inflection(decl: (GNumber, Case)) = decl match
+  override def inflection(decl: NounType) = decl match
   {
     case (SINGULAR, NOMINATIVE | ACCUSATIVE | DATIVE) => ""
     case _ => super.inflection(decl)

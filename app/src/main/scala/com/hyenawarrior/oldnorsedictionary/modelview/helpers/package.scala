@@ -53,8 +53,8 @@ package object helpers {
 
   def abbrevationOf[T](obj: T): String = obj match {
 
-    case (number: GNumber, caze: Case) =>
-      abbrevationOf(number) + " " + abbrevationOf(caze)
+    case ((number: GNumber, caze: Case), definite: Boolean) =>
+      abbrevationOf(number) + " " + abbrevationOf(caze) + (if(definite) " DEF" else "")
 
     case (mood: VerbModeEnum, voice: VerbVoice, optTense: Option[VerbTenseEnum], optPronoun: Option[Pronoun]) =>
 

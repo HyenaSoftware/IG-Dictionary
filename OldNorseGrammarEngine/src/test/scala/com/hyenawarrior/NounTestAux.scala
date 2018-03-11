@@ -22,7 +22,8 @@ object NounTestAux {
 
   def nonReversible(str: String) = Form(str, false)
 
-  private def abbrevationOf(decl: NounType): String = abbrevationOf(decl._1) + " " + abbrevationOf(decl._2)
+  private def abbrevationOf(decl: NounType, isDef: Boolean): String = (if(isDef) "DEF " else "INDEF ") +
+    abbrevationOf(decl._1) + " " + abbrevationOf(decl._2)
 
   private def abbrevationOf(caze: Case): String = caze match {
 
@@ -38,14 +39,21 @@ object NounTestAux {
     case PLURAL => "PL"
   }
 
-  def diff(stemClass: NounStemClass, forms: Map[NounType, Form]): Unit = {
+  def diff(stemClass: NounStemClass, forms: Map[NounType, Form], definiteForms: Map[NounType, Form]): Unit = {
+
+    val allForms = forms.map { case (k, v) => (k, false) -> v } ++ definiteForms.map { case (k, v) => (k, true) -> v }
+
+    diff(stemClass, allForms)
+  }
+
+  def diff(stemClass: NounStemClass, forms: Map[NounFormType, Form]): Unit = {
 
     val countOfTests = forms.size
     val differences = forms
       .zipWithIndex
-      .collect { case ((decl, Form(str, true)), idx) =>
-        val tableName = s"\nGenerated forms from $str [${abbrevationOf(decl)}] (${idx+1} of $countOfTests):"
-        (tableName, generateTheseFrom(stemClass, decl -> str, forms - decl))
+      .collect { case ((formType @ (decl, isDef), Form(str, true)), idx) =>
+        val tableName = s"\nGenerated forms from $str [${abbrevationOf(decl, isDef)}] (${idx+1} of $countOfTests):"
+        (tableName, generateTheseFrom(stemClass, formType -> str, forms - formType))
 
       }.filter {
         case (_, Left(exception)) => true
@@ -58,14 +66,17 @@ object NounTestAux {
         .map {
           case (tableName, Left(exception)) => s"$tableName\n${exception.getMessage}"
           case (tableName, Right(records)) =>
-            val w0 = "Declension".length
-            val w1 = (records.map(_._2.length).toSeq :+ "Expected".length).max
-            val w2 = (records.map(_._3.length).toSeq :+ "Generated".length).max
+
+            val abbrevatedRecords = records.map { case ((decl, isDef), e2, e3) => (abbrevationOf(decl, isDef), e2, e3) }
+
+            val w0 = (abbrevatedRecords.map(_._1.length).toSeq :+ "Declension".length).max
+            val w1 = (abbrevatedRecords.map(_._2.length).toSeq :+ "Expected".length).max
+            val w2 = (abbrevatedRecords.map(_._3.length).toSeq :+ "Generated".length).max
 
             val header = format(s" %-${w0}s | %-${w1}s | %-${w2}s", "Declension", "Expected", "Generated")
 
-            records
-              .map(e => format(s" %-${w0}s | %-${w1}s ~ %-${w2}s", abbrevationOf(e._1), e._2, e._3))
+            abbrevatedRecords
+              .map { case (ntype, e2, e3) => format(s" %-${w0}s | %-${w1}s ~ %-${w2}s", ntype, e2, e3)}
               .mkString(s"$tableName\n$header\n", "\n", "")
         }
         .mkString("\n")
@@ -74,8 +85,8 @@ object NounTestAux {
     }
   }
 
-  private def generateTheseFrom(stemClass: NounStemClass, givenForm: (NounType, String)
-    , expectedForms: Map[NounType, Form]): Either[Exception, Iterable[(NounType, String, String)]] = try {
+  private def generateTheseFrom(stemClass: NounStemClass, givenForm: (NounFormType, String)
+    , expectedForms: Map[NounFormType, Form]): Either[Exception, Iterable[(NounFormType, String, String)]] = try {
 
     val generatedForms = Noun(stemClass, Map(givenForm)).nounForms
 

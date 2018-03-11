@@ -8,7 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounType}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounFormType, NounType}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 import com.hyenawarrior.oldnorsedictionary.R
@@ -71,11 +71,11 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 
 	object DefinitenessListener extends View.OnClickListener {
 
-		override def onClick(v: View): Unit = v.getId match {
+		override def onClick(v: View): Unit = NounDeclensionAdapter setDefinitness (v.getId match {
 
-			case R.id.rbIndef => ()
-			case R.id.rbDef => ()
-		}
+			case R.id.rbIndef => false
+			case R.id.rbDef => true
+		})
 	}
 
 	def onRemoveOverride(tableRow: View) =
@@ -212,16 +212,16 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		List(WEAK_NEUTER_U)
 	)
 
-	private def generateFormsFrom(stemClass: NounStemClass, baseDef: (NounType, String), map: Map[View, Override])
+	private def generateFormsFrom(stemClass: NounStemClass, baseDef: (NounFormType, String), map: Map[View, Override])
 		:	Option[Noun] = try {
 
-		val mapForms: Map[NounType, String] = map.values.map {
+		val mapForms: Map[NounFormType, String] = map.values.map {
 
-			case (Some(nf), Some(str)) => nf -> str
+			case (Some(nf), Some(str)) => (nf, false) -> str
 
 		}.toMap
 
-		val baseForm: Map[NounType, String] = Map(baseDef)
+		val baseForm: Map[NounFormType, String] = Map(baseDef)
 
 		Some(Noun(stemClass, baseForm ++ mapForms))
 
@@ -240,7 +240,7 @@ class AddNewNounHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
       val listOfNSCE = if(maybeEmptyList.isEmpty) NounStemClassEnum.values.toList else maybeEmptyList
 
       val wordMaps: List[(NounStemClassEnum, Noun)] = listOfNSCE
-        .map(nsce => nsce -> generateFormsFrom(nsce, (numCase, str), map))
+        .map(nsce => nsce -> generateFormsFrom(nsce, ((numCase, false), str), map))
         .collect{ case (k, Some(noun)) => k -> noun }
 
       NounDeclensionAdapter resetItems wordMaps

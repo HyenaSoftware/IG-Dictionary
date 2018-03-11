@@ -1,5 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.InvertableTransformation
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns._
 
@@ -8,13 +9,17 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns._
   */
 trait NounStemClass extends Serializable {
 
+  def associatedGender: Gender
+
   def thematicVowel: Option[String] = None
 
-  def apply(str: String, declension: NounType): Option[String] = {
+  def apply(str: String, declension: NounType, isDefinite: Boolean): Option[String] = {
 
     val str2 = transformationFor(declension).flatMap(t => t(str)).getOrElse(str)
 
-    Some(str2 + inflection(declension))
+    val clitic = if(isDefinite) cliticFor(declension) else ""
+
+    Some(str2 + inflection(declension) + clitic)
   }
 
   def unapply(strDecl: (String, NounType)): Option[String] = {
@@ -43,6 +48,8 @@ trait NounStemClass extends Serializable {
   def transformationFor(decl: NounType): Option[InvertableTransformation] = None
 
   def inflection(decl: NounType): String
+
+  def cliticFor(decl: NounType): String
 }
 
 

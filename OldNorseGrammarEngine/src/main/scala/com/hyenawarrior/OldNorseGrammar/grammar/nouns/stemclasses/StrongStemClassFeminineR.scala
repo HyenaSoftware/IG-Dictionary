@@ -9,7 +9,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemC
 /**
   * Created by HyenaWarrior on 2017.04.09..
   */
-object StrongStemClassFeminineR extends NounStemClassEnum
+object StrongStemClassFeminineR extends NounStemClassEnum with FeminineNoun
 {
   override def toString = "Strong feminine R-class"
 

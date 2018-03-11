@@ -77,8 +77,11 @@ class TestSerializable {
   @Test
   def testNounIsSerializable(): Unit = {
 
+    val nf = NounForm("", (SINGULAR, NOMINATIVE), isDefinite = false)
+    val nft = ((SINGULAR, NOMINATIVE), false)
+
     val noun = Noun(NounStem("", StrongStemClassNeuter),
-      Map((SINGULAR, NOMINATIVE) -> NounForm("", (SINGULAR, NOMINATIVE))),
+      Map(nft -> nf),
       Map(),
       Map())
 

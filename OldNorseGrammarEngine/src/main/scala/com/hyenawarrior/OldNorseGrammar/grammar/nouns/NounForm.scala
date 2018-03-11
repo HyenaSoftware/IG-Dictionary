@@ -7,11 +7,11 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
 /**
   * Created by HyenaWarrior on 2018.02.02..
   */
-case class NounForm(strRepr: String, declension: NounType) extends PoSForm
+case class NounForm(strRepr: String, declension: NounType, isDefinite: Boolean) extends PoSForm
 
 object NounForm {
 
-  def fromStem(stem: NounStem, declension: NounType): NounForm = {
+  def fromStem(stem: NounStem, declension: NounType, isDefinite: Boolean): NounForm = {
 
     val NounStem(rootStr, stemClass) = stem
 
@@ -22,7 +22,7 @@ object NounForm {
     val umlautedRootStr = if(canBeUmlauted) U_Umlaut(rootStr).getOrElse(rootStr) else rootStr
 
     // inflect
-    val Some(inflectedForm) = stemClass(umlautedRootStr, declension)
+    val Some(inflectedForm) = stemClass(umlautedRootStr, declension, isDefinite)
 
     // SVD
     val strWithSVs = SemivowelDeletion(inflectedForm)
@@ -34,7 +34,7 @@ object NounForm {
       if(stemClass.thematicVowel.isDefined && strWithSVs.endsWith("r"))
         strWithSVs else ConsonantAssimilation(strWithSVs)
 
-    NounForm(strConsAssimilation, declension)
+    NounForm(strConsAssimilation, declension, isDefinite)
   }
 
   def nounFrom(str: String) = 0

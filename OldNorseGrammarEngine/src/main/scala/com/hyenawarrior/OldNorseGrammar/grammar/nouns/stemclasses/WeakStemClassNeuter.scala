@@ -7,7 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
 /**
   * Created by HyenaWarrior on 2017.07.28..
   */
-object WeakStemClassNeuter extends WeakStemClass {
+object WeakStemClassNeuter extends WeakStemClass with NeuterNoun {
 
   override def toString = "Weak neuter class"
 

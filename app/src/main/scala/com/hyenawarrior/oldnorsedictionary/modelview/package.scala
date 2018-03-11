@@ -85,7 +85,7 @@ package object modelview {
     for((id, nf) <- NOUN_EDIT_TEXTS) {
 
       val tvNC = targetView.findViewById[TextView](id)
-      val ncTextForm = noun.nounForms.get(nf).map(_.strRepr).getOrElse("...")
+      val ncTextForm = noun.nounForms.get(nf -> isDefinite).map(_.strRepr).getOrElse("...")
       tvNC.setText(ncTextForm)
     }
   }

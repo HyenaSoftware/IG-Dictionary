@@ -9,7 +9,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemC
 /**
   * Created by HyenaWarrior on 2017.07.28..
   */
-object StrongStemClassNeuter extends NounStemClassEnum {
+object StrongStemClassNeuter extends NounStemClassEnum with NeuterNoun {
 
   override def toString = "Strong neuter class"
 

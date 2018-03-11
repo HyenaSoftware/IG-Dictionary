@@ -8,7 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemC
 /**
   * Created by HyenaWarrior on 2017.07.28..
   */
-object WeakStemClassMascA extends NounStemClassEnum {
+object WeakStemClassMascA extends NounStemClassEnum with MasculineNoun {
 
   override def toString = "Weak masculine A-class"
 

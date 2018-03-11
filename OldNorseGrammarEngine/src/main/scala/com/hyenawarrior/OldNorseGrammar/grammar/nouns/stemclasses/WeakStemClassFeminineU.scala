@@ -8,7 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemC
 /**
   * Created by HyenaWarrior on 2017.04.09..
   */
-object WeakStemClassFeminineU extends NounStemClassEnum {
+object WeakStemClassFeminineU extends NounStemClassEnum with FeminineNoun {
 
   override def toString = "Weak feminine U-class"
 
