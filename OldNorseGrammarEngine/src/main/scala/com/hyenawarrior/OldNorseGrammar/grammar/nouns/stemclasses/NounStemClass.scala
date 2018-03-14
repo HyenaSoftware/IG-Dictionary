@@ -1,5 +1,7 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.DATIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.PLURAL
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.InvertableTransformation
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns._
@@ -19,21 +21,42 @@ trait NounStemClass extends Serializable {
 
     val clitic = if(isDefinite) cliticFor(declension) else ""
 
-    Some(str2 + inflection(declension) + clitic)
+    val inflectionStr = inflection(declension)
+
+    val correctedInflectionStr = declension match {
+
+      case (PLURAL, DATIVE) if isDefinite => inflectionStr stripSuffix "m"
+      case _ => inflectionStr
+    }
+
+    Some(str2 + correctedInflectionStr + clitic)
   }
 
-  def unapply(strDecl: (String, NounType)): Option[String] = {
+  def unapply(strDeclDef: (String, NounType, Boolean)): Option[String] = {
 
-    val (str, declension) = strDecl
+    val (str, declension, isDefinite) = strDeclDef
+
+    //
+    val strCliticRemoved = if(isDefinite) {
+
+      val revClitic = cliticFor(declension)
+
+      val str2 = revClitic.foldRight(str){ case (ce, word) => word stripSuffix ce.toString }
+
+      str2 + (declension match {
+
+        case (PLURAL, DATIVE) => "m"
+        case _ => ""
+      })
+
+    } else str
+
+    //
     val declSuffix = inflection(declension)
 
-    if(!str.endsWith(declSuffix)) {
+    if(strCliticRemoved endsWith declSuffix) {
 
-      None
-
-    } else {
-
-      val uninflectedStr = str stripSuffix declSuffix
+      val uninflectedStr = strCliticRemoved stripSuffix declSuffix
 
       transformationFor(declension)
         .flatMap(t => uninflectedStr match {
@@ -42,7 +65,8 @@ trait NounStemClass extends Serializable {
           case _ => None
         })
         .orElse(Some(uninflectedStr))
-    }
+
+    } else None
   }
 
   def transformationFor(decl: NounType): Option[InvertableTransformation] = None

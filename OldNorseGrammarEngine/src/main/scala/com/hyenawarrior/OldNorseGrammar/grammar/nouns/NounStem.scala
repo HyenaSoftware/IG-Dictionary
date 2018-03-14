@@ -18,9 +18,9 @@ object NounStem {
     // undo consonant assimilation
     val consAssimilatedStrs = ConsonantAssimilation invert nounForm.strRepr
 
-    // remove inflection
+    // remove inflectional ending and clitic
     val uninflectedStrs = consAssimilatedStrs
-      .map(a => a -> nounForm.declension)
+      .map((_, nounForm.declension, nounForm.isDefinite))
       .flatMap {
 
         case stemClass(ustr) => Some(ustr)

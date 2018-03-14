@@ -49,6 +49,7 @@ class NounTest {
     indef(PLURAL, ACCUSATIVE) -> "úlfa",
     indef(PLURAL, DATIVE) -> "úlfum",
 
+    defin(PLURAL, NOMINATIVE) -> "úlfarnir",
     defin(PLURAL, DATIVE) -> "úlfunum"
   ))
 
@@ -160,8 +161,8 @@ class NounTest {
 
     defin(SINGULAR, NOMINATIVE) -> "gjǫfin",
     defin(SINGULAR, ACCUSATIVE) -> "gjǫfina",
-    defin(SINGULAR, DATIVE) -> "gjǫfinnar",
-    defin(SINGULAR, GENITIVE) -> "gjǫfinni",
+    defin(SINGULAR, DATIVE) -> "gjǫfinni",
+    defin(SINGULAR, GENITIVE) -> "gjafarinnar",
 
     defin(PLURAL, NOMINATIVE) -> "gjafarnar",
     defin(PLURAL, DATIVE) -> "gjǫfunum",
