@@ -263,7 +263,7 @@ object StemTransform {
       val Syllables(sy :: _) = stemStr
 
       sy.nucleus match {
-        case "i" => Some(if(stemStr endsWith "j") stemStr else stemStr + "j")
+        case "i" | "í" => Some(if(stemStr endsWith "j") stemStr else stemStr + "j")
         case _ => None
       }
     }

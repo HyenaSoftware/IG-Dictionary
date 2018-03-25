@@ -68,8 +68,8 @@ object NounStem {
   // basically it's the reverse SVD
   private def augment(stemStr: String, optUmlaut: Option[Umlaut]): String = (stemStr, optUmlaut) match {
 
-    case (FixVAugmentation(fixedStemStr), _) => fixedStemStr
     case (FixJAugmentation(fixedStemStr), _) => fixedStemStr
+    case (FixVAugmentation(fixedStemStr), _) => fixedStemStr
     case (_, Some(U_Umlaut)) => stemStr + "v"
     case _ => stemStr
   }

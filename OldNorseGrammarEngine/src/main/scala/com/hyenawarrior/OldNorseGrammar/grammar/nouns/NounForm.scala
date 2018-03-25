@@ -3,7 +3,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 import com.hyenawarrior.OldNorseGrammar.grammar.PoSForm
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.SINGULAR
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender.FEMININE
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SemivowelDeletion, Syncope, VowelDeletion}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
 import com.hyenawarrior.auxiliary.TupleEx._
 
@@ -27,10 +27,13 @@ object NounForm {
     // inflect
     val Some(inflectedForm) = stemClass(umlautedRootStr, declension, isDefinite)
 
+    // apply Siever's law
+    val ijCorrectedStr = (SieversLaw restore inflectedForm) getOrElse inflectedForm
+
     val syncopedStr = stem.stemClass.associatedGender +: declension match {
 
-      case (FEMININE, SINGULAR, _) => inflectedForm
-      case _ => Syncope(inflectedForm)
+      case (FEMININE, SINGULAR, _) => ijCorrectedStr
+      case _ => Syncope(ijCorrectedStr)
     }
 
     // SVD
