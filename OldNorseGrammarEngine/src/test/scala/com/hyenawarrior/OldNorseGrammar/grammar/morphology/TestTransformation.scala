@@ -200,6 +200,8 @@ class TestTransformation {
 		assertEquals("fjár" -> "ár", StressShift("féar", 2))
 		assertEquals("sjúm" -> "úm", StressShift("séum", 2))
     assertEquals("sjá"  -> "á",  StressShift("séa", 1))
+    assertEquals("tré"  -> "",  StressShift("tré", 0))
+    assertEquals("trjúm"  -> "úm",  StressShift("tréum", 2))
 	}
 
 	@Test
@@ -216,5 +218,6 @@ class TestTransformation {
 	def testNoStressShift(): Unit = {
 
 		assertEquals(None, StressShift unapply "fá" -> 1)
+		assertEquals(None, StressShift unapply "tré" -> 1)
 	}
 }

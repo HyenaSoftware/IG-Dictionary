@@ -1,7 +1,9 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounStem
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{StrongStemClassFeminineA2, StrongStemClassMascA}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.DATIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{StrongStemClassFeminineA2, StrongStemClassMascA, StrongStemClassNeuter}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{NounForm, NounStem}
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -35,5 +37,19 @@ class NounStemTest {
     // stem "ǫr" doesn't ends in velar consonant and it's not short
     //  so to restore the 'v' is reasonless
     assertEquals("ǫr", NounStem.fromStrRepr("ǫra", StrongStemClassFeminineA2).rootStr)
+  }
+
+  @Test
+  def testStrongNeuterStemSieversLaw1(): Unit = {
+
+    val nf = NounForm("ríki", SINGULAR -> DATIVE, isDefinite = false)
+    assertEquals(s"Failed to recover from ${nf.strRepr}", "ríkj", NounStem.from(nf, StrongStemClassNeuter).rootStr)
+  }
+
+  @Test
+  def testStrongNeuterStemSieversLaw2(): Unit = {
+
+    val nf = NounForm("ríkjum", PLURAL -> DATIVE, isDefinite = false)
+    assertEquals(s"Failed to recover from ${nf.strRepr}", "ríkj", NounStem.from(nf, StrongStemClassNeuter).rootStr)
   }
 }

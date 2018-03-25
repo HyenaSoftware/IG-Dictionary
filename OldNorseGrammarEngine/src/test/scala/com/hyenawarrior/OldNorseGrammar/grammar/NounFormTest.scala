@@ -21,6 +21,24 @@ class NounFormTest {
   }
 
   @Test
+  def testStrongNeuterJaStem(): Unit = {
+
+    val nounStem = NounStem.fromStrRepr("ríkj", StrongStemClassNeuter)
+    val nf = NounForm.fromStem(nounStem, PLURAL -> DATIVE, isDefinite = false)
+
+    assertEquals("ríkjum", nf.strRepr)
+  }
+
+  @Test
+  def testStrongNeuterJaStem2(): Unit = {
+
+    val nounStem = NounStem.fromStrRepr("ríkj", StrongStemClassNeuter)
+    val nf = NounForm.fromStem(nounStem, SINGULAR -> DATIVE, isDefinite = false)
+
+    assertEquals("ríki", nf.strRepr)
+  }
+
+  @Test
   def testStrongMascWaStem(): Unit = {
 
     val nounStem = NounStem.from(NounForm("sǫngr", SINGULAR -> NOMINATIVE, false), StrongStemClassMascA)
