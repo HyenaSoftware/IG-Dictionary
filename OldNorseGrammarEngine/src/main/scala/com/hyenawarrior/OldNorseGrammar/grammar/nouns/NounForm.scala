@@ -39,8 +39,11 @@ object NounForm {
     // SVD
     val strWithSVs = SemivowelDeletion(syncopedStr)
 
-    //
-    val strAfterVowelDeletion = VowelDeletion(strWithSVs)
+    // breaking/fracture
+    val strAfterBreaking = StressShift(strWithSVs) getOrElse strWithSVs
+
+    // vowel deletion
+    val strAfterVowelDeletion = VowelDeletion(strAfterBreaking)
 
     // consonant assimilation
     val strConsAssimilation =

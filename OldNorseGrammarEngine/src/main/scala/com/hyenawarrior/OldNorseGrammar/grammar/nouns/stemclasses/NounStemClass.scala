@@ -3,7 +3,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.DATIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.PLURAL
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.InvertableTransformation
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{InvertableTransformation, endsWith, stripSuffix}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns._
 
 /**
@@ -54,9 +54,9 @@ trait NounStemClass extends Serializable {
     //
     val declSuffix = inflection(declension)
 
-    if(strCliticRemoved endsWith declSuffix) {
+    if(endsWith(strCliticRemoved, declSuffix)) {
 
-      val uninflectedStr = strCliticRemoved stripSuffix declSuffix
+      val uninflectedStr = stripSuffix(strCliticRemoved, declSuffix)
 
       transformationFor(declension)
         .flatMap(t => uninflectedStr match {
