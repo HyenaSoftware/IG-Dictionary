@@ -37,7 +37,7 @@ object NounForm {
     }
 
     // SVD
-    val strWithSVs = SemivowelDeletion(syncopedStr)
+    val strWithSVs = SemivowelDeletion(syncopedStr).replace("ij", "j")
 
     // breaking/fracture
     val strAfterBreaking = StressShift(strWithSVs) getOrElse strWithSVs
