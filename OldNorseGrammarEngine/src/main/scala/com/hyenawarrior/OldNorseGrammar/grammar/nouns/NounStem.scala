@@ -13,7 +13,7 @@ case class NounStem(rootStr: String, stemClass: NounStemClass)
 
 object NounStem {
 
-  def from(nounForm: NounForm, stemClass: NounStemClass): NounStem = try {
+  def from(nounForm: NounForm, stemClass: NounStemClass): NounStem = {
 
     // undo consonant assimilation
     val consAssimilatedStrs = ConsonantAssimilation invert nounForm.strRepr
@@ -28,13 +28,18 @@ object NounStem {
       }
 
     // reverse-SVD should be done here?
-    val inflectionalEnding = stemClass inflection nounForm.declension
 
-    val uninflectedStr = uninflectedStrs.headOption match {
+    // try to continue the process by choosing the first string
+    uninflectedStrs.headOption match {
 
-      case Some(str) => str
-      case None => throw new RuntimeException(s"Word '${nounForm.strRepr}' doesn't have inflectional ending of $inflectionalEnding.")
+      case Some(uninflectedStr) => extractStemFrom(nounForm, stemClass, uninflectedStr)
+      case None =>
+        val inflectionalEnding = stemClass inflection nounForm.declension
+        throw new RuntimeException(s"Word '${nounForm.strRepr}' doesn't have inflectional ending of $inflectionalEnding.")
     }
+  }
+
+  private def extractStemFrom(nounForm: NounForm, stemClass: NounStemClass, uninflectedStr: String): NounStem = {
 
     /*
       // stem -> form
@@ -63,13 +68,14 @@ object NounStem {
       case s => s
     }
 
-    val isLocallyTriggeredUmlaut = nouns.theseCanCauseUUmlaut(inflectionalEnding)
-    val isNonProductiveUmlaut = stemClass.transformationFor(nounForm.declension).contains(U_Umlaut)
-
     // reverse U-umlaut
     val (stemUnUmlautedStr, optUmlaut) = strBeforeStressShift match {
 
       case U_Umlaut(s) if strBeforeStressShift != s =>
+
+        val inflectionalEnding = stemClass inflection nounForm.declension
+        val isLocallyTriggeredUmlaut = nouns.theseCanCauseUUmlaut(inflectionalEnding)
+        val isNonProductiveUmlaut = stemClass.transformationFor(nounForm.declension).contains(U_Umlaut)
 
         val globalUmlaut = if (isNonProductiveUmlaut || isLocallyTriggeredUmlaut) None else Some(U_Umlaut)
         s -> globalUmlaut
@@ -87,13 +93,6 @@ object NounStem {
 
     // create the noun stem
     NounStem(augmentedRootStr, stemClass)
-
-  } catch {
-
-    case e: Exception =>
-      println(e)
-      val strRepr = nounForm.strRepr
-      throw new RuntimeException(s"Failed to generate the noun stem from '$strRepr'.", e)
   }
 
   // basically it's the reverse SVD
