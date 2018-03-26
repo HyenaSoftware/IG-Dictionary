@@ -28,10 +28,16 @@ object NounStem {
       }
 
     // reverse-SVD should be done here?
+    val inflectionalEnding = stemClass inflection nounForm.declension
 
-    val uninflectedStr = uninflectedStrs.head
+    val uninflectedStr = uninflectedStrs.headOption match {
 
-    val isLocallyTriggeredUmlaut = nouns.theseCanCauseUUmlaut(stemClass inflection nounForm.declension)
+      case Some(str) => str
+      case None => throw new RuntimeException(s"Word '${nounForm.strRepr}' doesn't have inflectional ending of $inflectionalEnding.")
+    }
+
+
+    val isLocallyTriggeredUmlaut = nouns.theseCanCauseUUmlaut(inflectionalEnding)
     val isNonProductiveUmlaut = stemClass.transformationFor(nounForm.declension).contains(U_Umlaut)
 
     // reverse U-umlaut
@@ -60,9 +66,8 @@ object NounStem {
 
     case e: Exception =>
       println(e)
-      val declSuffix = stemClass inflection nounForm.declension
       val strRepr = nounForm.strRepr
-      throw new RuntimeException(s"The word $strRepr doesn't ends with $declSuffix.", e)
+      throw new RuntimeException(s"Failed to generate the noun stem from '$strRepr'.", e)
   }
 
   // basically it's the reverse SVD
