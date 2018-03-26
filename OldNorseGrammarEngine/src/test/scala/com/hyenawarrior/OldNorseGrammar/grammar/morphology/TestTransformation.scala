@@ -202,22 +202,30 @@ class TestTransformation {
     assertEquals("sjá"  -> "á",  StressShift("séa", 1))
     assertEquals("tré"  -> "",  StressShift("tré", 0))
     assertEquals("trjúm"  -> "úm",  StressShift("tréum", 2))
+
+		assertEquals(Some("fjár"), StressShift("féar").map(VowelDeletion(_)))
+		assertEquals(Some("sjám"), StressShift("séum").map(VowelDeletion(_))) // it might be sjóm
+		assertEquals(Some("sjá"),  StressShift("séa").map(VowelDeletion(_)))
+		assertEquals(None,  			 StressShift("tré"))
+		assertEquals(Some("trjám"),  StressShift("tréum").map(VowelDeletion(_)))
 	}
 
 	@Test
 	def testStressShiftInv(): Unit = {
 
     assertEquals(Some("féar" -> "ar"), StressShift unapply "fjár" -> 2)
-
     assertEquals(Some("séum" -> "um"), StressShift unapply "sjúm" -> 2)
-
     assertEquals(Some("séa" -> "a"), StressShift unapply "sjá" -> 1)
+
+		assertEquals(Some("féar"), StressShift unapply "fjár")
+		assertEquals(Some("séum"), StressShift unapply "sjúm")
+		assertEquals(Some("séa"), StressShift unapply "sjá")
 	}
 
 	@Test
 	def testNoStressShift(): Unit = {
 
-		assertEquals(None, StressShift unapply "fá" -> 1)
-		assertEquals(None, StressShift unapply "tré" -> 1)
+		assertEquals(None, StressShift unapply "fá")
+		assertEquals(None, StressShift unapply "tré")
 	}
 }

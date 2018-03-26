@@ -52,4 +52,12 @@ class NounStemTest {
     val nf = NounForm("ríkjum", PLURAL -> DATIVE, isDefinite = false)
     assertEquals(s"Failed to recover from ${nf.strRepr}", "ríkj", NounStem.from(nf, StrongStemClassNeuter).rootStr)
   }
+
+  @Test
+  def testStrongNeuterJaStemKnjam(): Unit = {
+
+    val nf = NounForm("knjám", PLURAL -> DATIVE, isDefinite = false)
+
+    assertEquals("kné", NounStem.from(nf, StrongStemClassNeuter).rootStr)
+  }
 }

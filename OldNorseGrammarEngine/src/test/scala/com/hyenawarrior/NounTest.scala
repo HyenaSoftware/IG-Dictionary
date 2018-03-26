@@ -83,7 +83,9 @@ class NounTest {
 
     indef(PLURAL, ACCUSATIVE) -> "ríki",
     indef(PLURAL, GENITIVE) -> "ríkja",
-    indef(PLURAL, DATIVE) -> "ríkjum"
+    indef(PLURAL, DATIVE) -> "ríkjum",
+
+    defin(PLURAL, DATIVE) -> "ríkjunum"
   ))
 
   @Test
@@ -97,6 +99,9 @@ class NounTest {
     indef(PLURAL, DATIVE) -> "lǫndum"
   ))
 
+  /**
+    * Okay, this one is strange, not sure where I found it but it seems completely incorrect and/or irregular
+    */
   @Test
   def testStrongNeuterAForms3(): Unit =  diff(StrongStemClassNeuter, Map(
 

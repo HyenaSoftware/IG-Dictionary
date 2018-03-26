@@ -7,6 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber}
+import com.hyenawarrior.auxiliary.getCauses
 import org.junit.Assert._
 
 import scala.language.implicitConversions
@@ -64,7 +65,7 @@ object NounTestAux {
 
       val diffText = differences
         .map {
-          case (tableName, Left(exception)) => s"$tableName\n${exception.getMessage}"
+          case (tableName, Left(exception)) => getCauses(exception).mkString(s"$tableName  \n","\n  caused by: ", "")
           case (tableName, Right(records)) =>
 
             val abbrevatedRecords = records.map { case ((decl, isDef), e2, e3) => (abbrevationOf(decl, isDef), e2, e3) }
