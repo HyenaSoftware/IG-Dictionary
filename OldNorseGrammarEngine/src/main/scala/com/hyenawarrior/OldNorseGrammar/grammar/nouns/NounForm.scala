@@ -25,7 +25,7 @@ object NounForm {
     val umlautedRootStr = if(canBeUmlauted) U_Umlaut(rootStr).getOrElse(rootStr) else rootStr
 
     // inflect
-    val Some(inflectedForm) = stemClass(umlautedRootStr, declension, isDefinite)
+    val Some(inflectedForm) = stemClass(umlautedRootStr, declension)
 
     // apply Siever's law
     val ijCorrectedStr = (SieversLaw restore inflectedForm) getOrElse inflectedForm
@@ -52,7 +52,9 @@ object NounForm {
       if(stemClass.thematicVowel.isDefined && (strAfterVowelDeletion endsWith "r"))
         strAfterVowelDeletion else ConsonantAssimilation(strAfterVowelDeletion)
 
-    NounForm(strConsAssimilation, declension, isDefinite)
+    val nounForm = NounForm(strConsAssimilation, declension, isDefinite)
+
+    if(isDefinite) CliticArticle(nounForm, stemClass) else nounForm
   }
 
   def nounFrom(str: String) = 0

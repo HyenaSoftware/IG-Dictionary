@@ -15,12 +15,14 @@ object NounStem {
 
   def from(nounForm: NounForm, stemClass: NounStemClass): NounStem = {
 
+    val indefNounForm = CliticArticle.removeArticle(nounForm, stemClass).getOrElse(nounForm).strRepr
+
     // undo consonant assimilation
-    val consAssimilatedStrs = ConsonantAssimilation invert nounForm.strRepr
+    val consAssimilatedStrs = ConsonantAssimilation invert indefNounForm
 
     // remove inflectional ending and clitic
     val uninflectedStrs = consAssimilatedStrs
-      .map((_, nounForm.declension, nounForm.isDefinite))
+      .map(_ -> nounForm.declension)
       .flatMap {
 
         case stemClass(ustr) => Some(ustr)
