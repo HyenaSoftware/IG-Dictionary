@@ -46,11 +46,7 @@ object NounForm {
     val strAfterVowelDeletion = VowelDeletion(strAfterBreaking)
 
     // consonant assimilation
-    val strConsAssimilation =
-      // perhaps the presence of the thematic vowel in the Proto-Germanic blocked the assimilation of the -r in the
-      // Old Norse as well: *walþuz -> *vǫllur -> vǫllr (instead of vǫll)
-      if(stemClass.thematicVowel.isDefined && (strAfterVowelDeletion endsWith "r"))
-        strAfterVowelDeletion else ConsonantAssimilation(strAfterVowelDeletion)
+    val strConsAssimilation = ConsonantAssimilation(strAfterVowelDeletion)
 
     val nounForm = NounForm(strConsAssimilation, declension, isDefinite)
 

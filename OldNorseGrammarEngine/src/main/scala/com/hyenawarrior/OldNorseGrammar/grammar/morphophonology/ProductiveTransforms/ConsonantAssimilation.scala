@@ -37,7 +37,7 @@ object ConsonantAssimilation {
   private val rx_rsk = "^(.+)rsk(.*)$".r
   private val rx_dsk = "^(.+)ðsk(.*)$".r
   private val rx_nn2eth = "^(.*a)nn(r.*)$".r
-  private val rx_r2ln = "^(.*)([ln])r$".r
+  private val rx_r2ln = "^(.*([ln]))r$".r
   private val rx_sr2ss = "^(.*)sr$".r
   private val rx_2cs = "^(.*)([bdðfghjklmnprstvxzþ]{2})([bdðfghjklmnprstvxzþ])(.*)$".r
 
@@ -48,9 +48,20 @@ object ConsonantAssimilation {
     case rx_dsk(s, p) => s"${s}zk$p"
     case rx_nn2eth(a, b) => s"${a}ð$b"
     //case s if s.contains("annr") => s.replace("annr", "aðr")
-    case rx_r2ln(s @ Syllables(syls), c) if 1 < syls.size || syls.head.length!=SHORT => s"$s$c$c"
+    case rx_r2ln(str, c) if !isShortMonosyllabic(str) => s"$str$c"
     case rx_sr2ss(a) => s"${a}ss"
     case rx_2cs(p, c2, c, s) if c2.last == c.head => s"$p$c2$s"
+  }
+
+  private def isShortMonosyllabic(str: String): Boolean = {
+
+    // in such stems, like vǫll-, hall-, the first syllable should be counted as short
+    val Syllables(syls) = str.replace("ll", "l").concat("a")
+
+    // the second syllable is extrametrical, don't count it
+    val isShortMonosyllabic = syls.size == 2 && syls.head.length == SHORT
+
+    isShortMonosyllabic
   }
 
   private val rx_z = "^(.+)z(.+)$".r
