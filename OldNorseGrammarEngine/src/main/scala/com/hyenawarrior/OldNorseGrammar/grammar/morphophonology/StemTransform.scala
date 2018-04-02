@@ -260,10 +260,12 @@ object StemTransform {
 
     def unapply(stemStr: String): Option[String] = {
 
-      val Syllables(sy :: _) = stemStr
+      val Syllables(sys @ (sy :: _)) = stemStr
+
+      val endsSingleCons = sys.length == 1 && sys.last.coda.length == 1
 
       sy.nucleus match {
-        case "i" | "í" => Some(if(stemStr endsWith "j") stemStr else stemStr + "j")
+        case "i" | "í" if endsSingleCons || stemStr.endsWith("gg") => Some(if(stemStr endsWith "j") stemStr else stemStr + "j")
         case _ => None
       }
     }
