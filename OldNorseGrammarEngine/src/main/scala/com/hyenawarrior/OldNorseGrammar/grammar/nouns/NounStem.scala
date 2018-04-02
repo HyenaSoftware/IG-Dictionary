@@ -63,8 +63,10 @@ object NounStem {
 	    kné + um
      */
 
+    val undoSyncope = uninflectedStr.replace("mn", "min")
+
     // undo stress-shift
-    val strBeforeStressShift = uninflectedStr match {
+    val strBeforeStressShift = undoSyncope match {
 
       case StressShift(str) => str.dropRight(1) // unapply of StressShift doesn't drop the extra vowel of 'j'
       case s => s
