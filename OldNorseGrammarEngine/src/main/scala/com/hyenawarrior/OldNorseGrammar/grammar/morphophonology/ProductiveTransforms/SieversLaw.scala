@@ -19,10 +19,9 @@ object SieversLaw {
       */
   def restore(str: String): Option[String] = str match {
 
-    case Syllables(firstSy :: _) if firstSy.length == OVERLONG && str.contains("j") => Some {
+    case Syllables(firstSy :: _) if firstSy.length == OVERLONG && str.contains("j") => Some { str.replace("j", "ij") }
 
-        str.replace("j", "ij")
-      }
+    case Syllables(firstSy :: _) if firstSy.length == LONG && str.endsWith("i") => Some { str.replace("i", "ij") }
 
     case _ => None
   }

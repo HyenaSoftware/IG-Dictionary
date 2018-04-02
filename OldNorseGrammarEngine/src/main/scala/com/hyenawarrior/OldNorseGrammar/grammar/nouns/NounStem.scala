@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, StressShift}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SieversLaw, StressShift}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{FixJAugmentation, FixVAugmentation}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns
@@ -65,8 +65,10 @@ object NounStem {
 
     val undoSyncope = uninflectedStr.replace("mn", "min")
 
+    val undoIjRemoval = SieversLaw.restore(undoSyncope).getOrElse(undoSyncope).replace("ij","j")
+
     // undo stress-shift
-    val strBeforeStressShift = undoSyncope match {
+    val strBeforeStressShift = undoIjRemoval match {
 
       case StressShift(str) => str.dropRight(1) // unapply of StressShift doesn't drop the extra vowel of 'j'
       case s => s
