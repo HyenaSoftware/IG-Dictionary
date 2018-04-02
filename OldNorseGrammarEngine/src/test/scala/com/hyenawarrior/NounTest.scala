@@ -54,13 +54,25 @@ class NounTest {
   ))
 
   @Test
-  def testStrongMascAForms2(): Unit = diff(StrongStemClassMascA, Map(
+  def testStrongMascAFormsHestar(): Unit = diff(StrongStemClassMascA, Map(
 
     indef(PLURAL, NOMINATIVE) -> "hestar",
     indef(PLURAL, ACCUSATIVE) -> "hesta",
 
     defin(PLURAL, NOMINATIVE) -> "hestarnir",
     defin(PLURAL, ACCUSATIVE) -> "hestana"
+  ))
+
+  @Test
+  def testStrongMascAFormsHiminn(): Unit = diff(StrongStemClassMascA, Map(
+
+    indef(SINGULAR, NOMINATIVE) -> "himinn",
+    indef(SINGULAR, DATIVE)     -> "himni",
+    indef(PLURAL,   NOMINATIVE) -> "himnar",
+
+    defin(SINGULAR, NOMINATIVE) -> "himinninn",
+    defin(PLURAL, NOMINATIVE) -> "himnarnir",
+    defin(PLURAL, DATIVE)     -> "himnunum"
   ))
 
   @Test
