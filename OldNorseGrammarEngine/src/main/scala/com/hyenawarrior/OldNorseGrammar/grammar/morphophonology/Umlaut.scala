@@ -78,37 +78,7 @@ trait Umlaut extends WordTransformation with InvertableTransformation {
   protected def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]): Map[String, String]
 }
 
-@deprecated
-class U_Umlaut extends Umlaut
-{
-  def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]) = (syllableIsStressed, trigger) match {
-
-    case (true,  Some('u')) => umlautTransformStressed
-    case (true,  None     ) => umlautTransformStressed
-    case (false, _        ) => umlautTransformUnstressed
-    case (true,  Some('v')) => vAugmentedTransformation
-  }
-
-  protected val umlautTransformStressed = Map("a" -> "ǫ")
-
-  private val umlautTransformUnstressed = Map("a" -> "u")
-
-  override val triggers = Seq('u', 'v')
-
-  override def toString = "U-umlaut"
-
-  private val vAugmentedTransformation = Map(
-    "a" -> "ǫ",
-    "e" -> "ø",
-    "é" -> "œ",
-    "i" -> "y",
-    "í" -> "ý"
-  )
-
-  override val targetVowels = vAugmentedTransformation.values.toSet
-}
-
-object Explicit_I_Umlaut extends Umlaut with Explicit {
+object Explicit_I_Umlaut extends Umlaut {
 
   override val triggers = Seq('i', 'j')	// probably it's also pointless. Yeah, as I-umlaut is non-productive
 
@@ -130,7 +100,7 @@ object Explicit_I_Umlaut extends Umlaut with Explicit {
   override val targetVowels = umlautTransformation.values.toSet
 }
 
-object U_Umlaut extends Umlaut with Explicit {
+object U_Umlaut extends Umlaut {
 
   override val triggers = Seq('u')
 
@@ -147,7 +117,7 @@ object U_Umlaut extends Umlaut with Explicit {
   override val targetVowels = Set("ǫ")
 }
 
-object V_Umlaut extends Umlaut with Explicit {
+object V_Umlaut extends Umlaut {
 
   override val triggers = Seq('v')
 
@@ -168,6 +138,3 @@ object V_Umlaut extends Umlaut with Explicit {
 
   override val targetVowels = vAugmentedTransformation.values.toSet
 }
-
-@Deprecated
-object Explicit_U_Umlaut extends U_Umlaut with Explicit

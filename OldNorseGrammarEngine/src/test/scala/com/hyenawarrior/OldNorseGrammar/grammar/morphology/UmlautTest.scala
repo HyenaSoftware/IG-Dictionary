@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, Explicit_U_Umlaut, U_Umlaut, V_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut, V_Umlaut}
 import org.junit.Assert._
 import org.junit.Test
 
@@ -44,13 +44,5 @@ class UmlautTest {
 
 		assertEquals(Some("tyt"), Explicit_I_Umlaut("tut"))
 		assertEquals(Some("týt"), Explicit_I_Umlaut("tút"))
-	}
-
-	@Test
-	def testReverseUUmlaut(): Unit = {
-
-		val Explicit_U_Umlaut(strSyngva) = "syngv"
-
-		assertEquals("singv", strSyngva)
 	}
 }

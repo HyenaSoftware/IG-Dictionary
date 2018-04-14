@@ -26,9 +26,3 @@ trait WordTransformation {
 
   def canTransform(syllables: List[Syllable]): Boolean
 }
-
-@Deprecated
-trait Explicit extends WordTransformation
-{
-  override def canTransform(syllables: List[Syllable]): Boolean = true
-}
