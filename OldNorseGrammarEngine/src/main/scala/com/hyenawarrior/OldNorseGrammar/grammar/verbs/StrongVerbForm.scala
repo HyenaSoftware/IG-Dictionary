@@ -6,7 +6,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.{GNumber, Pronoun}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{Breaking, FixJAugmentation, FixVAugmentation}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.specialtransforms.StrongVerbSecondClassIUmlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.toNonFiniteVerbType
@@ -15,7 +15,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFinitiveMood, NonFinitiveVerbType, StrongVerbClassEnum, VerbClassEnum, VerbModeEnum, VerbTenseEnum, VerbVoice}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFinitiveMood, NonFinitiveVerbType, StrongVerbClassEnum, VerbClassEnum, VerbTenseEnum, VerbVoice}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem.fromStrRepr
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
@@ -75,8 +75,6 @@ object NonFinitiveStrongVerbForm {
   * Meta-class of object representation
   */
 object StrongVerbForm {
-
-  private object InverseBreaking { def unapply(arg: String): Option[String] = Breaking(arg) }
 
   def unapply(sv: StrongVerbForm): Option[(String, StrongVerbStem)] = sv match {
 
@@ -224,47 +222,71 @@ object StrongVerbForm {
 
   private def uninflect(verbStrRepr: String, verbClass: StrongVerbClassEnum, vt: VerbType): StrongVerbStem = {
 
-    val (mood, voice, optTense, optPronoun) = vt
-    val stemType: EnumVerbStem = stemFrom(vt)
+    val (mood, _, optTense, optPronoun) = vt
 
     val restoredVerbStrRepr = ConsonantAssimilation invert verbStrRepr
 
     // remove inflection
     val stemRepr = restoredVerbStrRepr.flatMap(uninflect(_, vt)).head
 
-    // undo SemivowelDeletion
-    val stemStrAugFixed = augment(stemRepr, verbClass, stemType)
+    val subInflectIumlautClass2 = SubInflect(verbClass, vt, Some(StrongVerbSecondClassIUmlaut))
+    val subInflectIumlaut = SubInflect(verbClass, vt, Some(Explicit_I_Umlaut))
+    val subInflectNo = SubInflect(verbClass, vt, None)
 
-    val createStemByFrontMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(Explicit_I_Umlaut)))
-    val createStemByBackMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(U_Umlaut)))
-    val createStem              = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, None))
+    // reverse non-productive I-umlaut ... mainly
+    (mood, optTense, optPronoun, stemRepr) match {
 
-    // remove non-productive changes
-    (mood, optTense, optPronoun, stemStrAugFixed) match {
-
-      case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _))
-        , StrongVerbSecondClassIUmlaut(createStemByFrontMutation(stem))) if verbClass == STRONG_2ND_CLASS => stem
-      case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _))
-        , Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
-      case (SUBJUNCTIVE,  Some(PAST),    Some(_)
-        , Explicit_I_Umlaut(createStemByFrontMutation(stem))) => stem
-
-      case (_, _, _, U_Umlaut(createStemByBackMutation(stem))) => stem
-      case (_, _, _, createStem(stem)) => stem
-      case (_, _, _, VowelLengthening(createStem(stem))) => stem
+      case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _)), StrongVerbSecondClassIUmlaut(subInflectIumlautClass2(stem)))
+        if verbClass == STRONG_2ND_CLASS => stem
+      case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _)), Explicit_I_Umlaut(subInflectIumlaut(stem))) => stem
+      case (SUBJUNCTIVE,  Some(PAST),    Some(_),                    Explicit_I_Umlaut(subInflectIumlaut(stem))) => stem
+      case (_, _, _, subInflectNo(stem)) => stem
     }
+  }
+
+  case class SubInflect(verbClass: StrongVerbClassEnum, vt: VerbType, optTransform: Option[Any]) {
+
+    def unapply(strWithoutUmlaut: String): Option[StrongVerbStem] = {
+
+      val (mood, _, optTense, optPronoun) = vt
+      val stemType: EnumVerbStem = stemFrom(vt)
+
+      // undo SemivowelDeletion
+      val stemStrAugFixed = augment(strWithoutUmlaut, verbClass, stemType, optTransform)
+
+      val createStemByFrontMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(Explicit_I_Umlaut)))
+      val createStemByBackMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(U_Umlaut)))
+      val createStem = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, None))
+
+      (mood, optTense, optPronoun, stemStrAugFixed) match {
+
+        case (INDICATIVE, Some(PRESENT), Some(Pronoun(SINGULAR, _)), createStemByFrontMutation(stem)) if verbClass == STRONG_2ND_CLASS => Some(stem)
+        case (INDICATIVE, Some(PRESENT), Some(Pronoun(SINGULAR, _)), createStemByFrontMutation(stem)) => Some(stem)
+        case (SUBJUNCTIVE, Some(PAST),   Some(_),                    createStemByFrontMutation(stem)) => Some(stem)
+
+        case (_, _, _, U_Umlaut(createStemByBackMutation(stem))) => Some(stem)
+        case (_, _, _, createStem(stem))                         => Some(stem)
+        case (_, _, _, VowelLengthening(createStem(stem)))       => Some(stem)
+        case _ => None
+      }
+    }
+  }
+
+  private object InvSVDForA {
+
+    def unapply(str: String): Option[String] = Some(str.replace("a", "ja"))
   }
 
   /**
     * verb-form -> non-inflected, non-augmented stem -> denormalized stem
     */
-  private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem): String
-    = (verbClass, stemType, stemStr) match {
+  private def augment(stemStr: String, verbClass: StrongVerbClassEnum, stemType: EnumVerbStem, optTransform: Option[Any]): String
+    = (verbClass, stemType, stemStr, optTransform) match {
 
     // helpr <-[I-umlaut + SVD]-- hjalp- --[breaking]-> help-
     // the effect of the next line is inverted back during the stem normalization, but the normalization also add a flag
     //  to indicate that this stem does have breaking - so, yes, it's redundant, but it's important to have the flag
-    case (STRONG_3RD_CLASS, PRESENT_STEM, InverseBreaking(s)) => s
+    case (STRONG_3RD_CLASS, PRESENT_STEM, InvSVDForA(s @ Breaking(_)), Some(Explicit_I_Umlaut)) => s
 
     /* do not fix the augmentation in any other cases:
       FIN    PST-STEM    PRS-STEM
@@ -284,8 +306,8 @@ object StrongVerbForm {
         * The augment does not appear in the past forms; the past stems ended in a single consonant,
          * which disappeared in the singular forms by the time of the ON texts.
     */
-    case (STRONG_3RD_CLASS | STRONG_7_2B_CLASS, _,            FixVAugmentation(augmentedStemStr)) => augmentedStemStr
-    case (STRONG_5TH_CLASS,                     PRESENT_STEM, FixJAugmentation(augmentedStemStr)) => augmentedStemStr
+    case (STRONG_3RD_CLASS | STRONG_7_2B_CLASS, _,            FixVAugmentation(augmentedStemStr), _) => augmentedStemStr
+    case (STRONG_5TH_CLASS,                     PRESENT_STEM, FixJAugmentation(augmentedStemStr), _) => augmentedStemStr
 
     case _ => stemStr
   }
