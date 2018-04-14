@@ -73,6 +73,8 @@ trait Umlaut extends WordTransformation with InvertableTransformation {
 
   val triggers: Seq[Char]
 
+  val targetVowels: Set[String]
+
   protected def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]): Map[String, String]
 }
 
@@ -101,6 +103,8 @@ class U_Umlaut extends Umlaut
     "i" -> "y",
     "í" -> "ý"
   )
+
+  override val targetVowels = vAugmentedTransformation.values.toSet
 }
 
 object Explicit_I_Umlaut extends Umlaut with Explicit {
@@ -121,9 +125,13 @@ object Explicit_I_Umlaut extends Umlaut with Explicit {
   )
 
   override def toString = "I-umlaut"
+
+  override val targetVowels = umlautTransformation.values.toSet
 }
 
 object U_Umlaut extends U_Umlaut
+
+object V_Umlaut extends U_Umlaut
 
 @Deprecated
 object Explicit_U_Umlaut extends U_Umlaut with Explicit
