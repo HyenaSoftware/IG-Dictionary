@@ -283,6 +283,7 @@ object StemTransform {
     *
     * <SHORT|"[:alpha:]+[kg]">w<"[au][:alpha:]*">
     */
+  @deprecated(message = "Use the split versions below")
   object FixVAugmentation {
 
     // this regex also prevent to add a final -v to a stem that already has augmentation
@@ -291,11 +292,33 @@ object StemTransform {
     def unapply(stemStr: String): Option[String] = stemStr match {
 
       // first syllable is affected by (V-augmented) U-Umlaut and stem ends in a velar consonant
-      case Syllables(Syllable(_, "a" | "ǫ" | "i" | "y" | "e", _, _, _) :: _) & velarEnd(_) => Some(stemStr + "v")
+      case Syllables(Syllable(_, "a" | "y", _, _, _) :: _) & velarEnd(_) => Some(stemStr + "v")
 
       // the last syllable of the stem is short
       case Syllables(_ :+ Syllable(_, _, _, _, SHORT)) => Some(stemStr + "v")
 
+      case _ => None
+    }
+  }
+
+  object FixVAugmentatAfterShortSyllable {
+
+    def unapply(stemStr: String): Option[String] = stemStr match {
+      // the last syllable of the stem is short
+      case Syllables(_ :+ Syllable(_, "a" | "i"  | "e", _, _, SHORT)) => Some(stemStr + "v")
+      case _ => None
+    }
+  }
+
+  object FixVAugmentatAfterVelar {
+
+    // this regex also prevent to add a final -v to a stem that already has augmentation
+    private val velarEnd = "^(.+(?:ng|gg|kk))$".r
+
+    def unapply(stemStr: String): Option[String] = stemStr match {
+
+      // first syllable is affected by (V-augmented) U-Umlaut and stem ends in a velar consonant
+      case Syllables(Syllable(_, "a" | "i"  | "e", _, _, _) :: _) & velarEnd(_) => Some(stemStr + "v")
       case _ => None
     }
   }
