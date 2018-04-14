@@ -5,6 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{F
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowel
 
 /**
   * Created by HyenaWarrior on 2018.01.31..
@@ -74,6 +75,8 @@ object NounStem {
       case s => s
     }
 
+    val inflectionalEnding = stemClass inflection nounForm.declension
+
     // reverse U-umlaut
     val (stemUnUmlautedStr, optUmlaut) = strBeforeStressShift match {
 
@@ -89,10 +92,24 @@ object NounStem {
       case s => s -> None
     }
 
+    // https://en.wikipedia.org/wiki/Proto-Germanic_language#Morphology
+    // I-mutation was the most important source of vowel alternation, and continued well into the history of the
+    // individual daughter languages (although it was either absent or not apparent in Gothic). In Proto-Germanic,
+    // only -e- was affected, which was raised by -i- or -j- in the following syllable. Examples are numerous:
+    //  ...
+    //  Noun endings beginning with -i- in u-stem nouns: dative singular, nominative and genitive plural.
+    //  ...
+    // The following code fixes the stem vowels of skjǫldr: e.g.: skildir -> *skeldir (plural nominative form)
+    val stemStr = if(inflectionalEnding.contains("i") && stemUnUmlautedStr.filter(isVowel).toSeq == Seq('i')) {
+
+      stemUnUmlautedStr.replace("i", "e")
+
+    } else stemUnUmlautedStr
+
     // if optUmlaut!=None then a semivowel caused a productive umlaut mutation in every form of the noun
 
     //
-    val rootStr = removeThematicVowel(stemUnUmlautedStr, stemClass)
+    val rootStr = removeThematicVowel(stemStr, stemClass)
 
     // undo SVD
     val augmentedRootStr = augment(rootStr, optUmlaut)
