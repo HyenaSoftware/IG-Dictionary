@@ -8,7 +8,8 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.{GNumber, Pronoun}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.specialtransforms.StrongVerbSecondClassIUmlaut
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut, Umlaut, V_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.theseCanCauseUUmlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.toNonFiniteVerbType
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum._
@@ -193,8 +194,7 @@ object StrongVerbForm {
 
     val inflection = inflectionFor(verbType, stemStr)
 
-    val isVAugmented = stemStr endsWith "v"
-    val useUUmlaut = U_Umlaut.triggers.exists(c => inflection.contains(c)) || isVAugmented
+    val optUmlaut = theseCanCauseUUmlaut(stemStr + inflection)
     val isPastSingular = verbType match {
       case (INDICATIVE, _, Some(PAST), Some(Pronoun(SINGULAR, _))) => true
       case _ => false
@@ -203,7 +203,7 @@ object StrongVerbForm {
     val inflectedStem = Some((stemStr, inflection))
       .map {
         case (s, infl) => applyNonProductiveRules(verbType, verbClass)(s)
-          .orElse(if (useUUmlaut) U_Umlaut(s) else None)
+          .orElse(optUmlaut.flatMap(u => u(s)))
           .getOrElse(s) -> infl
       }
       .map { case (s, infl) => VowelLengthening(s) -> infl}
@@ -306,7 +306,8 @@ object StrongVerbForm {
         * The augment does not appear in the past forms; the past stems ended in a single consonant,
          * which disappeared in the singular forms by the time of the ON texts.
     */
-    case (STRONG_3RD_CLASS | STRONG_7_2B_CLASS, _,            FixVAugmentation(augmentedStemStr), _) => augmentedStemStr
+    case (STRONG_3RD_CLASS | STRONG_7_2B_CLASS, _, V_Umlaut(FixVAugmentatAfterVelar(augmentedStemStr)),         _) => augmentedStemStr
+    case (STRONG_3RD_CLASS | STRONG_7_2B_CLASS, _, V_Umlaut(FixVAugmentatAfterShortSyllable(augmentedStemStr)), _) => augmentedStemStr
     case (STRONG_5TH_CLASS,                     PRESENT_STEM, FixJAugmentation(augmentedStemStr), _) => augmentedStemStr
 
     case _ => stemStr

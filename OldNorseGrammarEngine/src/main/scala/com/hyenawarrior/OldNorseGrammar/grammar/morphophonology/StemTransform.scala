@@ -304,6 +304,8 @@ object StemTransform {
   object FixVAugmentatAfterShortSyllable {
 
     def unapply(stemStr: String): Option[String] = stemStr match {
+
+      case s if s.endsWith("v") => Some(stemStr)
       // the last syllable of the stem is short
       case Syllables(_ :+ Syllable(_, "a" | "i"  | "e", _, _, SHORT)) => Some(stemStr + "v")
       case _ => None
@@ -317,6 +319,7 @@ object StemTransform {
 
     def unapply(stemStr: String): Option[String] = stemStr match {
 
+      case s if s.endsWith("v") => Some(stemStr)
       // first syllable is affected by (V-augmented) U-Umlaut and stem ends in a velar consonant
       case Syllables(Syllable(_, "a" | "i"  | "e", _, _, _) :: _) & velarEnd(_) => Some(stemStr + "v")
       case _ => None

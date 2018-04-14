@@ -4,7 +4,6 @@ import com.hyenawarrior.OldNorseGrammar.grammar.PoSForm
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.SINGULAR
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender.FEMININE
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
 import com.hyenawarrior.auxiliary.TupleEx._
 
 /**
@@ -22,7 +21,11 @@ object NounForm {
     val canBeUmlauted = theseCanCauseUUmlaut(rootStr + stemClass.inflection(declension))
 
     // apply productive U-umlaut
-    val umlautedRootStr = if(canBeUmlauted) U_Umlaut(rootStr).getOrElse(rootStr) else rootStr
+    val umlautedRootStr = canBeUmlauted match {
+
+      case Some(umlaut) => umlaut(rootStr).getOrElse(rootStr)
+      case None => rootStr
+    }
 
     // inflect
     val Some(inflectedForm) = stemClass(umlautedRootStr, declension)

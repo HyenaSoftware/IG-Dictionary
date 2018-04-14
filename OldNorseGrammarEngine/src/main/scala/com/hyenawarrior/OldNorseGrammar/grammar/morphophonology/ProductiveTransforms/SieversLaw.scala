@@ -2,6 +2,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTrans
 
 import com.hyenawarrior.OldNorseGrammar.grammar.Syllable.Length._
 import com.hyenawarrior.OldNorseGrammar.grammar.Syllables
+import com.hyenawarrior.auxiliary.&
 
 /**
   * Created by HyenaWarrior on 2018.03.18..

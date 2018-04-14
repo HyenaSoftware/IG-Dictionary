@@ -1,10 +1,9 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SieversLaw, StressShift}
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{FixJAugmentation, FixVAugmentation}
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, Umlaut}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{FixJAugmentation, FixVAugmentatAfterShortSyllable, FixVAugmentatAfterVelar}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, Umlaut, V_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowel
 
 /**
@@ -77,17 +76,21 @@ object NounStem {
 
     val inflectionalEnding = stemClass inflection nounForm.declension
 
+    lazy val isNonProductiveUmlaut = stemClass.transformationFor(nounForm.declension).contains(U_Umlaut)
+
     // reverse U-umlaut
     val (stemUnUmlautedStr, optUmlaut) = strBeforeStressShift match {
 
-      case U_Umlaut(s) if strBeforeStressShift != s =>
+      case t @ U_Umlaut(s) if t != s =>
 
-        val inflectionalEnding = stemClass inflection nounForm.declension
-        val isLocallyTriggeredUmlaut = nouns.theseCanCauseUUmlaut(inflectionalEnding)
-        val isNonProductiveUmlaut = stemClass.transformationFor(nounForm.declension).contains(U_Umlaut)
+        val stemVowel = strBeforeStressShift.find(isVowel).head
+        val vowelIsResultOfVaugment = U_Umlaut.targetVowels.filter(_ != 'ǫ').contains(stemVowel.toString)
+        val appliedUmlaut = if (vowelIsResultOfVaugment) V_Umlaut else U_Umlaut
 
-        val globalUmlaut = if (isNonProductiveUmlaut || isLocallyTriggeredUmlaut) None else Some(U_Umlaut)
-        s -> globalUmlaut
+        s -> Some(appliedUmlaut)
+
+      // umlaut application comes from a non-productive rule
+      case s if isNonProductiveUmlaut => s -> Some(U_Umlaut)
 
       case s => s -> None
     }
@@ -122,8 +125,9 @@ object NounStem {
   private def augment(stemStr: String, optUmlaut: Option[Umlaut]): String = (stemStr, optUmlaut) match {
 
     case (FixJAugmentation(fixedStemStr), _) => fixedStemStr
-    case (FixVAugmentation(fixedStemStr), _) => fixedStemStr
-    case (_, Some(U_Umlaut)) => stemStr + "v"
+      // hǫgg- -> haggv-
+    case (FixVAugmentatAfterVelar(fixedStemStr), Some(V_Umlaut | U_Umlaut)) => fixedStemStr
+    case (FixVAugmentatAfterShortSyllable(fixedStemStr),    Some(V_Umlaut)) => fixedStemStr
     case _ => stemStr
   }
 

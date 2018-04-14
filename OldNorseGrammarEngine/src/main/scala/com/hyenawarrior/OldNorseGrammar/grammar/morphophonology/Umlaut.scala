@@ -78,6 +78,7 @@ trait Umlaut extends WordTransformation with InvertableTransformation {
   protected def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]): Map[String, String]
 }
 
+@deprecated
 class U_Umlaut extends Umlaut
 {
   def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]) = (syllableIsStressed, trigger) match {
@@ -129,9 +130,44 @@ object Explicit_I_Umlaut extends Umlaut with Explicit {
   override val targetVowels = umlautTransformation.values.toSet
 }
 
-object U_Umlaut extends U_Umlaut
+object U_Umlaut extends Umlaut with Explicit {
 
-object V_Umlaut extends U_Umlaut
+  override val triggers = Seq('u')
+
+  def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]) =
+    if(syllableIsStressed) umlautTransformStressed
+    else umlautTransformUnstressed
+
+  protected val umlautTransformStressed = Map("a" -> "ǫ")
+
+  private val umlautTransformUnstressed = Map("a" -> "u")
+
+  override def toString = "U-umlaut"
+
+  override val targetVowels = Set("ǫ")
+}
+
+object V_Umlaut extends Umlaut with Explicit {
+
+  override val triggers = Seq('v')
+
+  def getMapping(syllableIsStressed: Boolean, trigger: Option[Char]) = if(syllableIsStressed) vAugmentedTransformation
+  else umlautTransformUnstressed
+
+  private val vAugmentedTransformation = Map(
+    "a" -> "ǫ",
+    "e" -> "ø",
+    "é" -> "œ",
+    "i" -> "y",
+    "í" -> "ý"
+  )
+
+  private val umlautTransformUnstressed = Map("a" -> "u")
+
+  override def toString = "U-umlaut"
+
+  override val targetVowels = vAugmentedTransformation.values.toSet
+}
 
 @Deprecated
 object Explicit_U_Umlaut extends U_Umlaut with Explicit

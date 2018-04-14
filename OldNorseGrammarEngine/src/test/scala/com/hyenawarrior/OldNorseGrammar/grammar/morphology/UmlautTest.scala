@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, Explicit_U_Umlaut, U_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, Explicit_U_Umlaut, U_Umlaut, V_Umlaut}
 import org.junit.Assert._
 import org.junit.Test
 
@@ -20,9 +20,9 @@ class UmlautTest {
 	@Test
 	def testBasicUUmlautWithVTrigger() {
 
-		assertEquals(Some("tǫttuttv"), U_Umlaut("tattattv"))
-    assertEquals(Some("tøttittv"), U_Umlaut("tettittv"))
-    assertEquals(Some("tyttyttv"), U_Umlaut("tittyttv"))
+    assertEquals(Some("tǫttuttv"), V_Umlaut("tattattv"))
+    assertEquals(Some("tøttittv"), V_Umlaut("tettittv"))
+    assertEquals(Some("tyttyttv"), V_Umlaut("tittyttv"))
 	}
 
 	@Test
