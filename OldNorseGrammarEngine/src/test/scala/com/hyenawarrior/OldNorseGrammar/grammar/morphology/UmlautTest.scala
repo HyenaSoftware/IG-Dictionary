@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut, V_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{I_Umlaut, U_Umlaut, V_Umlaut}
 import org.junit.Assert._
 import org.junit.Test
 
@@ -36,13 +36,13 @@ class UmlautTest {
 	@Test
 	def testBasicIUmlaut() {
 
-		assertEquals(Some("tet"), Explicit_I_Umlaut("tat"))
-		assertEquals(Some("tæt"), Explicit_I_Umlaut("tát"))
+		assertEquals(Some("tet"), I_Umlaut("tat"))
+		assertEquals(Some("tæt"), I_Umlaut("tát"))
 
-		assertEquals(Some("tøt"), Explicit_I_Umlaut("tot"))
-		assertEquals(Some("tœt"), Explicit_I_Umlaut("tót"))
+		assertEquals(Some("tøt"), I_Umlaut("tot"))
+		assertEquals(Some("tœt"), I_Umlaut("tót"))
 
-		assertEquals(Some("tyt"), Explicit_I_Umlaut("tut"))
-		assertEquals(Some("týt"), Explicit_I_Umlaut("tút"))
+		assertEquals(Some("tyt"), I_Umlaut("tut"))
+		assertEquals(Some("týt"), I_Umlaut("tút"))
 	}
 }

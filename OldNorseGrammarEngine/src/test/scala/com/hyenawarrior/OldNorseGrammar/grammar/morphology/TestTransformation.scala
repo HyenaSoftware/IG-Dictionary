@@ -2,7 +2,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{StressShift, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{DevoiceAfterLateral, JAugment, NasalAssimilation, Raising}
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, StemTransform}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{I_Umlaut, StemTransform}
 import org.junit.Assert._
 import org.junit.Test
 
@@ -134,7 +134,7 @@ class TestTransformation {
 	def testEToJaAndIUmlautInversion(): Unit = {
 
 		val stemStr = StemTransform.Breaking("geld").get
-		val stemStr2 = Explicit_I_Umlaut(stemStr).get
+		val stemStr2 = I_Umlaut(stemStr).get
 		val stemStr3 = SemivowelDeletion(stemStr2)
 
 		assertEquals("geld", stemStr3)

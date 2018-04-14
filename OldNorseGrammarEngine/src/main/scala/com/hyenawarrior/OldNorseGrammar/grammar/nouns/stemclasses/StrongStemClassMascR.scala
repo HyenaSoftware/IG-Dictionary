@@ -2,7 +2,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses
 
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.Explicit_I_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.I_Umlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.NounType
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 
@@ -15,8 +15,8 @@ object StrongStemClassMascR extends NounStemClassEnum with MasculineNoun {
 
   override def transformationFor(decl: NounType) = decl match {
 
-		case (SINGULAR, DATIVE) => Some(Explicit_I_Umlaut)
-		case (PLURAL, NOMINATIVE | ACCUSATIVE) => Some(Explicit_I_Umlaut)
+		case (SINGULAR, DATIVE) => Some(I_Umlaut)
+		case (PLURAL, NOMINATIVE | ACCUSATIVE) => Some(I_Umlaut)
 		case _ => None
 	}
 

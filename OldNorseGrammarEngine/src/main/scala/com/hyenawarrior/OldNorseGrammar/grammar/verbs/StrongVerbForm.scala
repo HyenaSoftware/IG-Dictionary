@@ -8,7 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.{GNumber, Pronoun}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.specialtransforms.StrongVerbSecondClassIUmlaut
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{Explicit_I_Umlaut, U_Umlaut, Umlaut, V_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{I_Umlaut, U_Umlaut, V_Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.theseCanCauseUUmlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.toNonFiniteVerbType
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.NonFinitiveVerbType.{PAST_PARTICIPLE, PRESENT_PARTICIPLE}
@@ -230,7 +230,7 @@ object StrongVerbForm {
     val stemRepr = restoredVerbStrRepr.flatMap(uninflect(_, vt)).head
 
     val subInflectIumlautClass2 = SubInflect(verbClass, vt, Some(StrongVerbSecondClassIUmlaut))
-    val subInflectIumlaut = SubInflect(verbClass, vt, Some(Explicit_I_Umlaut))
+    val subInflectIumlaut = SubInflect(verbClass, vt, Some(I_Umlaut))
     val subInflectNo = SubInflect(verbClass, vt, None)
 
     // reverse non-productive I-umlaut ... mainly
@@ -238,8 +238,8 @@ object StrongVerbForm {
 
       case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _)), StrongVerbSecondClassIUmlaut(subInflectIumlautClass2(stem)))
         if verbClass == STRONG_2ND_CLASS => stem
-      case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _)), Explicit_I_Umlaut(subInflectIumlaut(stem))) => stem
-      case (SUBJUNCTIVE,  Some(PAST),    Some(_),                    Explicit_I_Umlaut(subInflectIumlaut(stem))) => stem
+      case (INDICATIVE,   Some(PRESENT), Some(Pronoun(SINGULAR, _)), I_Umlaut(subInflectIumlaut(stem))) => stem
+      case (SUBJUNCTIVE,  Some(PAST),    Some(_),                    I_Umlaut(subInflectIumlaut(stem))) => stem
       case (_, _, _, subInflectNo(stem)) => stem
     }
   }
@@ -254,7 +254,7 @@ object StrongVerbForm {
       // undo SemivowelDeletion
       val stemStrAugFixed = augment(strWithoutUmlaut, verbClass, stemType, optTransform)
 
-      val createStemByFrontMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(Explicit_I_Umlaut)))
+      val createStemByFrontMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(I_Umlaut)))
       val createStemByBackMutation = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, Some(U_Umlaut)))
       val createStem = TryExtract[String, StrongVerbStem](fromStrRepr(_, verbClass, stemType, None))
 
@@ -286,7 +286,7 @@ object StrongVerbForm {
     // helpr <-[I-umlaut + SVD]-- hjalp- --[breaking]-> help-
     // the effect of the next line is inverted back during the stem normalization, but the normalization also add a flag
     //  to indicate that this stem does have breaking - so, yes, it's redundant, but it's important to have the flag
-    case (STRONG_3RD_CLASS, PRESENT_STEM, InvSVDForA(s @ Breaking(_)), Some(Explicit_I_Umlaut)) => s
+    case (STRONG_3RD_CLASS, PRESENT_STEM, InvSVDForA(s @ Breaking(_)), Some(I_Umlaut)) => s
 
     /* do not fix the augmentation in any other cases:
       FIN    PST-STEM    PRS-STEM
@@ -415,17 +415,17 @@ object StrongVerbForm {
       verbClass match {
 
         case STRONG_2ND_CLASS => StrongVerbSecondClassIUmlaut(str)
-        case _ => Explicit_I_Umlaut(str)
+        case _ => I_Umlaut(str)
       }
 
-    case (SUBJUNCTIVE, _, Some(PAST),    Some(_)) => Explicit_I_Umlaut(str)
+    case (SUBJUNCTIVE, _, Some(PAST),    Some(_)) => I_Umlaut(str)
 
     case (INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(Pronoun(SINGULAR, 2 | 3))) =>
 
       verbClass match {
 
         case STRONG_2ND_CLASS => StrongVerbSecondClassIUmlaut(str)
-        case _ => Explicit_I_Umlaut(str)
+        case _ => I_Umlaut(str)
       }
 
     // FIXME: apply U-umlaut here, to avoid interference with I-umlaut
