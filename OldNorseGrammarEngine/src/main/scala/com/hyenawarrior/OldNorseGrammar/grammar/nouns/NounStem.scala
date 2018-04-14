@@ -1,10 +1,11 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nouns
 
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{ConsonantAssimilation, SieversLaw, StressShift}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.NounStemClass
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform.{FixJAugmentation, FixVAugmentatAfterShortSyllable, FixVAugmentatAfterVelar}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, Umlaut, V_Umlaut}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.{NounStemClass, StrongStemClassFeminineA2}
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowel
+import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Syllables}
 
 /**
   * Created by HyenaWarrior on 2018.01.31..
@@ -29,7 +30,6 @@ object NounStem {
         case _ => None
       }
 
-    // reverse-SVD should be done here?
 
     // try to continue the process by choosing the first string
     uninflectedStrs.headOption match {
@@ -114,8 +114,15 @@ object NounStem {
     //
     val rootStr = removeThematicVowel(stemStr, stemClass)
 
+    // reverse-SVD should be done here?
+    val rootStrJ = (stemClass, rootStr) match {
+
+      case (StrongStemClassFeminineA2, Syllables(Syllable(_, "ey", "", _, _):: Nil)) => rootStr + "j"
+      case _ => rootStr
+    }
+
     // undo SVD
-    val augmentedRootStr = augment(rootStr, optUmlaut)
+    val augmentedRootStr = augment(rootStrJ, optUmlaut)
 
     // create the noun stem
     NounStem(augmentedRootStr, stemClass)

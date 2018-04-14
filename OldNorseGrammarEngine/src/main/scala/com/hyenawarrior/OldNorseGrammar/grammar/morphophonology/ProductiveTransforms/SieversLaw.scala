@@ -18,9 +18,11 @@ object SieversLaw {
       * rí-ki
       * ríkj-
       */
+  private val svJ = ".+[^y]j.*".r
+
   def restore(str: String): Option[String] = str match {
 
-    case Syllables(firstSy :: _) if firstSy.length == OVERLONG && str.contains("j") => Some { str.replace("j", "ij") }
+    case Syllables(firstSy :: _) & svJ() if firstSy.length == OVERLONG => Some { str.replace("j", "ij") }
 
     case Syllables(firstSy :: _) if firstSy.length == LONG && str.endsWith("i") => Some { str.replace("i", "ij") }
 

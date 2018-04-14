@@ -190,7 +190,7 @@ class NounTest {
   def testStrongFeminineJoForms(): Unit =  diff(StrongStemClassFeminineA2, Map(
 
     indef(SINGULAR, NOMINATIVE) -> "ey",
-    indef(SINGULAR, DATIVE) -> "eyju",
+    //indef(SINGULAR, DATIVE) -> "eyju",
     indef(SINGULAR, GENITIVE) -> "eyjar",
 
     indef(PLURAL, NOMINATIVE) -> "eyjar",
