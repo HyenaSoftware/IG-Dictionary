@@ -583,12 +583,29 @@ class VerbTest
 
     val verb = StrongVerb(STRONG_7_2B_CLASS, Map(srcForm -> "hǫggva", pp -> "hǫggvinn"))
 
+    val infActForm = verb.verbForms (INFINITIVE, ACTIVE, None, None)
+
+    assertEquals("haggv",  infActForm.getStem.stringForm())
     assertEquals("hǫggva",  verb.verbForms (INFINITIVE, ACTIVE, None, None).strRepr)
     // FIXME: haggv -> heggv -> høggv, should both of I and U umlaut applied ?
     assertEquals("hegg",    verb.verbForms(INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_1)).strRepr)
     //assertEquals("hjó",     verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.SG_3)).strForm)
     assertEquals("hjuggum", verb.verbForms(INDICATIVE, ACTIVE, Some(PAST), Some(Pronoun.PL_1)).strRepr)
     assertEquals("hǫggvinn",   verb.verbForms( PARTICIPLE, ACTIVE, Some(PAST), None).strRepr)
+
+    println("Generating forms from hǫggva ... OK")
+  }
+
+  @Test
+  def testClass72bHoggvaStem(): Unit = {
+
+    val presentS3 = (INDICATIVE, ACTIVE, Some(PRESENT), Some(Pronoun.SG_3))
+
+    val form = StrongVerbForm.fromStringRepr("heggr", STRONG_7_2B_CLASS, presentS3)
+
+    assertEquals("haggv",  form.getStem.stringForm())
+
+    println("Restoreing stem from hǫggva ... OK")
   }
 
   case class Format[K, V](m: Map[K, V]) {
