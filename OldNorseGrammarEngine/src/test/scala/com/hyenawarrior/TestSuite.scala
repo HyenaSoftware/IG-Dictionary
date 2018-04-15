@@ -27,6 +27,7 @@ import org.junit.runners.Suite
 	classOf[SyllablificationTest],
   classOf[MediopassiveVerbTest],
 	classOf[SubjMediopassiveVerbTest],
-	classOf[UmlautTest]
+	classOf[UmlautTest],
+	classOf[WeakVerbTest]
 ))
 class TestSuite

@@ -38,10 +38,10 @@ object enums {
     val PARTICIPLE 	= NonFinitiveMood("Participle")
   }
 
-  class VerbModeEnum(name: String) extends EnumConst[VerbModeEnum]
+  class VerbModeEnum(val name: String) extends EnumConst[VerbModeEnum]
 
-  case class FinitiveMood(name: String) 		extends VerbModeEnum(name)
-  case class NonFinitiveMood(name: String) extends VerbModeEnum(name)
+  case class FinitiveMood(override val name: String) 		extends VerbModeEnum(name)
+  case class NonFinitiveMood(override val name: String) extends VerbModeEnum(name)
 
   //
   case class VerbVoice(name: String) extends EnumConst[VerbVoice]
