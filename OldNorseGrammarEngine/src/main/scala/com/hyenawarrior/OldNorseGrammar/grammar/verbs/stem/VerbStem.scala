@@ -226,13 +226,13 @@ case class WeakVerbStem(stem: String, verbClass: WeakVerbClassEnum, stemType: En
 
   def getRoot: Root = Root {
 
-    val rootWithoutThematicVowel = stem stripSuffix stemFormingSuffix(verbClass)
+    val stemWithoutDental = stemType match {
 
-    stemType match {
-
-      case PRESENT_STEM => rootWithoutThematicVowel
-      case PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM => rootWithoutThematicVowel stripSuffix "ð"
+      case PRESENT_STEM => stem
+      case PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM => stem stripSuffix "ð"
     }
+
+    stemWithoutDental stripSuffix stemFormingSuffix(verbClass)
   }
 }
 
