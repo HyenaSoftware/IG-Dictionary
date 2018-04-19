@@ -98,7 +98,7 @@ object WeakVerbForm {
     case (ACTIVE, PRESENT, PL_2) => "ið"
     case (ACTIVE, PRESENT, PL_3) => "a"
 
-    case (ACTIVE, PAST, SG_1) => ""
+    case (ACTIVE, PAST, SG_1) => "a"
     case (ACTIVE, PAST, SG_2) => "ir"
     case (ACTIVE, PAST, SG_3) => "i"
     case (ACTIVE, PAST, PL_1) => "um"
