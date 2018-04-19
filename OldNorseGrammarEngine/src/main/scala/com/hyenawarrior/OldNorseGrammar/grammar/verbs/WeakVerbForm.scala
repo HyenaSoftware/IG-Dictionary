@@ -2,14 +2,17 @@ package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
 import java.lang.String._
 
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun._
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.stripSuffix
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{NonFinitiveMood, VerbClassEnum, VerbModeEnum, VerbTenseEnum, VerbVoice, WeakVerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.WeakVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 
 /**
   * Created by HyenaWarrior on 2017.04.19..
@@ -59,9 +62,24 @@ object WeakVerbForm {
 
   private def uninflect(verbStrRepr: String, verbClass: WeakVerbClassEnum, vt: VerbType): WeakVerbStem = {
 
-    val verbStem: EnumVerbStem = EnumVerbStem.PRESENT_STEM
+    val (_, _, optTargetTense, optPronoun) = vt
 
-    new WeakVerbStem(verbStrRepr, verbClass, verbStem, TransformationMode.Undefined)
+    val verbStem: EnumVerbStem = (optTargetTense, optPronoun) match {
+
+      case (Some(PRESENT) | None, _) => PRESENT_STEM
+      case (Some(PAST), Some(Pronoun(SINGULAR, _))) => PRETERITE_SINGULAR_STEM
+      case (Some(PAST), Some(Pronoun(PLURAL, _)))   => PRETERITE_PLURAL_STEM
+      case (Some(PAST), None) => PERFECT_STEM
+      case _ =>
+        throw new RuntimeException("Verb can't be create from this stem.")
+    }
+
+    val infl = inflectionFor(vt, verbStrRepr)
+
+    val stemStr = stripSuffix(verbStrRepr, infl)
+
+
+    new WeakVerbStem(stemStr, verbClass, verbStem, TransformationMode.Undefined)
   }
 
   private def inflectionFor(verbType: VerbType, stemOrVerbStr: String): String = verbType match {
