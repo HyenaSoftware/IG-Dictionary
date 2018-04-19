@@ -7,10 +7,11 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.{Disabled, EnabledFor, Undefined}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{StrongVerbClassEnum, WeakVerbClassEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{StrongVerbClassEnum, VerbClassEnum, WeakVerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.WeakVerbStem.stemFormingSuffix
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_SINGULAR_STEM}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
 
 /**
   * Created by HyenaWarrior on 2017.04.22..
@@ -223,14 +224,31 @@ case class WeakVerbStem(stem: String, verbClass: WeakVerbClassEnum, stemType: En
 
   override def stringForm(): String = stem
 
-  def getRoot: Root = Root(stem)
+  def getRoot: Root = Root {
+
+    val rootWithoutThematicVowel = stem stripSuffix stemFormingSuffix(verbClass)
+
+    stemType match {
+
+      case PRESENT_STEM => rootWithoutThematicVowel
+      case PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM => rootWithoutThematicVowel stripSuffix "ð"
+    }
+  }
 }
 
 object WeakVerbStem {
 
   def fromRoot(getRoot: Root, verbClassEnum: WeakVerbClassEnum, stemType: EnumVerbStem): WeakVerbStem = {
 
-    WeakVerbStem(getRoot.word, verbClassEnum, stemType)
+    val rootWithStemSuffix = getRoot.word + stemFormingSuffix(verbClassEnum)
+
+    val stemRepr = stemType match {
+
+      case PRESENT_STEM => rootWithStemSuffix
+      case PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM => rootWithStemSuffix + "ð"
+    }
+
+    WeakVerbStem(stemRepr, verbClassEnum, stemType)
   }
 
   def fromStrRepr(stemStr: String, verbClassEnum: WeakVerbClassEnum, stemType: EnumVerbStem, appliedUmlaut: Option[Umlaut] = None): WeakVerbStem = {
@@ -238,5 +256,12 @@ object WeakVerbStem {
     val optTransformation = TransformationMode.Undefined
 
     WeakVerbStem(stemStr, verbClassEnum, stemType, optTransformation)
+  }
+
+  private[stem] def stemFormingSuffix(verbClassEnum: WeakVerbClassEnum): String = verbClassEnum match {
+
+    case WEAK_A_STEM => "a"
+    case WEAK_I_STEM => "i"
+    case WEAK_J_STEM => "j"
   }
 }
