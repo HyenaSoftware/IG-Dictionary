@@ -17,7 +17,7 @@ class WeakVerbTest {
   @Test
   def testAStemKalla(): Unit = diff(WEAK_A_STEM
     , Map(
-      EnumVerbStem.PRESENT_STEM -> "kall",
+      EnumVerbStem.PRESENT_STEM -> "kalla",
       EnumVerbStem.PRETERITE_SINGULAR_STEM -> "kallað",
       EnumVerbStem.PRETERITE_PLURAL_STEM -> "kallað",
       EnumVerbStem.PERFECT_STEM -> "kallað"
@@ -48,9 +48,9 @@ class WeakVerbTest {
   ))
 
   @Test
-  def testIShortStemVerja(): Unit = diff(WEAK_I_STEM
+  def testJShortStemVerja(): Unit = diff(WEAK_I_STEM
     , Map(
-      EnumVerbStem.PRESENT_STEM -> "var",
+      EnumVerbStem.PRESENT_STEM -> "varj",
       EnumVerbStem.PRETERITE_SINGULAR_STEM -> "varð",
       EnumVerbStem.PRETERITE_PLURAL_STEM -> "varð",
       EnumVerbStem.PERFECT_STEM -> "varð"
@@ -83,7 +83,7 @@ class WeakVerbTest {
   @Test
   def testILongStemFella(): Unit = diff(WEAK_I_STEM
     , Map(
-      EnumVerbStem.PRESENT_STEM -> "fell",
+      EnumVerbStem.PRESENT_STEM -> "felli",
       EnumVerbStem.PRETERITE_SINGULAR_STEM -> "fellð",
       EnumVerbStem.PRETERITE_PLURAL_STEM -> "fellð",
       EnumVerbStem.PERFECT_STEM -> "fellð"
@@ -113,10 +113,13 @@ class WeakVerbTest {
       (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "felldi"
   ))
 
+  /*
+    Basically the same test as that for telja, except the past stem is I-umlauted
+   */
   @Test
-  def testIShortStemSelja(): Unit = diff(WEAK_I_STEM
+  def testJShortStemSelja(): Unit = diff(WEAK_I_STEM
     , Map(
-      EnumVerbStem.PRESENT_STEM -> "seli",
+      EnumVerbStem.PRESENT_STEM -> "selj",
       EnumVerbStem.PRETERITE_SINGULAR_STEM -> "seld",
       EnumVerbStem.PRETERITE_PLURAL_STEM -> "seld",
       EnumVerbStem.PERFECT_STEM -> "seld"
@@ -130,7 +133,7 @@ class WeakVerbTest {
     ))
 
   @Test
-  def testIShortStemTelja(): Unit = diff(WEAK_I_STEM
+  def testJShortStemTelja(): Unit = diff(WEAK_I_STEM
     , Map(
       EnumVerbStem.PRESENT_STEM -> "talj",
       EnumVerbStem.PRETERITE_SINGULAR_STEM -> "talði",
@@ -166,7 +169,7 @@ class WeakVerbTest {
   @Test
   def testJStemVaka(): Unit = diff(WEAK_J_STEM
     , Map(
-      EnumVerbStem.PRESENT_STEM -> "vak",
+      EnumVerbStem.PRESENT_STEM -> "vakj",
       EnumVerbStem.PRETERITE_SINGULAR_STEM -> "vakð",
       EnumVerbStem.PRETERITE_PLURAL_STEM -> "vakð",
       EnumVerbStem.PERFECT_STEM -> "vakð"
