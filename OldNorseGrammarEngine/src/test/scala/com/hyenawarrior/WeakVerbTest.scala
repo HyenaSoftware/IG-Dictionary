@@ -114,6 +114,56 @@ class WeakVerbTest {
   ))
 
   @Test
+  def testIShortStemSelja(): Unit = diff(WEAK_I_STEM
+    , Map(
+      EnumVerbStem.PRESENT_STEM -> "seli",
+      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "seld",
+      EnumVerbStem.PRETERITE_PLURAL_STEM -> "seld",
+      EnumVerbStem.PERFECT_STEM -> "seld"
+    )
+    , Map(
+      (INFINITIVE, ACTIVE, None,          None)       -> "selja",
+
+      (INDICATIVE, ACTIVE, Some(PRESENT), Some(SG_3)) -> "selr",
+
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "seldi"
+    ))
+
+  @Test
+  def testIShortStemTelja(): Unit = diff(WEAK_I_STEM
+    , Map(
+      EnumVerbStem.PRESENT_STEM -> "talj",
+      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "talði",
+      EnumVerbStem.PRETERITE_PLURAL_STEM -> "talði",
+      EnumVerbStem.PERFECT_STEM -> "talði"
+    )
+    , Map(
+      (INFINITIVE, ACTIVE, None,          None)       -> "telja",
+      (PARTICIPLE, ACTIVE, Some(PAST),    None)       -> "talðr",
+
+      (INDICATIVE, ACTIVE, Some(PRESENT), Some(SG_3)) -> "telr",
+      (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_1)) -> "teljum",
+      (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_2)) -> "telið",
+      (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_3)) -> "telja",
+
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "talða",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "talði",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "tǫlðum",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "tǫlðu",
+
+      (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(SG_2)) -> "telir",
+      (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(SG_3)) -> "teli",
+      (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(PL_1)) -> "telim",
+      (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(PL_2)) -> "telið",
+      (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(PL_3)) -> "teli",
+
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "telða",
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "telði",
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "telðim",
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "telði"
+    ))
+
+  @Test
   def testJStemVaka(): Unit = diff(WEAK_J_STEM
     , Map(
       EnumVerbStem.PRESENT_STEM -> "vak",
