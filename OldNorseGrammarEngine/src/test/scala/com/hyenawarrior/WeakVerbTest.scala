@@ -136,9 +136,9 @@ class WeakVerbTest {
   def testJShortStemTelja(): Unit = diff(WEAK_I_STEM
     , Map(
       EnumVerbStem.PRESENT_STEM -> "talj",
-      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "talði",
-      EnumVerbStem.PRETERITE_PLURAL_STEM -> "talði",
-      EnumVerbStem.PERFECT_STEM -> "talði"
+      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "talð",
+      EnumVerbStem.PRETERITE_PLURAL_STEM -> "talð",
+      EnumVerbStem.PERFECT_STEM -> "talð"
     )
     , Map(
       (INFINITIVE, ACTIVE, None,          None)       -> "telja",
