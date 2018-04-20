@@ -242,10 +242,11 @@ object WeakVerbStem {
 
     val rootWithStemSuffix = getRoot.word + stemFormingSuffix(verbClassEnum)
 
-    val stemRepr = stemType match {
+    val stemRepr = (stemType, verbClassEnum) match {
 
-      case PRESENT_STEM => rootWithStemSuffix
-      case PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM => rootWithStemSuffix + "ð"
+      case (PRESENT_STEM, _) => rootWithStemSuffix
+      case (PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM, WEAK_I_STEM) => getRoot.word + "ð"
+      case (PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM, _) => rootWithStemSuffix + "ð"
     }
 
     WeakVerbStem(stemRepr, verbClassEnum, stemType)
