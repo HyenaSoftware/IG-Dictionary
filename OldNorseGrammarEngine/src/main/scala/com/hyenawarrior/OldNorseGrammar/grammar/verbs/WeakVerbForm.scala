@@ -56,6 +56,16 @@ object WeakVerbForm {
     verb
   }
 
+  private def weakVerbStemEnumFrom(verbType: VerbType) = verbType match {
+
+    case (_, _, Some(PRESENT) | None, _) => PRESENT_STEM
+    case (_, _, Some(PAST), Some(Pronoun(SINGULAR, _))) => PRETERITE_SINGULAR_STEM
+    case (_, _, Some(PAST), Some(Pronoun(PLURAL, _)))   => PRETERITE_PLURAL_STEM
+    case (_, _, Some(PAST), None) => PERFECT_STEM
+    case _ =>
+      throw new RuntimeException("Verb can't be create from this stem.")
+  }
+
   private def inflect(verbType: VerbType, stemStr: String, verbClass: VerbClassEnum): String = {
 
     val infl = inflectionFor(verbType, stemStr)
@@ -69,21 +79,11 @@ object WeakVerbForm {
     stemStrU + infl
   }
 
-  private def uninflect(verbStrRepr: String, verbClass: WeakVerbClassEnum, vt: VerbType): WeakVerbStem = {
+  private def uninflect(verbStrRepr: String, verbClass: WeakVerbClassEnum, verbType: VerbType): WeakVerbStem = {
 
-    val (_, _, optTargetTense, optPronoun) = vt
+    val verbStem = weakVerbStemEnumFrom(verbType)
 
-    val verbStem: EnumVerbStem = (optTargetTense, optPronoun) match {
-
-      case (Some(PRESENT) | None, _) => PRESENT_STEM
-      case (Some(PAST), Some(Pronoun(SINGULAR, _))) => PRETERITE_SINGULAR_STEM
-      case (Some(PAST), Some(Pronoun(PLURAL, _)))   => PRETERITE_PLURAL_STEM
-      case (Some(PAST), None) => PERFECT_STEM
-      case _ =>
-        throw new RuntimeException("Verb can't be create from this stem.")
-    }
-
-    val infl = inflectionFor(vt, verbStrRepr)
+    val infl = inflectionFor(verbType, verbStrRepr)
 
     val stemStr = stripSuffix(verbStrRepr, infl)
 
