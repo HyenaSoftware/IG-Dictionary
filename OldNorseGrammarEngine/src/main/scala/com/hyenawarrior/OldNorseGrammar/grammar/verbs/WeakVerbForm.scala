@@ -5,7 +5,8 @@ import java.lang.String._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.stripSuffix
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, stripSuffix}
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.theseCanCauseUUmlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice._
@@ -57,7 +58,15 @@ object WeakVerbForm {
 
   private def inflect(verbType: VerbType, stemStr: String, verbClass: VerbClassEnum): String = {
 
-    stemStr + inflectionFor(verbType, stemStr)
+    val infl = inflectionFor(verbType, stemStr)
+
+    val stemStrU = theseCanCauseUUmlaut(infl) match {
+
+      case Some(U_Umlaut) => U_Umlaut(stemStr) getOrElse stemStr
+      case _ => stemStr
+    }
+
+    stemStrU + infl
   }
 
   private def uninflect(verbStrRepr: String, verbClass: WeakVerbClassEnum, vt: VerbType): WeakVerbStem = {
@@ -78,8 +87,14 @@ object WeakVerbForm {
 
     val stemStr = stripSuffix(verbStrRepr, infl)
 
+    // restore thematic vowel: kǫllum -> *k[ǫ->a]ll + um -> kalla + um
+    val stemStrNoU = (theseCanCauseUUmlaut(infl), stemStr) match {
 
-    new WeakVerbStem(stemStr, verbClass, verbStem, TransformationMode.Undefined)
+      case (Some(U_Umlaut), U_Umlaut(s)) => s
+      case (_, s) => s
+    }
+
+    new WeakVerbStem(stemStrNoU, verbClass, verbStem, TransformationMode.Undefined)
   }
 
   private def inflectionFor(verbType: VerbType, stemOrVerbStr: String): String = verbType match {
