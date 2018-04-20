@@ -258,7 +258,7 @@ object WeakVerbStem {
     WeakVerbStem(stemStr, verbClassEnum, stemType, optTransformation)
   }
 
-  private[stem] def stemFormingSuffix(verbClassEnum: WeakVerbClassEnum): String = verbClassEnum match {
+  def stemFormingSuffix(verbClassEnum: WeakVerbClassEnum): String = verbClassEnum match {
 
     case WEAK_A_STEM => "a"
     case WEAK_I_STEM => "i"
