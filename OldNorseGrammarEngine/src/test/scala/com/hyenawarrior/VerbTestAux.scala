@@ -94,23 +94,23 @@ object VerbTestAux {
 
       val tableName = s"\nGenerated forms from $strForm [${abbrevationOf(srcForm)}] (${idx+1} of $countOfTests):"
 
-      val status = try {
+      val optStatus: Option[Status] = try {
 
         val verb = WeakVerb(stemClass, Map(srcForm -> strForm))
 
         val generatedStem = (verb forms srcForm).getStem
 
-        checkStem(stems, generatedStem) getOrElse checkForms(forms, srcForm, verb)
+        checkStem(stems, generatedStem) orElse checkForms(forms, srcForm, verb)
 
-      } catch { case e: Exception => VerbGenerationError(e) }
+      } catch { case e: Exception => Some(VerbGenerationError(e)) }
 
-      tableName -> status
+      tableName -> optStatus
     }
 
-    printDiffs(results)
+    printDiffs(results.collect { case(tn, Some(st)) => tn -> st })
   }
 
-  def checkForms(forms: Map[VerbType, String], srcForm: VerbType, verb: WeakVerb): FormStatus = try FormStatus {
+  def checkForms(forms: Map[VerbType, String], srcForm: VerbType, verb: WeakVerb): Option[FormStatus] = try {
 
     val expectedForms = forms - srcForm
 
@@ -121,8 +121,13 @@ object VerbTestAux {
       (expectedFormType, expectedStrForm, generatedForm.strRepr)
     }
 
-    items.filter { case (_, a, b) => a != b }
-  } catch { case e: Exception => FormStatus(e) }
+    items.filter { case (_, a, b) => a != b } match {
+
+      case List() => None
+      case list => Some(FormStatus(list))
+    }
+
+  } catch { case e: Exception => Some(FormStatus(e)) }
 
   def checkStem(stems: Map[EnumVerbStem, String], generatedStem: WeakVerbStem): Option[StemStatus] = try {
 
