@@ -48,7 +48,7 @@ class WeakVerbTest {
   ))
 
   @Test
-  def testJShortStemVerja(): Unit = diff(WEAK_I_STEM
+  def testJShortStemVerja(): Unit = diff(WEAK_J_STEM
     , Map(
       EnumVerbStem.PRESENT_STEM -> "varj",
       EnumVerbStem.PRETERITE_SINGULAR_STEM -> "varð",
@@ -81,12 +81,12 @@ class WeakVerbTest {
   ))
 
   @Test
-  def testILongStemFella(): Unit = diff(WEAK_I_STEM
+  def testJLongStemFella(): Unit = diff(WEAK_J_STEM
     , Map(
       EnumVerbStem.PRESENT_STEM -> "felli",
-      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "fellð",
-      EnumVerbStem.PRETERITE_PLURAL_STEM -> "fellð",
-      EnumVerbStem.PERFECT_STEM -> "fellð"
+      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "felld",
+      EnumVerbStem.PRETERITE_PLURAL_STEM -> "felld",
+      EnumVerbStem.PERFECT_STEM -> "felld"
     )
     , Map(
       (INFINITIVE, ACTIVE, None,          None)       -> "fella",
@@ -117,7 +117,7 @@ class WeakVerbTest {
     Basically the same test as that for telja, except the past stem is I-umlauted
    */
   @Test
-  def testJShortStemSelja(): Unit = diff(WEAK_I_STEM
+  def testJShortStemSelja(): Unit = diff(WEAK_J_STEM
     , Map(
       EnumVerbStem.PRESENT_STEM -> "selj",
       EnumVerbStem.PRETERITE_SINGULAR_STEM -> "seld",
@@ -133,26 +133,26 @@ class WeakVerbTest {
     ))
 
   @Test
-  def testJShortStemTelja(): Unit = diff(WEAK_I_STEM
+  def testJShortStemTelja(): Unit = diff(WEAK_J_STEM
     , Map(
       EnumVerbStem.PRESENT_STEM -> "talj",
-      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "talð",
-      EnumVerbStem.PRETERITE_PLURAL_STEM -> "talð",
-      EnumVerbStem.PERFECT_STEM -> "talð"
+      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "tald",
+      EnumVerbStem.PRETERITE_PLURAL_STEM -> "tald",
+      EnumVerbStem.PERFECT_STEM -> "tald"
     )
     , Map(
       (INFINITIVE, ACTIVE, None,          None)       -> "telja",
-      (PARTICIPLE, ACTIVE, Some(PAST),    None)       -> "talðr",
+      (PARTICIPLE, ACTIVE, Some(PAST),    None)       -> "taldr",
 
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(SG_3)) -> "telr",
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_1)) -> "teljum",
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_2)) -> "telið",
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_3)) -> "telja",
 
-      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "talða",
-      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "talði",
-      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "tǫlðum",
-      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "tǫlðu",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "talda",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "taldi",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "tǫldum",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "tǫldu",
 
       (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(SG_2)) -> "telir",
       (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(SG_3)) -> "teli",
@@ -167,26 +167,26 @@ class WeakVerbTest {
     ))
 
   @Test
-  def testJStemVaka(): Unit = diff(WEAK_J_STEM
+  def testIStemVaka(): Unit = diff(WEAK_I_STEM
     , Map(
-      EnumVerbStem.PRESENT_STEM -> "vakj",
-      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "vakð",
-      EnumVerbStem.PRETERITE_PLURAL_STEM -> "vakð",
-      EnumVerbStem.PERFECT_STEM -> "vakð"
+      EnumVerbStem.PRESENT_STEM -> "vaki",
+      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "vakt",
+      EnumVerbStem.PRETERITE_PLURAL_STEM -> "vakt",
+      EnumVerbStem.PERFECT_STEM -> "vakt"
     )
     , Map(
       (INFINITIVE, ACTIVE, None,          None)       -> "vaka",
-      (PARTICIPLE, ACTIVE, Some(PAST),    None)       -> "vakat",
+      (PARTICIPLE, ACTIVE, Some(PAST),    None)       -> "vaktr",
 
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(SG_3)) -> "vakir",
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_1)) -> "vǫkum",
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_2)) -> "vakið",
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_3)) -> "vaka",
 
-      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "vakða",
-      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "vakði",
-      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "vǫkðum",
-      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "vakðu",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "vakta",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "vakti",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "vǫktum",
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "vǫktu",
 
       (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(SG_3)) -> "vaki",
       (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(PL_1)) -> "vakim",
