@@ -5,11 +5,13 @@ import java.lang.String.format
 import com.hyenawarrior.OldNorseGrammar.grammar.Root
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology._
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant.{isVoiced, isVoiceless}
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowel
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.TransformationMode.{Disabled, EnabledFor, Undefined}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{StrongVerbClassEnum, VerbClassEnum, WeakVerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.WeakVerbStem.stemFormingSuffix
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{StrongVerbClassEnum, WeakVerbClassEnum}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.WeakVerbStem.{dentalSuffixFor, stemFormingSuffix}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem.{PERFECT_STEM, PRESENT_STEM, PRETERITE_PLURAL_STEM, PRETERITE_SINGULAR_STEM}
 
@@ -229,7 +231,9 @@ case class WeakVerbStem(stem: String, verbClass: WeakVerbClassEnum, stemType: En
     val stemWithoutDental = stemType match {
 
       case PRESENT_STEM => stem
-      case PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM => stem stripSuffix "ð"
+      case PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM =>
+        val dentalSuffix = dentalSuffixFor(stem.init)
+        stem stripSuffix dentalSuffix
     }
 
     stemWithoutDental stripSuffix stemFormingSuffix(verbClass)
@@ -245,8 +249,8 @@ object WeakVerbStem {
     val stemRepr = (stemType, verbClassEnum) match {
 
       case (PRESENT_STEM, _) => rootWithStemSuffix
-      case (PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM, WEAK_I_STEM) => getRoot.word + "ð"
-      case (PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM, _) => rootWithStemSuffix + "ð"
+      case (PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM, WEAK_I_STEM) => appendDentalSuffix(getRoot.word)
+      case (PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM, _) => appendDentalSuffix(rootWithStemSuffix)
     }
 
     WeakVerbStem(stemRepr, verbClassEnum, stemType)
@@ -257,6 +261,15 @@ object WeakVerbStem {
     val optTransformation = TransformationMode.Undefined
 
     WeakVerbStem(stemStr, verbClassEnum, stemType, optTransformation)
+  }
+
+  def appendDentalSuffix(str: String) = str + dentalSuffixFor(str)
+
+  def dentalSuffixFor(str: String): String = str.last match {
+
+    case c if c == 'm' || c == 'l' => "d"
+    case c if isVoiceless(c) || c == 'n' => "t"
+    case c if isVoiced(c) || isVowel(c) => "ð"
   }
 
   def stemFormingSuffix(verbClassEnum: WeakVerbClassEnum): String = verbClassEnum match {
