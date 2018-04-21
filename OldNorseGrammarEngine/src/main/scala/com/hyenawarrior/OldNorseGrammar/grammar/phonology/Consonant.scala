@@ -9,6 +9,7 @@ object Consonant {
 
   private val nasals				= Set('n', 'm')
 
+  private val voiced        = Set('b', 'd', 'g', 'm', 'n', 'r', 'l')  // f/v, þ/ð
   private val voicedStop		= Set('b', 'd', 'g')
   private val voicelessStop = Set('p', 't', 'k')
 
@@ -22,6 +23,9 @@ object Consonant {
   def isConsonant(c: Char) = CONSONANTS contains c
 
   def isNasal(c: Char): Boolean = nasals contains c
+
+  def isVoiced(c: Char): Boolean = voiced contains c
+  def isVoiceless(c: Char): Boolean = isConsonant(c) && !isVoiced(c)
 
   def isVoicedStop(c: Char): Boolean = voicedStop contains c
 
