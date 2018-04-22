@@ -11,12 +11,13 @@ object Syllable {
 
   def lengthOf(nucleus: String, coda: String): Length = {
 
-    (nucleus, coda) match {
+    (nucleus, coda.toSeq) match {
 
-      case (v, "") if isShort(v) => Length.SHORT
-      case (v, "") if isLong(v)  => Length.LONG
-      case (v, cs) if isShort(v) => Length.LONG
-      case (v, cs) if isLong(v)  => Length.OVERLONG
+      case (v, Seq()) if isShort(v) => Length.SHORT
+      case (v, Seq()) if isLong(v)  => Length.LONG
+      case (v, Seq(c))      if isShort(v) => Length.LONG
+      case (v, Seq(c, _*))  if isShort(v) => Length.OVERLONG
+      case (v, _)           if isLong(v)  => Length.OVERLONG
     }
   }
 

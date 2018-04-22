@@ -71,7 +71,7 @@ class SyllablificationTest {
   @Test
   def testSyllablificationLongCons2(): Unit = check("hest",
 
-    Syllable("h", "e", "st", isStressed = true, Length.LONG))
+    Syllable("h", "e", "st", isStressed = true, Length.OVERLONG))
 
   @Test
   def testSyllablificationLongCons3(): Unit = check("gamali",
@@ -84,7 +84,7 @@ class SyllablificationTest {
   def testSyllablificationLongCons4(): Unit = check("hamarr",
 
     Syllable("h", "a", "", isStressed = true, Length.SHORT),
-    Syllable("m", "a", "rr", isStressed = false, Length.LONG))
+    Syllable("m", "a", "rr", isStressed = false, Length.OVERLONG))
 
   @Test
   def testSyllablificationOverLong(): Unit = check("nátt",
