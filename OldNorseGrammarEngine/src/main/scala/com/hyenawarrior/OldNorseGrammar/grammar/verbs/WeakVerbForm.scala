@@ -78,6 +78,7 @@ object WeakVerbForm {
     val infl = inflectionFor(verbType, stemStr)
 
     val verbStem = weakVerbStemEnumFrom(verbType)
+    val (mood, _, _, _) = verbType
 
     // delete thematic vowel: kalla + um -> *k[ǫ->a]ll + um ->kǫllum
     // skip 'j', that will be eliminated by SVD if necessary
@@ -91,17 +92,27 @@ object WeakVerbForm {
 
     } else stemStr
 
-    val stemStrU = (theseCanCauseUUmlaut(infl), verbClass, verbStem) match {
+    val stemStrU = (theseCanCauseUUmlaut(infl), verbClass, mood, verbStem) match {
 
-      case (Some(U_Umlaut), WEAK_A_STEM | WEAK_I_STEM,  _           ) => U_Umlaut(stemReduced) getOrElse stemReduced
-      case (_,              WEAK_J_STEM,                PRESENT_STEM) => I_Umlaut(stemReduced) getOrElse stemReduced
-      case (_,              WEAK_J_STEM, PRETERITE_SINGULAR_STEM
-                                       | PRETERITE_PLURAL_STEM
-                                       | PERFECT_STEM ) if isOverlongVerb(stemReduced, verbStem)
+      case (Some(U_Umlaut), WEAK_A_STEM
+                          | WEAK_I_STEM, INDICATIVE
+                                       | INFINITIVE
+                                       | PARTICIPLE, _          ) => U_Umlaut(stemReduced) getOrElse stemReduced
+      case (_,              WEAK_J_STEM, INDICATIVE
+                                       | INFINITIVE, PRESENT_STEM) => I_Umlaut(stemReduced) getOrElse stemReduced
+      case (_,              WEAK_J_STEM, INDICATIVE
+                                       | PARTICIPLE, PRETERITE_SINGULAR_STEM
+                                                   | PRETERITE_PLURAL_STEM
+                                                   | PERFECT_STEM ) if isOverlongVerb(stemReduced, verbStem)
                                                           => I_Umlaut(stemReduced) getOrElse stemReduced
-      case (Some(U_Umlaut), WEAK_J_STEM, PRETERITE_SINGULAR_STEM
-                                       | PRETERITE_PLURAL_STEM
-                                       | PERFECT_STEM ) => U_Umlaut(stemReduced) getOrElse stemReduced
+      case (Some(U_Umlaut), WEAK_J_STEM, INDICATIVE
+                                       | PARTICIPLE, PRETERITE_SINGULAR_STEM
+                                                   | PRETERITE_PLURAL_STEM
+                                                   | PERFECT_STEM ) => U_Umlaut(stemReduced) getOrElse stemReduced
+      case (_,              WEAK_I_STEM, SUBJUNCTIVE, PRETERITE_SINGULAR_STEM
+                                                    | PRETERITE_PLURAL_STEM
+                                                    | PERFECT_STEM ) => I_Umlaut(stemReduced) getOrElse stemReduced
+      case (_,              WEAK_J_STEM, SUBJUNCTIVE, _) => I_Umlaut(stemReduced) getOrElse stemReduced
       case _ => stemReduced
     }
 
@@ -112,6 +123,7 @@ object WeakVerbForm {
   private def uninflect(verbStrRepr: String, verbClass: WeakVerbClassEnum, verbType: VerbType): WeakVerbStem = {
 
     val verbStem = weakVerbStemEnumFrom(verbType)
+    val (mood, _, _, _) = verbType
 
     val infl = inflectionFor(verbType, verbStrRepr)
 
@@ -130,17 +142,26 @@ object WeakVerbForm {
     } else stemStr
 
     // restore thematic vowel: kǫllum -> *k[ǫ->a]ll + um -> kalla + um
-    val stemStrNoU = (theseCanCauseUUmlaut(infl), stemWithSuffix, verbClass, verbStem) match {
+    val stemStrNoU = (theseCanCauseUUmlaut(infl), stemWithSuffix, verbClass, mood, verbStem) match {
 
-      case (_,              I_Umlaut(s), WEAK_J_STEM, PRESENT_STEM) => s
-      case (_,              I_Umlaut(s), WEAK_J_STEM, PRETERITE_SINGULAR_STEM
-                                                    | PRETERITE_PLURAL_STEM
-                                                    | PERFECT_STEM) if isOverlongVerb(s, verbStem) => s
-      case (Some(U_Umlaut), U_Umlaut(s), WEAK_J_STEM, PRETERITE_SINGULAR_STEM
-                                                    | PRETERITE_PLURAL_STEM
-                                                    | PERFECT_STEM) => s
-      case (Some(U_Umlaut), U_Umlaut(s), WEAK_A_STEM | WEAK_I_STEM, _) => s
-      case (_, s, _, _) => s
+      case (_,              I_Umlaut(s), WEAK_J_STEM, INDICATIVE
+                                                    | INFINITIVE, PRESENT_STEM) => s
+      case (_,              I_Umlaut(s), WEAK_J_STEM, INDICATIVE
+                                                    | PARTICIPLE, PRETERITE_SINGULAR_STEM
+                                                                | PRETERITE_PLURAL_STEM
+                                                                | PERFECT_STEM) if isOverlongVerb(s, verbStem) => s
+      case (Some(U_Umlaut), U_Umlaut(s), WEAK_J_STEM, INDICATIVE
+                                                    | PARTICIPLE, PRETERITE_SINGULAR_STEM
+                                                                | PRETERITE_PLURAL_STEM
+                                                                | PERFECT_STEM) => s
+      case (Some(U_Umlaut), U_Umlaut(s), WEAK_A_STEM
+                                       | WEAK_I_STEM, INDICATIVE
+                                                    | INFINITIVE, _) => s
+      case (_,              I_Umlaut(s), WEAK_J_STEM, SUBJUNCTIVE, _) => s
+      case (_,              I_Umlaut(s), WEAK_I_STEM, SUBJUNCTIVE, PRETERITE_SINGULAR_STEM
+                                                                   | PRETERITE_PLURAL_STEM
+                                                                   | PERFECT_STEM) => s
+      case (_, s, _, _, _) => s
     }
 
     new WeakVerbStem(stemStrNoU, verbClass, verbStem, TransformationMode.Undefined)
