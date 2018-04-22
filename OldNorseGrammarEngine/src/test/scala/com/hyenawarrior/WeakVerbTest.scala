@@ -160,10 +160,10 @@ class WeakVerbTest {
       (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(PL_2)) -> "telið",
       (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(PL_3)) -> "teli",
 
-      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "telða",
-      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "telði",
-      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "telðim",
-      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "telði"
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "telda",
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "teldi",
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "teldim",
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "teldi"
     ))
 
   @Test
@@ -193,9 +193,9 @@ class WeakVerbTest {
       (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(PL_2)) -> "vakið",
       (SUBJUNCTIVE, ACTIVE, Some(PRESENT), Some(PL_3)) -> "vaki",
 
-      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "vekða",
-      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "vekði",
-      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "vekðim",
-      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "vekði"
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "vekta",
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "vekti",
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "vektim",
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "vekti"
   ))
 }
