@@ -57,7 +57,7 @@ class WeakVerbTest {
     )
     , Map(
       (INFINITIVE, ACTIVE, None,          None)       -> "verja",
-      (PARTICIPLE, ACTIVE, Some(PAST),    None)       -> "variðr",
+      (PARTICIPLE, ACTIVE, Some(PAST),    None)       -> "varðr",  // "variðr",
 
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(SG_3)) -> "verr",
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(PL_1)) -> "verjum",
@@ -83,10 +83,10 @@ class WeakVerbTest {
   @Test
   def testJLongStemFella(): Unit = diff(WEAK_J_STEM
     , Map(
-      EnumVerbStem.PRESENT_STEM -> "felli",
-      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "felld",
-      EnumVerbStem.PRETERITE_PLURAL_STEM -> "felld",
-      EnumVerbStem.PERFECT_STEM -> "felld"
+      EnumVerbStem.PRESENT_STEM -> "falli",
+      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "falld",
+      EnumVerbStem.PRETERITE_PLURAL_STEM -> "falld",
+      EnumVerbStem.PERFECT_STEM -> "falld"
     )
     , Map(
       (INFINITIVE, ACTIVE, None,          None)       -> "fella",
@@ -119,10 +119,10 @@ class WeakVerbTest {
   @Test
   def testJShortStemSelja(): Unit = diff(WEAK_J_STEM
     , Map(
-      EnumVerbStem.PRESENT_STEM -> "selj",
-      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "seld",
-      EnumVerbStem.PRETERITE_PLURAL_STEM -> "seld",
-      EnumVerbStem.PERFECT_STEM -> "seld"
+      EnumVerbStem.PRESENT_STEM -> "salj",
+      EnumVerbStem.PRETERITE_SINGULAR_STEM -> "sald",
+      EnumVerbStem.PRETERITE_PLURAL_STEM -> "sald",
+      EnumVerbStem.PERFECT_STEM -> "sald"
     )
     , Map(
       (INFINITIVE, ACTIVE, None,          None)       -> "selja",
