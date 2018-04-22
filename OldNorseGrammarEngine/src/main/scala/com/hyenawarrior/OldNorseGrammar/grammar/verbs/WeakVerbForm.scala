@@ -2,20 +2,24 @@ package com.hyenawarrior.OldNorseGrammar.grammar.verbs
 
 import java.lang.String._
 
+import com.hyenawarrior.OldNorseGrammar.grammar.Syllable.Length
+import com.hyenawarrior.OldNorseGrammar.grammar.Syllables
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{SemivowelDeletion, Syncope}
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, stripSuffix}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{I_Umlaut, U_Umlaut, stripSuffix}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.theseCanCauseUUmlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel.isVowel
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{NonFinitiveMood, VerbModeEnum, VerbTenseEnum, VerbVoice, WeakVerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.WeakVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.WeakVerbStem.stemFormingSuffix
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 
 /**
@@ -87,9 +91,17 @@ object WeakVerbForm {
 
     } else stemStr
 
-    val stemStrU = theseCanCauseUUmlaut(infl) match {
+    val stemStrU = (theseCanCauseUUmlaut(infl), verbClass, verbStem) match {
 
-      case Some(U_Umlaut) => U_Umlaut(stemReduced) getOrElse stemReduced
+      case (Some(U_Umlaut), WEAK_A_STEM | WEAK_I_STEM,  _           ) => U_Umlaut(stemReduced) getOrElse stemReduced
+      case (_,              WEAK_J_STEM,                PRESENT_STEM) => I_Umlaut(stemReduced) getOrElse stemReduced
+      case (_,              WEAK_J_STEM, PRETERITE_SINGULAR_STEM
+                                       | PRETERITE_PLURAL_STEM
+                                       | PERFECT_STEM ) if isOverlongVerb(stemReduced, verbStem)
+                                                          => I_Umlaut(stemReduced) getOrElse stemReduced
+      case (Some(U_Umlaut), WEAK_J_STEM, PRETERITE_SINGULAR_STEM
+                                       | PRETERITE_PLURAL_STEM
+                                       | PERFECT_STEM ) => U_Umlaut(stemReduced) getOrElse stemReduced
       case _ => stemReduced
     }
 
@@ -105,26 +117,43 @@ object WeakVerbForm {
 
     val stemStr = stripSuffix(verbStrRepr, infl)
 
-    // restore thematic vowel: kǫllum -> *k[ǫ->a]ll + um -> kalla + um
-    val stemStrNoU = (theseCanCauseUUmlaut(infl), stemStr) match {
-
-      case (Some(U_Umlaut), U_Umlaut(s)) => s
-      case (_, s) => s
-    }
-
     // restore thematic vowel
     val stemWithSuffix = if(verbStem == PRESENT_STEM
-      && (Consonant isConsonant stemStrNoU.last)
-      && stemStrNoU.last != 'j') {
+      && (Consonant isConsonant stemStr.last)
+      && stemStr.last != 'j') {
 
-      val stemSuffix = stemFormingSuffix(stemStrNoU, verbClass)
+      val stemSuffix = stemFormingSuffix(stemStr, verbClass)
 
-      stemStrNoU + stemSuffix
+      stemStr + stemSuffix
 
-    // back vowels of inflections preserves the 'j' semivowel
-    } else stemStrNoU
+      // back vowels of inflections preserves the 'j' semivowel
+    } else stemStr
 
-    new WeakVerbStem(stemWithSuffix, verbClass, verbStem, TransformationMode.Undefined)
+    // restore thematic vowel: kǫllum -> *k[ǫ->a]ll + um -> kalla + um
+    val stemStrNoU = (theseCanCauseUUmlaut(infl), stemWithSuffix, verbClass, verbStem) match {
+
+      case (_,              I_Umlaut(s), WEAK_J_STEM, PRESENT_STEM) => s
+      case (_,              I_Umlaut(s), WEAK_J_STEM, PRETERITE_SINGULAR_STEM
+                                                    | PRETERITE_PLURAL_STEM
+                                                    | PERFECT_STEM) if isOverlongVerb(s, verbStem) => s
+      case (Some(U_Umlaut), U_Umlaut(s), WEAK_J_STEM, PRETERITE_SINGULAR_STEM
+                                                    | PRETERITE_PLURAL_STEM
+                                                    | PERFECT_STEM) => s
+      case (Some(U_Umlaut), U_Umlaut(s), WEAK_A_STEM | WEAK_I_STEM, _) => s
+      case (_, s, _, _) => s
+    }
+
+    new WeakVerbStem(stemStrNoU, verbClass, verbStem, TransformationMode.Undefined)
+  }
+
+  private def isOverlongVerb(strStem: String, verbStem: EnumVerbStem): Boolean = {
+
+    val stemStr = if(verbStem == PRESENT_STEM) strStem else strStem.init
+
+    stemStr match {
+
+      case Syllables(sy :: _) => sy.length == Length.OVERLONG
+    }
   }
 
   private def inflectionFor(verbType: VerbType, stemOrVerbStr: String): String = verbType match {
