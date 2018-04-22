@@ -5,7 +5,7 @@ import java.lang.String._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{PLURAL, SINGULAR}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun._
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.VowelDeletion
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.{SemivowelDeletion, Syncope}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, stripSuffix}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.theseCanCauseUUmlaut
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant
@@ -15,6 +15,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{NonFinitiveMood, VerbModeEnum, VerbTenseEnum, VerbVoice, WeakVerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.WeakVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.WeakVerbStem.stemFormingSuffix
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 
 /**
@@ -75,11 +76,14 @@ object WeakVerbForm {
     val verbStem = weakVerbStemEnumFrom(verbType)
 
     // delete thematic vowel: kalla + um -> *k[ǫ->a]ll + um ->kǫllum
-    val stemReduced = if(verbStem == PRESENT_STEM && infl.headOption.exists(isVowel)) {
+    // skip 'j', that will be eliminated by SVD if necessary
+    val stemReduced = if(verbStem == PRESENT_STEM
+      && stemStr.last != 'j'
+      && infl.headOption.exists(isVowel)) {
 
-      val stemFormingSuffix = WeakVerbStem stemFormingSuffix verbClass
+      val stemSuffix = stemFormingSuffix(stemStr.init, verbClass)
 
-      stripSuffix(stemStr, stemFormingSuffix)
+      stripSuffix(stemStr, stemSuffix)
 
     } else stemStr
 
@@ -90,7 +94,7 @@ object WeakVerbForm {
     }
 
     val inflectedStem = stemStrU + infl
-    VowelDeletion(inflectedStem)
+    SemivowelDeletion(inflectedStem)
   }
 
   private def uninflect(verbStrRepr: String, verbClass: WeakVerbClassEnum, verbType: VerbType): WeakVerbStem = {
@@ -111,12 +115,13 @@ object WeakVerbForm {
     // restore thematic vowel
     val stemWithSuffix = if(verbStem == PRESENT_STEM
       && (Consonant isConsonant stemStrNoU.last)
-      && infl.headOption.exists(isVowel)) {
+      && stemStrNoU.last != 'j') {
 
-      val stemFormingSuffix = WeakVerbStem stemFormingSuffix verbClass
+      val stemSuffix = stemFormingSuffix(stemStrNoU, verbClass)
 
-      stemStrNoU + stemFormingSuffix
+      stemStrNoU + stemSuffix
 
+    // back vowels of inflections preserves the 'j' semivowel
     } else stemStrNoU
 
     new WeakVerbStem(stemWithSuffix, verbClass, verbStem, TransformationMode.Undefined)

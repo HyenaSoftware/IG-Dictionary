@@ -2,7 +2,8 @@ package com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem
 
 import java.lang.String.format
 
-import com.hyenawarrior.OldNorseGrammar.grammar.Root
+import com.hyenawarrior.OldNorseGrammar.grammar.Syllable.Length
+import com.hyenawarrior.OldNorseGrammar.grammar.{Root, Syllables}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.StemTransform._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology._
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant.{isVoiced, isVoiceless}
@@ -236,7 +237,7 @@ case class WeakVerbStem(stem: String, verbClass: WeakVerbClassEnum, stemType: En
         stem stripSuffix dentalSuffix
     }
 
-    stemWithoutDental stripSuffix stemFormingSuffix(verbClass)
+    stemWithoutDental stripSuffix stemFormingSuffix(stemWithoutDental.init, verbClass)
   }
 }
 
@@ -244,12 +245,12 @@ object WeakVerbStem {
 
   def fromRoot(getRoot: Root, verbClassEnum: WeakVerbClassEnum, stemType: EnumVerbStem): WeakVerbStem = {
 
-    val rootWithStemSuffix = getRoot.word + stemFormingSuffix(verbClassEnum)
+    val rootWithStemSuffix = getRoot.word + stemFormingSuffix(getRoot.word, verbClassEnum)
 
     val stemRepr = (stemType, verbClassEnum) match {
 
       case (PRESENT_STEM, _) => rootWithStemSuffix
-      case (PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM, WEAK_I_STEM) => appendDentalSuffix(getRoot.word)
+      case (PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM, WEAK_J_STEM | WEAK_I_STEM) => appendDentalSuffix(getRoot.word)
       case (PRETERITE_SINGULAR_STEM | PRETERITE_PLURAL_STEM | PERFECT_STEM, _) => appendDentalSuffix(rootWithStemSuffix)
     }
 
@@ -272,10 +273,12 @@ object WeakVerbStem {
     case c if isVoiced(c) || isVowel(c) => "ð"
   }
 
-  def stemFormingSuffix(verbClassEnum: WeakVerbClassEnum): String = verbClassEnum match {
+  def stemFormingSuffix(stemStr: String, verbClassEnum: WeakVerbClassEnum): String = verbClassEnum match {
 
     case WEAK_A_STEM => "a"
     case WEAK_I_STEM => "i"
-    case WEAK_J_STEM => "j"
+    case WEAK_J_STEM =>
+      val Syllables(syllables) = stemStr
+      if(syllables.head.length != Length.OVERLONG) "j" else "i"
   }
 }
