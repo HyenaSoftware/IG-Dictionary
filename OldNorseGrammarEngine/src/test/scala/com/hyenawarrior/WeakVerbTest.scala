@@ -44,7 +44,31 @@ class WeakVerbTest {
       (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_1)) -> "kallaða",
       (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "kallaði",
       (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_1)) -> "kallaðim",
-      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "kallaði"
+      (SUBJUNCTIVE, ACTIVE, Some(PAST),    Some(PL_3)) -> "kallaði",
+
+      (INFINITIVE, MEDIO_PASSIVE, None,          None)       -> "kallask",
+      (PARTICIPLE, MEDIO_PASSIVE, Some(PAST),    None)       -> "kallazk",
+
+      (INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(SG_1)) -> "kǫllumk",
+      (INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(PL_1)) -> "kǫllumsk",
+      (INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(PL_2)) -> "kallizk",
+      (INDICATIVE, MEDIO_PASSIVE, Some(PRESENT), Some(PL_3)) -> "kallask",
+
+      (INDICATIVE, MEDIO_PASSIVE, Some(PAST),    Some(SG_1)) -> "kǫlluðumk",
+      (INDICATIVE, MEDIO_PASSIVE, Some(PAST),    Some(SG_3)) -> "kallaðisk",
+      (INDICATIVE, MEDIO_PASSIVE, Some(PAST),    Some(PL_1)) -> "kǫlluðumsk",
+      (INDICATIVE, MEDIO_PASSIVE, Some(PAST),    Some(PL_2)) -> "kǫlluðuzk",
+      (INDICATIVE, MEDIO_PASSIVE, Some(PAST),    Some(PL_3)) -> "kǫlluðusk",
+
+      (SUBJUNCTIVE, MEDIO_PASSIVE, Some(PRESENT), Some(SG_1)) -> "kǫllumk",
+      (SUBJUNCTIVE, MEDIO_PASSIVE, Some(PRESENT), Some(PL_1)) -> "kallimsk",
+      (SUBJUNCTIVE, MEDIO_PASSIVE, Some(PRESENT), Some(PL_2)) -> "kallizk",
+      (SUBJUNCTIVE, MEDIO_PASSIVE, Some(PRESENT), Some(PL_3)) -> "kallisk",
+
+      (SUBJUNCTIVE, MEDIO_PASSIVE, Some(PAST),    Some(SG_1)) -> "kǫlluðumk",
+      (SUBJUNCTIVE, MEDIO_PASSIVE, Some(PAST),    Some(SG_3)) -> "kallaðisk",
+      (SUBJUNCTIVE, MEDIO_PASSIVE, Some(PAST),    Some(PL_1)) -> "kallaðimsk",
+      (SUBJUNCTIVE, MEDIO_PASSIVE, Some(PAST),    Some(PL_3)) -> "kallaðisk"
   ))
 
   @Test
@@ -129,7 +153,7 @@ class WeakVerbTest {
 
       (INDICATIVE, ACTIVE, Some(PRESENT), Some(SG_3)) -> "selr",
 
-      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "seldi"
+      (INDICATIVE, ACTIVE, Some(PAST),    Some(SG_3)) -> "saldi" //"seldi"
     ))
 
   @Test
