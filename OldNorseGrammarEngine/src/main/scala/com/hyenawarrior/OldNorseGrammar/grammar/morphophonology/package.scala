@@ -16,7 +16,7 @@ package object morphophonology {
 
   def stripSuffix(word: String, suffix: String): String = word stripSuffix adjustedSuffixFrom(word, suffix)
 
-  private def adjustedSuffixFrom(word: String, suffix: String): String = {
+  def adjustedSuffixFrom(word: String, suffix: String): String = {
 
     if(suffix.isEmpty) return ""
 
