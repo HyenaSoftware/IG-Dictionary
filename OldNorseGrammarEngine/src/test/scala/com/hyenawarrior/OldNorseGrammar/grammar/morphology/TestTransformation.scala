@@ -88,6 +88,14 @@ class TestTransformation {
 	}
 
 	@Test
+	def testConsonantAssimilation2(): Unit = {
+
+		val result = ConsonantAssimilation.transform("kallizk")
+
+		assertEquals(Seq("kallitsk", "kalliðsk"), result)
+	}
+
+	@Test
 	def testGemination(): Unit = {
 
 		assertEquals("ný" -> "tt", 	Gemination("ný", "t"))

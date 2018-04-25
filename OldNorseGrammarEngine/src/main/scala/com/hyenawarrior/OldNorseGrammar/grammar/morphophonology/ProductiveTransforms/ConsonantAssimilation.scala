@@ -5,6 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.Syllables
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant.isConsonant
 
 import scala.language.postfixOps
+import scala.util.matching.Regex
 
 /**
   * Created by HyenaWarrior on 2017.10.31..
@@ -15,6 +16,7 @@ object ConsonantAssimilation {
 
   def unapply(str: String): Option[String] = Some(loop(str, restore lift))
 
+  @deprecated
   def invert(str: String): Seq[String] = {
 
     val a = inverseTransformation.flatMap(_.lift(str))
@@ -69,6 +71,7 @@ object ConsonantAssimilation {
   private val rx_ln2r = "^(.+)([ln])$".r
   //private val rx_3cs = "^(.*)([bdðfghjklmnprstvxzþ]{2})$".r
 
+  @deprecated
   private val restore: PartialFunction[String, String] = {
 
     case rx_z(s, p) => s"${s}ts$p"
@@ -78,6 +81,7 @@ object ConsonantAssimilation {
     case rx_ln2r(str, c) if str.last == c.head => s"${str}r"
   }
 
+  @deprecated
   private val inverseTransformation = Seq[PartialFunction[String, String]](
 
     { case rx_z(s, p) => s"${s}ts$p" },
@@ -85,4 +89,60 @@ object ConsonantAssimilation {
     { case s => s }, // identity
     { case rx_ln2r(str, c) if str.last == c.head => s"${str}r" }
   )
+
+  //
+  case class Transformation(regex: Regex, suffixes: Seq[String])
+
+  private val transform_dr_2_nn = Transformation("^(.*a)ðr$".r,     Seq("nn", "r"))
+  private val transform_ln_2_r  = Transformation("^(.*(?:ll|nn))$".r,  Seq("r"))
+  private val transform_zk_2_tsk = Transformation("^(.+)zk$".r, Seq("t", "sk"))
+  private val transform_zk_2_dsk = Transformation("^(.+)zk$".r, Seq("ð", "sk"))
+
+  private val edges = Seq(transform_dr_2_nn, transform_ln_2_r, transform_zk_2_tsk, transform_zk_2_dsk)
+
+  case class Path(nodes: Seq[(Transformation, String)])
+  object BeginOfPath extends Path(Seq())
+
+  def transform(str: String): Seq[String] = transform(str, (a, b) => true)
+
+  def transform(str: String, validator: (String, String) => Boolean): Seq[String] = {
+
+    def transformAndValidate(s: String, tr: Transformation): Option[String] = transformStr(s, tr) match {
+
+      case Some(s2) if validator(s, s2) => Some(s2)
+      case _ => None
+    }
+
+    val allEdges = edges.toSet
+
+    def loop(str: String, p: Path): Seq[Path] = {
+
+      val possibleTransformations = allEdges -- p.nodes.map(_._1)
+
+      val outputEdges = possibleTransformations.toSeq
+        .flatMap(tr => transformAndValidate(str, tr).map(s => tr -> s))
+
+      outputEdges match {
+
+        case Seq() => Seq(p)
+        case _ => outputEdges.flatMap { case e @ (tr, s) => loop(s, Path(p.nodes :+ e)) }
+      }
+    }
+
+    val leaves = loop(str, BeginOfPath)
+    val newStrs = leaves.flatMap(_.nodes.lastOption)
+
+    newStrs.map(_._2)
+  }
+
+  def transformStr(str: String, tr: Transformation): Option[String] = {
+
+    val Transformation(rgx, newStrs) = tr
+
+    str match {
+
+      case rgx(s) => Some(newStrs.mkString(s, "", ""))
+      case _ => None
+    }
+  }
 }
