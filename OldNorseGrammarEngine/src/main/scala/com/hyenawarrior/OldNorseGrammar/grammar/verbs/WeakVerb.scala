@@ -14,7 +14,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.{Pos, verbs}
 case class WeakVerb(verbClass: WeakVerbClassEnum
                     , givenVerbForms: Map[VerbType, WeakVerbForm]
                     , generatedVerbForms: Map[VerbType, WeakVerbForm]
-                    , overriddenVerbForms: Map[VerbType, WeakVerbForm]) extends Pos[VerbType, WeakVerbForm] {
+                    , overriddenVerbForms: Map[VerbType, WeakVerbForm]) extends Verb {
 
   lazy val verbForms = givenVerbForms ++ generatedVerbForms ++ overriddenVerbForms
 

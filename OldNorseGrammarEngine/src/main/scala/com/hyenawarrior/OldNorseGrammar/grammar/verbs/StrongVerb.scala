@@ -49,7 +49,7 @@ object VerbContext {
 case class StrongVerb(verbClass: StrongVerbClassEnum, ablautGrade: Map[EnumVerbStem, AblautGrade]
                       , givenVerbForms: Map[VerbType, StrongVerbForm]
                       , generatedVerbForms: Map[VerbType, StrongVerbForm]
-                      , overriddenVerbForms: Map[VerbType, StrongVerbForm]) extends Pos[VerbType, StrongVerbForm] {
+                      , overriddenVerbForms: Map[VerbType, StrongVerbForm]) extends Verb {
 
   lazy val verbForms = givenVerbForms ++ generatedVerbForms ++ overriddenVerbForms
 
