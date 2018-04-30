@@ -98,18 +98,22 @@ package object modelview {
 
   /**
     * Show only nonfinitives + indicative or subjunctive conjugation
-    * @param sv
+    * @param v
     * @param targetView
     * @param mood
     * @param voice
     */
-  def setDeclensionsTo(sv: StrongVerb, targetView: View, mood: FinitiveMood, voice: VerbVoice): Unit = sv match {
-    case StrongVerb(cl, ablautGrade, _, _, _) =>
+  def setDeclensionsTo(v: Verb, targetView: View, mood: FinitiveMood, voice: VerbVoice): Unit = v match {
+    case sv @ StrongVerb(cl, ablautGrade, _, _, _) =>
 
-    setVerbConjugationDetailsTo(targetView, cl, ablautGrade)
+      setVerbConjugationDetailsTo(targetView, cl, ablautGrade)
 
-    setInfinitiveConjugationsTo(sv, targetView, voice)
-    setFinitiveConjugationTo(sv, targetView, mood, voice)
+      setInfinitiveConjugationsTo(sv, targetView, voice)
+      setFinitiveConjugationTo(sv, targetView, mood, voice)
+
+    case vw @ WeakVerb(cl, _, _, _) =>
+      setInfinitiveConjugationsTo(vw, targetView, voice)
+      setFinitiveConjugationTo(vw, targetView, mood, voice)
   }
 
   private def setVerbConjugationDetailsTo(targetView: View, cl: StrongVerbClassEnum, ablautGrade: Map[EnumVerbStem, AblautGrade]): Unit = {
@@ -154,7 +158,7 @@ package object modelview {
       setFinitiveConjugationTo(sv, frame_medpass_subj, SUBJUNCTIVE, MEDIO_PASSIVE)
   }
 
-  def setInfinitiveConjugationsTo(sv: StrongVerb, targetView: View, voice: VerbVoice): Unit = {
+  def setInfinitiveConjugationsTo(v: Verb, targetView: View, voice: VerbVoice): Unit = {
 
     for ((vt, id) <- VERB_NON_FINITIVE_IDS) {
 
@@ -163,13 +167,13 @@ package object modelview {
         case (m, oT, oP) => (m, voice, oT, oP)
       }
 
-      val f = sv.verbForms(wt)
+      val f = v.forms(wt)
       val tv = targetView.findViewById[TextView](id)
       tv.setText(f.strRepr.replace("ǫ", "ö"))
     }
   }
 
-  def setFinitiveConjugationTo(sv: StrongVerb, targetView: View, mood: FinitiveMood, voice: VerbVoice): Unit = {
+  def setFinitiveConjugationTo(sv: Verb, targetView: View, mood: FinitiveMood, voice: VerbVoice): Unit = {
 
     for ((vt, id) <- VERB_FINITIVE_IDS) {
 
@@ -178,7 +182,7 @@ package object modelview {
         case (t, p) => (mood, voice, Some(t), Some(p))
       }
 
-      val f = sv.verbForms(wt)
+      val f = sv.forms(wt)
       val tv = targetView.findViewById[TextView](id)
       tv.setText(f.strRepr.replace("ǫ", "ö"))
     }

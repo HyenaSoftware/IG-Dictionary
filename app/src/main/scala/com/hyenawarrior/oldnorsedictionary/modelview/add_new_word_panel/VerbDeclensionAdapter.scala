@@ -15,7 +15,7 @@ import com.hyenawarrior.oldnorsedictionary.modelview._
 	* Created by HyenaWarrior on 2017.04.22..
 	*/
 class VerbDeclensionAdapter(activity: Activity, listView: ViewGroup)
-  extends CustomAdapter[(VerbClassEnum, StrongVerb)](activity, listView, R.layout.verb_declension)
+  extends CustomAdapter[(VerbClassEnum, Verb)](activity, listView, R.layout.verb_declension)
 {
   private var currentMood = INDICATIVE
   private var currentVoice = ACTIVE
@@ -46,10 +46,10 @@ class VerbDeclensionAdapter(activity: Activity, listView: ViewGroup)
 
   def resetView(i: Int, view: View): Unit = {
 
-    val (vcDesc, strongVerb) = itemAt(i)
+    val (vcDesc, verb) = itemAt(i)
 
 		// set declensions
-		setDeclensionsTo(strongVerb, view, currentMood, currentVoice)
+		setDeclensionsTo(verb, view, currentMood, currentVoice)
 
     // tag the select button
     val tv_addword_verb_Select = view.findViewById[Button](R.id.tv_addword_verb_Select)

@@ -50,7 +50,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 	var selectedVerbParameters: Parameters = (List(), Map())
 
 	// all the generated forms
-	var latestVerbData: Map[VerbClassEnum, StrongVerb] = Map()
+	var latestVerbData: Map[VerbClassEnum, Verb] = Map()
 
 	// panel for showing the verb forms
 	val LL_DECL_LIST = rootView.findViewById[LinearLayout](R.id.llVerbDeclensions)
@@ -305,7 +305,7 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
         .collect { case (k, Some(v)) => k -> v }
         .toMap
 
-      val wordMaps: List[(VerbClassEnum, StrongVerb)] = sortedListOfVerbClasses
+      val wordMaps: List[(VerbClassEnum, Verb)] = sortedListOfVerbClasses
           .map(vc => vc -> generateAllFormsFrom(vc, overridingMap))
           .collect{ case (k, Some(sv)) => k -> sv }
 
@@ -316,19 +316,13 @@ class AddNewVerbHelper(rootView: View, activity: Activity, stemClassSpinner: Spi
 		case _ => ()
 	}
 
-  private def generateAllFormsFrom(verbClass: VerbClassEnum, overrides: Map[VerbType, String])
-    : Option[StrongVerb] = verbClass match {
+  private def generateAllFormsFrom(verbClass: VerbClassEnum, givenVerbForms: Map[VerbType, String])
+    : Option[Verb] = try { Some { verbClass match {
 
-		case svc: StrongVerbClassEnum => generateMissingFormsOfStrongVerbsFrom(svc, overrides)
-		case wvc: WeakVerbClassEnum => None
-	}
+        case svc: StrongVerbClassEnum => StrongVerb(svc, givenVerbForms)
+        case wvc: WeakVerbClassEnum => WeakVerb(wvc, givenVerbForms)
 
-	private def generateMissingFormsOfStrongVerbsFrom(verbClass: StrongVerbClassEnum, givenVerbForms: Map[VerbType, String])
-		: Option[StrongVerb] = try {
-
-      Some(StrongVerb(verbClass, givenVerbForms))
-
-    } catch {
+    } } } catch {
 
       case e: RuntimeException =>
       val msg = e.getMessage
