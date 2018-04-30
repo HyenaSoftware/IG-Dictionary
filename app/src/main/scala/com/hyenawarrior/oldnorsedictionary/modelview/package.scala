@@ -13,7 +13,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, StrongVerbClassEnum, VerbVoice}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, StrongVerbClassEnum, VerbClassEnum, VerbVoice, WeakVerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
 
@@ -112,6 +112,9 @@ package object modelview {
       setFinitiveConjugationTo(sv, targetView, mood, voice)
 
     case vw @ WeakVerb(cl, _, _, _) =>
+
+      setVerbConjugationDetailsTo(targetView, cl)
+
       setInfinitiveConjugationsTo(vw, targetView, voice)
       setFinitiveConjugationTo(vw, targetView, mood, voice)
   }
@@ -128,6 +131,22 @@ package object modelview {
     // set ablaut grades
     val tv_addword_verb_AblautGrades = targetView.findViewById[TextView](R.id.tv_addword_verb_AblautGrades)
     tv_addword_verb_AblautGrades.setText(ablautDesc)
+  }
+
+  private def setVerbConjugationDetailsTo(targetView: View, cl: WeakVerbClassEnum): Unit = {
+
+    val stemName = targetView.findViewById[TextView](R.id.tv_addword_verb_stemName)
+    stemName.setText(cl.name)
+
+    val weakVerbType = cl match {
+      case VerbClassEnum.WEAK_A_STEM => "Type 2"
+      case VerbClassEnum.WEAK_J_STEM => "Type 1"
+      case VerbClassEnum.WEAK_I_STEM => "Type 3"
+    }
+
+    //
+    val tv_addword_verb_AblautGrades = targetView.findViewById[TextView](R.id.tv_addword_verb_AblautGrades)
+    tv_addword_verb_AblautGrades.setText(weakVerbType)
   }
 
   /**
