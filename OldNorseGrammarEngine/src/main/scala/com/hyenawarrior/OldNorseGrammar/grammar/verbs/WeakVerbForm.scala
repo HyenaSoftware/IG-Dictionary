@@ -32,6 +32,8 @@ class WeakVerbForm(strRepr: String, stem: WeakVerbStem, voice: VerbVoice) extend
 
 object WeakVerbForm {
 
+  def unapply(sv: WeakVerbForm): Option[(String, WeakVerbStem)] = Some(sv.strRepr -> sv.getStem)
+
   // Stem -> VerbForm
   def verbFrom(stem: WeakVerbStem, vt: VerbType): WeakVerbForm = {
 

@@ -7,9 +7,9 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.FinitiveStrongVerbForm.ten
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.{moodAndTenseToStem, toNonFiniteVerbType}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.StrongVerbStem
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{StrongVerbStem, WeakVerbStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Pronoun}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFinitiveMood, StrongVerbClassEnum, VerbClassEnum, VerbModeEnum, VerbTenseEnum, VerbVoice}
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFinitiveMood, StrongVerbClassEnum, VerbClassEnum, VerbModeEnum, VerbTenseEnum, VerbVoice, WeakVerbClassEnum}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.persister.{Reader, Serializer}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
@@ -23,6 +23,7 @@ package object serializers {
 
   implicit val ALL_SERIALIZER: Map[Class[_], Serializer[_]] = Map(
     classOf[StrongVerb] -> StrongVerbContextMarshaller,
+    classOf[WeakVerb] -> WeakVerbMarshaller,
     classOf[Noun] -> NounMarshaller,
     classOf[DictionaryEntry] -> DictionaryEntryMarshaller,
     classOf[MeaningDef] -> MeaningDefMarshaller)
@@ -49,6 +50,7 @@ package object serializers {
         List((VerbModeEnum idOf md) toByte, v toByte, t toByte, p toByte)
 
       case StrongVerbForm(repr, StrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
+      case WeakVerbForm(repr, WeakVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
     }
 
     def serializeMap[K, V](m: Map[K, V])(f: Any => List[Any]): List[Any] = {
@@ -160,6 +162,56 @@ package object serializers {
         val stem = StrongVerbStem(rootRepr, verbClassEnum, stemType)
 
         NonFinitiveStrongVerbForm(verbRepr, stem, verbType, voice)
+    }
+  }
+
+  // 4 - weak verbs
+  implicit object WeakVerbMarshaller extends VerbSerializer[WeakVerb] {
+
+    override val typeId: Int = 4
+
+    override def marshall(obj: WeakVerb): List[Any] = {
+
+      val vceId: Byte = (VerbClassEnum idOf obj.verbClass).toByte
+
+      //
+      val givenMapData: List[Any] = serializeMap(obj.givenVerbForms)(serializeMapElem)
+      val generatedMapData: List[Any] = serializeMap(obj.generatedVerbForms)(serializeMapElem)
+      val overriddenMapData: List[Any] = serializeMap(obj.overriddenVerbForms)(serializeMapElem)
+
+      vceId +: (givenMapData ++ generatedMapData ++ overriddenMapData)
+    }
+
+    override def unmarshall(reader: Reader): WeakVerb = {
+
+      val vceId = reader[Byte]()
+      val verbClassEnum = (VerbClassEnum findById vceId get).asInstanceOf[WeakVerbClassEnum]
+
+      //
+      val vfGen = generateVerbFrom(verbClassEnum)(_, _, _)
+
+      //
+      val givenVerbForms = generateMapEntry(reader, vfGen)
+      val generatedVerbForms = generateMapEntry(reader, vfGen)
+      val overriddenVerbForms = generateMapEntry(reader, vfGen)
+
+      new WeakVerb(verbClassEnum, givenVerbForms, generatedVerbForms, overriddenVerbForms)
+    }
+
+    private def generateVerbFrom(verbClassEnum: WeakVerbClassEnum)
+                                (vt: VerbType, verbRepr: String, rootRepr: String): WeakVerbForm = {
+      val (stemType, voice) = vt match {
+
+        case (mood: FinitiveMood, v, Some(tense), Some(pronoun)) =>
+          (tenseAndNumberToStem(tense, pronoun.number), v)
+
+        case (mood: NonFinitiveMood, v, optTense, None) =>
+          (moodAndTenseToStem(mood, optTense), v)
+      }
+
+      val stem = WeakVerbStem(rootRepr, verbClassEnum, stemType)
+
+      new WeakVerbForm(verbRepr, stem, voice)
     }
   }
 
