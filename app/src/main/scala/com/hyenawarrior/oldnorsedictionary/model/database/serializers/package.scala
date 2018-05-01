@@ -38,8 +38,72 @@ package object serializers {
     }
   }
 
+  trait VerbSerializer[V] extends Serializer[V] {
+
+    def serializeMapElem(a: Any): List[Any] = a match {
+
+      case (md: VerbModeEnum, voice: VerbVoice, ot: Option[VerbTenseEnum], op: Option[Pronoun]) =>
+        val v = VerbVoice idOf voice
+        val t = ot.map(VerbTenseEnum.idOf(_) + 1).getOrElse(0)
+        val p = op.map(Pronoun.idOf(_) + 1).getOrElse(0)
+        List((VerbModeEnum idOf md) toByte, v toByte, t toByte, p toByte)
+
+      case StrongVerbForm(repr, StrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
+    }
+
+    def serializeMap[K, V](m: Map[K, V])(f: Any => List[Any]): List[Any] = {
+
+      val fixOrderedMap = m.toSeq
+      val keys = fixOrderedMap.flatMap { case (k, _) => f(k) }
+      val vals = fixOrderedMap.flatMap { case (_, v) => f(v) }
+
+      m.size.toByte +: (keys ++ vals).toList
+    }
+
+    def deserializeMap[K, V](reader: Reader, fk: => K, fv: => V): Map[K, V] = {
+
+      val mapLength = reader[Byte]()
+
+      val keys = (0 until mapLength).map(_ => fk)
+      val vals = (0 until mapLength).map(_ => fv)
+
+      (keys zip vals).toMap
+    }
+
+    def deserializeKey(reader: Reader): VerbType = {
+
+      val mood = VerbModeEnum findById reader[Byte]() get
+      val voice = VerbVoice findById reader[Byte]() get
+      val oti = reader[Byte]()
+      val opi = reader[Byte]()
+
+      val ot = if(oti == 0) None else Some(VerbTenseEnum findById (oti - 1) get)
+      val op = if(opi == 0) None else Some(Pronoun findById (opi - 1) get)
+
+      (mood, voice, ot, op)
+    }
+
+    def deserializeValue(reader: Reader): (String, String) = {
+
+      val verbRepr = reader[String]()
+      val rootRepr = reader[String]()
+
+      (verbRepr, rootRepr)
+    }
+
+    def generateMapEntry[VF <: VerbForm](reader: Reader, generateVerbFrom: (VerbType, String, String) => VF): Map[VerbType, VF] = {
+
+      val verbMap = deserializeMap(reader, deserializeKey(reader), deserializeValue(reader))
+
+      verbMap.map {
+
+        case (vt, (vR, rR)) => vt -> generateVerbFrom(vt, vR, rR)
+      }
+    }
+  }
+
   // 2 -strong verbs
-  implicit object StrongVerbContextMarshaller extends Serializer[StrongVerb] {
+  implicit object StrongVerbContextMarshaller extends VerbSerializer[StrongVerb] {
 
     override val typeId: Int = 2
 
@@ -62,86 +126,27 @@ package object serializers {
       vceId +: (ablautData ++ givenMapData ++ generatedMapData ++ overriddenMapData)
     }
 
-    private def serializeMapElem(a: Any): List[Any] = a match {
-
-      case (md: VerbModeEnum, voice: VerbVoice, ot: Option[VerbTenseEnum], op: Option[Pronoun]) =>
-        val v = VerbVoice idOf voice
-        val t = ot.map(VerbTenseEnum.idOf(_) + 1).getOrElse(0)
-        val p = op.map(Pronoun.idOf(_) + 1).getOrElse(0)
-        List((VerbModeEnum idOf md) toByte, v toByte, t toByte, p toByte)
-
-      case StrongVerbForm(repr, StrongVerbStem(stemStr, _, _, _)) => List(repr, stemStr)
-    }
-
-    private def serializeMap[K, V](m: Map[K, V])(f: Any => List[Any]): List[Any] = {
-
-      val fixOrderedMap = m.toSeq
-      val keys = fixOrderedMap.flatMap { case (k, _) => f(k) }
-      val vals = fixOrderedMap.flatMap { case (_, v) => f(v) }
-
-      m.size.toByte +: (keys ++ vals).toList
-    }
-
     override def unmarshall(reader: Reader): StrongVerb = {
 
       val vceId = reader[Byte]()
       val verbClassEnum = (VerbClassEnum findById vceId get).asInstanceOf[StrongVerbClassEnum]
 
       //
-      val ablautGrades = deserializeMap(reader, EnumVerbStem findById reader[Byte]() get, AblautGrade(reader[String]()))
+      def verbStemEnum = EnumVerbStem findById reader[Byte]() get
+      val ablautGrades = deserializeMap(reader, verbStemEnum, AblautGrade(reader[String]()))
 
       //
-      val givenVerbForms = generateMapEntry(reader, verbClassEnum, ablautGrades)
-      val generatedVerbForms = generateMapEntry(reader, verbClassEnum, ablautGrades)
-      val overriddenVerbForms = generateMapEntry(reader, verbClassEnum, ablautGrades)
+      val vfGen = generateVerbFrom(verbClassEnum, ablautGrades)(_, _, _)
 
-      StrongVerb(verbClassEnum, ablautGrades, givenVerbForms, generatedVerbForms, overriddenVerbForms)
+      val givenVerbForms = generateMapEntry(reader, vfGen)
+      val generatedVerbForms = generateMapEntry(reader, vfGen)
+      val overriddenVerbForms = generateMapEntry(reader, vfGen)
+
+      new StrongVerb(verbClassEnum, ablautGrades, givenVerbForms, generatedVerbForms, overriddenVerbForms)
     }
 
-    private def deserializeMap[K, V](reader: Reader, fk: => K, fv: => V): Map[K, V] = {
-
-      val mapLength = reader[Byte]()
-
-      val keys = (0 until mapLength).map(_ => fk)
-      val vals = (0 until mapLength).map(_ => fv)
-
-      (keys zip vals).toMap
-    }
-
-    private def deserializeKey(reader: Reader): VerbType = {
-
-      val mood = VerbModeEnum findById reader[Byte]() get
-      val voice = VerbVoice findById reader[Byte]() get
-      val oti = reader[Byte]()
-      val opi = reader[Byte]()
-
-      val ot = if(oti == 0) None else Some(VerbTenseEnum findById (oti - 1) get)
-      val op = if(opi == 0) None else Some(Pronoun findById (opi - 1) get)
-
-      (mood, voice, ot, op)
-    }
-
-    private def deserializeValue(reader: Reader): (String, String) = {
-
-      val verbRepr = reader[String]()
-      val rootRepr = reader[String]()
-
-      (verbRepr, rootRepr)
-    }
-
-    private def generateMapEntry(reader: Reader, verbClassEnum: StrongVerbClassEnum
-      , ablautGrades: Map[EnumVerbStem, AblautGrade]): Map[VerbType, StrongVerbForm] = {
-
-      val verbMap = deserializeMap(reader, deserializeKey(reader), deserializeValue(reader))
-
-      verbMap.map {
-
-        case (vt, (vR, rR)) => vt -> generateStrongVerbFrom(verbClassEnum, ablautGrades, vt, vR, rR)
-      }
-    }
-
-    private def generateStrongVerbFrom(verbClassEnum: StrongVerbClassEnum, ablautGrades: Map[EnumVerbStem, AblautGrade]
-      , verbType: VerbType, verbRepr: String, rootRepr: String): StrongVerbForm = verbType match {
+    private def generateVerbFrom(verbClassEnum: StrongVerbClassEnum, ablautGrades: Map[EnumVerbStem, AblautGrade])
+                                         (vt: VerbType, verbRepr: String, rootRepr: String): StrongVerbForm = vt match {
 
       case (mood: FinitiveMood, voice, Some(tense), Some(pronoun)) =>
         val stemType = tenseAndNumberToStem(tense, pronoun.number)
