@@ -40,8 +40,8 @@ class MainActivity extends AppCompatActivity
 
       val entries = if(fixedStr.isEmpty) List() else igPersister.lookup(fixedStr)
         .map {
-          case DictionaryEntry(sverb: StrongVerb, meanings) =>
-            DictionaryListItem(getFormsToShowOf(fixedStr, sverb), "verb", sverb, meanings)
+          case DictionaryEntry(verb: Verb, meanings) =>
+            DictionaryListItem(getFormsToShowOf(fixedStr, verb), "verb", verb, meanings)
 
           case DictionaryEntry(noun: Noun, meanings) =>
             DictionaryListItem(getFormsToShowOf(fixedStr, noun), "noun", noun, meanings)

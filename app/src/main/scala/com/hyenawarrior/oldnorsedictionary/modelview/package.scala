@@ -92,8 +92,8 @@ package object modelview {
 
   def setDeclensionsTo[K, F <: PoSForm](pos: Pos[K, F], targetView: View): Unit = pos match {
 
-    case noun: Noun       => setDeclensionsTo(noun, targetView)
-    case verb: StrongVerb => setDeclensionsTo(verb, targetView)
+    case noun: Noun => setDeclensionsTo(noun, targetView)
+    case verb: Verb => setDeclensionsTo(verb, targetView)
   }
 
   /**
@@ -152,29 +152,33 @@ package object modelview {
   /**
     * Show only nonfinitives + indicative or subjunctive conjugation
     *
-    * @param sv
+    * @param verb
     */
-  def setDeclensionsTo(sv: StrongVerb, rootView: View): Unit = sv match {
+  def setDeclensionsTo(verb: Verb, rootView: View): Unit = {
 
-    case StrongVerb(cl, ablautGrade, _, _, _) =>
+    verb match {
 
-      setVerbConjugationDetailsTo(rootView, cl, ablautGrade)
+      case StrongVerb(cl, ablautGrade, _, _, _) =>
+        setVerbConjugationDetailsTo(rootView, cl, ablautGrade)
 
-      val frame_active_non = rootView.findViewById[View](R.id.frame_active_nonfinitive)
-      val frame_active_ind = rootView.findViewById[View](R.id.frame_active_indicatives)
-      val frame_active_subj = rootView.findViewById[View](R.id.frame_active_subjunctives)
+      case _ => ()
+    }
 
-      val frame_medpass_non = rootView.findViewById[View](R.id.frame_mediopassive_nonfinitive)
-      val frame_medpass_ind = rootView.findViewById[View](R.id.frame_mediopassive_indicative)
-      val frame_medpass_subj = rootView.findViewById[View](R.id.frame_mediopassive_subjunctive)
+    val frame_active_non = rootView.findViewById[View](R.id.frame_active_nonfinitive)
+    val frame_active_ind = rootView.findViewById[View](R.id.frame_active_indicatives)
+    val frame_active_subj = rootView.findViewById[View](R.id.frame_active_subjunctives)
 
-      setInfinitiveConjugationsTo(sv, frame_active_non, ACTIVE)
-      setFinitiveConjugationTo(sv, frame_active_ind, INDICATIVE, ACTIVE)
-      setFinitiveConjugationTo(sv, frame_active_subj, SUBJUNCTIVE, ACTIVE)
+    val frame_medpass_non = rootView.findViewById[View](R.id.frame_mediopassive_nonfinitive)
+    val frame_medpass_ind = rootView.findViewById[View](R.id.frame_mediopassive_indicative)
+    val frame_medpass_subj = rootView.findViewById[View](R.id.frame_mediopassive_subjunctive)
 
-      setInfinitiveConjugationsTo(sv, frame_medpass_non, MEDIO_PASSIVE)
-      setFinitiveConjugationTo(sv, frame_medpass_ind, INDICATIVE, MEDIO_PASSIVE)
-      setFinitiveConjugationTo(sv, frame_medpass_subj, SUBJUNCTIVE, MEDIO_PASSIVE)
+    setInfinitiveConjugationsTo(verb, frame_active_non, ACTIVE)
+    setFinitiveConjugationTo(verb, frame_active_ind, INDICATIVE, ACTIVE)
+    setFinitiveConjugationTo(verb, frame_active_subj, SUBJUNCTIVE, ACTIVE)
+
+    setInfinitiveConjugationsTo(verb, frame_medpass_non, MEDIO_PASSIVE)
+    setFinitiveConjugationTo(verb, frame_medpass_ind, INDICATIVE, MEDIO_PASSIVE)
+    setFinitiveConjugationTo(verb, frame_medpass_subj, SUBJUNCTIVE, MEDIO_PASSIVE)
   }
 
   def setInfinitiveConjugationsTo(v: Verb, targetView: View, voice: VerbVoice): Unit = {

@@ -50,8 +50,8 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
     val layout = obj match {
 
-      case _: StrongVerb => R.layout.verb_conjugation_viewer_full
-      case _: Noun       => R.layout.noun_declension_detailed_view
+      case _: Verb => R.layout.verb_conjugation_viewer_full
+      case _: Noun => R.layout.noun_declension_detailed_view
     }
 
     val view = getLayoutInflater.inflate(layout, posViewer)

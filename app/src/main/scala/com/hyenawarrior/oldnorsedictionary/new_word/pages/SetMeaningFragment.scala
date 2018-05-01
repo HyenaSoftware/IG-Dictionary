@@ -5,8 +5,7 @@ import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget._
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.StrongVerb
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.Verb
 import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
@@ -45,8 +44,8 @@ object SetMeaningFragment extends Fragment
 
     val (posTypeName, posSubType) = wordData.word match
     {
-      case sv: StrongVerb => "verb" -> sv.verbClass.name
-      case nn: Noun       => "noun" -> nn.stem.stemClass.toString
+      case v: Verb   => "verb" -> v.verbClass.toString
+      case n: Noun   => "noun" -> n.stem.stemClass.toString
       case _ => "???" -> "???"
     }
 
