@@ -156,14 +156,6 @@ package object modelview {
     */
   def setDeclensionsTo(verb: Verb, rootView: View): Unit = {
 
-    verb match {
-
-      case StrongVerb(cl, ablautGrade, _, _, _) =>
-        setVerbConjugationDetailsTo(rootView, cl, ablautGrade)
-
-      case _ => ()
-    }
-
     val frame_active_non = rootView.findViewById[View](R.id.frame_active_nonfinitive)
     val frame_active_ind = rootView.findViewById[View](R.id.frame_active_indicatives)
     val frame_active_subj = rootView.findViewById[View](R.id.frame_active_subjunctives)

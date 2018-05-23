@@ -63,7 +63,7 @@ class MainActivity extends AppCompatActivity
       val hasPrimaryForm = matchingWords.exists(_._2.strRepr == PRI_FORM)
 
       // return the selected forms
-      if (hasPrimaryForm) {
+      if (hasPrimaryForm || matchingWords.isEmpty) {
 
         Seq(PRI_FORM -> "")
 

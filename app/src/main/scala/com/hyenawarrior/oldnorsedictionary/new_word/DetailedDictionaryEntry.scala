@@ -6,8 +6,9 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.{LinearLayout, TextView}
-import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
+import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum.{WEAK_A_STEM, WEAK_I_STEM, WEAK_J_STEM}
 import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 import com.hyenawarrior.oldnorsedictionary.modelview._
@@ -35,6 +36,8 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
       val llMeanings = findViewById[LinearLayout](R.id.llMeanings)
 
+        setPosTitle(posObj)
+
         // set meanings
         val meaningAdapter = new MeaningAdapter(this, llMeanings)
         meaningAdapter resetItems meanings
@@ -44,6 +47,29 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
       case _ => ()
     }
+  }
+
+  private def setPosTitle[K, F <: PoSForm](obj: Pos[K, F]): Unit = {
+
+    val tvPosTitle = findViewById[TextView](R.id.tvDetailedViewPoS)
+
+    val title = obj match {
+
+      case StrongVerb(cl, _, _, _, _) => s"${cl.name} verb"
+      case WeakVerb(cl, _, _, _) =>
+
+        val wvType = cl match {
+          case WEAK_A_STEM => "Type 2"
+          case WEAK_J_STEM => "Type 1"
+          case WEAK_I_STEM => "Type 3"
+        }
+
+        s"${cl.name}/$wvType verb"
+
+      case Noun(NounStem(_, cl), _, _, _) => cl.toString
+    }
+
+    tvPosTitle setText title
   }
 
   private def showWord[K, F <: PoSForm](obj: Pos[K, F]): Unit = {
