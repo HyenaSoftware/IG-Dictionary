@@ -26,8 +26,10 @@ class MeaningAdapter(activity: Activity, listView: ViewGroup)
     val tvIndex = view.findViewById[TextView](R.id.tvIndex)
     tvIndex setText s"${i+1}."
 
+		val note = if(meaning.note.nonEmpty) s"(${meaning.note})" else ""
+
 		val tvMeaning = view.findViewById[TextView](R.id.tvDesc)
-		tvMeaning.setText(meaning.meaning + " (" + meaning.note + ")")
+		tvMeaning.setText(s"${meaning.meaning} $note")
 
 		val tvExample = view.findViewById[TextView](R.id.tvMeaning)
 		tvExample.setText(meaning.examples.mkString("\n"))
