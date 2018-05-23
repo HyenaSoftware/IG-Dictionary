@@ -55,28 +55,28 @@ class MainActivity extends AppCompatActivity
 
     private def getFormsToShowOf[K, F <: PoSForm](searchString: String, obj: Pos[K, F])(implicit ordering: Ordering[K]): Seq[(String, String)] = {
 
-			val PRI_FORM = obj.forms(obj.PRIMARY_KEY).strRepr -> abbrevationOf(obj.PRIMARY_KEY)
+      val PRI_FORM = obj.forms(obj.PRIMARY_KEY).strRepr
 
       // keep only those forms of the verb which are matching on the search string
-      val formsToShow = obj.forms.toSeq
-        // keep only the matching forms
-        .filter {
-          case (_, pos) if pos.strRepr.startsWith(searchString) => true
-          case _ => false
-        }
-        // sort them by their type
-        .sortBy { case (vt, _) => vt }
-        // pick up the first one
-        .headOption
-        .map {
-          // if it is the primary form then use it
-          case (obj.PRIMARY_KEY, f) => Seq(PRI_FORM)
-          // if it is not the pri. form then add the pri. form too
-          case (k, v)       => Seq(PRI_FORM, v.strRepr -> abbrevationOf(k))
-        }
+      val matchingWords = obj.forms.toSeq.filter(_._2.strRepr startsWith searchString)
+
+      val hasPrimaryForm = matchingWords.exists(_._2.strRepr == PRI_FORM)
 
       // return the selected forms
-      formsToShow getOrElse Seq()
+      if (hasPrimaryForm) {
+
+        Seq(PRI_FORM -> "")
+
+      } else {
+
+        val optBestMatch = matchingWords
+          .sortBy { case (vt, _) => vt }
+          .headOption
+
+        val bestMatch = optBestMatch.map { case (k, w) => w.strRepr -> s"[${abbrevationOf(k)}]" }.head
+
+        Seq(bestMatch, s"of $PRI_FORM" -> "")
+      }
     }
 	}
 
