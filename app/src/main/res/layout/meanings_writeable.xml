@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:weightSum="10">
+            <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="N."
+                    android:id="@+id/tvIndex" android:layout_column="0" android:layout_weight="1"
+            />
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" android:layout_column="1" android:layout_weight="9">
+                <EditText android:layout_width="match_parent" android:layout_height="wrap_content"
+                          android:ems="10" android:id="@+id/etDesc"
+                          android:text="meaning" android:textAppearance="?android:attr/textAppearanceSmall"
+                          android:enabled="true" android:editable="true"/>
+                <EditText android:layout_width="fill_parent" android:layout_height="wrap_content" android:ems="10"
+                      android:id="@+id/etNote" android:text="note"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:enabled="true"
+                      android:editable="true" android:layout_toRightOf="@+id/etDesc"/>
+                <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:ems="10"
+                        android:id="@+id/etExamples" android:text="line1\nline2"
+                        android:textAppearance="?android:attr/textAppearanceSmall" android:enabled="true"
+                        android:editable="true"/>
+            </LinearLayout>
+        </TableRow>
+</TableLayout>

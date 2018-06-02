@@ -11,30 +11,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:weightSum="3">
             <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:text="someword"
-                    android:id="@+id/tvWord" android:background="#fffde5" android:layout_marginTop="3dp"
+                    android:id="@+id/tvWord" android:layout_marginTop="3dp"
                     android:singleLine="true" android:layout_weight="2" android:paddingLeft="6dp"
-                    android:backgroundTintMode="multiply"/>
+                    android:backgroundTintMode="multiply" android:background="#fffde5"/>
         </LinearLayout>
-        <LinearLayout
+        <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" android:layout_marginTop="3dp"
                 android:orientation="vertical" >
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:textAppearance="?android:attr/textAppearanceMedium" android:text="verb, noun, pronoun"
-                      android:id="@+id/tvDetailedViewPoS" android:background="#ffffff"/>
+                      android:id="@+id/tvDetailedViewPoS" android:background="#ffffff"
+                      android:layout_alignParentLeft="true"/>
+            <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ibEdit" android:src="@android:drawable/ic_menu_edit"
+                    android:layout_gravity="right" android:layout_alignParentRight="true"
+                    android:onClick="onEditMeaning"/>
+            <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                         android:id="@+id/ibSave" android:src="@android:drawable/ic_menu_save"
+                         android:layout_gravity="right" android:layout_alignParentRight="false"
+                         android:onClick="onSaveEditing" android:layout_alignParentBottom="false"
+                         android:layout_alignParentLeft="false" android:layout_toLeftOf="@+id/ibEdit"/>
+            <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                         android:id="@+id/ibCancel" android:src="@android:drawable/ic_menu_close_clear_cancel"
+                         android:layout_gravity="right" android:layout_alignParentRight="false"
+                         android:onClick="onCancelEditing" android:layout_alignParentBottom="false"
+                         android:layout_alignParentLeft="false" android:layout_toLeftOf="@+id/ibSave"/>
             <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:id="@+id/llMeanings" android:background="#ffffff"
-                    android:layout_marginTop="3dp">
+                    android:layout_marginTop="3dp" android:layout_below="@+id/ibEdit">
                 <include layout="@layout/meanings" android:layout_width="match_parent"
                          android:layout_height="wrap_content" />
             </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
                 android:orientation="vertical"

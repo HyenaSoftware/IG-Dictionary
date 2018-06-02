@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.transition.Visibility
 import android.view.View
 import android.widget.{LinearLayout, TextView}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounStem}
@@ -12,6 +13,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum.{WEAK_
 import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 import com.hyenawarrior.oldnorsedictionary.modelview._
+import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 import com.hyenawarrior.oldnorsedictionary.{R, modelview}
 
 /**
@@ -21,28 +23,28 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
   private lazy val posViewer = findViewById[LinearLayout](R.id.pos_viewer)
 
+  private var currentItem: DictionaryListItem[_, _ <: PoSForm] = _
+
   protected override def onCreate(savedInstanceState: Bundle): Unit = {
 
     super.onCreate(savedInstanceState)
 
     setContentView(R.layout.detailed_dictionary_entry)
 
+    setEditMode(false)
+
     val serializable = getIntent.getSerializableExtra("entry")
 
     //
     serializable match {
 
-      case DictionaryListItem(_, _, posObj, meanings) =>
-
-      val llMeanings = findViewById[LinearLayout](R.id.llMeanings)
+      case e @ DictionaryListItem(_, _, posObj, meanings) =>
+        currentItem = e
 
         setPosTitle(posObj)
 
-        // set meanings
-        val meaningAdapter = new MeaningAdapter(this, llMeanings)
-        meaningAdapter resetItems meanings
+        showMeaning(meanings)
 
-        posViewer.removeAllViews()
         showWord(posObj)
 
       case _ => ()
@@ -72,6 +74,18 @@ class DetailedDictionaryEntry extends AppCompatActivity {
     tvPosTitle setText title
   }
 
+  private def showMeaning(meanings: List[MeaningDef], writeable: Boolean = false): Unit = {
+
+    val llMeanings = findViewById[LinearLayout](R.id.llMeanings)
+
+    // set meanings
+    val meaningAdapter =
+      if(writeable) new WritableMeaningAdapter(this, llMeanings)
+      else new MeaningAdapter(this, llMeanings)
+
+    meaningAdapter resetItems meanings
+  }
+
   private def showWord[K, F <: PoSForm](obj: Pos[K, F]): Unit = {
 
     val layout = obj match {
@@ -79,6 +93,8 @@ class DetailedDictionaryEntry extends AppCompatActivity {
       case _: Verb => R.layout.verb_conjugation_viewer_full
       case _: Noun => R.layout.noun_declension_detailed_view
     }
+
+    posViewer.removeAllViews()
 
     val view = getLayoutInflater.inflate(layout, posViewer)
     modelview.setDeclensionsTo(obj, view)
@@ -118,5 +134,42 @@ class DetailedDictionaryEntry extends AppCompatActivity {
     panel setVisibility nv
 
     ContextCompat.getDrawable(getApplicationContext, picRsrc)
+  }
+
+  def onEditMeaning(view: View): Unit = {
+
+    setEditMode()
+
+    val DictionaryListItem(_, _, _, meanings) = currentItem
+
+    showMeaning(meanings, writeable = true)
+  }
+
+  def onSaveEditing(view: View): Unit = {
+
+    setEditMode(false)
+
+    val DictionaryListItem(_, _, _, meanings) = currentItem
+
+    showMeaning(meanings)
+  }
+
+  def onCancelEditing(view: View): Unit = {
+
+    setEditMode(false)
+
+    val DictionaryListItem(_, _, _, meanings) = currentItem
+
+    showMeaning(meanings)
+  }
+
+  private def setEditMode(enabled: Boolean = true): Unit = {
+
+    val otherVisibility = if(enabled) View.VISIBLE else View.GONE
+    val editVisibility = if(enabled) View.INVISIBLE else View.VISIBLE
+
+    findViewById[View](R.id.ibEdit) setVisibility editVisibility
+    findViewById[View](R.id.ibSave) setVisibility otherVisibility
+    findViewById[View](R.id.ibCancel) setVisibility otherVisibility
   }
 }
