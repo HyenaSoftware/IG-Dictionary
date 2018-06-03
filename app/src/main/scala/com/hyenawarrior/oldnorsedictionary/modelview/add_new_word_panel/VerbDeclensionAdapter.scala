@@ -24,29 +24,19 @@ class VerbDeclensionAdapter(activity: Activity, listView: ViewGroup)
 
     currentMood = mood
 
-    for(i <- 0 until getCount) {
-
-      val v = getView(i, null, null)
-
-      resetView(i, v)
-    }
+    invalidateValues()
   }
 
   def showMediopassives(show: Boolean) = {
 
     currentVoice = if(show) MEDIO_PASSIVE else ACTIVE
 
-    for(i <- 0 until getCount) {
-
-      val v = getView(i, null, null)
-
-      resetView(i, v)
-    }
+    invalidateValues()
   }
 
-  def resetView(i: Int, view: View): Unit = {
+  def resetView(i: Int, item: (VerbClassEnum, Verb), view: View): Unit = {
 
-    val (vcDesc, verb) = itemAt(i)
+    val (vcDesc, verb) = item
 
 		// set declensions
 		setDeclensionsTo(verb, view, currentMood, currentVoice)

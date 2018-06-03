@@ -9,7 +9,7 @@ import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 
 
 /**
-	* Created by HyenaWarrior on 2016.10.26..
+	* Created by HyenaWarrior on 2017.10.26..
 	*
 	* + - - - -+ - - - - - +
 	* | to fly | meaning1  |
@@ -19,9 +19,7 @@ import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 class MeaningAdapter(activity: Activity, listView: ViewGroup)
 	extends CustomAdapter[MeaningDef](activity, listView, R.layout.meanings) {
 
-	protected  def resetView(i: Int, view: View): Unit = {
-
-		val meaning = itemAt(i)
+	protected  def resetView(i: Int, meaning: MeaningDef, view: View): Unit = {
 
     val tvIndex = view.findViewById[TextView](R.id.tvIndex)
     tvIndex setText s"${i+1}."

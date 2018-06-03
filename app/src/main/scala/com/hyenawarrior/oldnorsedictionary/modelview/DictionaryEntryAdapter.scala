@@ -14,9 +14,7 @@ import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 class DictionaryEntryAdapter(activity: Activity, listView: ViewGroup)
 	extends CustomAdapter[DictionaryListItem[_, _ <: PoSForm]](activity, listView, R.layout.dictionary_entry)
 {
-	protected def resetView(i: Int, view: View): Unit = {
-
-		val item = itemAt(i)
+	protected def resetView(i: Int, item: DictionaryListItem[_, _ <: PoSForm], view: View): Unit = {
 
 		val tvDesc = view.findViewById[TextView](R.id.tvDesc)
 		val text = s"[${item.posType}]"

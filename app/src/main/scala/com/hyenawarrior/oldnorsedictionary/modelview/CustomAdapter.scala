@@ -5,8 +5,6 @@ import android.content.Context
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget.{BaseAdapter, ListView}
 
-import scala.collection.mutable
-
 /**
 	* Created by HyenaWarrior on 2017.03.10..
 	*/
@@ -15,9 +13,9 @@ abstract class CustomAdapter[T](val activity: Activity, listView: ViewGroup, lay
 	//
 	protected val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
 
-	private var items: List[T] = List()
-
-	private var viewCache: mutable.ArraySeq[View] = mutable.ArraySeq()
+	private var views:  			List[View]			= List()
+	private var values: 			List[T]					= List()
+	private var viewToIndex:	Map[View, Int]	= Map()
 
 	//
 	listView match {
@@ -27,14 +25,18 @@ abstract class CustomAdapter[T](val activity: Activity, listView: ViewGroup, lay
 	}
 
 	//
-	protected def itemAt(i: Int) = items(i)
+	protected def itemAt(i: Int): T = values(i)
+
+	def indexOf(view: View): Int = viewToIndex(view)
 
 	def resetItems(items: List[T]): Unit = {
 
-		this.items = items
+		// generate the views
+		values = items
+		views = values.zipWithIndex.map { case (v, i) => getNewView(i, v, listView) }
+		viewToIndex = views.zipWithIndex.toMap
 
-    viewCache = new mutable.ArraySeq(items.size)
-
+		//
 		listView match {
 
 			case lv: ListView => lv.invalidateViews()
@@ -42,88 +44,91 @@ abstract class CustomAdapter[T](val activity: Activity, listView: ViewGroup, lay
 
 				listView.removeAllViews()
 
-				items.zipWithIndex
-					.map { case(e, i) => getView(i, null, listView) }
-					.foreach(v => listView addView v)
+				views.foreach(listView.addView)
+		}
+	}
 
-				Range(0, getCount)
-					.map(i => getView(i, null, listView))
-					.foreach(v => listView addView v)
+	def invalidateValues(): Unit = {
+
+		for(((view, value), i) <- (views zip values).zipWithIndex) {
+
+			resetView(i, value, view)
 		}
 	}
 
 	def add(value: T): Unit = {
 
-		viewCache = viewCache :+ null
-		items = items :+ value
+		val nextIndex = values.size
+
+		val view = getNewView(nextIndex, value, listView)
+
+		values = values :+ value
+		views = views :+ view
+		viewToIndex = viewToIndex + (view -> nextIndex)
 
 		listView match {
 
 			// TODO: it needs to be tested
 			case lv: ListView => lv.invalidateViews()
-
-			case _ =>
-				val nextIndex = items.size - 1
-				listView addView getView(nextIndex, null, listView)
+			case _ =>	listView addView view
 		}
 	}
 
-  @Deprecated
-	def remove(i: Int): Unit =
-	{
-		val indiciesToKeep = items.indices.filter(_ != i)
-		items = indiciesToKeep.map(items(_)).toList
+	def remove(index: Int): Unit = {
 
-		val oldViewCache = viewCache
-		viewCache = new mutable.ArraySeq(items.size)
+		val (viewsBefore, viewsAfter) = views splitAt index
+		val (valuesBefore, valuesAfter) = values splitAt index
 
-		for((v, j) <- indiciesToKeep.map(i => oldViewCache(i)).zipWithIndex) {
+		val viewToRemove = viewsAfter.head
 
-			viewCache(j) = v
+		// update the UI
+		listView removeView viewToRemove
+
+		viewToIndex = viewToIndex -- viewsAfter
+		viewToIndex = viewToIndex ++ viewsAfter.tail.zipWithIndex.map {
+
+			case (v, i) => v -> (index + i)
 		}
 
-		listView.removeView(oldViewCache(i))
+		views = viewsBefore ++ viewsAfter.tail
+		values = valuesBefore ++ valuesAfter.tail
 
-		notifyDataSetChanged()
-	}
+		for(((value, view), i) <- valuesAfter.tail.zip(viewsAfter.tail).zipWithIndex) {
 
-	def set(i: Int, value: T): Unit = {
-
-		items = items.zipWithIndex.map {
-
-			case (_, j) if i == j => value -> j
-			case e => e
+			indexUpdated(i + index, value, view)
 		}
-		  .map(_._1)
 	}
 
-	private final def getNewView(i: Int, viewGroup: ViewGroup): View = {
+	def remove(view: View): Unit = remove(viewToIndex(view))
+
+	def set(view: View, value: T): Unit = set(viewToIndex(view), value)
+
+	def set(i: Int, value: T): Unit = values = values.zipWithIndex.map {
+
+		case (v, j) if i == j => value
+		case (e, _) => e
+	}
+
+	private final def getNewView(i: Int, value: T, viewGroup: ViewGroup): View = {
 
 		val view = inflater.inflate(layoutElem, viewGroup, false)
 
-		resetView(i, view)
+		initView(view)
+		resetView(i, value, view)
 
 		view
 	}
 
-	protected def resetView(i: Int, view: View): Unit
+	protected def initView(view: View): Unit = ()
+	protected def indexUpdated(i: Int, value: T, view: View): Unit = ()
+	protected def resetView(i: Int, value: T, view: View): Unit
 
 	def getItemId(i: Int): Long = i
 
   def getItem(i: Int): AnyRef = Long.box(i)
 
-	def getCount: Int = items.size
+	def getCount: Int = values.size
 
-	def getView(i: Int, prevView: View, viewGroup: ViewGroup): View = {
-
-    var res = viewCache(i)
-
-    if(res == null) {
-
-        res = getNewView(i, viewGroup)
-        viewCache(i) = res
-    }
-
-    res
-	}
+	def getView(i: Int, prevView: View, viewGroup: ViewGroup): View = views(i)
 }
+

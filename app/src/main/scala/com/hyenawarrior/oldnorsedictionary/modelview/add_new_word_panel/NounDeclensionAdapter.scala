@@ -33,9 +33,9 @@ class NounDeclensionAdapter(activity: Activity, listView: ViewGroup)
 {
 	private var showDefiniteForms = false
 
-	protected def resetView(i: Int, view: View): Unit = {
+	protected def resetView(i: Int, item: (NounStemClassEnum, Noun), view: View): Unit = {
 
-		val (nscEnum, noun) = itemAt(i)
+		val (nscEnum, noun) = item
 
 		setDeclensionsTo(noun, nscEnum, view, showDefiniteForms)
 
@@ -48,12 +48,7 @@ class NounDeclensionAdapter(activity: Activity, listView: ViewGroup)
 
 		showDefiniteForms = isDefinite
 
-		for(i <- 0 until getCount) {
-
-			val v = getView(i, null, null)
-
-			resetView(i, v)
-		}
+		invalidateValues()
 	}
 
   def getSelectorTagOf(view: View): Option[NounStemClassEnum] = view match

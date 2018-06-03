@@ -12,9 +12,9 @@ import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
 class WordFormAdapter(activity: Activity, listView: ViewGroup)
 	extends CustomAdapter[DictionaryListItem.DescedString](activity, listView, R.layout.word_form_entry)
 {
-	protected def resetView(i: Int, view: View): Unit = {
+	protected def resetView(i: Int, item: DictionaryListItem.DescedString, view: View): Unit = {
 
-		val (word, desc) = itemAt(i)
+		val (word, desc) = item
 
 		val tvWordForm = view.findViewById[TextView](R.id.tvWordForm)
 		val tvWordDesc = view.findViewById[TextView](R.id.tvWordDesc)
