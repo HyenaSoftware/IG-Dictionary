@@ -21,6 +21,8 @@ class WritableMeaningAdapter(activity: Activity, listView: ViewGroup)
   private val EMPTY = MeaningDef("", "", Seq())
   private var eventsAreEnabled = true
 
+  override def allValues = super.allValues.init
+
   protected override def initView(view: View): Unit = {
 
     //

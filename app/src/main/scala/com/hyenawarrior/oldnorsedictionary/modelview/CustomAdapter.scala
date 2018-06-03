@@ -27,6 +27,8 @@ abstract class CustomAdapter[T](val activity: Activity, listView: ViewGroup, lay
 	//
 	protected def itemAt(i: Int): T = values(i)
 
+	def allValues = values
+
 	def indexOf(view: View): Int = viewToIndex(view)
 
 	def resetItems(items: List[T]): Unit = {

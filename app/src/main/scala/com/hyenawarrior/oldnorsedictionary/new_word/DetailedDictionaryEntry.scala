@@ -25,6 +25,8 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
   private var currentItem: DictionaryListItem[_, _ <: PoSForm] = _
 
+  private var activeMeaningAdapter: CustomAdapter[MeaningDef] = _
+
   protected override def onCreate(savedInstanceState: Bundle): Unit = {
 
     super.onCreate(savedInstanceState)
@@ -79,11 +81,11 @@ class DetailedDictionaryEntry extends AppCompatActivity {
     val llMeanings = findViewById[LinearLayout](R.id.llMeanings)
 
     // set meanings
-    val meaningAdapter =
+    activeMeaningAdapter =
       if(writeable) new WritableMeaningAdapter(this, llMeanings)
       else new MeaningAdapter(this, llMeanings)
 
-    meaningAdapter resetItems meanings
+    activeMeaningAdapter resetItems meanings
   }
 
   private def showWord[K, F <: PoSForm](obj: Pos[K, F]): Unit = {
@@ -140,27 +142,25 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
     setEditMode()
 
-    val DictionaryListItem(_, _, _, meanings) = currentItem
-
-    showMeaning(meanings, writeable = true)
+    showMeaning(currentItem.meanings, writeable = true)
   }
 
   def onSaveEditing(view: View): Unit = {
 
     setEditMode(false)
 
-    val DictionaryListItem(_, _, _, meanings) = currentItem
+    val DictionaryListItem(otherForms, posType, posObj, _) = currentItem
 
-    showMeaning(meanings)
+    currentItem = DictionaryListItem(otherForms, posType, posObj, activeMeaningAdapter.allValues)
+
+    showMeaning(currentItem.meanings)
   }
 
   def onCancelEditing(view: View): Unit = {
 
     setEditMode(false)
 
-    val DictionaryListItem(_, _, _, meanings) = currentItem
-
-    showMeaning(meanings)
+    showMeaning(currentItem.meanings)
   }
 
   private def setEditMode(enabled: Boolean = true): Unit = {
