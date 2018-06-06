@@ -25,6 +25,13 @@ class InMemorySerData extends SerData {
     nId
   }
 
+  override def store(blobId: Int, typeId: Int, byteArray: Array[Byte]): Int = {
+
+    store(typeId, byteArray)
+
+    blobId
+  }
+
   override def load(objId: Int, typeId: Int): DataInputStream = {
 
     val ba = fields(objId -> typeId)

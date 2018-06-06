@@ -11,7 +11,11 @@ trait SerData {
 
   def typeOf(objId: Int): Option[Int]
 
-  def store(typeId: Int, data: Seq[AnyVal]): Int = {
+  def store(typeId: Int, data: Seq[AnyVal]): Int = store(typeId, toByteArray(data))
+
+  def store(objId: Int, typeId: Int, data: Seq[AnyVal]): Int = store(objId, typeId, toByteArray(data))
+
+  private def toByteArray(data: Seq[AnyVal]): Array[Byte] = {
 
     val baos = new ByteArrayOutputStream()
     val dos = new DataOutputStream(baos)
@@ -28,12 +32,13 @@ trait SerData {
       baos.toByteArray
     }
 
-    store(typeId, byteArray)
+    byteArray
   }
 
   def store(typeId: Int, data: Array[Byte]): Int
 
-  def load(objId: Int, typeId: Int): DataInputStream
+  def store(blobId: Int, typeId: Int, byteArray: Array[Byte]): Int
 
+  def load(objId: Int, typeId: Int): DataInputStream
 
 }

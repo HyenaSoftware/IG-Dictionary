@@ -68,18 +68,5 @@ class IGPersister(ctx: Context) {
     }
   }
 
-  def loadObject(objId: Int): Option[Any] = {
-
-    val typeId: Int = persister.typeOf(objId).getOrElse(throw new RuntimeException(s"Type of object $objId is unknown."))
-
-    val optSerializer = ALL_SERIALIZER.values.find(_.typeId == typeId)
-
-    optSerializer match {
-
-      case Some(ser) => Some(persister.load(objId)(ser))
-      case None => None
-    }
-  }
-
   def load[T](objId: Int)(implicit serializer: Serializer[T]): Option[T] = Some(persister.load(objId)(serializer))
 }

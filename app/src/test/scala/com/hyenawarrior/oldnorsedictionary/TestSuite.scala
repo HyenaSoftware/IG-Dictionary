@@ -1,6 +1,6 @@
 package com.hyenawarrior.oldnorsedictionary
 
-import com.hyenawarrior.oldnorsedictionary.model.database.{TestNounSerializer, TestPersister, TestStrongVerbContextSerializer}
+import com.hyenawarrior.oldnorsedictionary.model.database.{TestHashCode, TestNounSerializer, TestPersister, TestStrongVerbContextSerializer}
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
@@ -12,6 +12,7 @@ import org.junit.runners.Suite
   classOf[TestPersister],
   classOf[TestStrongVerbContextSerializer],
   classOf[TestNounSerializer],
-  classOf[TestSerializable]
+  classOf[TestSerializable],
+  classOf[TestHashCode]
 ))
 class TestSuite

@@ -1,5 +1,6 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
+import com.hyenawarrior.oldnorsedictionary.model.database.serializers.HashCode
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.DatabasePersister.{ObjTypes, Objects, Texts}
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.{DatabasePersister, SQLiteDBLayer}
 import com.hyenawarrior.oldnorsedictionary.model.persister.inmemory.InMemoryPersister
@@ -34,10 +35,16 @@ class TestPersister {
     }
   }
 
+  implicit object TestTypeHashCode extends HashCode[TestType] {
+
+    override def apply(obj: TestType): Int = 1
+  }
+
   @Test
   def testStore(): Unit = {
 
-    implicit val map: Map[Class[_], Serializer[Any]] = Map(classOf[TestType] -> TestTypeSerializer.asInstanceOf[Serializer[Any]])
+    implicit val map: Map[Class[_], (Serializer[Any], HashCode[Any])] = Map(classOf[TestType] -> (
+      TestTypeSerializer.asInstanceOf[Serializer[Any]], TestTypeHashCode.asInstanceOf[HashCode[Any]]))
 
     val persister = new InMemoryPersister()
 

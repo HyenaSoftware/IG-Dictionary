@@ -5,7 +5,7 @@ import java.io.{ByteArrayInputStream, DataInputStream}
 import com.hyenawarrior.oldnorsedictionary.model.persister.Serializer._
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.DBLayer.ColumnDefinition
 import com.hyenawarrior.oldnorsedictionary.model.persister.database.DatabasePersister.{ObjTypes, Objects, Texts}
-import com.hyenawarrior.oldnorsedictionary.model.persister.{Persister, SerData, Serializer, StringInterner}
+import com.hyenawarrior.oldnorsedictionary.model.persister.{Persister, SerData, StringInterner}
 
 import scala.language.postfixOps
 
@@ -27,8 +27,7 @@ object DatabasePersister {
     ColumnDefinition("ObjType", ClassOfInt)))
 }
 
-case class DatabasePersister(dBLayer: DBLayer)(implicit serializers: Map[Class[_], Serializer[_]])
-  extends Persister(serializers) {
+case class DatabasePersister(dBLayer: DBLayer) extends Persister {
 
   private implicit val dbLayer = dBLayer
 
@@ -72,6 +71,11 @@ case class DatabasePersister(dBLayer: DBLayer)(implicit serializers: Map[Class[_
       // new      given    1..         given
 
       val blobId = ObjTypes.max[Int]("ObjId").getOrElse(-1) + 1
+
+      store(blobId, typeId, byteArray)
+    }
+
+    override def store(blobId: Int, typeId: Int, byteArray: Array[Byte]): Int = {
 
       ObjTypes.insert(Array(blobId, typeId))
 

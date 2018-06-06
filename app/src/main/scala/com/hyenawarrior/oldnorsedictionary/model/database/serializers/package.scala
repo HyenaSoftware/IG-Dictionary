@@ -1,18 +1,19 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Pronoun}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.FinitiveStrongVerbForm.tenseAndNumberToStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.NonFinitiveStrongVerbForm.{moodAndTenseToStem, toNonFiniteVerbType}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFinitiveMood, StrongVerbClassEnum, VerbClassEnum, VerbModeEnum, VerbTenseEnum, VerbVoice, WeakVerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.{StrongVerbStem, WeakVerbStem}
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Pronoun}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, NonFinitiveMood, StrongVerbClassEnum, VerbClassEnum, VerbModeEnum, VerbTenseEnum, VerbVoice, WeakVerbClassEnum}
 import com.hyenawarrior.oldnorsedictionary.model.DictionaryEntry
 import com.hyenawarrior.oldnorsedictionary.model.persister.{Reader, Serializer}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
+import com.hyenawarrior.oldnorsedictionary.modelview.helpers._
 
 import scala.language.postfixOps
 
@@ -20,13 +21,6 @@ import scala.language.postfixOps
   * Created by HyenaWarrior on 2017.11.16..
   */
 package object serializers {
-
-  implicit val ALL_SERIALIZER: Map[Class[_], Serializer[_]] = Map(
-    classOf[StrongVerb] -> StrongVerbContextMarshaller,
-    classOf[WeakVerb] -> WeakVerbMarshaller,
-    classOf[Noun] -> NounMarshaller,
-    classOf[DictionaryEntry] -> DictionaryEntryMarshaller,
-    classOf[MeaningDef] -> MeaningDefMarshaller)
 
   implicit object AblautGradeOrdering extends Ordering[(EnumVerbStem, AblautGrade)] {
 
@@ -288,14 +282,30 @@ package object serializers {
 
     override def marshall(obj: DictionaryEntry): List[Any] = {
 
-      List(obj.word, obj.meanings.size.toByte) ++ obj.meanings
+      val wordData = obj.word match {
+
+        case sv: StrongVerb => StrongVerbContextMarshaller.typeId.toByte +: (StrongVerbContextMarshaller marshall sv)
+        case wv: WeakVerb => WeakVerbMarshaller.typeId.toByte +: (WeakVerbMarshaller marshall wv)
+        case nn: Noun => NounMarshaller.typeId.toByte +: (NounMarshaller marshall nn)
+      }
+
+      val meaningData: List[Any] = obj.meanings.flatMap(MeaningDefMarshaller.marshall)
+
+      wordData ++ List(obj.meanings.size.toByte) ++ meaningData
     }
 
     override def unmarshall(reader: Reader): DictionaryEntry = {
 
-      val word = reader[AnyRef]()
+      val objType = reader[Byte]()
+
+      val word = objType match {
+        case StrongVerbContextMarshaller.typeId => StrongVerbContextMarshaller.unmarshall(reader)
+        case WeakVerbMarshaller.typeId => WeakVerbMarshaller.unmarshall(reader)
+        case NounMarshaller.typeId => NounMarshaller.unmarshall(reader)
+      }
+
       val length = reader[Byte]()
-      val list = (0 until length).map(i => reader[MeaningDef]()).toList
+      val list = (0 until length).toList.map(i => MeaningDefMarshaller.unmarshall(reader))
       DictionaryEntry(word, list)
     }
   }
@@ -316,6 +326,78 @@ package object serializers {
       val examples = (0 until countOfExamples).map(i => reader[String]())
 
       MeaningDef(meaning, note, examples)
+    }
+  }
+
+  object HashCode {
+
+    def byteArrayFrom(obj: StrongVerb): Array[Byte] = {
+
+      val gf = obj.givenVerbForms.toSeq.sortBy(_._1).map(_._2.strRepr).mkString
+      val of = obj.overriddenVerbForms.toSeq.sortBy(_._1).map(_._2.strRepr).mkString
+
+      obj.verbClass.id().toByte +: Array[Byte]() ++: gf.getBytes ++: of.getBytes
+    }
+
+    def byteArrayFrom(obj: WeakVerb): Array[Byte] = {
+
+      val gf = obj.givenVerbForms.toSeq.sortBy(_._1).map(_._2.strRepr).mkString
+      val of = obj.overriddenVerbForms.toSeq.sortBy(_._1).map(_._2.strRepr).mkString
+
+      obj.verbClass.id().toByte +: gf.getBytes ++: of.getBytes
+    }
+
+    def byteArrayFrom(obj: Noun): Array[Byte] = {
+
+      val gf = obj.givenForms.toSeq.sortBy(_._1).map(_._2.strRepr).mkString
+      val of = obj.overridenForms.toSeq.sortBy(_._1).map(_._2.strRepr).mkString
+
+      gf.getBytes ++ of.getBytes
+    }
+
+    def byteArrayFrom(obj: List[MeaningDef]): Array[Byte] = {
+
+      val str = obj.map(e => e.meaning + e.note + e.examples.mkString).mkString
+
+      str.getBytes
+    }
+
+    def fnv1(ba: Array[Byte]): Int = {
+
+      // FNV-1
+      //                 2166136261
+      val offset_basis = 0x811C9DC5
+
+      val fnv_prime = 16777619
+
+      var hash = offset_basis
+      for(b <- ba) {
+
+        hash = hash ^ b
+        hash = hash * fnv_prime
+      }
+
+      hash
+    }
+  }
+
+  trait HashCode[T] {
+
+    def apply(obj: T): Int
+  }
+
+  implicit object DictionaryEntryHashCode extends HashCode[DictionaryEntry] {
+
+    override def apply(obj: DictionaryEntry): Int = {
+
+      val word = obj.word match {
+
+        case sv: StrongVerb => HashCode.byteArrayFrom(sv)
+        case wv: WeakVerb => HashCode.byteArrayFrom(wv)
+        case nn: Noun => HashCode.byteArrayFrom(nn)
+      }
+
+      HashCode.fnv1(word ++ HashCode.byteArrayFrom(obj.meanings))
     }
   }
 }
