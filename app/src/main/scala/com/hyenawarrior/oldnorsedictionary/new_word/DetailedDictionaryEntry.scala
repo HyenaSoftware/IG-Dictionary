@@ -4,14 +4,14 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.transition.Visibility
 import android.view.View
 import android.widget.{LinearLayout, TextView}
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum.{WEAK_A_STEM, WEAK_I_STEM, WEAK_J_STEM}
 import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
-import com.hyenawarrior.oldnorsedictionary.model.DictionaryListItem
+import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}
+import com.hyenawarrior.oldnorsedictionary.model.database.IGPersister
 import com.hyenawarrior.oldnorsedictionary.modelview._
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.MeaningDef
 import com.hyenawarrior.oldnorsedictionary.{R, modelview}
@@ -149,9 +149,17 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
     setEditMode(false)
 
-    val DictionaryListItem(otherForms, posType, posObj, _) = currentItem
+    val igPersister = new IGPersister(getApplicationContext)
 
-    currentItem = DictionaryListItem(otherForms, posType, posObj, activeMeaningAdapter.allValues)
+    //
+    val oldDictEntry = DictionaryEntry(currentItem.posObj, currentItem.meanings)
+    igPersister.delete(oldDictEntry)
+
+    currentItem = DictionaryListItem(currentItem.otherForms, currentItem.posType, currentItem.posObj, activeMeaningAdapter.allValues)
+
+    // save the current DictionaryEntry
+    val newDictEntry = DictionaryEntry(currentItem.posObj, activeMeaningAdapter.allValues)
+    igPersister.save(newDictEntry)
 
     showMeaning(currentItem.meanings)
   }
