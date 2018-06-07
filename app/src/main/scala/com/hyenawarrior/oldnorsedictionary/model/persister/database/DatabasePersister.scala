@@ -84,6 +84,21 @@ case class DatabasePersister(dBLayer: DBLayer) extends Persister {
       blobId
     }
 
+    def delete(objId: Int): Boolean = {
+
+      val d1 = Objects.delete(Array(objId), "ObjId = ?")
+      val d2 = ObjTypes.delete(Array(objId), "ObjId = ?")
+
+      (d1 > 0) && (d2 > 0)
+    }
+
+    def deleteAll(): Unit = {
+
+      Texts.delete(Array(), null)
+      Objects.delete(Array(), null)
+      ObjTypes.delete(Array(), null)
+    }
+
     override def load(objId: Int, typeId: Int): DataInputStream = {
 
       val res = ObjTypes.select(List("ObjId"), Array(objId, typeId), s"ObjId = ? and ObjType = ?").toList

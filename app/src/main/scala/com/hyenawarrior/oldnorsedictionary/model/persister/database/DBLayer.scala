@@ -16,6 +16,8 @@ object DBLayer {
 
 trait DBLayer {
 
+  def delete(table: String, whereArgs: Array[Any], whereClause: String): Int
+
   def select(table: String, colDefs: Seq[ColumnDefinition], whereArgs: Array[Any] = Array(), whereClause: String = "", isDictinct: Boolean = false): Seq[List[Any]]
 
   def insert(tableName: String, columns: Seq[ColumnDefinition], record: Array[Any]): Unit

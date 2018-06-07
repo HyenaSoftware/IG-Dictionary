@@ -40,7 +40,15 @@ abstract class Persister {
     case b: Byte => b
     case str: String => stringInterner getOrStore str
     case b: Boolean => b
+  }
 
+  def deleteAll(): Unit = serData.deleteAll()
+
+  def delete[T](obj: T)(implicit computeHashOf: HashCode[T]): Boolean = {
+
+    val hashCode = computeHashOf(obj)
+
+    serData.delete(hashCode)
   }
 
   def store[T](obj: T)(implicit serializer: Serializer[T], computeHashOf: HashCode[T]): Int = {

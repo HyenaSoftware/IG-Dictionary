@@ -35,6 +35,10 @@ trait SerData {
     byteArray
   }
 
+  def delete(objId: Int): Boolean
+
+  def deleteAll(): Unit
+
   def store(typeId: Int, data: Array[Byte]): Int
 
   def store(blobId: Int, typeId: Int, byteArray: Array[Byte]): Int

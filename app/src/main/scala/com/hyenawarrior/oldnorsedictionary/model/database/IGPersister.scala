@@ -52,6 +52,19 @@ class IGPersister(ctx: Context) {
     addLookupTexts(posObj, objId)
   }
 
+  def delete(obj: DictionaryEntry): Boolean = {
+
+    val hashCode = DictionaryEntryHashCode(obj)
+
+    // TODO make sure the deleted blob is the same as the argument
+
+    val deletedRecords = lookupTable.delete(Array(hashCode), "ObjId = ?")
+
+    persister.delete(obj)
+  }
+
+  def deleteAll(): Unit = persister.deleteAll()
+
   private def addLookupTexts[K, F <: PoSForm](pos: Pos[K, F], objId: Int): Unit = {
 
     val strIds = pos.forms

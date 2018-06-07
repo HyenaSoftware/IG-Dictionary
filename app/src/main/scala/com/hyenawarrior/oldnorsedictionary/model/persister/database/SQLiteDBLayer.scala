@@ -116,4 +116,6 @@ object SQLiteDBLayer extends DBLayer {
       case e: SQLException if ps != null => ps.close()
     }
   }
+
+  override def delete(table: String, whereArgs: Array[Any], whereClause: String): Int = ???
 }

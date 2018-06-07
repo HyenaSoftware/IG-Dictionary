@@ -115,4 +115,9 @@ class AndroidSDBLayer (ctx: Context) extends DBLayer {
 
     SQLDatabaseHelper.getWritableDatabase.insert(tableName, null, values)
   }
+
+  def delete(tableName: String, whereArgs: Array[Any], whereClause: String): Int = {
+
+    SQLDatabaseHelper.getWritableDatabase.delete(tableName, whereClause, whereArgs.map(valueOf))
+  }
 }

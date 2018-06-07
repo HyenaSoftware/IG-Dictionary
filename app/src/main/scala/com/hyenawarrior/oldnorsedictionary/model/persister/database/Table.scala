@@ -32,4 +32,9 @@ case class Table(tableName: String, columns: IndexedSeq[ColumnDefinition]) {
 
     dbLayer.select(tableName, colDefs, whereArgs, whereClause, isDictinct)
   }
+
+  def delete(whereArgs: Array[Any], whereClause: String)(implicit dBLayer: DBLayer): Int = {
+
+    dBLayer.delete(tableName, whereArgs, whereClause)
+  }
 }

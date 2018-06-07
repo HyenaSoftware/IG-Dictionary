@@ -40,4 +40,18 @@ class InMemorySerData extends SerData {
   }
 
   override def typeOf(objId: Int): Option[Int] = fields.keys.find { case (o, t) => o == objId }.map { case (_, t) => t }
+
+  override def deleteAll(): Unit = ()
+
+  override def delete(objId: Int): Boolean = {
+
+    val optE = fields.find(e => e._1._1 == objId)
+
+    for((e, _) <- optE) {
+
+      fields.remove(e)
+    }
+
+    optE.nonEmpty
+  }
 }
