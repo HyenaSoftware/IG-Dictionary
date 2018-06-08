@@ -3,7 +3,10 @@ package com.hyenawarrior.oldnorsedictionary
 import java.io.{File, FileInputStream, FileOutputStream}
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.{Bundle, Environment}
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -108,8 +111,16 @@ class MainActivity extends AppCompatActivity
 	{
 		try
 		{
-			val sd = "/storage/extSdCard" //Environment.getExternalStorageDirectory
-			val data = Environment.getDataDirectory
+			if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED ) {
+
+				//if you dont have required permissions ask for it (only required for API 23+)
+				ActivityCompat.requestPermissions(this, Array[String](android.Manifest.permission.WRITE_EXTERNAL_STORAGE),requestCode)
+			}
+
+			val extStatus = Environment.getExternalStorageState
+			Log.i("MainActivity.backup", "Environment.getExternalStorageState=" + extStatus)
+
+			val sd = Environment.getExternalStorageDirectory
 
 			val currentDBPath = "/data/data/" + getPackageName + "/databases/" + AndroidSDBLayer.DATABASE_NAME
 			val backupDBPath =  AndroidSDBLayer.DATABASE_NAME + ".db"
@@ -166,6 +177,27 @@ class MainActivity extends AppCompatActivity
 
 		val myToolbar = findViewById[Toolbar](R.id.my_toolbar)
 		setSupportActionBar(myToolbar)
+	}
+
+	var requestCode: Int = 0
+	var grantResults: Array[Int] = Array(0)
+
+	override def onRequestPermissionsResult(requestCode: Int, permissions: Array[String], grantResults: Array[Int]) = {
+
+		// If request is cancelled, the result arrays are empty.
+		if (grantResults.length > 0 && grantResults(0) == PackageManager.PERMISSION_GRANTED) {
+
+			Log.d("permission","granted")
+
+		} else {
+
+			// permission denied, boo! Disable the
+			// functionality that depends on this permission.uujm
+			Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+
+			//app cannot function without this permission for now so close it...
+			onDestroy()
+		}
 	}
 
 	override def onCreateOptionsMenu(menu: Menu): Boolean = {
