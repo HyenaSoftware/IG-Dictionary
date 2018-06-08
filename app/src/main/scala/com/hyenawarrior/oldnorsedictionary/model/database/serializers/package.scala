@@ -291,10 +291,13 @@ package object serializers {
 
       val meaningData: List[Any] = obj.meanings.flatMap(MeaningDefMarshaller.marshall)
 
-      wordData ++ List(obj.meanings.size.toByte) ++ meaningData
+      List(1.toByte) ++ wordData ++ List(obj.meanings.size.toByte) ++ meaningData
     }
 
     override def unmarshall(reader: Reader): DictionaryEntry = {
+
+      // it's just a placeholder currently it is not used
+      val altFormCount = reader[Byte]()
 
       val objType = reader[Byte]()
 
