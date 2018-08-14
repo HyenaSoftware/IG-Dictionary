@@ -94,11 +94,12 @@ object ConsonantAssimilation {
   case class Transformation(regex: Regex, suffixes: Seq[String])
 
   private val transform_dr_2_nn = Transformation("^(.*a)ðr$".r,     Seq("nn", "r"))
-  private val transform_ln_2_r  = Transformation("^(.*(?:ll|nn))$".r,  Seq("r"))
+  private val transform_ll_2_lr  = Transformation("^(.+(?:l(?=l)|n(?=n))).$".r,  Seq("r"))
+  private val transform_ll_2_llr  = Transformation("^(.+(?:ll|nn))$".r,  Seq("r"))
   private val transform_zk_2_tsk = Transformation("^(.+)zk$".r, Seq("t", "sk"))
   private val transform_zk_2_dsk = Transformation("^(.+)zk$".r, Seq("ð", "sk"))
 
-  private val edges = Seq(transform_dr_2_nn, transform_ln_2_r, transform_zk_2_tsk, transform_zk_2_dsk)
+  private val edges = Seq(transform_dr_2_nn, transform_ll_2_lr, transform_ll_2_llr, transform_zk_2_tsk, transform_zk_2_dsk)
 
   case class Path(nodes: Seq[(Transformation, String)])
   object BeginOfPath extends Path(Seq())

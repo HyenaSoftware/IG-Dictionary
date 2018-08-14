@@ -92,7 +92,7 @@ class TestTransformation {
 
 		val result = ConsonantAssimilation.transform("kallizk")
 
-		assertEquals(Seq("kallitsk", "kalliðsk"), result)
+		assertEquals(Set("kallitsk", "kalliðsk"), result.toSet)
 	}
 
 	@Test
