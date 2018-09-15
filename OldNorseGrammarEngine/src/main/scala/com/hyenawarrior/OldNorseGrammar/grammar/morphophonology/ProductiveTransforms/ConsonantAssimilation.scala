@@ -39,7 +39,7 @@ object ConsonantAssimilation {
   private val rx_rsk = "^(.+)rsk(.*)$".r
   private val rx_dsk = "^(.+)ðsk(.*)$".r
   private val rx_nn2eth = "^(.*a)nn(r.*)$".r
-  private val rx_r2ln = "^(.*([ln]))r$".r
+  private val rx_r2ln = "^(.*([ln]))r(.*)$".r
   private val rx_sr2ss = "^(.*)sr$".r
   private val rx_2cs = "^(.*)([bdðfghjklmnprstvxzþ]{2})([bdðfghjklmnprstvxzþ])(.*)$".r
 
@@ -50,7 +50,9 @@ object ConsonantAssimilation {
     case rx_dsk(s, p) => s"${s}zk$p"
     case rx_nn2eth(a, b) => s"${a}ð$b"
     //case s if s.contains("annr") => s.replace("annr", "aðr")
-    case rx_r2ln(str, c) if !isShortMonosyllabic(str) => s"$str$c"
+    case rx_r2ln(prefix, c, suffix) if !isShortMonosyllabic(prefix) => {
+      prefix + c + suffix
+    }
     case rx_sr2ss(a) => s"${a}ss"
     case rx_2cs(p, c2, c, s) if c2.last == c.head => s"$p$c2$s"
   }
@@ -126,14 +128,14 @@ object ConsonantAssimilation {
       outputEdges match {
 
         case Seq() => Seq(p)
-        case _ => outputEdges.flatMap { case e @ (tr, s) => loop(s, Path(p.nodes :+ e)) }
+        case _ => p +: outputEdges.flatMap { case e@(tr, s) => loop(s, Path(p.nodes :+ e)) }
       }
     }
 
     val leaves = loop(str, BeginOfPath)
     val newStrs = leaves.flatMap(_.nodes.lastOption)
 
-    newStrs.map(_._2)
+    newStrs.map(_._2).distinct
   }
 
   def transformStr(str: String, tr: Transformation): Option[String] = {

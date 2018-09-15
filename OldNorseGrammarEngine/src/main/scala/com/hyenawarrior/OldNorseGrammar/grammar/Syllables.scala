@@ -118,9 +118,11 @@ object Syllables {
 
     def saveAndBuildSyllable(parts: List[String], is: Int): Syllable = {
 
-      val coda = parts.lift(0).getOrElse("")
-      val nucleus = parts.lift(1).getOrElse("")
-      val onset = parts.lift(2).getOrElse("")
+      val revParts = parts.reverse
+
+      val onset = revParts.lift(0).getOrElse("")
+      val nucleus = revParts.lift(1).getOrElse("")
+      val coda = revParts.lift(2).getOrElse("")
       val length = Syllable.lengthOf(nucleus, coda)
 
       new Syllable(onset, nucleus, coda, onset.nonEmpty || is == 0, length)
@@ -154,13 +156,13 @@ object Syllables {
 
         case (CODA, false) =>
           val sy = saveAndBuildSyllable(concat(str, is, ic, parts), is)
-          processNextChar(str, ic, ic, List(), sy :: syllables, NUCLEUS)
+          processNextChar(str, ic, ic, List(""), sy :: syllables, NUCLEUS)
 
         case _ => syllables
       }
     }
 
-    def syllablesOf(word: String): List[Syllable] = processNextChar(word + '$', 0, 0, List(), List(), ONSET)
+    def syllablesOf(word: String): List[Syllable] = processNextChar(word + '$', 0, 0, List(), List(), ONSET).reverse
   }
 
   def syllablesOf(word: String, mode: MODE = TRADITIONAL_REC): List[Syllable] = mode.syllablesOf(word)
