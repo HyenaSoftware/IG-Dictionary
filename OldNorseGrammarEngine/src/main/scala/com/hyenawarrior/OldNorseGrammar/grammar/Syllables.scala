@@ -100,10 +100,10 @@ object Syllables {
 
         case (0, e) => null
         case (s, e) =>
-        val longestNucleus = word.substring(s, s + 2)
-        val nucleus = if(isDiphtong(longestNucleus)) longestNucleus else word.substring(s, s + 1)
-        val coda = word.substring(s + nucleus.length - 1, e)
-        new Syllable("", nucleus, coda, true, Syllable.lengthOf(nucleus, coda))
+          val longestNucleus = word.substring(s, s + 2)
+          val nucleus = if(isDiphtong(longestNucleus)) longestNucleus else word.substring(s, s + 1)
+          val coda = word.substring(s + nucleus.length - 1, e)
+          new Syllable("", nucleus, coda, true, Syllable.lengthOf(nucleus, coda))
       }
 
       syllables.toList
@@ -116,7 +116,7 @@ object Syllables {
     val NUCLEUS = 1
     val CODA = 2
 
-    def saveAndBuildSyllable(parts: List[String], is: Int): Syllable = {
+    private def saveAndBuildSyllable(parts: List[String], is: Int): Syllable = {
 
       val revParts = parts.reverse
 
@@ -128,11 +128,11 @@ object Syllables {
       new Syllable(onset, nucleus, coda, onset.nonEmpty || is == 0, length)
     }
 
-    def concat(str: String, is: Int, ic: Int, parts: List[String]): List[String] = str.substring(is, ic) +: parts
+    private def concat(str: String, is: Int, ic: Int, parts: List[String]): List[String] = str.substring(is, ic) :: parts
 
     // kall-að-i
     @tailrec
-    def processNextChar(str: String, is: Int, ic: Int, parts: List[String], syllables: List[Syllable], mode: Int): List[Syllable] = {
+    private def processNextChar(str: String, is: Int, ic: Int, parts: List[String], syllables: List[Syllable], mode: Int): List[Syllable] = {
 
       val c = str(ic)
 
