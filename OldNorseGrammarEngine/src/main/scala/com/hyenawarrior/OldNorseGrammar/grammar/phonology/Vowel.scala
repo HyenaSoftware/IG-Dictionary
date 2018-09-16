@@ -83,7 +83,10 @@ object Vowel {
 
   def isShort(vowels: String): Boolean = vowels.length == 1 && isShort(vowels.head)
 
+  @deprecated("poor support for diphtongs")
   def isVowel(c: Char): Boolean = VOWEL_MAP contains c
+
+  def isVowel(vowels: String): Boolean = if(vowels.length == 1) VOWEL_MAP contains vowels.head else isDiphtong(vowels)
 
   def isSemivowel(c: Char): Boolean = SEMIVOWELS contains c
 

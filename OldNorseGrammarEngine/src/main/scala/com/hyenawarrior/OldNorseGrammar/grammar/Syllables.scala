@@ -1,8 +1,8 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel._
 import com.hyenawarrior.OldNorseGrammar.grammar.Syllable.lengthOf
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Consonant.isConsonant
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel._
 
 import scala.annotation.tailrec
 
@@ -138,8 +138,11 @@ object Syllables {
 
       val inTheCorrectMode = mode match {
 
-        case ONSET | CODA => Consonant.isConsonant(c)
-        case NUCLEUS => isVowel(c)
+        case ONSET | CODA => isConsonant(c)
+        case NUCLEUS => {
+          val vs = str.substring(is, ic + 1)
+          isVowel(vs)
+        }
       }
 
       (mode, inTheCorrectMode) match {
