@@ -116,8 +116,17 @@ class TestTransformation {
 		assertEquals("hestr", ConsonantAssimilation("hestr"))
 
     assertEquals(Seq(), ConsonantAssimilation2.transform("hestr", "r"))
+		assertEquals(Seq(), ConsonantAssimilation2.transform("hamarr", "r"))
 	}
 
+	@Test
+	def testConsonantAssimilationShouldIgnoreRev(): Unit = {
+
+		assertEquals(Seq(), ConsonantAssimilation2.reverse("hestr", "r"))
+		assertEquals(Seq(), ConsonantAssimilation2.reverse("hamarr", "r"))
+	}
+
+	@deprecated
 	@Test
 	def testConsonantAssimilationR(): Unit = {
 
@@ -138,6 +147,25 @@ class TestTransformation {
 		// If the stem ends in a short stressed syllable, r does not assimilate to l or n, only
 		//	to s, as in less (in contrast to dalr ‘valley.n’, vinr ‘friend.n’).
 		//assertEquals(Seq("CaCall"),	ConsonantAssimilation2.transform("CaCalr", "r"))
+
+		assertEquals(Seq(),		ConsonantAssimilation2.transform("annarr", "r"))
+		assertEquals(Seq(),		ConsonantAssimilation2.transform("dýrr", "r"))
+	}
+
+	@Test
+	def testConsonantAssimilationNewRRev(): Unit = {
+
+		assertEquals(Seq("mannr", "maðrr"),		ConsonantAssimilation2.reverse("maðr", "r"))
+		assertEquals(Seq("stólr",	"stóllr"),	ConsonantAssimilation2.reverse("stóll", "r"))
+		assertEquals(Seq("groenr","groennr"),	ConsonantAssimilation2.reverse("groenn", "r"))
+		assertEquals(Seq("lesr", "lessr"),		ConsonantAssimilation2.reverse("less", "r"))
+
+		// If the stem ends in a short stressed syllable, r does not assimilate to l or n, only
+		//	to s, as in less (in contrast to dalr ‘valley.n’, vinr ‘friend.n’).
+		//assertEquals(Seq("CaCall"),	ConsonantAssimilation2.transform("CaCalr", "r"))
+
+		assertEquals(Seq(),	ConsonantAssimilation2.reverse("annarr", "r"))
+		assertEquals(Seq(),	ConsonantAssimilation2.reverse("dýrr", "r"))
 	}
 
 	@deprecated
@@ -174,18 +202,21 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationNewImpl(): Unit = {
 
-		assertEquals(Some("nagl"), ConsonantAssimilation2.transform("naglr", "r").lastOption)
-		assertEquals(Some("menn"), ConsonantAssimilation2.transform("mennr", "r").lastOption)
-		assertEquals(Some("skipti"), ConsonantAssimilation2.transform("skiptti", "ti").lastOption)
+		assertEquals(Seq("nagl"), ConsonantAssimilation2.transform("naglr", "r"))
+		assertEquals(Seq("menn"), ConsonantAssimilation2.transform("mennr", "r"))
+		assertEquals(Seq("skipti"), ConsonantAssimilation2.transform("skiptti", "ti"))
 		assertEquals(Seq("gamall"), ConsonantAssimilation2.transform("gamalr", "r"))
+		assertEquals(Seq(), ConsonantAssimilation2.transform("hamarr", "r"))
 	}
 
 	@Test
 	def testConsonantAssimilationNewReverseImpl(): Unit = {
 
-		assertEquals(Some("naglr"),   ConsonantAssimilation2.reverse("nagl",	"r").lastOption)
-		assertEquals(Some("mennr"),   ConsonantAssimilation2.reverse("menn",	"r").lastOption)
-		assertEquals(Some("skiptti"), ConsonantAssimilation2.reverse("skipti","ti").lastOption)
+		assertEquals(Seq("naglr"),   ConsonantAssimilation2.reverse("nagl",	"r"))
+		assertEquals(Seq("mennr"),   ConsonantAssimilation2.reverse("menn",	"r"))
+
+		// it is probably predictible: do not mix voiced and non-voiced consonants in one context
+		assertEquals(Seq("skipðti", "skiptti"), ConsonantAssimilation2.reverse("skipti","ti"))
 		assertEquals(Seq("gamalr"), 	ConsonantAssimilation2.reverse("gamall", "r"))
 	}
 
@@ -236,6 +267,8 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationNasalDentalRev(): Unit = {
 
+		// FIXME: make difference between voiced and voiceless consonants,
+		// 	avoid to mix them in the same context (or consonant cluster)
 		assertEquals(Seq("hint"), ConsonantAssimilation2.reverse("hitt", "t"))
 	}
 

@@ -137,7 +137,7 @@ object ConsonantAssimilation2 {
     ReverseTransformation(s"(?<=^$C*$V$C)t$$".r   -> Some("ð"), "^t".r -> None, 1, 1, description = "t > ðt"),
     ReverseTransformation("z$".r                  -> Some("t"), "^z([kt])$".r   -> Some("s$1"), 1, 1, description = "zk > tsk"),
     ReverseTransformation("z$".r                  -> Some("ð"), "^z([kt])$".r   -> Some("s$1"), 1, 1, description = "zk > ðsk"),
-    ReverseTransformation(s"^$C*$V$C(?!z)$C$$".r  -> None,      s"^(?!z)($C)".r -> Some("$1"),  1, 1, description = "C -> CC"),
+    ReverseTransformation(s"^$C*$V($C)(?!z|\\1)$C$$".r  -> None,      s"^(?!z)($C)".r -> Some("$1"),  1, 1, description = "C -> CC"),
 
     // forward+merging
     ReverseTransformation(s"^$C*$V$C*[lns]$$".r   -> None,      "^[lns]$".r     -> Some("r"),   1, 1, description = "C > Cr")
