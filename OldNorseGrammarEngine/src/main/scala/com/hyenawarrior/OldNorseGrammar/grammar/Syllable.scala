@@ -37,4 +37,6 @@ object Syllable {
 case class Syllable(onset: String, nucleus: String, coda: String, isStressed: Boolean, length: Length) {
 
   val letters = onset + nucleus + coda
+
+  def replaceNucleus(newNucleus: String) = Syllable(onset, newNucleus, coda, isStressed, length)
 }

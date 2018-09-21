@@ -1,40 +1,29 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.{Letter, Vowel}
+import com.hyenawarrior.OldNorseGrammar.grammar.Syllables.syllablesOf
 
-import scala.language.postfixOps
+import scala.language.{implicitConversions, postfixOps}
 
 /**
   * Created by HyenaWarrior on 2017.03.01..
   */
-case class Word(pos: PoSForm) {
+class Word(val stringRepr: String) {
 
-  private val DEFAULT_TRANSFORMATIONS = List(U_Umlaut)
-  private val POS_DEPENDENT_TRANSFORMATIONS = pos.transformations
+  def traditionalSyllables(): List[Syllable] = syllablesOf(stringRepr)
+}
 
-  def underlyingPoS: PoSForm = pos
+object Word {
 
-  // useful for lookup
-  def strForm(): String =
-  {
-    val Syllables(syllables) = pos.strRepr
+  def apply(str: String) = new Word(str)
 
-    val allTransformations = POS_DEPENDENT_TRANSFORMATIONS ++ DEFAULT_TRANSFORMATIONS
-    val transformedSyllables = allTransformations.foldLeft(syllables) {
+  @deprecated("Syllables.unapply will be deprecated")
+  def unapply(word: Word): Option[List[Syllable]] = Syllables
+    .unapply(word.stringRepr + "a")
+    .map { syllables =>
 
-      case (sys, trn) if trn canTransform sys => trn(sys).get
-      case (sys, _) => sys
+      val Syllable(onset, _, "", isStressed, length) = syllables.last
+
+      syllables.init :+ Syllable(onset, "", "", isStressed, length)
     }
-
-    val str = Syllables(transformedSyllables)
-
-    str
-
-    //pos.strForm
-  }
-
-  // formatted description
-  val description = "[not yet]"
-
-  override def toString = s"${strForm()} [$pos + ${POS_DEPENDENT_TRANSFORMATIONS.map(_.toString)}]"
 }
