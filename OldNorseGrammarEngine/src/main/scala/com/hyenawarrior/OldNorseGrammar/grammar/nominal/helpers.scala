@@ -8,6 +8,6 @@ import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.{NoOpCalcu
   */
 object helpers {
 
-  implicit object NoOpCalculator extends NoOpCalculator[AdjectiveFormType]
-  implicit object UnitCalculator extends UnitCalculator[AdjectiveFormType]
+  implicit object StringNoOpCalculator extends NoOpCalculator[String, AdjectiveFormType]
+  implicit object StringUnitCalculator extends UnitCalculator[String, AdjectiveFormType]
 }

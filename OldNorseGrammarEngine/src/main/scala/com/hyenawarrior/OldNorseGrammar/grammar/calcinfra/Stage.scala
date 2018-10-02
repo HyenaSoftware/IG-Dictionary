@@ -6,18 +6,18 @@ import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel._
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-case class Stage[F](forms: Seq[CalcItem], calculator: Calculator[F]) {
+case class Stage[D, F](forms: Seq[CalcItem], calculator: Calculator[D, F]) {
 
   @deprecated("doesn't handle diphtongs")
-  def vowelMatrix: Seq[Array[Char]] = calcResults.map(_.data.filter(isVowel).toCharArray)
+  def vowelMatrix(implicit vowelsOf: D => Seq[Char]): Seq[Array[Char]] = calcResults.map(str => vowelsOf(str.data).toArray)
 
   @deprecated("change implementation")
-  def countOfSyllables: Int = (0 +: vowelMatrix.map(_.length)).max
+  def countOfSyllables(implicit vowelsOf: D => Seq[Char]): Int = (0 +: vowelMatrix.map(_.length)).max
 
-  def calcResults: Seq[CalcResult[String, F]] = forms.collect { case cr: CalcResult[String, F] => cr }
+  def calcResults: Seq[CalcResult[D, F]] = forms.collect { case cr: CalcResult[D, F] => cr }
 
-  def parentCalcResults: Seq[CalcResult[String, F]] = forms
-    .collect { case cr: CalcResult[String, F] => cr.parentCalcItems }
+  def parentCalcResults: Seq[CalcResult[D, F]] = forms
+    .collect { case cr: CalcResult[D, F] => cr.parentCalcItems }
     .flatten
 
   override def toString: String = {

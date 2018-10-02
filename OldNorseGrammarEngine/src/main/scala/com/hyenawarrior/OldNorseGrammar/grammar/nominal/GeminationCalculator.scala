@@ -7,7 +7,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.Calculator
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-object GeminationCalculator extends Calculator[AdjectiveFormType] {
+object GeminationCalculator extends Calculator[String, AdjectiveFormType] {
 
   // TODO: move these to a common place
   private val LV = "(?:[áæéíóœúý]|oe|ae|au|ey|ei)"
@@ -16,7 +16,7 @@ object GeminationCalculator extends Calculator[AdjectiveFormType] {
   private val pattern = s"^($C*$LV)([tr])(?!\\2)(.*)$$".r
   private val revPattern = s"^($C*$LV)([tr])\\2(.*)$$".r
 
-  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]): Either[Seq[String], String] = {
+  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]): Either[Seq[String], String] = {
 
     //val inflection = AdjectivalOperations.inflectionWithComparsionFor(declension)
     //val adjustedInflection = Syncope.adjustSyncopatedInflection(inflection)
@@ -31,7 +31,7 @@ object GeminationCalculator extends Calculator[AdjectiveFormType] {
     Left(Seq(rs))
   }
 
-  override def reverseCompute(str: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]): Either[Seq[String], String] = {
+  override def reverseCompute(str: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]): Either[Seq[String], String] = {
 
     //val inflection = AdjectivalOperations.inflectionWithComparsionFor(declension)
     //val adjustedInflection = Syncope.adjustSyncopatedInflection(inflection)

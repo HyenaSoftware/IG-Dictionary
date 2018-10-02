@@ -1,22 +1,24 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nominal
 
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.AdjectiveTraits
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.AdjectiveTraits.inflectionWithComparsionFor
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.AdjectiveFormType
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.Stage
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.Calculator
-import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Word, morphophonology}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.Syncope
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.Syncope.adjustSyncopatedInflection
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{I_Umlaut, U_Umlaut, Umlaut}
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel._
+import com.hyenawarrior.OldNorseGrammar.grammar.{Syllable, Word, morphophonology}
 
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-object SyncopeCalculator extends Calculator[AdjectiveFormType] {
+object SyncopeCalculator extends Calculator[String, AdjectiveFormType] {
 
-  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]) = Left { Seq {
+  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]) = Left { Seq {
 
-    val inflection = AdjectiveTraits.inflectionWithComparsionFor(declension)
+    val inflection = inflectionWithComparsionFor(declension)
 
     Syncope.transform(str, inflection)
   }}
@@ -25,9 +27,21 @@ object SyncopeCalculator extends Calculator[AdjectiveFormType] {
   private val C = "[bdðfghjklmnprstvxzþ]"
   private val patternForEndsWith2Cons = s"$C{2}$$".r
 
+  private def possibleSyncopatedVowel(declension: AdjectiveFormType, sys: List[Syllable]): String = {
+
+    val possibleSecondVowel = possibleUmlautsOf(declension, sys) match {
+
+      case Some(U_Umlaut) => "u"
+      case Some(I_Umlaut) => "i"
+      case _ => "a"
+    }
+
+    possibleSecondVowel
+  }
+
   private def endsWithTwoConsonant(str: String): Boolean = patternForEndsWith2Cons.findFirstIn(str).nonEmpty
 
-  override def reverseCompute(form: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]) = {
+  override def reverseCompute(form: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]) = {
 
     //val isDiSyllabic = stage.countOfSyllables == 2
     val word = Word(form)
@@ -58,23 +72,19 @@ object SyncopeCalculator extends Calculator[AdjectiveFormType] {
 
     //val ts = word.traditionalSyllables()
 
-    val possibleSecondVowel = possibleUmlautsOf(declension, sys) match {
+    val possibleSecondVowel = possibleSyncopatedVowel(declension, sys)
 
-      case Some(U_Umlaut) => "u"
-      case Some(I_Umlaut) => "i"
-      case _ => "a"
-    }
-
-    val inflection = AdjectiveTraits.inflectionWithComparsionFor(declension)
+    val inflection = inflectionWithComparsionFor(declension)
     val startsWithVowel = inflection.headOption.exists(isVowel)
 
-    val adjustedInflection = Syncope.adjustSyncopatedInflection(inflection)
+    val adjustedInflection = adjustSyncopatedInflection(inflection)
     val formWithoutInflection = morphophonology.stripSuffix(form, adjustedInflection)
 
     val stemEndsWithTwoConsonants = endsWithTwoConsonant(formWithoutInflection)
 
     val form2 = if(startsWithVowel && stemEndsWithTwoConsonants) {
 
+      // -CC|V- : possibly the stem is syncopated
       val idx = formWithoutInflection.length - 1
       val (s1, s2) = form splitAt idx
 

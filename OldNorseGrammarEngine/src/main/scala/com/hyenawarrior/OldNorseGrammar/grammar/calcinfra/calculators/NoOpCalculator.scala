@@ -5,11 +5,11 @@ import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.Stage
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-trait NoOpCalculator[T] extends Calculator[T] {
+trait NoOpCalculator[D, F] extends Calculator[D, F] {
 
-  override def compute(str: String, declension: T, stage: Stage[T]) = Left(Seq())
+  override def compute(str: D, declension: F, stage: Stage[D, F]) = Left(Seq())
 
-  override def reverseCompute(str: String, declension: T, stage: Stage[T]) = Left(Seq())
+  override def reverseCompute(str: D, declension: F, stage: Stage[D, F]) = Left(Seq())
 
   override def shortCode: String = "NOP"
 }

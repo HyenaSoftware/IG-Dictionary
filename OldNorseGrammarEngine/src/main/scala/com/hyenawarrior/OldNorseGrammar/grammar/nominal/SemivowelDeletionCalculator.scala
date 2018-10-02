@@ -8,7 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransf
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-object SemivowelDeletionCalculator extends Calculator[AdjectiveFormType] {
+object SemivowelDeletionCalculator extends Calculator[String, AdjectiveFormType] {
 
   private val C = "[bdðfghjklmnprstvxzþ]"
   private val pattern = s"^($C*ý)([^j].*)?$$".r
@@ -18,7 +18,7 @@ object SemivowelDeletionCalculator extends Calculator[AdjectiveFormType] {
     FIXME: compute-SVD should goes after the inflectioning: othersie it is unknown the stem inflectional suffix can keep back the semivowel
    */
 
-  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]): Either[Seq[String], String] = {
+  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]): Either[Seq[String], String] = {
 
     //val jidx = str.indexWhere(isVowel)
 
@@ -27,7 +27,7 @@ object SemivowelDeletionCalculator extends Calculator[AdjectiveFormType] {
     Left(Seq(rs))
   }
 
-  override def reverseCompute(str: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]): Either[Seq[String], String] = {
+  override def reverseCompute(str: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]): Either[Seq[String], String] = {
 
     //val iv = str.indexWhere(isVowel)
     //val firstNucleus = str.substring(iv).takeWhile(isVowel)

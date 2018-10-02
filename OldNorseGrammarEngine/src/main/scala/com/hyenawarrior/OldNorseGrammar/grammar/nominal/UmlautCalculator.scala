@@ -10,9 +10,9 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-object UmlautCalculator extends Calculator[AdjectiveFormType] {
+object UmlautCalculator extends Calculator[String, AdjectiveFormType] {
 
-  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]) = Left {
+  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]) = Left {
 
     val optTransform = AdjectiveTraits.transformationsFor(declension)
     val inflection = AdjectiveTraits.inflectionFor(declension)
@@ -36,7 +36,7 @@ object UmlautCalculator extends Calculator[AdjectiveFormType] {
     }
   }
 
-  override def reverseCompute(form: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]) = Left {
+  override def reverseCompute(form: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]) = Left {
 
     // TODO: the inflection may be attached here
     // gǫmlum -> gamlum/gamlam

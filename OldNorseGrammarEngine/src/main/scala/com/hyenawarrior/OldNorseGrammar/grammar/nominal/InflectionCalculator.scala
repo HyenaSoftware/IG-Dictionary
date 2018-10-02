@@ -10,9 +10,9 @@ import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransf
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-object InflectionCalculator extends Calculator[AdjectiveFormType] {
+object InflectionCalculator extends Calculator[String, AdjectiveFormType] {
 
-  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]): Either[Seq[String], String] = {
+  override def compute(str: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]): Either[Seq[String], String] = {
 
     val inflection = AdjectiveTraits.inflectionFor(declension)
 
@@ -21,7 +21,7 @@ object InflectionCalculator extends Calculator[AdjectiveFormType] {
     Left(Seq(inflectedStr))
   }
 
-  override def reverseCompute(formStrRepr: String, declension: AdjectiveFormType, stage: Stage[AdjectiveFormType]): Either[Seq[String], String] = {
+  override def reverseCompute(formStrRepr: String, declension: AdjectiveFormType, stage: Stage[String, AdjectiveFormType]): Either[Seq[String], String] = {
 
     val inflection = AdjectiveTraits.inflectionWithComparsionFor(declension)
 

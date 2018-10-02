@@ -1,6 +1,5 @@
 package com.hyenawarrior.OldNorseGrammar.grammar
 
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.{Letter, Vowel}
 import com.hyenawarrior.OldNorseGrammar.grammar.Syllables.syllablesOf
 
 import scala.language.{implicitConversions, postfixOps}

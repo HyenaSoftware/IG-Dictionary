@@ -48,7 +48,7 @@ object Adjective {
       throw new RuntimeException("There was no forms given.")
     }
 
-    val givenAdjForms = givenForms.map { case (f, s) => f -> new AdjectiveForm(s, f) }
+    val givenAdjForms = givenForms.map { case (f, s) => f -> AdjectiveForm(s, f) }
 
     val stemsToForms = run(givenAdjForms.values.toSeq, forTypes)
 
@@ -61,14 +61,16 @@ object Adjective {
 
   private def run(givenAdjForms: Seq[AdjectiveForm], types: Set[AdjectiveType]): (AdjectiveStem, Seq[AdjectiveForm]) = {
 
-    val calculators = List[Calculator[AdjectiveFormType]](
+    val calculators = List[Calculator[String, AdjectiveFormType]](
       // form
       ConsonantAssimilationCalculator,
       GeminationCalculator,
       // restoring the unstressed vowel might split the geminated consonants
+      // BackwardInflectionCalculator,
       SyncopeCalculator,
       SemivowelDeletionCalculator,
       InflectionCalculator,
+      // ForwardInflectionCalculator,
       UmlautCalculator
       // stem
     )
@@ -77,13 +79,13 @@ object Adjective {
 
     val forms: Seq[CalcResult[String, AdjectiveFormType]] = givenAdjForms.map(f => CalcResult.from(f.strRepr, f.declension))
 
-    val calcinfra = new CalcEngine()
+    val calcinfra = new CalcEngine[String, AdjectiveFormType]()
 
     val formsToCalculate = ALL_FORMS.filter(f => types.contains(f.adjType))
     val outputContext = calcinfra.calculate(forms, calculators, formsToCalculate)
 
     //
-    val optIOStage: Option[Stage[AdjectiveFormType]] = outputContext.stages.lastOption.map(_._2)
+    val optIOStage: Option[Stage[String, AdjectiveFormType]] = outputContext.stages.lastOption.map(_._2)
     val adjForms = optIOStage match {
 
       case Some(stage) => stage.calcResults.flatMap(cr => cr.declensions.map(decl => AdjectiveForm(cr.data, decl)))

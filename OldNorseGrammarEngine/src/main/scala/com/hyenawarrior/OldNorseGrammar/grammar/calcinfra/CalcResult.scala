@@ -9,12 +9,12 @@ import scala.collection.Set
   */
 object CalcResult {
 
-  def from[T, F](data: T, declension: F)(implicit noOpCalc: NoOpCalculator[F]): CalcResult[T, F] =
+  def from[T, F](data: T, declension: F)(implicit noOpCalc: NoOpCalculator[T, F]): CalcResult[T, F] =
     CalcResult[T, F](data, NO_CALC_ON_INPUT, Set(), Set(declension), noOpCalc)
 }
 
 case class CalcResult[T, F](data : T, calcDirection : CalcDirection, parentCalcItems : Set[CalcResult[T, F]]
-                         , declensions : Set[F], calculator : Calculator[F]) extends CalcItem {
+                         , declensions : Set[F], calculator : Calculator[T, F]) extends CalcItem {
 
   override def toString: String = toString(true)
 
