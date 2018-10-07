@@ -38,3 +38,20 @@ object Consonant {
   def devoice(c: Char): Char = devoicing(c)
   def voice(c: Char): Char = voicing(c)
 }
+
+final case class Consonant(cs: String, phonemeProperty: PhonemeProperty) extends Phoneme {
+
+  override def isConsonant: Boolean = true
+
+  override def asShortened: Option[Phoneme] = ???
+
+  override def asLengthened: Option[Phoneme] = ???
+
+  override def copyWithPropertyOf(phonemeProperty: PhonemeProperty) = Consonant(cs, phonemeProperty)
+
+  override val lengthInLetters: Int = cs.length
+
+  override val asString: String = cs
+
+  override def toString: String = s"$cs:$lengthInLetters"
+}

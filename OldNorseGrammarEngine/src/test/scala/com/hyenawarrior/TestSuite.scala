@@ -2,7 +2,7 @@ package com.hyenawarrior
 
 import com.hyenawarrior.OldNorseGrammar.grammar._
 import com.hyenawarrior.OldNorseGrammar.grammar.morphology._
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.TestVowels
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.{TestMorpheme, TestVowels, TestWord}
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 
@@ -31,5 +31,7 @@ import org.junit.runners.Suite
 	classOf[WeakVerbTest]
 	, classOf[AdjectivalStemTest]
 	, classOf[AdjectiveTest]
+	, classOf[TestWord]
+	, classOf[TestMorpheme]
 ))
 class TestSuite
