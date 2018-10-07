@@ -88,9 +88,9 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
     mergedCalcResults ++ calcErrors.getOrElse(Seq())
   }
 
-  private def mergeCalcResults(calcItems: Seq[CalcResult[D, F]], calculator: Calculator[D, F], calcDirection: CalcDirection): Seq[CalcResult[D, F]] = {
+  private def mergeCalcResults(calcResults: Seq[CalcResult[D, F]], calculator: Calculator[D, F], calcDirection: CalcDirection): Seq[CalcResult[D, F]] = {
 
-    val distinctCalcGroups = calcItems.groupBy(_.data)
+    val distinctCalcGroups = calcResults.groupBy(_.data)
 
     distinctCalcGroups.map { case (computedDerivedStr, derivedCalcItemsOfGroup) =>
 

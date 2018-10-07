@@ -85,6 +85,8 @@ object ConsonantAssimilation2 {
     val suffixReplacement: (Regex, Option[String])
     val overlappingCharacters: Int
     val assimilatedCharacters: Int
+
+    override def toString: String = description
   }
 
   private object Transformation {
@@ -149,7 +151,7 @@ object ConsonantAssimilation2 {
     ReverseTransformation(s"(?<=^$C*$LV([tr]))\\1$$".r  -> Some(""), "^([tr])(?=\\1|$)".r  -> None, 1, 1, description = "Vrr|tt > rr|tt"),
 
     // forward+merging
-    ReverseTransformation(s"^$C*$V$C*[lns]$$".r   -> None,      "^[lns]$".r     -> Some("r"),   1, 1, description = "C > Cr")
+    ReverseTransformation(s"^$C*$V$C*[lns]$$".r   -> None,  "^[lns]$".r  -> Some("r"),   1, 1, description = "C > Cr")
   )
 
   def transform(str: String, suffix: String): Seq[String] = syncopeRouting(str, suffix, FWD_ITEMS).map { case (a, b) => a + b }
@@ -193,26 +195,39 @@ object ConsonantAssimilation2 {
 
     val Transformation((stemRgx, stemRepl), (inflRgx, inflRepl), overlappingCharacters, assimilatedCharacters) = transformation
 
+    // word = "nagl", knownInfl = "r", transformation = "C > Cr", assimilatedCharacters = 1, overlappingCharacters = 1
     val inflLength = max(knownInfl.length - assimilatedCharacters, 0)
+    // inflLength = 1 - 1 = 0
     val endPoint = word.length - inflLength
+    // endPoint = 4 - 0 = 4
     val beginPoint = endPoint - overlappingCharacters
+    // beginPoint = 4 - 1 = 3
 
     val realStem = word.substring(0, endPoint)
-    val suffix = word.substring(beginPoint, word.length)
-    val realInfl = word.substring(endPoint, word.length)
+    // realStem = "nagl"
+    val suffix = word.substring(beginPoint, word.length)  // for regex operations
+    // suffix = "l"
+    val realInfl = word.substring(endPoint, word.length)  // only for validation
+    // realInfl = ""
 
     if(validateInflection(PRE, transformation, knownInfl, realInfl)) {
+    // pass
 
       val stemChangeIsFine = stemRgx.findFirstIn(realStem).nonEmpty
       val inflChangeIsFine = inflRgx.findFirstIn(suffix).nonEmpty
 
       if (stemChangeIsFine && inflChangeIsFine) {
+      // pass
 
         val newStem = stemRepl.map(repl => stemRgx.replaceFirstIn(realStem, repl)) getOrElse realStem
+        // None:      realStem = "nagl", newStem = "nagl"
         val newInfl = inflRepl.map(repl => inflRgx.replaceFirstIn(suffix, repl)) getOrElse suffix
+        // Some("r"): suffix = "l", newInfl = "r"
 
         if (validateInflection(POST, transformation, knownInfl, newInfl)) {
+        // pass
 
+          // "nagl" + "r"
           Some(newStem -> newInfl)
 
         } else None
