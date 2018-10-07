@@ -71,6 +71,16 @@ class AdjectiveTest {
   }
 
   @Test
+  def testGamall4(): Unit = {
+
+    val adjective = Adjective.from(Map(
+      AdjectiveFormType(POSITIVE_INDEFINITE, PLURAL,   FEMININE, ACCUSATIVE) -> "gamlar"
+    ), Set(POSITIVE_INDEFINITE))
+
+    assertEquals("gamall", extract(adjective, (POSITIVE_INDEFINITE, SINGULAR, MASCULINE, NOMINATIVE)))
+  }
+
+  @Test
   def testAnnarr(): Unit = {
 
     val adjective = Adjective.from(Map(
@@ -86,7 +96,7 @@ class AdjectiveTest {
 
     val adjective = Adjective.from(Map(
       AdjectiveFormType(POSITIVE_INDEFINITE, PLURAL, FEMININE, NOMINATIVE) -> "aðrar"
-    ))
+    ), Set(POSITIVE_INDEFINITE))
 
     assertEquals("annar", adjective.stem.stemStr)
 
