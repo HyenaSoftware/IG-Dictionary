@@ -104,6 +104,8 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
 
   private def split(context: Context[D, F]): Seq[Context[D, F]] = {
 
+    val (InputLevel, inputStage) :: _ = context.stages
+
     val (level, stage) :: _ = context.stages.reverse
 
     val newCtxs = for(form <- stage.forms) yield {
@@ -119,7 +121,15 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
 
         val stages = (head :: tail).reverse
 
-        Some(Context(stages))
+        val (InputLevel, newInputStage) = stages.head
+        val isComplete = inputStage.forms.size == newInputStage.forms.size
+
+        // prohibit to emit incomplete stages
+        if(isComplete) {
+
+          Some(Context(stages))
+
+        } else None
       }
     }
 
