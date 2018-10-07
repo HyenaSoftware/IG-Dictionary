@@ -121,6 +121,8 @@ object ConsonantAssimilation2 {
     ForwardTransformation("(?<!ts)[tð]$".r      -> Some("z"), "^s(?=[kt]$)".r         -> Some(""),    description = "t > ðt"),
     ForwardTransformation(s"($C)(?!\\1)$C$$".r  -> None,      s"^($C)\\1(?=$NC|$$)".r -> Some(""), 1, description = "CC > C"),
 
+    ForwardTransformation(s"^$C*$LV$$".r -> None,  "^([tr])".r -> Some("$1$1"),  description = "Vr|t > rr|tt"),
+
     // forward+merging
     ForwardTransformation(s"$C[lns]$$".r -> None, s"^r".r -> Some(""), description = "Cr > C"))
 
@@ -141,6 +143,10 @@ object ConsonantAssimilation2 {
     ReverseTransformation("z$".r                  -> Some("t"), "^z([kt])$".r   -> Some("s$1"), 1, 1, description = "zk > tsk"),
     ReverseTransformation("z$".r                  -> Some("ð"), "^z([kt])$".r   -> Some("s$1"), 1, 1, description = "zk > ðsk"),
     ReverseTransformation(s"^$C*$V($C)(?!z|\\1)$C$$".r  -> None,      s"^(?!z)($C)".r -> Some("$1"),  1, 1, description = "C -> CC"),
+
+    ReverseTransformation(s"(?<=^$C*$LV)[tr]$$".r  -> Some(""), "^([tr])(?=\\1)".r  -> Some(""), 1, description = "Vrr|tt > r|t"),
+    // edge case for gemination+simplification: [dýr+r] > [dýrr+r:geminated] > [dýr+r:simplified]
+    ReverseTransformation(s"(?<=^$C*$LV([tr]))\\1$$".r  -> Some(""), "^([tr])(?=\\1|$)".r  -> None, 1, 1, description = "Vrr|tt > rr|tt"),
 
     // forward+merging
     ReverseTransformation(s"^$C*$V$C*[lns]$$".r   -> None,      "^[lns]$".r     -> Some("r"),   1, 1, description = "C > Cr")
