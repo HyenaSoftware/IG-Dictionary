@@ -2,6 +2,9 @@ package com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTrans
 
 import java.lang.Math._
 
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.MorphemeProperty.{Stem, Suffix}
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.{Morpheme, Word}
+
 import scala.util.matching.Regex
 
 /**
@@ -143,11 +146,30 @@ object ConsonantAssimilation2 {
     ReverseTransformation(s"^$C*$V$C*[lns]$$".r   -> None,      "^[lns]$".r     -> Some("r"),   1, 1, description = "C > Cr")
   )
 
-  def transform(str: String, suffix: String): Seq[String] = syncopeRouting(str, suffix, FWD_ITEMS)
+  def transform(str: String, suffix: String): Seq[String] = syncopeRouting(str, suffix, FWD_ITEMS).map { case (a, b) => a + b }
+  def reverse(str: String, suffix: String): Seq[String] = syncopeRouting(str, suffix, REV_ITEMS).map { case (a, b) => a + b }
 
-  def reverse(str: String, suffix: String): Seq[String] = syncopeRouting(str, suffix, REV_ITEMS)
+  def transform(word: Word): Seq[Word] = {
 
-  private def syncopeRouting(str: String, suffix: String, items: Seq[Transformation]): Seq[String] = {
+    val suffixStr = word.selectMorpheme(Suffix).map(_.asString()).getOrElse("")
+
+    syncopeRouting(word.asString, suffixStr, FWD_ITEMS).map {
+
+      case (stem, suffix) => new Word(Seq(Morpheme(stem, Stem), Morpheme(suffix, Suffix)))
+    }
+  }
+
+  def reverse(word: Word): Seq[Word] = {
+
+    val suffixStr = word.selectMorpheme(Suffix).map(_.asString()).getOrElse("")
+
+    syncopeRouting(word.asString, suffixStr, REV_ITEMS).map {
+
+      case (stem, suffix) => new Word(Seq(Morpheme(stem, Stem), Morpheme(suffix, Suffix)))
+    }
+  }
+
+  private def syncopeRouting(str: String, suffix: String, items: Seq[Transformation]): Seq[(String, String)] = {
 
     /*
      TODO: apply here a sanity check like:
@@ -161,7 +183,7 @@ object ConsonantAssimilation2 {
     items.flatMap(t => transformImpl(t, str, suffix))
   }
 
-  private def transformImpl(transformation: Transformation, word: String, knownInfl: String): Option[String] = {
+  private def transformImpl(transformation: Transformation, word: String, knownInfl: String): Option[(String, String)] = {
 
     val Transformation((stemRgx, stemRepl), (inflRgx, inflRepl), overlappingCharacters, assimilatedCharacters) = transformation
 
@@ -185,7 +207,7 @@ object ConsonantAssimilation2 {
 
         if (validateInflection(POST, transformation, knownInfl, newInfl)) {
 
-          Some(newStem + newInfl)
+          Some(newStem -> newInfl)
 
         } else None
 

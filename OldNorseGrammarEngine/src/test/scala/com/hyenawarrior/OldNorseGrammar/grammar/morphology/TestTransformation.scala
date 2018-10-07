@@ -303,6 +303,26 @@ class TestTransformation {
 	}
 
 	@Test
+	def testConsonantAssimilationGemination(): Unit = {
+
+		assertEquals(Seq("nýtt"), ConsonantAssimilation2.transform("nýt", "t"))
+		assertEquals(Seq("fárri"), ConsonantAssimilation2.transform("fári", "ri"))
+	}
+
+	@Test
+	def testConsonantAssimilationGeminationRev(): Unit = {
+
+		assertEquals(Seq("nýt"), ConsonantAssimilation2.reverse("nýtt", "t"))
+		assertEquals(Seq("fári"), ConsonantAssimilation2.reverse("fárri", "ri"))
+	}
+
+	@Test
+	def testConsonantAssimilationGeminationRev2(): Unit = {
+
+		assertEquals(Seq("dýr", "dýrr"), ConsonantAssimilation2.reverse("dýrr", "r"))
+	}
+
+	@Test
 	def testGemination(): Unit = {
 
 		assertEquals("ný" -> "tt", 	Gemination("ný", "t"))
