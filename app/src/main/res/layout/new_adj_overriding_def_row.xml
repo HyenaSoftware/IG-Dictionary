@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="CMP"
+                android:id="@+id/tvAdjComparative" android:layout_margin="1dp"
+                android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="SUP"
+                  android:id="@+id/tvAdjSuperlative" android:layout_margin="1dp" android:textStyle="bold"
+                  android:textColor="@android:color/darker_gray"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="DEF"
+                  android:id="@+id/tvAdjDefinite" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="INDF"
+                  android:id="@+id/tvAdjIndefinite" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/darker_gray"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="NOM"
+                  android:id="@+id/tvAdjCase" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/holo_red_dark"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="MASC"
+                  android:id="@+id/tvAdjGender" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/holo_red_dark"/>
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="SG"
+                  android:id="@+id/tvAdjNumber" android:layout_margin="1dp"
+                  android:textStyle="bold" android:textColor="@android:color/holo_red_dark"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <ImageButton android:layout_width="50dp" android:layout_height="wrap_content" android:id="@+id/ibRemove"
+                     android:src="@android:drawable/ic_delete" android:adjustViewBounds="false"
+                     android:contentDescription="Add"
+                     android:onClick="onRemoveOverride"/>
+        <ImageButton android:layout_width="50dp" android:layout_height="wrap_content" android:id="@+id/ibPreferences"
+                     android:src="@android:drawable/ic_menu_preferences" android:adjustViewBounds="false"
+                     android:contentDescription="Add"
+                     android:layout_gravity="center_vertical"/>
+        <EditText android:layout_width="wrap_content" android:layout_height="fill_parent" android:id="@+id/etNewWord.Text"
+                  android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>

@@ -5,8 +5,8 @@ import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget._
 import com.hyenawarrior.oldnorsedictionary.R
-import com.hyenawarrior.oldnorsedictionary.modelview.{EditTextTypeListener, ItemListener, SpinnerListener}
-import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.{AddNewNounHelper, AddNewNullHelper, AddNewPosHelper, AddNewVerbHelper}
+import com.hyenawarrior.oldnorsedictionary.modelview.{ItemListener, SpinnerListener}
+import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers._
 
 object AddNewWordActivity extends Fragment
 {
@@ -26,8 +26,11 @@ object AddNewWordActivity extends Fragment
 
 		val addNewNounHelper = new AddNewNounHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
 		val addNewVerbHelper = new AddNewVerbHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
+		val addNewAdjectiveHelper = new AddNewAdjectiveHelper(rootView, getActivity, SP_SELECT_STEM_CLASS)
 
-		val POS_TYPES = Vector(addNewNounHelper, addNewVerbHelper, AddNewNullHelper)
+		val generatedItems = rootView.findViewById[LinearLayout](R.id.llGeneratedItems)
+
+		val POS_TYPES = Vector(addNewNounHelper, addNewVerbHelper, addNewAdjectiveHelper)
 	}
 
 	var postInitContext: LazyPostInit = null
@@ -60,6 +63,7 @@ object AddNewWordActivity extends Fragment
 	private def onPosTypeSelected(newPosType: AddNewPosHelper) {
 
 		postInitContext.tlOverrides.removeAllViews()
+		postInitContext.generatedItems.removeAllViews()
 
 		currentPosHelper.deactivate()
 

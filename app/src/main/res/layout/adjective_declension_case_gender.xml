@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:orientation="vertical"
+             android:background="#fffde5" android:layout_marginBottom="3dp" android:columnCount="2">
+    <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+              android:weightSum="10">
+        <Space android:layout_width="0dp" android:layout_weight="2.5"
+               android:layout_height="wrap_content"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="Masculine"
+                  android:id="@+id/textView4" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="Feminine"
+                  android:id="@+id/textView10" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="Neutral"
+                  android:id="@+id/textView3" android:layout_weight="2.5"/>
+    </TableRow>
+    <TableRow android:layout_width="match_parent" android:layout_height="match_parent"
+              android:weightSum="10">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Nominative"
+                android:id="@+id/textView2" android:layout_weight="2.5"/>
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="hvass"
+                android:id="@+id/tv.masc.nom" android:layout_weight="2.5"/>
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="hvöss"
+                android:id="@+id/tv.fem.nom" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvasst"
+                  android:id="@+id/tv.neu.nom" android:layout_weight="2.5"/>
+    </TableRow>
+    <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="10">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="Accusative"
+                  android:id="@+id/textView6" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvassan"
+                  android:id="@+id/tv.masc.acc" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvassa"
+                  android:id="@+id/tv.fem.acc" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvasst"
+                  android:id="@+id/tv.neu.acc" android:layout_weight="2.5"/>
+    </TableRow>
+    <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="10">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="Dative"
+                  android:id="@+id/textView14" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvössum"
+                  android:id="@+id/tv.masc.dat" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvassri"
+                  android:id="@+id/tv.fem.dat" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvössu"
+                  android:id="@+id/tv.neu.dat" android:layout_weight="2.5"/>
+    </TableRow>
+    <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="10">
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceSmall" android:text="Genitive"
+                  android:id="@+id/textView18" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvass"
+                  android:id="@+id/tv.masc.gen" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvassrar"
+                  android:id="@+id/tv.fem.gen" android:layout_weight="2.5"/>
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                  android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvass"
+                  android:id="@+id/tv.neu.gen" android:layout_weight="2.5"/>
+    </TableRow>
+</TableLayout>

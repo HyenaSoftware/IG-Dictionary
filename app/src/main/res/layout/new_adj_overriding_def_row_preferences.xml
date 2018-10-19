@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" android:background="#968c8c">
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFBB33">
+        <ImageView
+                android:src="@android:drawable/ic_menu_info_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/app_name" android:layout_weight="1"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Set Adjective Declension"
+                android:id="@+id/textView11" android:textAlignment="textStart" android:layout_weight="1"
+                android:layout_gravity="center_vertical" android:singleLine="true"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:background="#fffde5" android:layout_margin="1dp"
+    >
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Case"
+                android:id="@+id/textView8"/>
+        <GridLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:columnCount="2" android:rowCount="2"
+                android:id="@+id/rbgCase">
+            <!-- RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Stem"
+                    android:id="@+id/rbStem" android:layout_column="0" android:layout_row="2"/ -->
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nominative"
+                         android:id="@+id/rbAdjNom" android:checked="true"/>
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Accusative"
+                         android:id="@+id/rbAdjAcc"/>
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dative"
+                         android:id="@+id/rbAdjDat" android:checked="false"/>
+            <RadioButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Genitive"
+                         android:id="@+id/rbAdjGen"/>
+        </GridLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:background="#fffde5" android:layout_margin="1dp">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Gender"
+                android:id="@+id/textView13"/>
+        <RadioGroup
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" android:id="@+id/rbgGender" android:orientation="horizontal"
+                android:layout_gravity="center_horizontal">
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Masculine"
+                    android:id="@+id/rbAdjMasculine" android:checked="true"/>
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Feminine"
+                    android:id="@+id/rbAdjFeminine"/>
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Neuter"
+                    android:id="@+id/rbAdjNeuter"/>
+        </RadioGroup>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:background="#fffde5" android:layout_margin="1dp"
+            android:orientation="vertical">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Number"
+                android:id="@+id/textView15"/>
+        <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/rbNumber" android:orientation="horizontal"
+                android:background="#fffde5">
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Singular"
+                    android:id="@+id/rbAdjSingular" android:checked="true"/>
+            <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Plural"
+                    android:id="@+id/rbAdjPlural"/>
+        </RadioGroup>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:background="#fffde5" android:layout_margin="1dp">
+    </LinearLayout>
+    <GridLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" android:background="#fffde5" android:columnCount="2"
+            android:orientation="vertical" android:rowCount="4">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Kind"
+        />
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Strong positive\nindefinite"
+                android:id="@+id/btAdjPosIndef" android:background="#ff0000"
+                style="?android:attr/buttonStyleSmall" android:clickable="true" android:enabled="true"
+                android:layout_margin="1dp" android:layout_row="1" android:layout_column="0"
+                android:layout_gravity="fill_horizontal" android:layout_columnWeight="1"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weak positive\ndefinite"
+                android:id="@+id/btAdjPosDef" android:background="#b7b7b7"
+                style="?android:attr/buttonStyleSmall" android:clickable="true" android:enabled="true"
+                android:layout_margin="1dp" android:layout_row="1" android:layout_column="1"
+                android:layout_gravity="fill_horizontal" android:layout_columnWeight="1"/>
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Comparative"
+                android:id="@+id/btAdjCmp" android:background="#b7b7b7"
+                style="?android:attr/buttonStyleSmall" android:clickable="true" android:enabled="true"
+                android:layout_margin="1dp" android:layout_row="2" android:layout_column="0"
+                android:layout_columnSpan="2" android:layout_gravity="fill_horizontal"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Strong superlative\nindefinite"
+                android:id="@+id/btAdjSupIndef" android:background="#b7b7b7"
+                style="?android:attr/buttonStyleSmall" android:clickable="true" android:enabled="true"
+                android:layout_margin="1dp" android:layout_row="3" android:layout_column="0"
+                android:layout_gravity="fill_horizontal"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weak superlative\ndefinite"
+                android:id="@+id/btAdjSupDef" android:background="#b7b7b7"
+                style="?android:attr/buttonStyleSmall" android:clickable="true" android:enabled="true"
+                android:layout_margin="1dp" android:layout_row="3" android:layout_column="1"
+                android:layout_gravity="fill_horizontal"/>
+    </GridLayout>
+</LinearLayout>

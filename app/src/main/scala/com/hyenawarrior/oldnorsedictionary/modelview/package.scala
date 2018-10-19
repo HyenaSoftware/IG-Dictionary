@@ -2,20 +2,24 @@ package com.hyenawarrior.oldnorsedictionary
 
 import android.view.View
 import android.widget.TextView
-import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.Adjective
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{unapply => _, _}
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender.{FEMININE, MASCULINE, NEUTER}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{GNumber, Pronoun}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
+import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice.{ACTIVE, MEDIO_PASSIVE}
-import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{FinitiveMood, StrongVerbClassEnum, VerbClassEnum, VerbVoice, WeakVerbClassEnum}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.stem.enum.EnumVerbStem._
+import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
 
 /**
   * Created by HyenaWarrior on 2017.12.03..
@@ -32,6 +36,24 @@ package object modelview {
     R.id.tvNewWord_Acc_Pl -> (PLURAL, ACCUSATIVE),
     R.id.tvNewWord_Dat_Pl -> (PLURAL, DATIVE),
     R.id.tvNewWord_Gen_Pl -> (PLURAL, GENITIVE)
+  )
+
+  private val ADJECTIVE_TEXT_VIEWS = Seq(
+
+    R.id.tv_masc_nom -> (MASCULINE, NOMINATIVE),
+    R.id.tv_masc_acc -> (MASCULINE, ACCUSATIVE),
+    R.id.tv_masc_dat -> (MASCULINE, DATIVE),
+    R.id.tv_masc_gen -> (MASCULINE, GENITIVE),
+
+    R.id.tv_fem_nom -> (FEMININE, NOMINATIVE),
+    R.id.tv_fem_acc -> (FEMININE, ACCUSATIVE),
+    R.id.tv_fem_dat -> (FEMININE, DATIVE),
+    R.id.tv_fem_gen -> (FEMININE, GENITIVE),
+
+    R.id.tv_neu_nom -> (NEUTER, NOMINATIVE),
+    R.id.tv_neu_acc -> (NEUTER, ACCUSATIVE),
+    R.id.tv_neu_dat -> (NEUTER, DATIVE),
+    R.id.tv_neu_gen -> (NEUTER, GENITIVE)
   )
   
   private val VERB_NON_FINITIVE_IDS = Seq(
@@ -87,6 +109,37 @@ package object modelview {
       val tvNC = targetView.findViewById[TextView](id)
       val ncTextForm = noun.nounForms.get(nf -> isDefinite).map(_.strRepr).getOrElse("...")
       tvNC.setText(ncTextForm)
+    }
+  }
+
+  def setDeclensionsTo(adjective: Adjective, targetView: View, adjectiveType: AdjectiveType): Unit = {
+
+    val tvAdjDef = targetView.findViewById[TextView](R.id.tvAdjectiveDefiniteness)
+    val tvAdjKind = targetView.findViewById[TextView](R.id.tvAdjectiveKind)
+
+    val (strKind, strDef) = adjectiveType match {
+
+      case POSITIVE_INDEFINITE => "Positive" -> "Strong"
+      case POSITIVE_DEFINITE => "Positive" -> "Weak"
+      case COMPARATIVE => "Comparative" -> "Weak"
+      case SUPERLATIVE_INDEFINITE => "Superlative" -> "Strong"
+      case SUPERLATIVE_DEFINITE => "Superlative" -> "Weak"
+    }
+
+    tvAdjDef setText strDef
+    tvAdjKind setText strKind
+
+    setDeclensionsTo(adjective, targetView.findViewById[View](R.id.adjective_singulars), adjectiveType, SINGULAR)
+    setDeclensionsTo(adjective, targetView.findViewById[View](R.id.adjective_plurals),   adjectiveType, PLURAL)
+  }
+
+  private def setDeclensionsTo(adjective: Adjective, targetView: View, adjType: AdjectiveType, number: GNumber): Unit = {
+
+    for((id, (gender, caze)) <- ADJECTIVE_TEXT_VIEWS) {
+
+      val tv = targetView.findViewById[TextView](id)
+      val form = adjective.forms((adjType, number, gender, caze))
+      tv.setText(form.strRepr)
     }
   }
 
