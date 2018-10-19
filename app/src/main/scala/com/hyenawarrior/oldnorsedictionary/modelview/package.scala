@@ -157,7 +157,7 @@ package object modelview {
     * @param voice
     */
   def setDeclensionsTo(v: Verb, targetView: View, mood: FinitiveMood, voice: VerbVoice): Unit = v match {
-    case sv @ StrongVerb(cl, ablautGrade, _, _, _) =>
+    case sv @ StrongVerb(cl, ablautGrade: Map[EnumVerbStem, AblautGrade], _, _, _) =>
 
       setVerbConjugationDetailsTo(targetView, cl, ablautGrade)
 
