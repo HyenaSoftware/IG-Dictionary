@@ -14,8 +14,6 @@ import com.hyenawarrior.OldNorseGrammar.grammar.phonology.MorphemeProperty
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.PhonemeProperty._
 import com.hyenawarrior.OldNorseGrammar.grammar.{Pos, phonology}
 
-import scala.collection.Set
-
 /**
   * Created by HyenaWarrior on 2018.06.11..
   */
