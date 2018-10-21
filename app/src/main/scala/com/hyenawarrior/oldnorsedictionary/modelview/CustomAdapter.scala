@@ -113,13 +113,15 @@ abstract class CustomAdapter[T](val activity: Activity, listView: ViewGroup, lay
 
 	private final def getNewView(i: Int, value: T, viewGroup: ViewGroup): View = {
 
-		val view = inflater.inflate(layoutElem, viewGroup, false)
+		val view = inflater.inflate(layoutElemFor(value), viewGroup, false)
 
 		initView(view)
 		resetView(i, value, view)
 
 		view
 	}
+
+	protected def layoutElemFor(value: T): Int = layoutElem
 
 	protected def initView(view: View): Unit = ()
 	protected def indexUpdated(i: Int, value: T, view: View): Unit = ()

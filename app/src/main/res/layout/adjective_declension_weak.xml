@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TableLayout android:layout_width="match_parent"
+                 android:layout_height="wrap_content" android:background="#fffde5" android:layout_marginTop="3dp">
+        <TableRow android:layout_width="match_parent" android:layout_height="wrap_content">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Weak"
+                      android:textAlignment="center" android:id="@+id/tvAdjectiveDefiniteness" android:layout_weight="1"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Positive"
+                      android:id="@+id/tvAdjectiveKind" android:layout_weight="1" android:textAlignment="center"/>
+        </TableRow>
+    </TableLayout>
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:columnCount="2" android:layout_marginTop="3dp">
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="12">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Singular"
+                      android:background="#fffde5" android:layout_weight="3"
+            />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Masculine"
+                      android:id="@+id/textView21" android:layout_weight="3" android:background="#fffde5"
+            />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Feminine"
+                      android:id="@+id/textView25" android:layout_weight="3" android:background="#fffde5"/>
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Neutral"
+                      android:id="@+id/textView22" android:layout_weight="3" android:background="#fffde5"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="wrap_content" android:weightSum="12"
+                  android:layout_marginTop="1dp">
+            <LinearLayout android:orientation="vertical" android:layout_width="0dp"
+                          android:layout_height="match_parent" android:layout_weight="3" android:weightSum="4">
+                <TextView android:layout_width="fill_parent" android:layout_height="20dp"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="Nominative"
+                          android:id="@+id/textView16" android:layout_weight="1"
+                          android:background="#fffde5"/>
+                <TextView android:layout_width="fill_parent" android:layout_height="20dp"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="Accusative"
+                          android:id="@+id/textView17" android:layout_weight="1"
+                          android:background="#fffde5" android:layout_marginTop="1dp"/>
+                <TextView android:layout_width="fill_parent" android:layout_height="20dp"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="Genitive"
+                          android:id="@+id/textView19" android:layout_weight="1"
+                          android:background="#fffde5"/>
+                <TextView android:layout_width="fill_parent" android:layout_height="20dp"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="Dative"
+                          android:id="@+id/textView20" android:layout_weight="1"
+                          android:background="#fffde5" android:gravity="center_vertical"/>
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical" android:layout_width="0dp"
+                          android:layout_height="match_parent" android:layout_weight="3" android:weightSum="4">
+                <TextView android:layout_width="fill_parent" android:layout_height="0dp"
+                          android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvassi"
+                          android:id="@+id/tv_adj_weak_sg_masc_nom" android:layout_weight="1"
+                          android:background="#fffde5"
+                          android:gravity="bottom"/>
+                <FrameLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp" android:layout_weight="3">
+                    <TextView android:layout_width="fill_parent" android:layout_height="fill_parent"
+                              android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvassa"
+                              android:id="@+id/tv_adj_weak_sg_masc_acc_gen_dat"
+                              android:gravity="center_vertical" android:background="#fffde5"
+                              android:layout_marginTop="1dp"/>
+                </FrameLayout>
+            </LinearLayout>
+            <LinearLayout android:orientation="vertical" android:layout_width="0dp"
+                          android:layout_height="match_parent" android:layout_weight="3" android:weightSum="4">
+                <TextView android:layout_width="fill_parent" android:layout_height="0dp"
+                          android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvassa"
+                          android:id="@+id/tv_adj_weak_sg_fem_nom" android:layout_weight="1" android:background="#fffde5"
+                          android:gravity="bottom"/>
+                <FrameLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="0dp" android:layout_weight="3">
+                    <TextView android:layout_width="fill_parent" android:layout_height="fill_parent"
+                              android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvössu"
+                              android:id="@+id/tv_adj_weak_sg_fem_acc_gen_dat" android:layout_weight="2"
+                              android:gravity="center_vertical" android:background="#fffde5"
+                              android:layout_marginTop="1dp"/>
+                </FrameLayout>
+            </LinearLayout>
+            <TextView android:layout_width="0dp" android:layout_height="match_parent"
+                      android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvassa"
+                      android:id="@+id/tv_adj_weak_sg_neu_nom_acc_gen_dat" android:layout_weight="3"
+                      android:gravity="center_vertical" android:background="#fffde5" android:layout_marginLeft="1dp"/>
+        </TableRow>
+    </TableLayout>
+
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:columnCount="2" android:layout_marginTop="3dp">
+        <TableRow android:layout_width="match_parent" android:layout_height="match_parent" android:weightSum="10"
+                  android:background="#3482ba">
+            <TextView android:layout_width="0dp" android:layout_height="fill_parent"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Plural"
+                      android:background="#fffde5" android:layout_weight="2.5"/>
+            <TextView android:layout_width="0dp" android:layout_height="fill_parent"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Masculine"
+                      android:id="@+id/textView45" android:layout_weight="2.5" android:background="#fffde5"/>
+            <TextView android:layout_width="0dp" android:layout_height="fill_parent"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Feminine"
+                      android:id="@+id/textView48" android:layout_weight="2.5" android:background="#fffde5"/>
+            <TextView android:layout_width="0dp" android:layout_height="fill_parent"
+                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Neutral"
+                      android:id="@+id/textView49" android:layout_weight="2.5" android:background="#fffde5"/>
+        </TableRow>
+        <TableRow android:layout_width="match_parent" android:layout_height="wrap_content" android:weightSum="4"
+                  android:layout_marginTop="1dp" android:background="#fffde5">
+            <LinearLayout android:orientation="vertical" android:layout_width="0dp"
+                          android:layout_height="match_parent" android:layout_weight="1" android:weightSum="4"
+            >
+
+                    <TextView android:layout_width="fill_parent" android:layout_height="20dp"
+                              android:textAppearance="?android:attr/textAppearanceSmall" android:text="Nominative"
+                              android:id="@+id/textView32" android:layout_weight="1"
+                              android:gravity="center_vertical"
+                    />
+                    <TextView android:layout_width="fill_parent" android:layout_height="20dp"
+                              android:textAppearance="?android:attr/textAppearanceSmall" android:text="Accusative"
+                              android:id="@+id/textView33" android:layout_weight="1"
+                              android:gravity="center_vertical"
+                    />
+                    <TextView android:layout_width="fill_parent" android:layout_height="20dp"
+                              android:textAppearance="?android:attr/textAppearanceSmall" android:text="Genitive"
+                              android:id="@+id/textView34" android:layout_weight="1"
+                              android:gravity="center_vertical" />
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3" android:weightSum="3" android:orientation="horizontal" >
+                <Space android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"/>
+                <TextView android:layout_width="0dp" android:layout_height="60dp"
+                          android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvössu"
+                          android:id="@+id/tv_adj_weak_pl_nom_acc_gen"
+                          android:gravity="center_vertical" android:layout_weight="1"/>
+            </LinearLayout>
+        </TableRow>
+        <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:weightSum="4" android:layout_marginTop="1dp"
+                android:background="#fffde5">
+                <TextView android:layout_width="0dp" android:layout_height="20dp"
+                          android:textAppearance="?android:attr/textAppearanceSmall" android:text="Dative"
+                          android:id="@+id/textView35" android:layout_weight="1"
+                          android:gravity="center_vertical"
+                />
+            <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="20dp"
+                    android:measureAllChildren="false"
+                    android:layout_weight="3" android:weightSum="3">
+                <Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+                <TextView android:layout_width="0dp" android:layout_height="fill_parent"
+                          android:textAppearance="?android:attr/textAppearanceMedium" android:text="hvössum"
+                          android:id="@+id/tv_adj_weak_pl_dat"
+                          android:layout_weight="1" android:gravity="bottom"/>
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

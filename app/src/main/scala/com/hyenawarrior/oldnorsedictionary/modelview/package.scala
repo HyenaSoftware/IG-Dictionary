@@ -8,7 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.{unapply => _, _}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender.{FEMININE, MASCULINE, NEUTER}
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.{GNumber, Pronoun}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Gender, Pronoun}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
@@ -54,6 +54,23 @@ package object modelview {
     R.id.tv_neu_acc -> (NEUTER, ACCUSATIVE),
     R.id.tv_neu_dat -> (NEUTER, DATIVE),
     R.id.tv_neu_gen -> (NEUTER, GENITIVE)
+  )
+
+  private val WEAK_SINGULAR_ADJECTIVE_TEXT_VIEWS = Seq(
+
+    R.id.tv_adj_weak_sg_masc_nom      -> (MASCULINE, NOMINATIVE),
+    R.id.tv_adj_weak_sg_masc_acc_gen_dat  -> (MASCULINE, ACCUSATIVE),
+
+    R.id.tv_adj_weak_sg_fem_nom     -> (FEMININE, NOMINATIVE),
+    R.id.tv_adj_weak_sg_fem_acc_gen_dat -> (FEMININE, ACCUSATIVE),
+
+    R.id.tv_adj_weak_sg_neu_nom_acc_gen_dat -> (NEUTER, NOMINATIVE)
+  )
+
+  private val WEAK_PLURAL_ADJECTIVE_TEXT_VIEWS = Seq(
+
+    R.id.tv_adj_weak_pl_nom_acc_gen -> (FEMININE, NOMINATIVE),
+    R.id.tv_adj_weak_pl_dat         -> (FEMININE, DATIVE)
   )
   
   private val VERB_NON_FINITIVE_IDS = Seq(
@@ -114,28 +131,44 @@ package object modelview {
 
   def setDeclensionsTo(adjective: Adjective, targetView: View, adjectiveType: AdjectiveType): Unit = {
 
-    val tvAdjDef = targetView.findViewById[TextView](R.id.tvAdjectiveDefiniteness)
-    val tvAdjKind = targetView.findViewById[TextView](R.id.tvAdjectiveKind)
 
-    val (strKind, strDef) = adjectiveType match {
-
-      case POSITIVE_INDEFINITE => "Positive" -> "Strong"
-      case POSITIVE_DEFINITE => "Positive" -> "Weak"
-      case COMPARATIVE => "Comparative" -> "Weak"
-      case SUPERLATIVE_INDEFINITE => "Superlative" -> "Strong"
-      case SUPERLATIVE_DEFINITE => "Superlative" -> "Weak"
-    }
-
-    tvAdjDef setText strDef
-    tvAdjKind setText strKind
-
-    setDeclensionsTo(adjective, targetView.findViewById[View](R.id.adjective_singulars), adjectiveType, SINGULAR)
-    setDeclensionsTo(adjective, targetView.findViewById[View](R.id.adjective_plurals),   adjectiveType, PLURAL)
   }
 
-  private def setDeclensionsTo(adjective: Adjective, targetView: View, adjType: AdjectiveType, number: GNumber): Unit = {
+  def setStrongDeclensionsTo(adjective: Adjective, targetView: View, adjectiveType: AdjectiveType): Unit = {
 
-    for((id, (gender, caze)) <- ADJECTIVE_TEXT_VIEWS) {
+    val tvAdjKind = targetView.findViewById[TextView](R.id.tvAdjectiveKind)
+
+    val strKind = adjectiveType match {
+
+      case POSITIVE_INDEFINITE => "Positive"
+      case SUPERLATIVE_INDEFINITE => "Superlative"
+    }
+
+    tvAdjKind setText strKind
+
+    setAdjectiveDeclensionsTo(adjective, targetView.findViewById[View](R.id.adjective_singulars), adjectiveType, SINGULAR, ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, targetView.findViewById[View](R.id.adjective_plurals),   adjectiveType, PLURAL,   ADJECTIVE_TEXT_VIEWS)
+  }
+
+  def setWeakDeclensionsTo(adjective: Adjective, targetView: View, adjectiveType: AdjectiveType): Unit = {
+
+    val tvAdjKind = targetView.findViewById[TextView](R.id.tvAdjectiveKind)
+
+    tvAdjKind setText (adjectiveType match {
+
+      case POSITIVE_DEFINITE => "Positive"
+      case COMPARATIVE => "Comparative"
+      case SUPERLATIVE_DEFINITE => "Superlative"
+    })
+
+    setAdjectiveDeclensionsTo(adjective, targetView, adjectiveType, SINGULAR, WEAK_SINGULAR_ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, targetView, adjectiveType, PLURAL, WEAK_PLURAL_ADJECTIVE_TEXT_VIEWS)
+  }
+
+  private def setAdjectiveDeclensionsTo(adjective: Adjective, targetView: View, adjType: AdjectiveType,
+                                        number: GNumber, mapping: Seq[(Int, (Gender, Case))]): Unit = {
+
+    for((id, (gender, caze)) <- mapping) {
 
       val tv = targetView.findViewById[TextView](id)
       val form = adjective.forms((adjType, number, gender, caze))
