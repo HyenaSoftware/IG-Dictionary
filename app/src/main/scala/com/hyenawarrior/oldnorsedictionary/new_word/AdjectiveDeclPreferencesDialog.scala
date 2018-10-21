@@ -3,7 +3,8 @@ package com.hyenawarrior.oldnorsedictionary.new_word
 import android.app.{Activity, AlertDialog}
 import android.content.{Context, DialogInterface}
 import android.view.{LayoutInflater, View}
-import android.widget.{Button, RadioButton}
+import android.widget.AdapterView.OnItemSelectedListener
+import android.widget.{AdapterView, RadioButton, Spinner}
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.{AdjectiveFormType, fromTuple}
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
@@ -11,7 +12,6 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender._
 import com.hyenawarrior.oldnorsedictionary.R
 import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.AddNewAdjectiveHelper
-import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.AddNewAdjectiveHelper.{GRAY, RED}
 
 /**
   * Created by HyenaWarrior on 2018.10.17..
@@ -35,6 +35,24 @@ class AdjectiveDeclPreferencesDialog(activity: Activity) {
       case DialogInterface.BUTTON_POSITIVE => callback(state)
       //case DialogInterface.BUTTON_NEGATIVE => ()
       case _ => ()
+    }
+  }
+
+  object AdjKindSpinnerListener extends OnItemSelectedListener {
+
+    override def onNothingSelected(adapterView: AdapterView[_]): Unit = ???
+
+    private val SPINNER_KIND_ITEMS = List(
+      AdjectiveType.POSITIVE_DEFINITE,
+      AdjectiveType.POSITIVE_INDEFINITE,
+      AdjectiveType.COMPARATIVE,
+      AdjectiveType.SUPERLATIVE_DEFINITE,
+      AdjectiveType.SUPERLATIVE_INDEFINITE
+    )
+
+    override def onItemSelected(adapterView: AdapterView[_], view: View, idx: Int, l: Long): Unit = {
+
+      state = (SPINNER_KIND_ITEMS(idx), state.number, state.gender, state.caze)
     }
   }
 
@@ -85,42 +103,14 @@ class AdjectiveDeclPreferencesDialog(activity: Activity) {
     }
   }
 
-  private object KindButtonListener extends View.OnClickListener {
-
-    override def onClick(view: View): Unit = {
-
-      state = view.getId match {
-
-        case R.id.btAdjPosDef   => (AdjectiveType.POSITIVE_DEFINITE,      state.number, state.gender, state.caze)
-        case R.id.btAdjPosIndef => (AdjectiveType.POSITIVE_INDEFINITE,    state.number, state.gender, state.caze)
-        case R.id.btAdjCmp      => (AdjectiveType.COMPARATIVE,            state.number, state.gender, state.caze)
-        case R.id.btAdjSupDef   => (AdjectiveType.SUPERLATIVE_DEFINITE,   state.number, state.gender, state.caze)
-        case R.id.btAdjSupIndef => (AdjectiveType.SUPERLATIVE_INDEFINITE, state.number, state.gender, state.caze)
-      }
-
-      disableOtherRadioButtonsThan(view.getId)
-    }
-
-    private def disableOtherRadioButtonsThan(selectedId: Int) = {
-
-      selfView.findViewById[Button](selectedId).setBackgroundColor(RED)
-
-      val otherRbs = Seq(R.id.btAdjPosDef, R.id.btAdjPosIndef, R.id.btAdjCmp, R.id.btAdjSupDef, R.id.btAdjSupIndef)
-        .filterNot(_ == selectedId)
-
-      for(id <- otherRbs) {
-
-        selfView.findViewById[Button](id).setBackgroundColor(GRAY)
-      }
-    }
-  }
-
   private val selfView = {
 
     val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE).asInstanceOf[LayoutInflater]
 
     inflater.inflate(R.layout.new_adj_overriding_def_row_preferences, null)
   }
+
+  selfView.findViewById[Spinner](R.id.spAdjectiveKind).setOnItemSelectedListener(AdjKindSpinnerListener)
 
   for(id <- Seq(R.id.rbAdjNom, R.id.rbAdjAcc, R.id.rbAdjDat, R.id.rbAdjGen)) {
 
@@ -135,11 +125,6 @@ class AdjectiveDeclPreferencesDialog(activity: Activity) {
   for(id <- Seq(R.id.rbAdjSingular, R.id.rbAdjPlural)) {
 
     selfView.findViewById[View](id).setOnClickListener(NumberRadioButtonListener)
-  }
-
-  for(id <- Seq(R.id.btAdjPosDef, R.id.btAdjPosIndef, R.id.btAdjCmp, R.id.btAdjSupDef, R.id.btAdjSupIndef)) {
-
-    selfView.findViewById[Button](id).setOnClickListener(KindButtonListener)
   }
 
   private val dialog = new AlertDialog.Builder(activity)

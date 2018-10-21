@@ -5,4 +5,11 @@
         <item>Comparative and Superlative</item>
         <item>All</item>
     </string-array>
+    <string-array name="adj_kinds">
+        <item>Strong Positive</item>
+        <item>Weak Positive</item>
+        <item>Comparative</item>
+        <item>Strong Superlative</item>
+        <item>Weak Superlative</item>
+    </string-array>
 </resources>
