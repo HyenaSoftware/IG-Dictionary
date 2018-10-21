@@ -15,6 +15,12 @@ import org.junit.Test
   */
 class AdjectiveTest {
 
+  val smn = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, MASCULINE, NOMINATIVE)
+  val sma = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, MASCULINE, ACCUSATIVE)
+  val snn = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, NEUTER, NOMINATIVE)
+  val TO_GENERATE = Set(POSITIVE_INDEFINITE)
+
+
   @Test
   def testGamall(): Unit = diff("gamal", Array(
     "gamall", "gǫmul",    "gamalt",
@@ -102,6 +108,18 @@ class AdjectiveTest {
 
     assertEquals("ǫnnur", extract(adjective, (POSITIVE_INDEFINITE, SINGULAR, FEMININE,  NOMINATIVE)))
   }
+
+  @Test
+  def testConsonantAssimilationOnGodr() = assertEquals("góðan",   extract(Adjective.from(Map(smn -> "góðr"), TO_GENERATE), sma))
+
+  @Test
+  def testConsonantAssimilationOnVitr() = assertEquals("vitran",  extract(Adjective.from(Map(smn -> "vitr"), TO_GENERATE), sma))
+
+  @Test
+  def testConsonantAssimilationOnVakr() = assertEquals("vakrt",  extract(Adjective.from(Map(smn -> "vakr"), TO_GENERATE), snn))
+
+  @Test
+  def testConsonantAssimilationOnVaerr() = assertEquals("vært",  extract(Adjective.from(Map(smn -> "vaerr"), TO_GENERATE), snn))
 
   @Test
   def testÞyrstr(): Unit = {
