@@ -22,7 +22,14 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
   }
 
   // FIXME: drop this dumb selector of 1st item, and return all of them
-  private def selector(contexts: Seq[Context[D, F]]): Context[D, F] = contexts.head
+  private def selector(contexts: Seq[Context[D, F]]): Context[D, F] = {
+
+    if(contexts.isEmpty) {
+
+      Context(List())
+
+    } else { contexts.head }
+  }
 
   private def calculateStem(forms: Seq[CalcResult[D, F]], calculators: Seq[Calculator[D, F]]): Context[D, F] = {
 

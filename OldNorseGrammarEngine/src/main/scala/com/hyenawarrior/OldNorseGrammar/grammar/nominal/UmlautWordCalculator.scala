@@ -44,33 +44,39 @@ object UmlautWordCalculator extends Calculator[Word, AdjectiveFormType] {
     } else { Seq(word) }
   }
 
-  override def reverseCompute(word: Word, declension: AdjectiveFormType, stage: Stage[Word, AdjectiveFormType]) = Left {
+  override def reverseCompute(word: Word, declension: AdjectiveFormType, stage: Stage[Word, AdjectiveFormType]) = {
     // gǫmlum -> gamlum/gamlam
 
-    val stressedVowel = word.selectMorpheme(Stem)
-      .map(_.phonemes.collect { case ph if ph.isVowel => ph.asInstanceOf[Vowel2] }.head)
-      .head
+    val optStressedVowel = word.selectMorpheme(Stem)
+      .map(_.phonemes.collect { case ph if ph.isVowel => ph.asInstanceOf[Vowel2] })
 
-    val possibleUmlaut = possibleUmlautFor(declension, stressedVowel)
+    optStressedVowel match {
+      case Some(Seq()) => Right(s"Word '${word.asString}' does not have any vowel in the 'stem' morpheme.")
+      case None => Right(s"Word '${word.asString}' does not have any morpheme")
 
-    val newWord = possibleUmlaut match {
+      case Some(stressedVowels) =>
 
-      case Some(U_Umlaut) =>
+        val possibleUmlaut = possibleUmlautFor(declension, stressedVowels.head)
 
-        word.transformMorphemes {
+        val newWord = possibleUmlaut match {
 
-          case (mh, _) if mh is Stem =>
+          case Some(U_Umlaut) =>
+
+          word.transformMorphemes {
+
+            case (mh, _) if mh is Stem =>
 
             mh.transformPhonemes[Vowel2]({ case ph: Vowel2 => ph }, {
 
               case (0 | 1, v) => SimpleVowel('a', Default)
             })
+          }
+
+          case _ => word
         }
 
-      case _ => word
+        Left(Seq(newWord))
     }
-
-    Seq(newWord)
   }
 
   private def possibleUmlautFor(declension: AdjectiveFormType, stressedVowel: Vowel2): Option[Umlaut] = {

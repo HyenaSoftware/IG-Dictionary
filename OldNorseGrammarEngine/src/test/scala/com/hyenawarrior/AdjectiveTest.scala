@@ -122,6 +122,32 @@ class AdjectiveTest {
   def testConsonantAssimilationOnVaerr() = assertEquals("vært",  extract(Adjective.from(Map(smn -> "vaerr"), TO_GENERATE), snn))
 
   @Test
+  def testAvoidCrash(): Unit = {
+
+    try {
+
+      Adjective.from(Map(smn -> ""), TO_GENERATE)
+
+      fail()
+
+    } catch {
+
+      case e: Exception => ()
+    }
+
+    try {
+
+      Adjective.from(Map(smn -> ""), TO_GENERATE)
+
+      fail()
+
+    } catch {
+
+      case e: Exception => ()
+    }
+  }
+
+  @Test
   def testÞyrstr(): Unit = {
 
     val adjective = Adjective.from(Map(

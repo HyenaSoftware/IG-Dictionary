@@ -23,7 +23,7 @@ object ConsonantWordAssimilationCalculator extends Calculator[phonology.Word, Ad
 
     val rs = ConsonantAssimilation2.reverse(word)
 
-    if(rs.nonEmpty) rs else Seq(word)
+    word +: rs
   }
 
   override def shortCode: String = "CA"

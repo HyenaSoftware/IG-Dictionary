@@ -203,6 +203,8 @@ object ConsonantAssimilation2 {
     val beginPoint = endPoint - overlappingCharacters
     // beginPoint = 4 - 1 = 3
 
+    if(beginPoint < 0) return None
+
     val realStem = word.substring(0, endPoint)
     // realStem = "nagl"
     val suffix = word.substring(beginPoint, word.length)  // for regex operations

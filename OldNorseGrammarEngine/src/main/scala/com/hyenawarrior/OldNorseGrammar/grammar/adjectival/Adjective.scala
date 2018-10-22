@@ -52,13 +52,17 @@ object Adjective {
 
     val stemsToForms = run(givenAdjForms.values.toSeq, forTypes)
 
-    val (stem, forms) = stemsToForms
-    val missingAdjForms = forms.map(f => f.declension -> f).toMap
+    stemsToForms match {
 
-    new Adjective(stem, givenAdjForms, missingAdjForms, Map())
+      case (Some(stem), forms) =>
+        val missingAdjForms = forms.map(f => f.declension -> f).toMap
+        new Adjective(stem, givenAdjForms, missingAdjForms, Map())
+
+      case (None, _) => throw new RuntimeException("Unable to infer stem")
+    }
   }
 
-  private def run(givenAdjForms: Seq[AdjectiveForm], types: Set[AdjectiveType]): (AdjectiveStem, Seq[AdjectiveForm]) = {
+  private def run(givenAdjForms: Seq[AdjectiveForm], types: Set[AdjectiveType]): (Option[AdjectiveStem], Seq[AdjectiveForm]) = {
 
     import com.hyenawarrior.OldNorseGrammar.grammar.nominal.helpers._
 
@@ -99,15 +103,16 @@ object Adjective {
     }
 
     //
-    val topStage = outputContext.stages.head._2
-    val adjStems = {
+    val optTopStage = outputContext.stages.headOption.map(_._2)
+    val optAdjStems = optTopStage.map {
 
-      val cr = topStage.calcResults.head
-      val stemMorpheme = cr.data.selectMorpheme(MorphemeProperty.Stem)
+      topStage =>
+        val cr = topStage.calcResults.head
+        val stemMorpheme = cr.data.selectMorpheme(MorphemeProperty.Stem)
 
-      AdjectiveStem(stemMorpheme.map(_.asString).getOrElse(""))
+        AdjectiveStem(stemMorpheme.map(_.asString).getOrElse(""))
     }
 
-    adjStems -> adjForms
+    optAdjStems -> adjForms
   }
 }
