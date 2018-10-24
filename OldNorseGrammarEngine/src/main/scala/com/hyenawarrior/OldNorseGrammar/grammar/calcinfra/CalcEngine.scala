@@ -107,10 +107,15 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
 
       if(parentCalcResults.isEmpty) None else {
 
-        val tail = recCollect(parentCalcResults)
+        val tail = recCollect(parentCalcResults.toSet)
         val head = level -> newStemStage
 
         val stages = (head :: tail).reverse
+
+        if(stages.size != context.stages.size) {
+
+          throw new RuntimeException("CalcEngine.split: mismatch of count of input and output stages")
+        }
 
         val (InputLevel, newInputStage) = stages.head
         val isComplete = inputStage.forms.size == newInputStage.forms.size
@@ -127,10 +132,10 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
     newCtxs.flatten
   }
 
-  private def recCollect(sourceCalcresults: Seq[CalcResult[D, F]]): List[(Level, Stage[D, F])] = {
+  private def recCollect(sourceCalcresults: Set[CalcResult[D, F]]): List[(Level, Stage[D, F])] = {
 
-    val newStageCalculator :: Nil = sourceCalcresults.map(pcr => pcr.calculator).distinct
-    val newStage = Stage[D, F](sourceCalcresults, newStageCalculator)
+    val newStageCalculator :: Nil = sourceCalcresults.map(pcr => pcr.calculator).toList
+    val newStage = Stage[D, F](sourceCalcresults.toSeq, newStageCalculator)
 
     val parentCalcResults = sourceCalcresults
       .collect { case cr: CalcResult[D, F] => cr.parentCalcItems }
@@ -217,6 +222,11 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
     // from top-level calcresults, every other can inherit
     val (_, stage) = context.stages.head
     val distinctDeclensions = stage.calcResults.flatMap(_.declensions).distinct.size
+
+    if(context.stages.size != calculators.size + 1) {
+
+      throw new RuntimeException("Count of stages and calculators doesn not match.")
+    }
 
     val extStages = extend(context.stages.map(_._2).reverse, distinctDeclensions, FORMS_TO_CALCULATE)
 
