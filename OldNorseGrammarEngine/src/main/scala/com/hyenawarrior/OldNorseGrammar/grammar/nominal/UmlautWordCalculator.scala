@@ -68,7 +68,8 @@ object UmlautWordCalculator extends Calculator[Word, AdjectiveFormType] {
 
             mh.transformPhonemes[Vowel2]({ case ph: Vowel2 => ph }, {
 
-              case (0 | 1, v) => SimpleVowel('a', Default)
+              case   (0, SimpleVowel('ǫ', _))
+                   | (1, SimpleVowel('u', _)) => SimpleVowel('a', Default)
             })
           }
 
