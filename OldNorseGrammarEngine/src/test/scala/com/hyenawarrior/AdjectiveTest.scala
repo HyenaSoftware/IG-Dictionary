@@ -17,6 +17,8 @@ class AdjectiveTest {
 
   val smn = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, MASCULINE, NOMINATIVE)
   val sma = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, MASCULINE, ACCUSATIVE)
+  val smg = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, MASCULINE, GENITIVE)
+  val sfn = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, FEMININE, NOMINATIVE)
   val snn = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, NEUTER, NOMINATIVE)
   val TO_GENERATE = Set(POSITIVE_INDEFINITE)
 
@@ -101,7 +103,8 @@ class AdjectiveTest {
   def testAnnarr2(): Unit = {
 
     val adjective = Adjective.from(Map(
-      AdjectiveFormType(POSITIVE_INDEFINITE, PLURAL, FEMININE, NOMINATIVE) -> "aðrar"
+      AdjectiveFormType(POSITIVE_INDEFINITE, PLURAL, FEMININE, NOMINATIVE) -> "aðrar",
+      smg -> "annars"
     ), Set(POSITIVE_INDEFINITE))
 
     assertEquals("annar", adjective.stem.stemStr)
@@ -110,7 +113,10 @@ class AdjectiveTest {
   }
 
   @Test
-  def testConsonantAssimilationOnGodr() = assertEquals("góðan",   extract(Adjective.from(Map(smn -> "góðr"), TO_GENERATE), sma))
+  def testConsonantAssimilationOnGodr() = assertEquals("góðr",   extract(Adjective.from(Map(sma -> "góðan"), TO_GENERATE), smn))
+
+  @Test
+  def testConsonantAssimilationOnGodr2() = assertEquals("góðan",   extract(Adjective.from(Map(smn -> "góðr"), TO_GENERATE), sma))
 
   @Test
   def testConsonantAssimilationOnVitr() = assertEquals("vitran",  extract(Adjective.from(Map(smn -> "vitr"), TO_GENERATE), sma))

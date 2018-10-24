@@ -214,6 +214,7 @@ class TestTransformation {
 
 		assertEquals(Seq("naglr"),   ConsonantAssimilation2.reverse("nagl",	"r"))
 		assertEquals(Seq("mennr"),   ConsonantAssimilation2.reverse("menn",	"r"))
+		assertEquals(Seq("góðr"),   ConsonantAssimilation2.reverse("góðr",	"r"))
 
 		// it is probably predictible: do not mix voiced and non-voiced consonants in one context
 		assertEquals(Seq("skipðti", "skiptti"), ConsonantAssimilation2.reverse("skipti","ti"))
