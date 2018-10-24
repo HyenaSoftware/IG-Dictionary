@@ -45,9 +45,7 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
         case ce: CalcError => Seq(ce)
       }
 
-      val mergedCalcItems = mergeCalcItems(derivedCalcItems, calculator, CALC_UP_TO_STEM)
-
-      val targetStage = Stage[D, F](mergedCalcItems, calculator)
+      val targetStage = Stage[D, F](derivedCalcItems, calculator)
       targetLevel -> targetStage :: loop(targetStage, targetLevel2Calc :: others)
 
       case ((sourceLevel, calculator: StageCalculator[D, F]) :: (targetLevel2Calc @ (targetLevel, _)) :: others) =>
@@ -93,31 +91,6 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
         case Right(errorMessage) => Seq(CalcError(errorMessage, calcResult))
       }
     })
-  }
-
-  private def mergeCalcItems(calcItems: Seq[CalcItem], calculator: Calculator[D, F], calcDirection: CalcDirection): Seq[CalcItem] = {
-
-    val calcItemsByType = calcItems.groupBy(_.getClass)
-    val calcResults = calcItemsByType.get(classOf[CalcResult[D, F]]).map(_.asInstanceOf[Seq[CalcResult[D, F]]])
-    val calcErrors = calcItemsByType.get(classOf[CalcError]).map(_.asInstanceOf[Seq[CalcError]])
-
-    val mergedCalcResults = calcResults.map(cr => mergeCalcResults(cr, calculator, calcDirection)).getOrElse(Seq())
-
-    mergedCalcResults ++ calcErrors.getOrElse(Seq())
-  }
-
-  private def mergeCalcResults(calcResults: Seq[CalcResult[D, F]], calculator: Calculator[D, F], calcDirection: CalcDirection): Seq[CalcResult[D, F]] = {
-
-    val distinctCalcGroups = calcResults.groupBy(_.data)
-
-    distinctCalcGroups.map { case (computedDerivedStr, derivedCalcItemsOfGroup) =>
-
-      val allParent = derivedCalcItemsOfGroup.flatMap(_.parentCalcItems).toSet
-      val allDecl = derivedCalcItemsOfGroup.flatMap(_.declensions).toSet
-
-      CalcResult(computedDerivedStr, calcDirection, allParent, allDecl, calculator)
-
-    }.toSeq
   }
 
   private def split(context: Context[D, F]): Seq[Context[D, F]] = {
@@ -211,7 +184,7 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
       val derivedCalcItems = runCalculatorsFor(currentCalculator, sourceStage, missingDeclensions)
 
       // merge the results if for multiple input a calculator has the same output
-      val mergedCalcItems = mergeCalcItems(derivedCalcItems, currentCalculator, CALC_DOWN_FROM_STEM) ++ targetStage.forms
+      val mergedCalcItems = derivedCalcItems ++ targetStage.forms
 
       // create the stage object
       val enrichedTargetStage = Stage[D, F](mergedCalcItems, currentCalculator)
