@@ -78,7 +78,7 @@ object Adjective {
       SemivowelWordDeletionCalculator,
       UmlautWordCalculator,
       DropInflectionCalculator,
-      ResetPhonemePropertyCalculator
+      StemReduceCalculator
     )
 
     val formsToCalculate = ALL_FORMS.filter(f => types.contains(f.adjType))
