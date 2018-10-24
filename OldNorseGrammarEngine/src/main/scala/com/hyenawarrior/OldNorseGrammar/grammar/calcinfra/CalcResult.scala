@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.calcinfra
 
-import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.{Calculator, NoOpCalculator}
+import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.{GenericCalculator, NoOpCalculator}
 
 import scala.collection.Set
 
@@ -14,7 +14,7 @@ object CalcResult {
 }
 
 case class CalcResult[T, F](data : T, calcDirection : CalcDirection, parentCalcItems : Set[CalcResult[T, F]]
-                         , declensions : Set[F], calculator : Calculator[T, F]) extends CalcItem {
+                         , declensions : Set[F], calculator : GenericCalculator[T, F]) extends CalcItem {
 
   override def toString: String = toString(true)
 

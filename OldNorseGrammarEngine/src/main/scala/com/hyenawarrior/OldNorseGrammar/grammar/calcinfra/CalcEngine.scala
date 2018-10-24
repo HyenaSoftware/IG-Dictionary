@@ -1,6 +1,6 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.calcinfra
 
-import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.{Calculator, NoOpCalculator, UnitCalculator}
+import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators._
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.levels.{InputLevel, IntermediateLevel, Level, StemLevel}
 
 import scala.collection.Set
@@ -10,7 +10,7 @@ import scala.collection.Set
   */
 class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalculator: UnitCalculator[D, F]) {
 
-  def calculate(forms: Seq[CalcResult[D, F]], calculators: List[Calculator[D, F]], formsToCalcualte: Set[F]): Context[D, F] = {
+  def calculate(forms: Seq[CalcResult[D, F]], calculators: List[GenericCalculator[D, F]], formsToCalcualte: Set[F]): Context[D, F] = {
 
     val context = calculateStem(forms, calculators)
     val splitContexts = split(context)
@@ -31,12 +31,13 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
     } else { contexts.head }
   }
 
-  private def calculateStem(forms: Seq[CalcResult[D, F]], calculators: Seq[Calculator[D, F]]): Context[D, F] = {
+  private def calculateStem(forms: Seq[CalcResult[D, F]], calculators: Seq[GenericCalculator[D, F]]): Context[D, F] = {
 
     val inputStage = Stage[D, F](forms, noOpCalculator)
 
-    def loop(sourceStage : Stage[D, F], levels: List[(Level, Calculator[D, F])]): List[(Level, Stage[D, F])] = levels match {
-      case ((sourceLevel, calculator) :: (targetLevel2Calc @ (targetLevel, _)) :: others) =>
+    def loop(sourceStage : Stage[D, F], levels: List[(Level, GenericCalculator[D, F])]): List[(Level, Stage[D, F])] = levels match {
+
+      case ((sourceLevel, calculator: Calculator[D, F]) :: (targetLevel2Calc @ (targetLevel, _)) :: others) =>
 
       val derivedCalcItems: Seq[CalcItem] = sourceStage.forms.flatMap {
 
@@ -48,6 +49,16 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
 
       val targetStage = Stage[D, F](mergedCalcItems, calculator)
       targetLevel -> targetStage :: loop(targetStage, targetLevel2Calc :: others)
+
+      case ((sourceLevel, calculator: StageCalculator[D, F]) :: (targetLevel2Calc @ (targetLevel, _)) :: others) =>
+
+        val targetStage = calculator.reverseCompute(sourceStage) match {
+
+          case Left(dstStage) => dstStage
+          case Right(message) => Stage[D, F](Seq(), calculator)
+        }
+
+        targetLevel -> targetStage :: loop(targetStage, targetLevel2Calc :: others)
 
       case (lastLevel :: Nil) => Nil
     }
@@ -163,7 +174,7 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
     }
   }
 
-  private def downCalc(context: Context[D, F], calculators: List[Calculator[D, F]], FORMS_TO_CALCULATE: Set[F]): Context[D, F] = {
+  private def downCalc(context: Context[D, F], calculators: List[GenericCalculator[D, F]], FORMS_TO_CALCULATE: Set[F]): Context[D, F] = {
 
     val SUPPORTED_CALC_DIRECTION = Set(CALC_DOWN_FROM_STEM, NO_CALC_ON_STEM)
     //val FORMS_TO_CALCULATE = ALL_FORMS.filter(f => types.contains(f.adjType))
@@ -188,9 +199,9 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
       }
     }
 
-    def loop(calculators: List[Calculator[D, F]], stages: List[Stage[D, F]]): List[(Level, Stage[D, F])] = (calculators, stages) match {
+    def loop(calculators: List[GenericCalculator[D, F]], stages: List[Stage[D, F]]): List[(Level, Stage[D, F])] = (calculators, stages) match {
 
-      case (currentCalculator :: remainedTailCalculators, sourceStage :: targetStage :: furtherStages) =>
+      case ((currentCalculator: Calculator[D, F]) :: remainedTailCalculators, sourceStage :: targetStage :: furtherStages) =>
 
         // determine which declensions should be computed
       val alreadyExistingDeclensionsInTheTargetStage = targetStage.calcResults.flatMap(_.declensions)
@@ -209,6 +220,23 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
       val currentLevel = if(furtherStages == Nil) InputLevel else IntermediateLevel
 
       currentLevel -> enrichedTargetStage :: loop(remainedTailCalculators, enrichedTargetStage :: furtherStages)
+
+      case ((currentCalculator: StageCalculator[D, F]) :: remainedTailCalculators, sourceStage :: targetStage :: furtherStages) =>
+
+        // create the stage object
+        val enrichedTargetStage = currentCalculator.compute(sourceStage) match {
+
+          case Left(dstStage) =>
+            val mergedCalcItems = dstStage.forms ++ targetStage.forms
+            Stage[D, F](mergedCalcItems, currentCalculator)
+
+          case Right(message) => Stage[D, F](Seq(), currentCalculator)
+        }
+
+        // determine the correct level indicator
+        val currentLevel = if(furtherStages == Nil) InputLevel else IntermediateLevel
+
+        currentLevel -> enrichedTargetStage :: loop(remainedTailCalculators, enrichedTargetStage :: furtherStages)
 
       case (Nil, sourceStage :: Nil) => Nil
     }

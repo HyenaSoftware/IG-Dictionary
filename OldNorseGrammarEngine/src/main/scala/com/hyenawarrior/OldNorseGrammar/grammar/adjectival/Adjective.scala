@@ -3,7 +3,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.adjectival
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.AdjectiveFormType
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType._
-import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.Calculator
+import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.GenericCalculator
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.{CalcEngine, CalcResult, Stage}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.NOMINATIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.SINGULAR
@@ -70,7 +70,7 @@ object Adjective {
 
     val calcinfra = new CalcEngine[phonology.Word, AdjectiveFormType]()
 
-    val calculators = List[Calculator[phonology.Word, AdjectiveFormType]](
+    val calculators = List[GenericCalculator[phonology.Word, AdjectiveFormType]](
       //
       InflectionWordCalculator,
       ConsonantWordAssimilationCalculator,

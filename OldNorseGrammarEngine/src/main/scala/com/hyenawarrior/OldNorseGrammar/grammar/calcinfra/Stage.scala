@@ -1,12 +1,11 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.calcinfra
 
-import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.Calculator
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.Vowel._
+import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.GenericCalculator
 
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-case class Stage[D, F](forms: Seq[CalcItem], calculator: Calculator[D, F]) {
+case class Stage[D, F](forms: Seq[CalcItem], calculator: GenericCalculator[D, F]) {
 
   @deprecated("doesn't handle diphtongs")
   def vowelMatrix(implicit vowelsOf: D => Seq[Char]): Seq[Array[Char]] = calcResults.map(str => vowelsOf(str.data).toArray)
