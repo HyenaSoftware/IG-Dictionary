@@ -12,7 +12,7 @@ import com.hyenawarrior.oldnorsedictionary.modelview._
   * Created by HyenaWarrior on 2018.10.15..
   */
 class AdjectiveDeclensionAdapter(activity: Activity, listView: ViewGroup)
-  extends CustomAdapter[(AdjectiveType, Adjective)](activity, listView, R.layout.adjective_declension) {
+  extends CustomAdapter[(AdjectiveType, Adjective)](activity, listView, R.layout.adjective_declension_with_title) {
 
   override protected def layoutElemFor(value: (AdjectiveType, Adjective)): Int = {
 
@@ -22,9 +22,9 @@ class AdjectiveDeclensionAdapter(activity: Activity, listView: ViewGroup)
 
       case POSITIVE_DEFINITE
            | COMPARATIVE
-           | SUPERLATIVE_DEFINITE => R.layout.adjective_declension_weak
+           | SUPERLATIVE_DEFINITE => R.layout.adjective_declension_weak_with_title
 
-      case _ => R.layout.adjective_declension
+      case _ => R.layout.adjective_declension_with_title
     }
   }
 

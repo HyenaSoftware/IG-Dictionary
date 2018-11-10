@@ -4,17 +4,6 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <TableLayout android:layout_width="match_parent"
-                 android:layout_height="wrap_content" android:background="#fffde5" android:layout_marginTop="3dp">
-        <TableRow android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Weak"
-                      android:textAlignment="center" android:id="@+id/tvAdjectiveDefiniteness" android:layout_weight="1"/>
-            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-                      android:textAppearance="?android:attr/textAppearanceSmall" android:text="Positive"
-                      android:id="@+id/tvAdjectiveKind" android:layout_weight="1" android:textAlignment="center"/>
-        </TableRow>
-    </TableLayout>
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:columnCount="2" android:layout_marginTop="3dp">
