@@ -7,7 +7,7 @@ import com.hyenawarrior.auxiliary.enum.{EnumConst, EnumLike}
   */
 object enums {
 
-  class AdjectiveType(name: String) extends EnumConst[AdjectiveType] {
+  final case class AdjectiveType(name: String) extends EnumConst[AdjectiveType] {
 
     override def toString: String = name
   }
