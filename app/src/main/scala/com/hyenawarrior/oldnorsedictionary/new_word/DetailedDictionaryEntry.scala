@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.{LinearLayout, TextView}
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.Adjective
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounStem}
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbClassEnum.{WEAK_A_STEM, WEAK_I_STEM, WEAK_J_STEM}
@@ -71,6 +72,7 @@ class DetailedDictionaryEntry extends AppCompatActivity {
         s"${cl.name}/$wvType verb"
 
       case Noun(NounStem(_, cl), _, _, _) => cl.toString
+      case _: Adjective => "adjective"
     }
 
     tvPosTitle setText title
@@ -94,6 +96,7 @@ class DetailedDictionaryEntry extends AppCompatActivity {
 
       case _: Verb => R.layout.verb_conjugation_viewer_full
       case _: Noun => R.layout.noun_declension_detailed_view
+      case _: Adjective => R.layout.adjective_declension_viewer
     }
 
     posViewer.removeAllViews()
@@ -110,6 +113,7 @@ class DetailedDictionaryEntry extends AppCompatActivity {
     tvWord.setText(priForm)
   }
 
+  // it is called from the GUI
   def onCollapseView(view: View): Unit = {
 
     val (imgViewId, viewPanelId) = view.getId match {
@@ -117,6 +121,12 @@ class DetailedDictionaryEntry extends AppCompatActivity {
       case R.id.rl_toggle_active_voice_view       => R.id.iv_toggle_active_voice_view        -> R.id.ll_active_voice_view
       case R.id.rl_toggle_mediopassive_voice_view => R.id.iv_toggle_mediopassive_voice_view  -> R.id.ll_mediopassive_voice_view
       case R.id.rl_toggle_past_participle_view    => R.id.iv_toggle_past_participle_view     -> R.id.ll_past_participle_view
+
+      case R.id.rl_toggle_positive_indefinite     => R.id.iv_toggle_positive_indefinite    -> R.id.frame_positive_indefinite
+      case R.id.rl_toggle_positive_definite       => R.id.iv_toggle_positive_definite      -> R.id.frame_positive_definite
+      case R.id.rl_toggle_comparative             => R.id.iv_toggle_comparative            -> R.id.frame_comparative
+      case R.id.rl_toggle_superlative_indefinite  => R.id.iv_toggle_superlative_indefinite -> R.id.frame_superlative_indefinite
+      case R.id.rl_toggle_superlative_definite    => R.id.iv_toggle_superlative_definite   -> R.id.frame_superlative_definite
     }
 
     val pic = invertVisibilityAndGetNewPicRsrc(viewPanelId)

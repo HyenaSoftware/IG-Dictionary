@@ -18,6 +18,7 @@ import com.hyenawarrior.oldnorsedictionary.modelview.add_new_word_panel.Adjectiv
 import com.hyenawarrior.oldnorsedictionary.new_word.AdjectiveDeclPreferencesDialog
 import com.hyenawarrior.oldnorsedictionary.new_word.new_pos_helpers.AddNewAdjectiveHelper.{DEFAULT_ADJECTIVE_TYPE, GRAY, RED}
 import com.hyenawarrior.oldnorsedictionary.new_word.pages.AddNewWordActivity._
+import com.hyenawarrior.oldnorsedictionary.new_word.pages.WordData
 
 /**
   * Created by HyenaWarrior on 2018.10.15..
@@ -49,6 +50,7 @@ class AddNewAdjectiveHelper(rootView: View, activity: Activity, stemClassSpinner
 
   val CONTROL_PANEL = rootView.findViewById[LinearLayout](R.id.llAdjControlPanel)
   val ADJECTIVE_FORMS = rootView.findViewById[LinearLayout](R.id.llGeneratedItems)
+  val FOOTER_PANEL = rootView.findViewById[View](R.id.flAdjFooter)
 
   val AdjectiveDeclensionAdapter = new AdjectiveDeclensionAdapter(activity, ADJECTIVE_FORMS)
 
@@ -56,6 +58,8 @@ class AddNewAdjectiveHelper(rootView: View, activity: Activity, stemClassSpinner
 
   var inputData: Map[View, (AdjectiveFormType, String)] = Map()
   var kindToGenerate: List[AdjectiveType] = List()
+
+  var selectedAdjective: Adjective = _
 
   private val KINDS_IN_SPINNER = List(
     List(POSITIVE_INDEFINITE, POSITIVE_DEFINITE),
@@ -151,6 +155,7 @@ class AddNewAdjectiveHelper(rootView: View, activity: Activity, stemClassSpinner
     super.activate()
 
     CONTROL_PANEL.setVisibility(View.VISIBLE)
+    FOOTER_PANEL.setVisibility(View.VISIBLE)
   }
 
   override def deactivate(): Unit = {
@@ -158,6 +163,7 @@ class AddNewAdjectiveHelper(rootView: View, activity: Activity, stemClassSpinner
     super.deactivate()
 
     CONTROL_PANEL.setVisibility(View.GONE)
+    FOOTER_PANEL.setVisibility(View.GONE)
   }
 
   override def onRemoveOverride(tableRow: View): Unit = {
@@ -203,6 +209,8 @@ class AddNewAdjectiveHelper(rootView: View, activity: Activity, stemClassSpinner
 
     val adj = Adjective.from(inputForms, kindToGenerate.toSet)
 
+    selectedAdjective = adj
+
     AdjectiveDeclensionAdapter resetItems kindToGenerate.map(_ -> adj)
 
   } catch {
@@ -223,4 +231,6 @@ class AddNewAdjectiveHelper(rootView: View, activity: Activity, stemClassSpinner
 
     tryCompleteForms()
   }
+
+  override def getWordFormsBy(view: View): WordData = WordData(selectedAdjective, List())
 }

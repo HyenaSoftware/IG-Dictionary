@@ -3,6 +3,7 @@ package com.hyenawarrior.oldnorsedictionary
 import android.view.View
 import android.widget.TextView
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.Adjective
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.AdjectiveFormType
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.{unapply => _, _}
@@ -129,9 +130,37 @@ package object modelview {
     }
   }
 
-  def setDeclensionsTo(adjective: Adjective, targetView: View, adjectiveType: AdjectiveType): Unit = {
+  def setDeclensionsTo(adjective: Adjective, targetView: View): Unit = {
 
+    // 1
+    val vwPosIndef = targetView.findViewById[View](R.id.frame_positive_indefinite)
 
+    setAdjectiveDeclensionsTo(adjective, vwPosIndef.findViewById[View](R.id.adjective_singulars), POSITIVE_INDEFINITE, SINGULAR, ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, vwPosIndef.findViewById[View](R.id.adjective_plurals),   POSITIVE_INDEFINITE, PLURAL,   ADJECTIVE_TEXT_VIEWS)
+
+    // 2
+    val vwPosDef = targetView.findViewById[View](R.id.frame_positive_definite)
+
+    setAdjectiveDeclensionsTo(adjective, vwPosDef, POSITIVE_DEFINITE, SINGULAR, WEAK_SINGULAR_ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, vwPosDef, POSITIVE_DEFINITE, PLURAL, WEAK_PLURAL_ADJECTIVE_TEXT_VIEWS)
+
+    // 3
+    val vwComp = targetView.findViewById[View](R.id.frame_comparative)
+
+    setAdjectiveDeclensionsTo(adjective, vwComp, COMPARATIVE, SINGULAR, WEAK_SINGULAR_ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, vwComp, COMPARATIVE, PLURAL, WEAK_PLURAL_ADJECTIVE_TEXT_VIEWS)
+
+    // 4
+    val vwSupIndefFrame = targetView.findViewById[View](R.id.frame_superlative_indefinite)
+
+    setAdjectiveDeclensionsTo(adjective, vwSupIndefFrame.findViewById[View](R.id.adjective_singulars), SUPERLATIVE_INDEFINITE, SINGULAR, ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, vwSupIndefFrame.findViewById[View](R.id.adjective_plurals),   SUPERLATIVE_INDEFINITE, PLURAL,   ADJECTIVE_TEXT_VIEWS)
+
+    // 5
+    val vwSupDefFrame = targetView.findViewById[View](R.id.frame_superlative_definite)
+
+    setAdjectiveDeclensionsTo(adjective, vwSupDefFrame, SUPERLATIVE_DEFINITE, SINGULAR, WEAK_SINGULAR_ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, vwSupDefFrame, SUPERLATIVE_DEFINITE, PLURAL, WEAK_PLURAL_ADJECTIVE_TEXT_VIEWS)
   }
 
   def setStrongDeclensionsTo(adjective: Adjective, targetView: View, adjectiveType: AdjectiveType): Unit = {
@@ -171,8 +200,9 @@ package object modelview {
     for((id, (gender, caze)) <- mapping) {
 
       val tv = targetView.findViewById[TextView](id)
-      val form = adjective.forms((adjType, number, gender, caze))
-      tv.setText(form.strRepr)
+      val formType = AdjectiveFormType(adjType, number, gender, caze)
+      val strForm = adjective.forms.get(formType).map(_.strRepr).getOrElse("-")
+      tv.setText(strForm)
     }
   }
 
@@ -180,6 +210,7 @@ package object modelview {
 
     case noun: Noun => setDeclensionsTo(noun, targetView)
     case verb: Verb => setDeclensionsTo(verb, targetView)
+    case adj: Adjective => setDeclensionsTo(adj, targetView)
   }
 
   /**

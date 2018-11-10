@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="#4d4ec7" android:id="@+id/rl.toggle.positive.indefinite"
+                        android:onClick="onCollapseView">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceMedium" android:text="Strong declension"
+                      android:layout_alignParentLeft="true" android:textAlignment="center"
+                      android:layout_centerVertical="true" android:textColor="#ffffff"/>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:id="@+id/iv.toggle.positive.indefinite"
+                       android:background="@drawable/ic_keyboard_arrow_up_black_18dp"
+                       android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:id="@+id/frame.positive.indefinite">
+            <include layout="@layout/adjective_declension"/>
+        </FrameLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="#4d4ec7" android:id="@+id/rl.toggle.positive.definite" android:onClick="onCollapseView">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceMedium" android:text="Weak declension"
+                      android:layout_alignParentLeft="true" android:textAlignment="center"
+                      android:layout_centerVertical="true" android:textColor="#ffffff"/>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:id="@+id/iv.toggle.positive.definite" android:background="@drawable/ic_keyboard_arrow_down_black_18dp"
+                       android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:visibility="gone"
+                android:id="@+id/frame.positive.definite">
+            <include layout="@layout/adjective_declension_weak"/>
+        </FrameLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="#4d4ec7" android:id="@+id/rl.toggle.comparative" android:onClick="onCollapseView">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceMedium" android:text="Comparative declension"
+                      android:layout_alignParentLeft="true" android:textAlignment="center"
+                      android:layout_centerVertical="true" android:textColor="#ffffff"/>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:id="@+id/iv.toggle.comparative" android:background="@drawable/ic_keyboard_arrow_down_black_18dp"
+                       android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:visibility="gone" android:id="@+id/frame.comparative">
+            <include layout="@layout/adjective_declension_weak"/>
+        </FrameLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="#4d4ec7" android:id="@+id/rl.toggle.superlative.indefinite" android:onClick="onCollapseView">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceMedium" android:text="Strong superlative declension"
+                      android:layout_alignParentLeft="true" android:textAlignment="center"
+                      android:layout_centerVertical="true" android:textColor="#ffffff"/>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:id="@+id/iv.toggle.superlative.indefinite" android:background="@drawable/ic_keyboard_arrow_down_black_18dp"
+                       android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:visibility="gone"
+                android:id="@+id/frame.superlative.indefinite">
+            <include layout="@layout/adjective_declension"/>
+        </FrameLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:background="#4d4ec7" android:id="@+id/rl.toggle.superlative.definite" android:onClick="onCollapseView">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:textAppearance="?android:attr/textAppearanceMedium" android:text="Weak superlative declension"
+                      android:layout_alignParentLeft="true" android:textAlignment="center"
+                      android:layout_centerVertical="true" android:textColor="#ffffff"/>
+            <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                       android:id="@+id/iv.toggle.superlative.definite" android:background="@drawable/ic_keyboard_arrow_down_black_18dp"
+                       android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+        <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:visibility="gone"
+                android:id="@+id/frame.superlative.definite">
+            <include layout="@layout/adjective_declension_weak"/>
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

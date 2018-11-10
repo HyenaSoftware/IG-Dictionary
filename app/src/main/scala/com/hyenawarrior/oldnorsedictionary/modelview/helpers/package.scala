@@ -1,5 +1,6 @@
 package com.hyenawarrior.oldnorsedictionary.modelview
 
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber._
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Pronoun._
@@ -7,7 +8,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbModeEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbTenseEnum._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.VerbVoice._
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.enums.{VerbModeEnum, VerbTenseEnum, VerbVoice}
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Pronoun}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Gender, Pronoun}
 import com.hyenawarrior.auxiliary.enum.EnumConst
 
 /**
@@ -79,4 +80,6 @@ package object helpers {
   implicit object PronounOrdering extends EnumOrdering[Pronoun]
   implicit object GNumberOrdering extends EnumOrdering[GNumber]
   implicit object CaseOrdering extends EnumOrdering[Case]
+  implicit object GenderOrdering extends EnumOrdering[Gender]
+  implicit object AdjectiveTypeOrdering extends EnumOrdering[AdjectiveType]
 }

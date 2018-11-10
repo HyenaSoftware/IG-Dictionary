@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.{LayoutInflater, View, ViewGroup}
 import android.widget._
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.Adjective
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs.Verb
 import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
@@ -46,6 +47,7 @@ object SetMeaningFragment extends Fragment
     {
       case v: Verb   => "verb" -> v.verbClass.toString
       case n: Noun   => "noun" -> n.stem.stemClass.toString
+      case a: Adjective => "adjective" -> ""
       case _ => "???" -> "???"
     }
 

@@ -153,6 +153,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:id="@+id/llGeneratedItems">
             </LinearLayout>
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:background="#fffde5" android:id="@+id/flAdjFooter"
+                    android:visibility="gone">
+                <include android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         layout="@layout/adjective_declension_save"/>
+            </FrameLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

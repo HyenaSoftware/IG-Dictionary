@@ -1,6 +1,9 @@
 package com.hyenawarrior.oldnorsedictionary.model.database
 
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Pronoun}
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.AdjectiveFormType
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.{Adjective, AdjectiveForm, AdjectiveStem, core}
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Gender, Pronoun}
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.AblautGrade
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.stemclasses.enum.NounStemClassEnum
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.{Noun, NounForm, NounStem}
@@ -30,6 +33,17 @@ package object serializers {
       val yId = EnumVerbStem.idOf(y._1)
       val dId = yId - xId
       if(dId == 0) x._2.rootVowel.compareTo(y._2.rootVowel) else dId
+    }
+  }
+
+  implicit object AdjectiveFormTypeOrdering extends Ordering[AdjectiveFormType] {
+
+    override def compare(x: AdjectiveFormType, y: AdjectiveFormType): Int = {
+
+      val a = core.toTuple(x)
+      val b = core.toTuple(y)
+
+      Ordering.Tuple4[AdjectiveType, GNumber, Gender, Case].compare(a, b)
     }
   }
 
@@ -275,6 +289,69 @@ package object serializers {
     }
   }
 
+  // 5 - adjectives
+  implicit object AdjectiveMarshaller extends Serializer[Adjective] {
+
+    override val typeId: Int = 5
+
+    override def marshall(obj: Adjective): List[Any] = {
+
+      val stemStr = obj.stem.stemStr
+
+      val givenFormsStream     = obj.givenForms.size.toByte     +: obj.givenForms.values.flatMap(serializeAdjForm).toList
+      val generatedFormsStream = obj.generatedForms.size.toByte +: obj.generatedForms.values.flatMap(serializeAdjForm).toList
+      val overridenFormsStream = obj.overridenForms.size.toByte +: obj.overridenForms.values.flatMap(serializeAdjForm).toList
+
+      List(stemStr) ++ givenFormsStream ++ generatedFormsStream ++ overridenFormsStream
+    }
+
+    override def unmarshall(reader: Reader): Adjective = {
+
+      val stemStr = reader[String]()
+
+      val givenForms     = deserializeList(reader).map(e => e.declension -> e).toMap
+      val generatedForms = deserializeList(reader).map(e => e.declension -> e).toMap
+      val overridenForms = deserializeList(reader).map(e => e.declension -> e).toMap
+
+      Adjective(AdjectiveStem(stemStr), givenForms, generatedForms, overridenForms)
+    }
+
+    private def serializeAdjForm(obj: AdjectiveForm): List[Any] = {
+
+      val AdjectiveFormType(adjType, number, gender, caze) = obj.declension
+
+      val adjTypeId = (AdjectiveType idOf adjType).toByte
+      val numberId = (GNumber idOf number).toByte
+      val genderId = (Gender idOf gender).toByte
+      val caseId = (Case idOf caze).toByte
+
+      List(obj.strRepr, adjTypeId, numberId, genderId, caseId)
+    }
+
+    private def deserializeList(reader: Reader): List[AdjectiveForm] = {
+
+      val size = reader[Byte]()
+
+      (0 until size).map(i => createMapValue(reader)).toList
+    }
+
+    private def createMapValue(reader: Reader): AdjectiveForm = {
+
+      val strRepr = reader[String]()
+      val adjTypeId = reader[Byte]()
+      val numberId = reader[Byte]()
+      val genderId = reader[Byte]()
+      val caseId =   reader[Byte]()
+
+      val adjType = AdjectiveType findById adjTypeId get
+      val number =  GNumber findById numberId get
+      val gender = Gender findById genderId get
+      val caze = Case findById caseId get
+
+      AdjectiveForm(strRepr, AdjectiveFormType(adjType, number, gender, caze))
+    }
+  }
+
   // 0 - dictionary entry
   implicit object DictionaryEntryMarshaller extends Serializer[DictionaryEntry] {
 
@@ -287,6 +364,7 @@ package object serializers {
         case sv: StrongVerb => StrongVerbContextMarshaller.typeId.toByte +: (StrongVerbContextMarshaller marshall sv)
         case wv: WeakVerb => WeakVerbMarshaller.typeId.toByte +: (WeakVerbMarshaller marshall wv)
         case nn: Noun => NounMarshaller.typeId.toByte +: (NounMarshaller marshall nn)
+        case ad: Adjective => AdjectiveMarshaller.typeId.toByte +: (AdjectiveMarshaller marshall ad)
       }
 
       val meaningData: List[Any] = obj.meanings.flatMap(MeaningDefMarshaller.marshall)
@@ -305,6 +383,7 @@ package object serializers {
         case StrongVerbContextMarshaller.typeId => StrongVerbContextMarshaller.unmarshall(reader)
         case WeakVerbMarshaller.typeId => WeakVerbMarshaller.unmarshall(reader)
         case NounMarshaller.typeId => NounMarshaller.unmarshall(reader)
+        case AdjectiveMarshaller.typeId => AdjectiveMarshaller.unmarshall(reader)
       }
 
       val length = reader[Byte]()
@@ -358,6 +437,14 @@ package object serializers {
       gf.getBytes ++ of.getBytes
     }
 
+    def byteArrayFrom(obj: Adjective): Array[Byte] = {
+
+      val gf = obj.givenForms.toSeq.sortBy(_._1).map(_._2.strRepr).mkString
+      val of = obj.overridenForms.toSeq.sortBy(_._1).map(_._2.strRepr).mkString
+
+      gf.getBytes ++ of.getBytes
+    }
+
     def byteArrayFrom(obj: List[MeaningDef]): Array[Byte] = {
 
       val str = obj.map(e => e.meaning + e.note + e.examples.mkString).mkString
@@ -398,6 +485,7 @@ package object serializers {
         case sv: StrongVerb => HashCode.byteArrayFrom(sv)
         case wv: WeakVerb => HashCode.byteArrayFrom(wv)
         case nn: Noun => HashCode.byteArrayFrom(nn)
+        case ad: Adjective => HashCode.byteArrayFrom(ad)
       }
 
       HashCode.fnv1(word ++ HashCode.byteArrayFrom(obj.meanings))

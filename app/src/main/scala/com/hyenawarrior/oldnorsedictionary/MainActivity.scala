@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.{Menu, MenuItem, View}
 import android.widget.{ListView, SearchView, Toast}
+import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.Adjective
 import com.hyenawarrior.OldNorseGrammar.grammar.nouns.Noun
 import com.hyenawarrior.OldNorseGrammar.grammar.verbs._
 import com.hyenawarrior.OldNorseGrammar.grammar.{PoSForm, Pos}
@@ -20,6 +21,7 @@ import com.hyenawarrior.oldnorsedictionary.model.persister.database.AndroidSDBLa
 import com.hyenawarrior.oldnorsedictionary.model.{DictionaryEntry, DictionaryListItem}
 import com.hyenawarrior.oldnorsedictionary.modelview.DictionaryEntryAdapter
 import com.hyenawarrior.oldnorsedictionary.modelview.helpers._
+import com.hyenawarrior.oldnorsedictionary.model.database.serializers.AdjectiveFormTypeOrdering
 import com.hyenawarrior.oldnorsedictionary.new_word.{AddNewWordActivityPager, DetailedDictionaryEntry}
 
 import scala.language.postfixOps
@@ -48,6 +50,9 @@ class MainActivity extends AppCompatActivity
 
           case DictionaryEntry(noun: Noun, meanings) =>
             DictionaryListItem(getFormsToShowOf(fixedStr, noun), "noun", noun, meanings)
+
+          case DictionaryEntry(adjective: Adjective, meanings) =>
+            DictionaryListItem(getFormsToShowOf(fixedStr, adjective), "adjective", adjective, meanings)
         }
           .toList
 

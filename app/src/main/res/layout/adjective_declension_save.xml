@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:layout_marginBottom="3dp" android:columnCount="2" android:id="@+id/ll_adjective_forms">
+    <Button style="?android:attr/buttonStyleSmall" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="Save"
+            android:id="@+id/btSelect" android:singleLine="true"
+            android:drawableRight="@drawable/right_arrow32" android:duplicateParentState="false"
+            android:onClick="selectThisDeclension" android:layout_gravity="right"/>
+</LinearLayout>
