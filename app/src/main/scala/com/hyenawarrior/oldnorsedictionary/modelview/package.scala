@@ -39,22 +39,33 @@ package object modelview {
     R.id.tvNewWord_Gen_Pl -> (PLURAL, GENITIVE)
   )
 
-  private val ADJECTIVE_TEXT_VIEWS = Seq(
+  private val STRONG_SINGULAR_ADJECTIVE_TEXT_VIEWS = Seq(
 
-    R.id.tv_masc_nom -> (MASCULINE, NOMINATIVE),
-    R.id.tv_masc_acc -> (MASCULINE, ACCUSATIVE),
-    R.id.tv_masc_dat -> (MASCULINE, DATIVE),
-    R.id.tv_masc_gen -> (MASCULINE, GENITIVE),
+    R.id.tv_adj_strong_masc_nom -> (MASCULINE, NOMINATIVE),
+    R.id.tv_adj_strong_masc_acc -> (MASCULINE, ACCUSATIVE),
+    R.id.tv_adj_strong_masc_gen -> (MASCULINE, GENITIVE),
+    R.id.tv_adj_strong_masc_dat -> (MASCULINE, DATIVE),
 
-    R.id.tv_fem_nom -> (FEMININE, NOMINATIVE),
-    R.id.tv_fem_acc -> (FEMININE, ACCUSATIVE),
-    R.id.tv_fem_dat -> (FEMININE, DATIVE),
-    R.id.tv_fem_gen -> (FEMININE, GENITIVE),
+    R.id.tv_adj_strong_fem_nom -> (FEMININE, NOMINATIVE),
+    R.id.tv_adj_strong_fem_acc -> (FEMININE, ACCUSATIVE),
+    R.id.tv_adj_strong_fem_gen -> (FEMININE, GENITIVE),
+    R.id.tv_adj_strong_fem_dat -> (FEMININE, DATIVE),
 
-    R.id.tv_neu_nom -> (NEUTER, NOMINATIVE),
-    R.id.tv_neu_acc -> (NEUTER, ACCUSATIVE),
-    R.id.tv_neu_dat -> (NEUTER, DATIVE),
-    R.id.tv_neu_gen -> (NEUTER, GENITIVE)
+    R.id.tv_adj_strong_neu_nom_acc -> (NEUTER, NOMINATIVE),
+    R.id.tv_adj_strong_neu_gen -> (NEUTER, GENITIVE),
+    R.id.tv_adj_strong_neu_dat -> (NEUTER, DATIVE)
+  )
+
+  private val STRONG_PLURAL_ADJECTIVE_TEXT_VIEWS = Seq(
+
+    R.id.tv_adj_strong_pl_masc_nom -> (MASCULINE, NOMINATIVE),
+    R.id.tv_adj_strong_pl_masc_acc -> (MASCULINE, ACCUSATIVE),
+    R.id.tv_adj_strong_pl_masc_fem_neu_gen -> (FEMININE, GENITIVE),
+    R.id.tv_adj_strong_pl_masc_fem_neu_dat -> (FEMININE, DATIVE),
+
+    R.id.tv_adj_strong_pl_fem_nom_acc -> (FEMININE, NOMINATIVE),
+
+    R.id.tv_adj_strong_pl_neu_nom_acc -> (NEUTER, NOMINATIVE)
   )
 
   private val WEAK_SINGULAR_ADJECTIVE_TEXT_VIEWS = Seq(
@@ -135,8 +146,8 @@ package object modelview {
     // 1
     val vwPosIndef = targetView.findViewById[View](R.id.frame_positive_indefinite)
 
-    setAdjectiveDeclensionsTo(adjective, vwPosIndef.findViewById[View](R.id.adjective_singulars), POSITIVE_INDEFINITE, SINGULAR, ADJECTIVE_TEXT_VIEWS)
-    setAdjectiveDeclensionsTo(adjective, vwPosIndef.findViewById[View](R.id.adjective_plurals),   POSITIVE_INDEFINITE, PLURAL,   ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, vwPosIndef, POSITIVE_INDEFINITE, SINGULAR, STRONG_SINGULAR_ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, vwPosIndef, POSITIVE_INDEFINITE, PLURAL,   STRONG_PLURAL_ADJECTIVE_TEXT_VIEWS)
 
     // 2
     val vwPosDef = targetView.findViewById[View](R.id.frame_positive_definite)
@@ -153,8 +164,8 @@ package object modelview {
     // 4
     val vwSupIndefFrame = targetView.findViewById[View](R.id.frame_superlative_indefinite)
 
-    setAdjectiveDeclensionsTo(adjective, vwSupIndefFrame.findViewById[View](R.id.adjective_singulars), SUPERLATIVE_INDEFINITE, SINGULAR, ADJECTIVE_TEXT_VIEWS)
-    setAdjectiveDeclensionsTo(adjective, vwSupIndefFrame.findViewById[View](R.id.adjective_plurals),   SUPERLATIVE_INDEFINITE, PLURAL,   ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, vwSupIndefFrame, SUPERLATIVE_INDEFINITE, SINGULAR, STRONG_SINGULAR_ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, vwSupIndefFrame, SUPERLATIVE_INDEFINITE, PLURAL,   STRONG_PLURAL_ADJECTIVE_TEXT_VIEWS)
 
     // 5
     val vwSupDefFrame = targetView.findViewById[View](R.id.frame_superlative_definite)
@@ -175,8 +186,8 @@ package object modelview {
 
     tvAdjKind setText strKind
 
-    setAdjectiveDeclensionsTo(adjective, targetView.findViewById[View](R.id.adjective_singulars), adjectiveType, SINGULAR, ADJECTIVE_TEXT_VIEWS)
-    setAdjectiveDeclensionsTo(adjective, targetView.findViewById[View](R.id.adjective_plurals),   adjectiveType, PLURAL,   ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, targetView, adjectiveType, SINGULAR, STRONG_SINGULAR_ADJECTIVE_TEXT_VIEWS)
+    setAdjectiveDeclensionsTo(adjective, targetView, adjectiveType, PLURAL,   STRONG_PLURAL_ADJECTIVE_TEXT_VIEWS)
   }
 
   def setWeakDeclensionsTo(adjective: Adjective, targetView: View, adjectiveType: AdjectiveType): Unit = {
