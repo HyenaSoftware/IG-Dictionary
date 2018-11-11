@@ -68,4 +68,14 @@ class TestMorpheme {
     collector.checkThat("abcd", equalTo(opt.map(_._1.asString()).getOrElse("?")))
     collector.checkThat("",     equalTo(opt.map(_._2.asString()).getOrElse("?")))
   }
+
+  @Test
+  def testDiphtongsMorpheme(): Unit = {
+
+    val m = Morpheme("auðigr", MorphemeProperty.StemAndSuffix)
+
+    val SimpleMorpheme(phs, _) = m
+
+    assertEquals(Seq("au", "ð", "i", "g", "r"), phs.map(x => x.asString))
+  }
 }

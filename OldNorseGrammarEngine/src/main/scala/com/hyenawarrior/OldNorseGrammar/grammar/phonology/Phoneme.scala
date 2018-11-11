@@ -28,10 +28,11 @@ object Phoneme {
 
     if(str.length > 1) {
 
-      val isDiphtong = Vowel2.allDiphtongs().contains(str substring 2)
+      val c2 = str take 2
+      val isDiphtong = Vowel2.allDiphtongs().contains(c2)
       if (isDiphtong) {
 
-        return Diphtong(str substring 2, Default)
+        return Diphtong(c2, Default)
       }
     }
 

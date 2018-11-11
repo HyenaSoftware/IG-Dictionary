@@ -191,5 +191,15 @@ class AdjectiveTest {
     assertEquals("nýjum",   extract(adjective, (POSITIVE_INDEFINITE, PLURAL,    FEMININE,   DATIVE)))
   }
 
+  @Test
+  def testAudigr(): Unit = {
+
+    val adjective = Adjective.from(Map(
+      AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, MASCULINE, NOMINATIVE) -> "auðigr"
+    ), Set(POSITIVE_INDEFINITE))
+
+    assertEquals("auðgan", extract(adjective, (POSITIVE_INDEFINITE, SINGULAR,  MASCULINE,  ACCUSATIVE)))
+  }
+
   private def extract(adj: Adjective, decl: AdjectiveFormType): String = adj.forms.get(decl).map(_.strRepr).getOrElse("<missing>")
 }
