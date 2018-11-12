@@ -13,9 +13,13 @@ object DropInflectionCalculator extends Calculator[Word, AdjectiveFormType] {
 
   override def compute(word: Word, declension: AdjectiveFormType, stage: Stage[Word, AdjectiveFormType]) = Left {
 
-    val inflection = Morpheme(inflectionWithComparsionFor(declension), MorphemeProperty.Suffix)
+    val optStemSuffix = Some(stemSuffixFor(declension.adjType)).filter(_.nonEmpty)
+    val inflection = Morpheme(inflectionFor(declension), MorphemeProperty.Suffix)
 
-    Seq(word + inflection)
+    Seq(optStemSuffix
+      .map(Morpheme(_, MorphemeProperty.StemSuffix))
+      .map(word + _ + inflection)
+      .getOrElse(word + inflection))
   }
 
   override def reverseCompute(word: Word, declension: AdjectiveFormType, stage: Stage[Word, AdjectiveFormType]) = Left {

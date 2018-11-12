@@ -196,9 +196,10 @@ class AdjectiveTest {
 
     val adjective = Adjective.from(Map(
       AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, MASCULINE, NOMINATIVE) -> "auðigr"
-    ), Set(POSITIVE_INDEFINITE))
+    ), Set(POSITIVE_INDEFINITE, SUPERLATIVE_INDEFINITE))
 
-    assertEquals("auðgan", extract(adjective, (POSITIVE_INDEFINITE, SINGULAR,  MASCULINE,  ACCUSATIVE)))
+    assertEquals("auðgan",  extract(adjective, (POSITIVE_INDEFINITE, SINGULAR,  MASCULINE,  ACCUSATIVE)))
+    assertEquals("auðgust", extract(adjective, (SUPERLATIVE_INDEFINITE, SINGULAR,  FEMININE,  NOMINATIVE)))
   }
 
   private def extract(adj: Adjective, decl: AdjectiveFormType): String = adj.forms.get(decl).map(_.strRepr).getOrElse("<missing>")

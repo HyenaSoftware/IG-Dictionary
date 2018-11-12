@@ -9,6 +9,7 @@ object MorphemeProperty {
 
   object Composite          extends MorphemeProperty { override def toString: String = "Composite" }
   object Stem               extends MorphemeProperty { override def toString: String = "Stem" }
+  object StemSuffix         extends MorphemeProperty { override def toString: String = "StemSuffix" }
   object StressedSyllable   extends MorphemeProperty { override def toString: String = "StressedSyllable" }
   object UnStressedSyllable extends MorphemeProperty
   object StemAndSuffix      extends MorphemeProperty { override def toString: String = "Whole" }

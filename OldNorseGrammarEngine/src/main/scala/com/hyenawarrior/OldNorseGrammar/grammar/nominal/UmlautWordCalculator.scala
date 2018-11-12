@@ -5,7 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.AdjectiveFormTyp
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.Stage
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.Calculator
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.{U_Umlaut, Umlaut}
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.MorphemeProperty.Stem
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.MorphemeProperty.{Stem, StemSuffix}
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.PhonemeProperty.{Default, U_Umlauted}
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology._
 
@@ -36,6 +36,13 @@ object UmlautWordCalculator extends Calculator[Word, AdjectiveFormType] {
 
             case (0, SimpleVowel('a', _)) => SimpleVowel('ǫ', U_Umlauted)
             case (1, SimpleVowel('a', _)) => SimpleVowel('u', U_Umlauted)
+          })
+
+        case (mh, _) if mh is StemSuffix =>
+
+          mh.transformPhonemes[Vowel2]({ case ph: Vowel2 => ph }, {
+
+            case (_, SimpleVowel('a', _)) => SimpleVowel('u', U_Umlauted)
           })
       }
 

@@ -5,9 +5,9 @@ import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.AdjectiveFormTyp
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.Stage
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.Calculator
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.SemivowelDeletion
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.MorphemeProperty.Stem
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.MorphemeProperty.{Stem, StemSuffix}
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.PhonemeProperty.Default
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.{Morpheme, Semivowel, Word}
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.{Morpheme, Semivowel, SimpleMorpheme, Word}
 
 /**
   * Created by HyenaWarrior on 2018.10.07..
@@ -23,7 +23,7 @@ object SemivowelWordDeletionCalculator extends Calculator[Word, AdjectiveFormTyp
 
     val newWord = word.transformMorphemes {
 
-      case (mh, i) if mh is Stem =>
+      case (mh @ SimpleMorpheme(_, Stem | StemSuffix), i) =>
         val str = SemivowelDeletion(mh.asString() + inflection).stripSuffix(inflection)
         Morpheme(str, mh.morphemeProperty)
     }
@@ -35,7 +35,7 @@ object SemivowelWordDeletionCalculator extends Calculator[Word, AdjectiveFormTyp
 
     val newWord = word.transformMorphemes {
 
-      case (mh, i) if mh is Stem =>
+      case (mh @ SimpleMorpheme(_, Stem | StemSuffix), i) =>
 
         mh.asString() match {
 

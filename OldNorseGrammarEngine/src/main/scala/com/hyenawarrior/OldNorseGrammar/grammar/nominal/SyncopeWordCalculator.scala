@@ -5,7 +5,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.AdjectiveFormTyp
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.Stage
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.Calculator
 import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.U_Umlaut
-import com.hyenawarrior.OldNorseGrammar.grammar.phonology.MorphemeProperty.{Stem, Suffix}
+import com.hyenawarrior.OldNorseGrammar.grammar.phonology.MorphemeProperty.{Stem, StemSuffix, Suffix}
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.PhonemeProperty.Syncopated
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology._
 
@@ -16,28 +16,27 @@ object SyncopeWordCalculator extends Calculator[Word, AdjectiveFormType]  {
 
   override def compute(word: Word, declension: AdjectiveFormType, stage: Stage[Word, AdjectiveFormType]) = {
 
-    word.selectMorpheme(Suffix) match {
+    val hasVowelAfterTheStem = word.morphemes
+      .find(m => !(m is Stem))
+      .exists(mh => mh.phonemes.headOption.exists(_.isVowel))
 
-      case None => Right("Error: suffix is missing")
-      case Some(suffixMorpheme) if suffixStartsWithVowel(suffixMorpheme) => Left {
+    if(hasVowelAfterTheStem) {
 
-          val newWord = word.transformMorphemes {
-            case (mh, _) if mh is Stem =>
-              mh.transformPhonemes[Vowel2](
-                { case ph: Vowel2 => ph },
-                { case (1, v) => v copyWithPropertyOf Syncopated }
-            )
-          }
+      val newWord = word.transformMorphemes {
+        case (mh @ SimpleMorpheme(_, Stem | StemSuffix), _) =>
+          mh.transformPhonemes[Vowel2](
+            { case ph: Vowel2 => ph },
+            { case (1, v) => v copyWithPropertyOf Syncopated }
+          )
+      }
 
-          Seq(newWord)
-        }
+      Left(Seq(newWord))
 
-      case Some(_) => Left(Seq(word))
+    } else {
+
+      Left(Seq(word))
     }
   }
-
-  private def suffixStartsWithVowel(morpheme: SimpleMorpheme): Boolean =
-    morpheme.phonemes.headOption.exists(_.isVowel)
 
   override def shortCode: String = "SYNC"
 
