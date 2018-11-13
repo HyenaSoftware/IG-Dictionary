@@ -155,8 +155,8 @@
             </LinearLayout>
             <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:background="#fffde5" android:id="@+id/flAdjFooter"
-                    android:visibility="gone">
+                    android:layout_height="wrap_content" android:background="#d9d8c8" android:id="@+id/flAdjFooter"
+                    android:layout_marginTop="3dp" android:visibility="gone">
                 <include android:layout_width="match_parent"
                          android:layout_height="wrap_content"
                          layout="@layout/adjective_declension_save"/>
