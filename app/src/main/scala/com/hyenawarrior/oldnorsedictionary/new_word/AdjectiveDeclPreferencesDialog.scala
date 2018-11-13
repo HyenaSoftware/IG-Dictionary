@@ -43,11 +43,11 @@ class AdjectiveDeclPreferencesDialog(activity: Activity) {
     override def onNothingSelected(adapterView: AdapterView[_]): Unit = ???
 
     private val SPINNER_KIND_ITEMS = List(
-      AdjectiveType.POSITIVE_DEFINITE,
       AdjectiveType.POSITIVE_INDEFINITE,
+      AdjectiveType.POSITIVE_DEFINITE,
       AdjectiveType.COMPARATIVE,
-      AdjectiveType.SUPERLATIVE_DEFINITE,
-      AdjectiveType.SUPERLATIVE_INDEFINITE
+      AdjectiveType.SUPERLATIVE_INDEFINITE,
+      AdjectiveType.SUPERLATIVE_DEFINITE
     )
 
     override def onItemSelected(adapterView: AdapterView[_], view: View, idx: Int, l: Long): Unit = {
