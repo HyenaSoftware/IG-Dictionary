@@ -16,7 +16,9 @@ object core {
 
   case class AdjectiveFormType(adjType: AdjectiveType, number: GNumber, gender: Gender, caze: Case) {
 
-    override def toString: String = Seq(number, caze, gender, adjType).map(ABBREVATIONS_OF).mkString(" ")
+    override def toString: String = Seq(number, caze, gender, adjType)
+      .map(e => ABBREVATIONS_OF.getOrElse(e, s"ERROR:${e.toString}"))
+      .mkString(" ")
   }
 
   implicit def toTuple(adjForm: AdjectiveFormType): (AdjectiveType, GNumber, Gender, Case) = (adjForm.adjType, adjForm.number, adjForm.gender, adjForm.caze)
