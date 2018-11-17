@@ -1,13 +1,14 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.calcinfra
 
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators._
+import com.hyenawarrior.OldNorseGrammar.grammar.nominal.helpers.CalcResultFunc
 
 import scala.collection.Set
 
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F]) {
+class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], impl: CalcResultFunc[D, F]) {
 
   def calculate(forms: Seq[CalcResult[D, F]], calculators: List[GenericCalculator[D, F]], formsToCalcualte: Set[F]): Context[D, F] = {
 
@@ -29,7 +30,7 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F]) {
     }
 
 
-    outputContexts.head
+    outputContexts.sortBy(_.qualityIndicator).last
   }
 
 
