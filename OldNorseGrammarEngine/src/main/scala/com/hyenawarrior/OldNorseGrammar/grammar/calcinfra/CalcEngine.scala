@@ -1,103 +1,98 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.calcinfra
 
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators._
-import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.levels.{InputLevel, IntermediateLevel, Level, StemLevel}
 
 import scala.collection.Set
 
 /**
   * Created by HyenaWarrior on 2018.09.20..
   */
-class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalculator: UnitCalculator[D, F]) {
+class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F]) {
 
   def calculate(forms: Seq[CalcResult[D, F]], calculators: List[GenericCalculator[D, F]], formsToCalcualte: Set[F]): Context[D, F] = {
 
-    val context = calculateStem(forms, calculators)
-    val splitContexts = split(context)
-
-    val outputContexts = splitContexts.map(downCalc(_, calculators.reverse, formsToCalcualte))
-    val outputContext = selector(outputContexts)
-
-    outputContext
-  }
-
-  // FIXME: drop this dumb selector of 1st item, and return all of them
-  private def selector(contexts: Seq[Context[D, F]]): Context[D, F] = {
-
-    if(contexts.isEmpty) {
-
-      Context(List())
-
-    } else { contexts.head }
-  }
-
-  private def calculateStem(forms: Seq[CalcResult[D, F]], calculators: Seq[GenericCalculator[D, F]]): Context[D, F] = {
-
     val inputStage = Stage[D, F](forms, noOpCalculator)
 
-    def loop(sourceStage : Stage[D, F], levels: List[(Level, GenericCalculator[D, F])]): List[(Level, Stage[D, F])] = levels match {
+    // 1st step: reduce the individual forms to stem by going through the calculators
+    val stages = calcThrough(inputStage, calculators, CALC_UP_TO_STEM)
 
-      case ((sourceLevel, calculator: Calculator[D, F]) :: (targetLevel2Calc @ (targetLevel, _)) :: others) =>
+    val setOfStages = split(stages)
 
-      val derivedCalcItems: Seq[CalcItem] = sourceStage.forms.flatMap {
+    // 2nd step: generating individual forms from the stem by going through the calculators in reversed order
+    val outputContexts = setOfStages.map { firstStages =>
 
-        case srcCalcItem: CalcResult[D, F] => calcFor(srcCalcItem, calculator, sourceStage)
-        case ce: CalcError => Seq(ce)
-      }
+      val allStages = firstStages ++ calcThrough(firstStages.last, calculators.reverse, CALC_DOWN_FROM_STEM)
 
-      val targetStage = Stage[D, F](derivedCalcItems, calculator)
-      targetLevel -> targetStage :: loop(targetStage, targetLevel2Calc :: others)
+      val lastStage = Stage(allStages.last.forms ++ forms, noOpCalculator)
 
-      case ((sourceLevel, calculator: StageCalculator[D, F]) :: (targetLevel2Calc @ (targetLevel, _)) :: others) =>
-
-        val targetStage = calculator.reverseCompute(sourceStage) match {
-
-          case Left(dstStage) => dstStage
-          case Right(message) => Stage[D, F](Seq(), calculator)
-        }
-
-        targetLevel -> targetStage :: loop(targetStage, targetLevel2Calc :: others)
-
-      case (lastLevel :: Nil) => Nil
+      Context(allStages :+ lastStage, firstStages.last.forms.head)
     }
 
-    val levelsToCalculators = (calculators.map(IntermediateLevel  ->_) :+ IntermediateLevel -> noOpCalculator).toList
-    val levelToStages = InputLevel -> inputStage :: loop(inputStage, levelsToCalculators)
 
-    // <editor-fold desc="print the stages">
-    for((_, stage) <- levelToStages) {
+    outputContexts.head
+  }
 
-      val items = stage.forms.map {
-        case cr: CalcResult[D, F] => cr.data
-        case ce: CalcError => ce.error
+
+
+
+  private def calcThrough(stage: Stage[D, F], calculators: List[GenericCalculator[D, F]], calcDirection: CalcDirection): List[Stage[D, F]] = calculators match {
+
+    case (currentCalculator :: otherCalculators) =>
+
+      val targetStage = currentCalculator match {
+
+        case calculator: Calculator[D, F] =>
+          val derivedCalcItems = calcFor(calculator, stage, calcDirection)
+
+          Stage[D, F](derivedCalcItems, calculator)
+
+        case calculator: StageCalculator[D, F] =>
+
+          val result = calcDirection match {
+            case CALC_UP_TO_STEM      => calculator.reverseCompute(stage)
+            case CALC_DOWN_FROM_STEM  => calculator.compute(stage)
+          }
+
+          result match {
+
+            case Left(dstStage) => dstStage
+            case Right(message) => Stage[D, F](Seq(), calculator)
+          }
       }
 
-      //println(items.mkString("; "))
+      targetStage :: calcThrough(targetStage, otherCalculators, calcDirection)
+
+    case List() => List()
+  }
+
+  private def calcFor(calculator: Calculator[D, F], stage : Stage[D, F], calcDirection: CalcDirection): Seq[CalcItem] = {
+
+    stage.forms.flatMap {
+
+      case calcResult: CalcResult[D, F] =>
+        calcResult.declensions.toSeq.flatMap(decl => {
+
+          val result = calcDirection match {
+            case CALC_UP_TO_STEM      => calculator.reverseCompute(calcResult.data, decl, stage)
+            case CALC_DOWN_FROM_STEM  => calculator.compute(calcResult.data, decl, stage)
+          }
+
+          result match {
+
+            case Left(sq) => sq.map(CalcResult[D, F](_, calcDirection, Set(calcResult), Set(decl), calculator))
+            case Right(errorMessage) => Seq(CalcError(errorMessage, calcResult))
+          }
+        })
+
+      case ce: CalcError => Seq(ce)
     }
-    // </editor-fold>
-
-    Context(levelToStages)
   }
 
-  private def calcFor(calcResult: CalcResult[D, F], calculator: Calculator[D, F], sourceStage : Stage[D, F]): Seq[CalcItem] = {
+  private def split(stages: List[Stage[D, F]]): Seq[List[Stage[D, F]]] = {
 
-    calcResult.declensions.toSeq.flatMap(decl => {
+    val inputStage :: _ = stages
 
-      val result: Either[Seq[D], String] = calculator.reverseCompute(calcResult.data, decl, sourceStage)
-
-      result match {
-
-        case Left(sq) => sq.map(CalcResult[D, F](_, CALC_UP_TO_STEM, Set(calcResult), Set(decl), calculator))
-        case Right(errorMessage) => Seq(CalcError(errorMessage, calcResult))
-      }
-    })
-  }
-
-  private def split(context: Context[D, F]): Seq[Context[D, F]] = {
-
-    val (InputLevel, inputStage) :: _ = context.stages
-
-    val (level, stage) :: _ = context.stages.reverse
+    val stage :: _ = stages.reverse
 
     val newCtxs = for(form <- stage.forms) yield {
 
@@ -108,22 +103,16 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
       if(parentCalcResults.isEmpty) None else {
 
         val tail = recCollect(parentCalcResults.toSet)
-        val head = level -> newStemStage
 
-        val stages = (head :: tail).reverse
+        val stages = (newStemStage :: tail).reverse
 
-        if(stages.size != context.stages.size) {
-
-          throw new RuntimeException("CalcEngine.split: mismatch of count of input and output stages")
-        }
-
-        val (InputLevel, newInputStage) = stages.head
+        val newInputStage = stages.head
         val isComplete = inputStage.forms.size == newInputStage.forms.size
 
         // prohibit to emit incomplete stages
         if(isComplete) {
 
-          Some(Context(stages))
+          Some(stages)
 
         } else None
       }
@@ -132,118 +121,23 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], unitCalcul
     newCtxs.flatten
   }
 
-  private def recCollect(sourceCalcresults: Set[CalcResult[D, F]]): List[(Level, Stage[D, F])] = {
+  private def recCollect(sourceCalcResults: Set[CalcResult[D, F]]): List[Stage[D, F]] = {
 
-    val newStageCalculator :: Nil = sourceCalcresults.map(pcr => pcr.calculator).toList
-    val newStage = Stage[D, F](sourceCalcresults.toSeq, newStageCalculator)
+    val newStageCalculator :: Nil = sourceCalcResults.map(pcr => pcr.calculator).toList
+    val newStage = Stage[D, F](sourceCalcResults.toSeq, newStageCalculator)
 
-    val parentCalcResults = sourceCalcresults
+    val parentCalcResults = sourceCalcResults
       .collect { case cr: CalcResult[D, F] => cr.parentCalcItems }
       .flatten
 
-    if(parentCalcResults.isEmpty) {
+    newStage :: (if(parentCalcResults.isEmpty) {
 
-      (InputLevel, newStage) :: List()
+      List()
 
     } else {
 
-      (IntermediateLevel, newStage) :: recCollect(parentCalcResults)
+      recCollect(parentCalcResults)
 
-    }
-  }
-
-  private def downCalc(context: Context[D, F], calculators: List[GenericCalculator[D, F]], FORMS_TO_CALCULATE: Set[F]): Context[D, F] = {
-
-    val SUPPORTED_CALC_DIRECTION = Set(CALC_DOWN_FROM_STEM, NO_CALC_ON_STEM)
-    //val FORMS_TO_CALCULATE = ALL_FORMS.filter(f => types.contains(f.adjType))
-
-    def runCalculatorsFor(calculator: Calculator[D, F], sourceStage: Stage[D, F], missingDeclensions: Set[F]): Seq[CalcItem] = {
-      sourceStage.forms.flatMap {
-
-        case sourceCalcItem: CalcResult[D, F] if SUPPORTED_CALC_DIRECTION.contains(sourceCalcItem.calcDirection) =>
-
-        val declensionsToCompute = missingDeclensions intersect sourceCalcItem.declensions
-
-        // avoid to derivate a form from a different declension
-        declensionsToCompute.flatMap(targetDecl => {
-          calculator.compute(sourceCalcItem.data, targetDecl, sourceStage) match {
-            case Left(Seq()) => Seq(CalcError(s"${calculator.shortCode} did not emit any output.", sourceCalcItem))
-            case Left(sq) => sq.map(CalcResult[D, F](_, CALC_DOWN_FROM_STEM, Set(sourceCalcItem), Set(targetDecl), calculator))
-            case Right(s) => Seq(CalcError(s, sourceCalcItem))
-          }
-        })
-        case calcError: CalcError => Seq(calcError)
-        case _ => Seq()
-      }
-    }
-
-    def loop(calculators: List[GenericCalculator[D, F]], stages: List[Stage[D, F]]): List[(Level, Stage[D, F])] = (calculators, stages) match {
-
-      case ((currentCalculator: Calculator[D, F]) :: remainedTailCalculators, sourceStage :: targetStage :: furtherStages) =>
-
-        // determine which declensions should be computed
-      val alreadyExistingDeclensionsInTheTargetStage = targetStage.calcResults.flatMap(_.declensions)
-      val missingDeclensions = FORMS_TO_CALCULATE -- alreadyExistingDeclensionsInTheTargetStage
-
-      // do the calculations
-      val derivedCalcItems = runCalculatorsFor(currentCalculator, sourceStage, missingDeclensions)
-
-      // merge the results if for multiple input a calculator has the same output
-      val mergedCalcItems = derivedCalcItems ++ targetStage.forms
-
-      // create the stage object
-      val enrichedTargetStage = Stage[D, F](mergedCalcItems, currentCalculator)
-
-      // determine the correct level indicator
-      val currentLevel = if(furtherStages == Nil) InputLevel else IntermediateLevel
-
-      currentLevel -> enrichedTargetStage :: loop(remainedTailCalculators, enrichedTargetStage :: furtherStages)
-
-      case ((currentCalculator: StageCalculator[D, F]) :: remainedTailCalculators, sourceStage :: targetStage :: furtherStages) =>
-
-        // create the stage object
-        val enrichedTargetStage = currentCalculator.compute(sourceStage) match {
-
-          case Left(dstStage) =>
-            val mergedCalcItems = dstStage.forms ++ targetStage.forms
-            Stage[D, F](mergedCalcItems, currentCalculator)
-
-          case Right(message) => Stage[D, F](Seq(), currentCalculator)
-        }
-
-        // determine the correct level indicator
-        val currentLevel = if(furtherStages == Nil) InputLevel else IntermediateLevel
-
-        currentLevel -> enrichedTargetStage :: loop(remainedTailCalculators, enrichedTargetStage :: furtherStages)
-
-      case (Nil, sourceStage :: Nil) => Nil
-    }
-
-    // from top-level calcresults, every other can inherit
-    val (_, stage) = context.stages.head
-    val distinctDeclensions = stage.calcResults.flatMap(_.declensions).distinct.size
-
-    if(context.stages.size != calculators.size + 1) {
-
-      throw new RuntimeException("Count of stages and calculators doesn not match.")
-    }
-
-    val extStages = extend(context.stages.map(_._2).reverse, distinctDeclensions, FORMS_TO_CALCULATE)
-
-    val stages = (StemLevel -> extStages.head) :: loop(unitCalculator :: calculators, extStages)
-
-    Context(stages)
-  }
-
-  private def extend(stages: List[Stage[D, F]], expectedCountOfDeclensions: Int, forms: Set[F]): List[Stage[D, F]] = {
-
-    val topStage = stages.head
-
-    val newCalcItems = topStage.calcResults.map {
-
-      cr => CalcResult[D, F](cr.data, NO_CALC_ON_STEM, Set(cr), forms, noOpCalculator)
-    }
-
-    Stage[D, F](newCalcItems, noOpCalculator) :: stages
+    })
   }
 }

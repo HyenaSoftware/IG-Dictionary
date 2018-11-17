@@ -9,6 +9,7 @@ import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.NOMINATIVE
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.SINGULAR
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender.MASCULINE
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.{Case, GNumber, Gender}
+import com.hyenawarrior.OldNorseGrammar.grammar.morphophonology.ProductiveTransforms.FormExtender
 import com.hyenawarrior.OldNorseGrammar.grammar.nominal._
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.MorphemeProperty
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.PhonemeProperty._
@@ -66,9 +67,12 @@ object Adjective {
 
     import com.hyenawarrior.OldNorseGrammar.grammar.nominal.helpers._
 
-    val forms = givenAdjForms.map(f => CalcResult.from(phonology.Word(f.strRepr, MorphemeProperty.Stem), f.declension))
-
     val calcinfra = new CalcEngine[phonology.Word, AdjectiveFormType]()
+
+    //
+    val formsToCalculate = ALL_FORMS.filter(f => types.contains(f.adjType))
+    val forms = givenAdjForms.map(f => CalcResult.from(phonology.Word(f.strRepr, MorphemeProperty.Stem), f.declension))
+    val missingDeclensions = formsToCalculate -- forms.flatMap(_.declensions)
 
     val calculators = List[GenericCalculator[phonology.Word, AdjectiveFormType]](
       //
@@ -78,15 +82,14 @@ object Adjective {
       SemivowelWordDeletionCalculator,
       UmlautWordCalculator,
       DropInflectionCalculator,
-      StemReduceCalculator
+      StemReduceCalculator,
+      FormExtender(missingDeclensions)
     )
 
-    val formsToCalculate = ALL_FORMS.filter(f => types.contains(f.adjType))
-
-    val outputContext = calcinfra.calculate(forms, calculators, formsToCalculate)
+    val outputContext2 = calcinfra.calculate(forms, calculators, formsToCalculate)
 
     //
-    val optIOStage: Option[Stage[phonology.Word, AdjectiveFormType]] = outputContext.stages.lastOption.map(_._2)
+    val optIOStage: Option[Stage[phonology.Word, AdjectiveFormType]] = outputContext2.stages.lastOption
     val adjForms = optIOStage match {
 
       case Some(stage) => stage.calcResults.flatMap(cr => cr.declensions.map(decl => {
@@ -102,17 +105,14 @@ object Adjective {
       case None => Seq()
     }
 
-    //
-    val optTopStage = outputContext.stages.headOption.map(_._2)
-    val optAdjStems = optTopStage.map {
+    val optAdjStems2 = outputContext2.stem match {
 
-      topStage =>
-        val cr = topStage.calcResults.head
+      case cr: CalcResult[phonology.Word, AdjectiveFormType] => cr
+
         val stemMorpheme = cr.data.selectMorpheme(MorphemeProperty.Stem)
-
-        AdjectiveStem(stemMorpheme.map(_.asString).getOrElse(""))
+        Some(AdjectiveStem(stemMorpheme.map(_.asString).getOrElse("")))
     }
 
-    optAdjStems -> adjForms
+    optAdjStems2 -> adjForms
   }
 }
