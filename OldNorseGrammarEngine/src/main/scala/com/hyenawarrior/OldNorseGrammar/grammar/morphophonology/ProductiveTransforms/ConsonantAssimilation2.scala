@@ -167,11 +167,9 @@ object ConsonantAssimilation2 {
     }
   }
 
-  def reverse(word: Word): Seq[Word] = {
+  def reverse(word: Word, expectedSuffix: String): Seq[Word] = {
 
-    val suffixStr = word.selectMorpheme(Suffix).map(_.asString()).getOrElse("")
-
-    syncopeRouting(word.asString, suffixStr, REV_ITEMS).map {
+    syncopeRouting(word.asString, expectedSuffix, REV_ITEMS).map {
 
       case (stem, suffix) => new Word(Seq(Morpheme(stem, Stem), Morpheme(suffix, Suffix)))
     }

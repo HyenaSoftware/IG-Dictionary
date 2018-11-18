@@ -324,6 +324,12 @@ class TestTransformation {
 	}
 
 	@Test
+	def testConsonantAssimilationHvass(): Unit = {
+
+		assertEquals(Seq("hvasr", "hvassr"), ConsonantAssimilation2.reverse("hvass", "r"))
+	}
+
+	@Test
 	def testGemination(): Unit = {
 
 		assertEquals("ný" -> "tt", 	Gemination("ný", "t"))
