@@ -48,17 +48,7 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], impl: Calc
           Stage[D, F](derivedCalcItems, calculator)
 
         case calculator: StageCalculator[D, F] =>
-
-          val result = calcDirection match {
-            case CALC_UP_TO_STEM      => calculator.reverseCompute(stage)
-            case CALC_DOWN_FROM_STEM  => calculator.compute(stage)
-          }
-
-          result match {
-
-            case Left(dstStage) => dstStage
-            case Right(message) => Stage[D, F](Seq(), calculator)
-          }
+          calcFor(calculator, stage, calcDirection)
       }
 
       targetStage :: calcThrough(targetStage, otherCalculators, calcDirection)
@@ -66,11 +56,26 @@ class CalcEngine[D, F](implicit noOpCalculator: NoOpCalculator[D, F], impl: Calc
     case List() => List()
   }
 
+  private def calcFor(calculator: StageCalculator[D, F], stage: Stage[D, F], calcDirection: CalcDirection): Stage[D, F] = {
+
+    val result = calcDirection match {
+      case CALC_UP_TO_STEM => calculator.reverseCompute(stage)
+      case CALC_DOWN_FROM_STEM => calculator.compute(stage)
+    }
+
+    result match {
+
+      case Left(dstStage) => dstStage
+      case Right(message) => Stage[D, F](Seq(), calculator)
+    }
+  }
+
   private def calcFor(calculator: Calculator[D, F], stage : Stage[D, F], calcDirection: CalcDirection): Seq[CalcItem] = {
 
     stage.forms.flatMap {
 
       case calcResult: CalcResult[D, F] =>
+
         calcResult.declensions.toSeq.flatMap(decl => {
 
           val result = calcDirection match {
