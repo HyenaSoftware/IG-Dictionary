@@ -2,6 +2,8 @@ package com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.metrics
 
 import com.hyenawarrior.OldNorseGrammar.grammar.phonology.{Consonant, Phoneme, Vowel2}
 
+import scala.math.pow
+
 /**
   * Created by HyenaWarrior on 2018.11.17..
   */
@@ -19,7 +21,7 @@ object Metrics {
         (typeOf(ph), 1 :: l)
     }
 
-    val avgBucketWeight = buckets.sum.toFloat / buckets.length.toFloat
+    val avgBucketWeight = buckets.sum.toFloat / pow(buckets.length.toFloat, 0.5)
 
     (avgBucketWeight * 100).toInt
   }
