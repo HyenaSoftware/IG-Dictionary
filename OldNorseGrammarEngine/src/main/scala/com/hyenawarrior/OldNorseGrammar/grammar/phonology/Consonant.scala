@@ -39,7 +39,7 @@ object Consonant {
   def voice(c: Char): Char = voicing(c)
 }
 
-final case class Consonant(cs: String, phonemeProperty: PhonemeProperty) extends Phoneme {
+abstract class AbstractConsonant(c: Char, phonemeProperty: PhonemeProperty) extends Phoneme {
 
   override def isConsonant: Boolean = true
 
@@ -47,11 +47,41 @@ final case class Consonant(cs: String, phonemeProperty: PhonemeProperty) extends
 
   override def asLengthened: Option[Phoneme] = ???
 
-  override def copyWithPropertyOf(phonemeProperty: PhonemeProperty) = Consonant(cs, phonemeProperty)
+  def isDigraph: Boolean
 
-  override val lengthInLetters: Int = cs.length
+  override def lengthInLetters: Int = 1
+}
 
-  override val asString: String = cs
+final case class Consonant(c: Char, phonemeProperty: PhonemeProperty) extends AbstractConsonant(c, phonemeProperty) {
 
-  override def toString: String = s"$cs:$lengthInLetters"
+  override def copyWithPropertyOf(newPhonemeProperty: PhonemeProperty) = Consonant(c, newPhonemeProperty)
+
+  override def toString: String = s"$c:1"
+
+  override def isDigraph = false
+
+  override val asString: String = c.toString
+}
+
+trait DigraphLetterOrder
+object FirstDigraphLetter extends DigraphLetterOrder
+object SecondDigraphLetter extends DigraphLetterOrder
+
+final case class HalfDigraph(c: Char, order: DigraphLetterOrder, phonemeProperty: PhonemeProperty) extends AbstractConsonant(c, phonemeProperty) {
+
+  override def copyWithPropertyOf(newPhonemeProperty: PhonemeProperty) = HalfDigraph(c, order, newPhonemeProperty)
+
+  override def toString = (c, order) match {
+    case ('z', FirstDigraphLetter) => "t:1"
+    case ('x', FirstDigraphLetter) => "k:1"
+    case ('z' | 'x', SecondDigraphLetter) => "s:1"
+  }
+
+  override val asString: String = (c, order) match {
+    case ('z', FirstDigraphLetter) => "t"
+    case ('x', FirstDigraphLetter) => "k"
+    case ('z' | 'x', SecondDigraphLetter) => "s"
+  }
+
+  override def isDigraph = true
 }

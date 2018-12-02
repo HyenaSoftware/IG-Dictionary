@@ -38,9 +38,9 @@ class TestMorpheme {
 
     val phs = Seq(
       SimpleVowel('a', Default),
-      Consonant("b", Default),
-      Consonant("c", Default),
-      Consonant("d", Default)
+      Consonant('b', Default),
+      Consonant('c', Default),
+      Consonant('d', Default)
     )
 
     val sm = SimpleMorpheme(phs, Composite)
@@ -56,9 +56,9 @@ class TestMorpheme {
 
     val phs = Seq(
       SimpleVowel('a', Default),
-      Consonant("b", Default),
-      Consonant("c", Default),
-      Consonant("d", Default)
+      Consonant('b', Default),
+      Consonant('c', Default),
+      Consonant('d', Default)
     )
 
     val sm = SimpleMorpheme(phs, Composite)

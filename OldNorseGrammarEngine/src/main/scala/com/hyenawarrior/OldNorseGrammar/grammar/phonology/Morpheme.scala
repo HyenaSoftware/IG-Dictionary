@@ -34,9 +34,9 @@ object Morpheme {
 
       val ss = normalizedStr substring i
 
-      val ph = Phoneme extract ss
+      val (ph, l) = Phoneme extract ss
 
-      i = i + ph.lengthInLetters
+      i += l
 
       lb += ph
     }
@@ -55,8 +55,11 @@ object Morpheme {
     .replace("ae", "æ")
     .replace("oe", "œ")
     .replace("ö", "ǫ")
-    .replace("z", "ts")
-    .replace("x", "ks")
+    .replace("ts", "z")
+    .replace("ks", "x")
+    //
+    .replace("z", "z1z2")
+    .replace("x", "x1x2")
 }
 
 final case class SimpleMorpheme(phonemes: Seq[Phoneme], morphemeProperty: MorphemeProperty) extends Morpheme {
