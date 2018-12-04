@@ -1,6 +1,5 @@
 package com.hyenawarrior.OldNorseGrammar.grammar.nominal
 
-import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.AdjectiveTraits._
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.AdjectiveFormType
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.Stage
 import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.Calculator
@@ -15,18 +14,16 @@ object ConsonantWordAssimilationCalculator extends Calculator[phonology.Word, Ad
 
   override def compute(word: Word, declension: AdjectiveFormType, stage: Stage[Word, AdjectiveFormType]): Either[Seq[Word], String] = Left {
 
-    val rs = ConsonantAssimilation2.transform(word)
+    val desc2rs = ConsonantAssimilation2.transform2(word)
 
-    if(rs.nonEmpty) rs else Seq(word)
+    if(desc2rs.nonEmpty) desc2rs.values.toSeq else Seq(word)
   }
 
   override def reverseCompute(word: Word, declension: AdjectiveFormType, stage: Stage[Word, AdjectiveFormType]): Either[Seq[Word], String] = Left {
 
-    val inflection = inflectionWithComparsionFor(declension)
+    val desc2rs = ConsonantAssimilation2.reverse2(word)
 
-    val rs = ConsonantAssimilation2.reverse(word, inflection)
-
-    word +: rs
+    word +: desc2rs.values.toSeq
   }
 
   override def shortCode: String = "CA"

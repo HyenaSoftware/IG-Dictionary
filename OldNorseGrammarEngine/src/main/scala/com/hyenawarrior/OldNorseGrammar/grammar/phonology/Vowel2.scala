@@ -10,6 +10,8 @@ trait Vowel2 extends Phoneme {
   def asShortened: Option[Vowel2] = ???
   def asLengthened: Option[Vowel2] = ???
 
+  def isFrontMutated: Boolean = ???
+
   def isLong: Boolean
 
   //@deprecated("Use copyWithPropertyOf instead")
@@ -108,6 +110,8 @@ final case class SimpleVowel(c: Char, phonemeProperty: PhonemeProperty) extends 
 
   private val LONG_VOWELS = "áæéíóœúý".toSet
 
+  override def isFrontMutated: Boolean = "æøœyý" contains c
+
   override def isLong = LONG_VOWELS contains c
 
   //override def replaceProperty(phonemeProperty: PhonemeProperty): SimpleVowel = SimpleVowel(c, phonemeProperty)
@@ -119,6 +123,8 @@ final case class SimpleVowel(c: Char, phonemeProperty: PhonemeProperty) extends 
 final case class Diphtong(vs: String, phonemeProperty: PhonemeProperty) extends Vowel2 {
 
   assert(vs.length == 2, "A diphtong must consist of exacltly two vowels.")
+
+  override def isFrontMutated: Boolean = vs == "ei" || vs == "øy"
 
   def isLong = true
 

@@ -91,7 +91,7 @@ object SyncopeWordCalculator extends Calculator[Word, AdjectiveFormType]  {
 
         } else {
 
-          Seq(newWord)
+          Seq(word, newWord)
         }
 
       } else {
