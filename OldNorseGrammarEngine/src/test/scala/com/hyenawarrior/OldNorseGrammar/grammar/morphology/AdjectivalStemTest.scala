@@ -3,7 +3,7 @@ package com.hyenawarrior.OldNorseGrammar.grammar.morphology
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.Adjective
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.core.AdjectiveFormType
 import com.hyenawarrior.OldNorseGrammar.grammar.adjectival.enums.AdjectiveType._
-import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.NOMINATIVE
+import com.hyenawarrior.OldNorseGrammar.grammar.enums.Case.{NOMINATIVE, DATIVE}
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.GNumber.SINGULAR
 import com.hyenawarrior.OldNorseGrammar.grammar.enums.Gender._
 import org.junit.{Assert, Test}
@@ -12,6 +12,9 @@ import org.junit.{Assert, Test}
   * Created by HyenaWarrior on 2018.06.12..
   */
 class AdjectivalStemTest {
+
+  val smn = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, MASCULINE, NOMINATIVE)
+  val sfd = AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, FEMININE, DATIVE)
 
   @Test
   def testPositiveIndefiniteNyr(): Unit = {
@@ -29,7 +32,7 @@ class AdjectivalStemTest {
   def testPositiveIndefiniteHvass(): Unit = {
 
     val adj = Adjective.from(
-      Map(AdjectiveFormType(POSITIVE_INDEFINITE, SINGULAR, MASCULINE, NOMINATIVE) -> "hvass"),
+      Map(smn -> "hvass", sfd -> "hvassri"),
       Set(POSITIVE_INDEFINITE))
 
     Assert.assertEquals("hvass", adj.stem.stemStr)
