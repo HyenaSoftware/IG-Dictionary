@@ -7,12 +7,6 @@ import com.hyenawarrior.OldNorseGrammar.grammar.calcinfra.calculators.GenericCal
   */
 case class Stage[D, F](forms: Seq[CalcItem], calculator: GenericCalculator[D, F]) {
 
-  @deprecated("doesn't handle diphtongs")
-  def vowelMatrix(implicit vowelsOf: D => Seq[Char]): Seq[Array[Char]] = calcResults.map(str => vowelsOf(str.data).toArray)
-
-  @deprecated("change implementation")
-  def countOfSyllables(implicit vowelsOf: D => Seq[Char]): Int = (0 +: vowelMatrix.map(_.length)).max
-
   def calcResults: Seq[CalcResult[D, F]] = forms.collect { case cr: CalcResult[D, F] => cr }
 
   def parentCalcResults: Seq[CalcResult[D, F]] = forms

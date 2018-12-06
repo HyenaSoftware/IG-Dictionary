@@ -14,9 +14,6 @@ trait Vowel2 extends Phoneme {
 
   def isLong: Boolean
 
-  //@deprecated("Use copyWithPropertyOf instead")
-  //def replaceProperty(phonemeProperty: PhonemeProperty): Vowel2
-
   def copyWithPropertyOf(phonemeProperty: PhonemeProperty): Vowel2
 
   override def isVowel = true
@@ -132,7 +129,6 @@ final case class Diphtong(vs: String, phonemeProperty: PhonemeProperty) extends 
 
   val asString: String = vs
 
-  //override def replaceProperty(phonemeProperty: PhonemeProperty): Diphtong = Diphtong(vs, phonemeProperty)
   override def copyWithPropertyOf(phonemeProperty: PhonemeProperty): Diphtong = Diphtong(vs, phonemeProperty)
 
   override def toString: String = s"$vs:2"

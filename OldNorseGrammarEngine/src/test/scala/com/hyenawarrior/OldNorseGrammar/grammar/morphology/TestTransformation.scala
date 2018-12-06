@@ -99,15 +99,6 @@ class TestTransformation {
 	def testConsonantAssimilationNew(): Unit = {
 
 		// batt+st > batzt
-		assertEquals(Seq("batzt"),  ConsonantAssimilation2.transform("battst", "st"))
-		assertEquals(Seq("brauzt"), ConsonantAssimilation2.transform("brautst", "st"))
-		assertEquals(Seq("brauzk"),	 ConsonantAssimilation2.transform("brautstsk", "sk"))
-
-		// ignore
-		assertEquals(Seq("kallask"), ConsonantAssimilation2.transform("kallarsk", "sk"))
-		assertEquals(Seq("kallizk"), ConsonantAssimilation2.transform("kalliðsk", "sk"))
-
-
 		assertContains(Seq("battst"), Seq("batðst"), consAssim("batzt", "st"))
 		assertContains(Seq("brautst"), Seq("brauðst"), consAssim("brauzt", "st"))
 
@@ -116,22 +107,6 @@ class TestTransformation {
 
 		assertContains(Seq("kallask"), Seq(), consAssim("kallarsk", "sk"))
 		assertContains(Seq("kalliðsk"), Seq("kallitsk", "kallitstsk"), consAssim("kallizk", "ið", "sk"))
-	}
-
-  @deprecated
-	@Test
-	def testConsonantAssimilationReverse(): Unit = {
-
-		assertEquals(Some("battst"), ConsonantAssimilation.unapply("batzt"))
-		assertEquals(Some("brautst"), ConsonantAssimilation.unapply("brauzt"))
-
-		// unpredicateble: when we should double the 'z'-s? (-z- > -zz- > -tsts-)
-    // assertEquals(Some("brautstsk"), ConsonantAssimilation.unapply("brauzk"))
-
-    // -sk also a correct suffix, it's not always correct to restore it
-		// assertEquals(Some("kallarsk"), ConsonantAssimilation.unapply("kallask"))
-
-		assertEquals(Some("kalliðsk"), ConsonantAssimilation.unapply("kalliðsk"))
 	}
 
   @Test
@@ -166,20 +141,10 @@ class TestTransformation {
 		assertEquals(Seq("kallarsk"), consAssimReverse("kallask", "r", "sk"))
 	}
 
-  @deprecated
-	@Test
-	def testConsonantAssimilationReverse3(): Unit = {
-
-		assertEquals(Some("mennr"), ConsonantAssimilation.unapply("mennn"))
-	}
-
 	@Test
 	def testConsonantAssimilationShouldIgnore(): Unit = {
 
 		assertEquals("hestr", ConsonantAssimilation("hestr"))
-
-    assertEquals(Seq(), ConsonantAssimilation2.transform("hestr", "r"))
-		assertEquals(Seq(), ConsonantAssimilation2.transform("hamarr", "r"))
 
 		assertEquals(Seq(), consAssim("hestr", "r"))
 		assertEquals(Seq(), consAssim("hamarr", "r"))
@@ -205,18 +170,9 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationNewR(): Unit = {
 
-		assertEquals(Seq("maðr", "mann"),		ConsonantAssimilation2.transform("mannr", "r"))
-		assertEquals(Seq("stóll"),	ConsonantAssimilation2.transform("stólr", "r"))
-		assertEquals(Seq("groenn"),	ConsonantAssimilation2.transform("groenr", "r"))
-		assertEquals(Seq("less"),		ConsonantAssimilation2.transform("lesr", "r"))
-
 		// If the stem ends in a short stressed syllable, r does not assimilate to l or n, only
 		//	to s, as in less (in contrast to dalr ‘valley.n’, vinr ‘friend.n’).
 		//assertEquals(Seq("CaCall"),	ConsonantAssimilation2.transform("CaCalr", "r"))
-
-		assertEquals(Seq(),		ConsonantAssimilation2.transform("annarr", "r"))
-		assertEquals(Seq(),		ConsonantAssimilation2.transform("dýrr", "r"))
-
 
     assertContains(Seq("maðr"), Seq("mann"), consAssim("mannr", "r"))
 		assertEquals(Seq("stóll"), consAssim("stólr", "r"))
@@ -253,9 +209,6 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationNewBlockR(): Unit = {
 
-		assertEquals(Seq(),  ConsonantAssimilation2.transform("dalr", "r"))
-		assertEquals(Seq(), ConsonantAssimilation2.transform("vinr", "r"))
-
 		assertEquals(Seq(), consAssim("dalr", "r"))
 		assertEquals(Seq(), consAssim("vinr", "r"))
 	}
@@ -276,8 +229,6 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationVakrRev() = {
 
-		assertEquals(Seq("vakrr"), ConsonantAssimilation2.reverse("vakr", "r"))
-
 		assertContains(Seq("vakrr"), Seq(), consAssimReverse("vakr", "r"))
 	}
 
@@ -292,12 +243,6 @@ class TestTransformation {
 
 	@Test
 	def testConsonantAssimilationNewImpl(): Unit = {
-
-		assertEquals(Seq("nagl"), ConsonantAssimilation2.transform("naglr", "r"))
-		assertEquals(Seq("menn"), ConsonantAssimilation2.transform("mennr", "r"))
-		assertEquals(Seq("skipti"), ConsonantAssimilation2.transform("skiptti", "ti"))
-		assertEquals(Seq("gamall"), ConsonantAssimilation2.transform("gamalr", "r"))
-		assertEquals(Seq(), ConsonantAssimilation2.transform("hamarr", "r"))
 
 		assertContains(Seq("nagl"), Seq(), consAssim("naglr", "r"))
 		assertContains(Seq("menn"), Seq(), consAssim("mennr", "r"))
@@ -321,16 +266,11 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationMedioPassiveRev(): Unit = {
 
-		// suffix is given as -izk
-		assertEquals(Seq(), ConsonantAssimilation2.reverse("kallizk", "izk"))
-
 		assertContains(Seq("kalliðsk"), Seq("kallitsk"), consAssimReverse("kallizk", "ið", "sk"))
 	}
 
 	@Test
 	def testConsonantAssimilation3(): Unit = {
-
-		assertEquals(Seq("gamalli"), ConsonantAssimilation2.transform("gamalri", "ri"))
 
 		assertContains(Seq("gamalli"), Seq(), consAssim("gamalri", "ri"))
 	}
@@ -343,9 +283,6 @@ class TestTransformation {
 
 	@Test
 	def testConsonantAssimilationVoicedDentalRegressive(): Unit = {
-
-		assertEquals(Seq("foett"), ConsonantAssimilation2.transform("foeddt", "t"))
-		assertEquals(Seq("kallat"), ConsonantAssimilation2.transform("kallaðt", "t"))
 
 		assertContains(Seq("fœtt"), Seq(), consAssim("foeddt", "t"))
 		assertContains(Seq("kallat"), Seq(), consAssim("kallaðt", "t"))
@@ -362,9 +299,6 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationNasalDental(): Unit = {
 
-		assertEquals(Seq("hitt"), ConsonantAssimilation2.transform("hint", "t"))
-		assertEquals(Seq(),       ConsonantAssimilation2.transform("annart", "t"))
-
 		assertContains(Seq("hitt"), Seq(), consAssim("hint",   "t"))
 		assertContains(Seq(),       Seq(), consAssim("annart", "t"))
 	}
@@ -380,15 +314,11 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationNasalDentalNegRev(): Unit = {
 
-		assertEquals(Seq(), ConsonantAssimilation2.reverse("atnart", "t"))
-
 		assertContains(Seq(), Seq(), consAssimReverse("atnart", "t"))
 	}
 
 	@Test
 	def testConsonantAssimilationDD(): Unit = {
-
-		assertEquals(Seq("gladdi"), ConsonantAssimilation2.transform("glaðði", "ði"))
 
 		assertContains(Seq("gladdi"), Seq(), consAssim("glaðði", "ði"))
 	}
@@ -396,15 +326,11 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationDDRev(): Unit = {
 
-		assertEquals(Seq("glaðði"), ConsonantAssimilation2.reverse("gladdi", "ði"))
-
 		assertEquals(Seq("glaðði"), consAssimReverse("gladdi", "ði"))
 	}
 
 	@Test
 	def testConsonantAssimilationNN2Eth(): Unit = {
-
-		assertEquals(Seq("ǫðru"), ConsonantAssimilation2.transform("ǫnnru", "u"))
 
 		assertEquals(Seq("ǫðru"), consAssim("ǫnnru", "u"))
 	}
@@ -412,16 +338,11 @@ class TestTransformation {
 	@Test
 	def testConsonantAssimilationNN2EthRev(): Unit = {
 
-		assertEquals(Seq("ǫnnru"), ConsonantAssimilation2.reverse("ǫðru", "u"))
-
 		assertEquals(Seq("ǫnnru"), consAssimReverse("ǫðru", "u"))
 	}
 
 	@Test
 	def testConsonantAssimilationGemination(): Unit = {
-
-		assertEquals(Seq("nýtt"), ConsonantAssimilation2.transform("nýt", "t"))
-		assertEquals(Seq("fárri"), ConsonantAssimilation2.transform("fári", "ri"))
 
 		assertEquals(Seq("nýtt"), consAssim("nýt", "t"))
 		assertEquals(Seq("fárri"), consAssim("fári", "ri"))

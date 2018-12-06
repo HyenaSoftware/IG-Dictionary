@@ -14,8 +14,6 @@ object ConsonantAssimilation {
 
   def apply(str: String): String = loop(str, reduce lift)
 
-  def unapply(str: String): Option[String] = Some(loop(str, restore lift))
-
   @deprecated
   def invert(str: String): Seq[String] = {
 

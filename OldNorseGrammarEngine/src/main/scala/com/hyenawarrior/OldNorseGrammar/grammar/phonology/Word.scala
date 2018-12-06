@@ -13,11 +13,11 @@ case class Word(morphemes: Seq[SimpleMorpheme]) {
 
   /**
     * location  string
-    * 0   -4    "[abcd"
-    * 1   -3    "a[bcd"
-    * 2   -2    "ab[cd"
-    * 3   -1    "abc[d"
-    * 4         "abcd["
+    * 0   -5    "[abcd"
+    * 1   -4    "a[bcd"
+    * 2   -3    "ab[cd"
+    * 3   -2    "abc[d"
+    * 4   -1    "abcd["
     *
     * but Scala API splitAt works like:
     * 0          "[abcd"
